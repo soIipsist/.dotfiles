@@ -11,6 +11,9 @@ function Import-Android-Studio-Settings {
     # Get folder path for android studio
     Write-Host "Copying Android Studio default settings..." -ForegroundColor Yellow
 
+    if (-not (Test-Path -Path "$env:AppData/Google")){
+	    return
+}
     $FolderPath = Get-All-Files-In-Paths -Paths @("$env:AppData/Google") -File $false -Filter "Android*"
     $FolderPath = $FolderPath.FullName
     $Items = Get-All-Files-In-Paths -Paths @("$PSScriptRoot/settings") -File $false -Directory $true
