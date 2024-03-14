@@ -1,0 +1,16 @@
+{
+    "format": "bestvideo+bestaudio",
+    "progress": true,
+    "postprocessors": [
+        {
+            "already_have_subtitle": false,
+            "key": "FFmpegEmbedSubtitle"
+        }
+    ],
+    "writesubtitles": true,
+    "writeautomaticsub": true,
+    "subtitleslangs": [
+        "en"
+    ],
+    "outtmpl": "%(title)s.%(ext)s"
+}

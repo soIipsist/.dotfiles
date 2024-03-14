@@ -1,0 +1,182 @@
+tap "homebrew/aliases"
+tap "homebrew/autoupdate"
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap 'caskroom/homebrew-cask' || true
+tap "homebrew/cask-fonts"
+tap "homebrew/cask-versions"
+tap "homebrew/command-not-found"
+tap "homebrew/core"
+tap "homebrew/services"
+tap "homebrew/test-bot"
+tap "microsoft/git"
+tap "buo/cask-upgrade"
+
+# Bourne-Again SHell, a UNIX command interpreter
+brew "bash", args: ["HEAD"]
+
+# Programmable completion for Bash 4.2+
+brew "bash-completion@2"
+
+# Remove large files or passwords from Git history like git-filter-branch
+brew "bfg"
+
+# Cross-platform make
+brew "cmake"
+
+# Get a file from an HTTP, HTTPS or FTP server
+brew "curl"
+
+# Docker
+brew "docker"
+
+# GNU compiler collection
+brew "gcc"
+
+# gh
+brew "gh"
+
+# Git
+brew "git", args: ["HEAD"]
+
+# Quickly rewrite git repository history
+brew "git-filter-repo"
+
+# Extensions to follow Vincent Driessen's branching model
+brew "git-flow"
+
+# Git extension for versioning large files
+brew "git-lfs"
+
+# Open source programming language to build simple/reliable/efficient software
+brew "go"
+
+# Open-source build automation tool based on the Groovy and Kotlin DSL
+brew "gradle"
+
+# GNU grep, egrep and fgrep
+brew "grep"
+
+# Lightweight and flexible command-line JSON processor
+brew "jq"
+
+# KornShell, ksh93
+brew "ksh"
+
+# Pager program similar to more
+brew "less", args: ["HEAD"]
+
+# Free (GNU) replacement for the Pico text editor
+brew "nano"
+
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+
+# Platform built on V8 to build network applications
+brew "node"
+
+# OpenBSD freely-licensed SSH connectivity tools
+brew "openssh"
+
+
+# Highly capable, feature-rich programming language
+brew "perl"
+
+# General-purpose scripting language
+brew "php"
+
+# Tool to automatically fix PHP coding standards issues
+brew "php-cs-fixer"
+
+# Bash completion for Pip
+brew "pip-completion"
+
+# Manage compile and link flags for libraries
+brew "pkg-config"
+
+# Policy-compliant ordinary shell
+brew "posh"
+
+# PHP Static Analysis Tool
+brew "psalm"
+
+# Python version management
+brew "pyenv"
+
+# It's not just a linter that annoys you!
+brew "pylint"
+
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.12"
+
+# Ruby version manager
+brew "rbenv"
+
+# Powerful, clean, object-oriented scripting language
+brew "ruby"
+
+# Install various Ruby versions and implementations
+brew "ruby-build"
+
+# Bash completion for Ruby
+brew "ruby-completion"
+
+# Command-line interface for SQLite
+brew "sqlite"
+
+# Terminal multiplexer
+brew "tmux"
+
+# Vi 'workalike' with many additional features
+brew "vim"
+
+# wget
+brew "wget"
+
+# Lookup tool for domain names and other internet resources
+brew "whois", link: true
+
+# Linter for YAML files
+brew "yamllint"
+
+# JavaScript package manager
+brew "yarn"
+
+# Download YouTube videos from the command-line
+brew "youtube-dl"
+
+# General-purpose lossless data-compression library
+brew "zlib"
+
+# UNIX shell (command interpreter)
+brew "zsh", args: ["HEAD"]
+
+# Tips, tricks, and examples for zsh
+brew "zsh-lovers"
+
+# Open-source cross-platform multimedia player
+cask "vlc-nightly"
+
+# GitHub Desktop
+cask "github"
+
+# vscode
+cask "visual-studio-code"
+
+# android-studio
+cask "android-studio"
+
+# pycharm
+cask "pycharm"
+
+# figma
+cask "figma"
+
+# blender
+cask "blender"
+
+# mactex
+cask "mactex"
+
+# parallels
+cask "parallels"

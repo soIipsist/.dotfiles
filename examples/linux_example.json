@@ -1,0 +1,10 @@
+{
+    "hostname": "pc",
+    "apt_packages": [],
+    "pip_packages": [],
+    "dotfiles": [],
+    "wallpaper_path": "",
+    "lockscreen_path": "",
+    "git_username": "",
+    "git_email": ""
+}

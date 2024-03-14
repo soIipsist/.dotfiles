@@ -1,0 +1,18 @@
+{
+    "packages": [
+        "powertoys",
+        "sqlite",
+        "blender",
+        "discord",
+        "python",
+        "winrar",
+        "pgadmin4",
+        "visualstudio2022community"
+    ],
+    "chocolatey_packages": [],
+    "pip_packages": [],
+    "winget_packages": [],
+    "wsl_packages": [],
+    "scoop_packages": [],
+    "windows_packages": []
+}

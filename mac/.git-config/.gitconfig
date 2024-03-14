@@ -1,0 +1,7 @@
+[user]
+	name = soIipsis
+	username = soIipsis
+[init]
+	defaultBranch = main
+[core]
+    editor = "code"

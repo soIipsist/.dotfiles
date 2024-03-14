@@ -1,0 +1,28 @@
+// Place your key bindings in this file to override the defaults
+[
+   {
+    "key": "alt+p",
+    "command": "pasteAndIndent.action",
+    "when": "editorTextFocus && !editorReadonly"
+   },
+   {
+      "key": "shift+alt+l",
+      "command": "editor.action.addSelectionToNextFindMatch",
+      "when": "editorFocus"
+   },
+   {
+      "key": "ctrl+d",
+      "command": "-editor.action.addSelectionToNextFindMatch",
+      "when": "editorFocus"
+   },
+   {
+      "key": "ctrl+d",
+      "command": "editor.action.copyLinesDownAction",
+      "when": "editorTextFocus && !editorReadonly"
+   },
+   {
+      "key": "shift+alt+down",
+      "command": "-editor.action.copyLinesDownAction",
+      "when": "editorTextFocus && !editorReadonly"
+   }
+]

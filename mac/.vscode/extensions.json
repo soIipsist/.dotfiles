@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+    "KevinRose.vsc-python-indent",
+    "ritwickdey.LiveServer",
+    "ms-python.debugpy",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "esbenp.prettier-vscode"
+  ]
+}

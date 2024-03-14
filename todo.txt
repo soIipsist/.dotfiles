@@ -1,0 +1,61 @@
++ windows
+ + set pc name
+ + set product key
+ + set environment variables
+ + set shortcuts
+ + enable/disable windows features
+ + file explorer start folder
+ + show/hide file extensions 
+ + show/hide classic context menu
+ + remove desktop shortcuts
+ + install fonts
+ + set wallpaper
+ + set lockscreen
+ + activate office
+ + set power configuration
+ + set regional format
+ + reboot
+ + install package providers
+ + install packages
+  + choco
+  + scoop 
+  + pip
+  + winget
+  + windows
+  + wsl
+ + dotfile scripts
+   + git
+   + windows terminal
+   + vscode
+   + bash
+   + vim
+   + wsl
+   + android studio
+
+- mac
+ + set default shell 
+ + set hostname
+ + set preferences
+ - install dotfiles
+   + copy dotfiles 
+   + run dotfile scripts
+   + .vscode
+    + install extensions
+   + .zsh
+    + .zprofile
+    + .zshrc
+    + .zlogout
+   + .bash
+    + .bash_profile
+    + .bashrc
+    + bash aliases
+   + .brew
+    + install from brewfile
+   + python
+    + pip packages
+   - tmux
+
+- linux
+ - docs
+ - modify dotfiles 
+ - test set wallpaper/lockscreen

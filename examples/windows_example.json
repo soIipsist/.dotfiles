@@ -1,0 +1,64 @@
+{
+    "pc_name": "soIipsis",
+    "product_key": "",
+    "environment_variables": {},
+    "shortcuts": [
+        {
+            "description": "Launch SQLite",
+            "hotkey": "Ctrl+SHIFT+S",
+            "target_path": "C:/Program Files/DB Browser for SQLite/DB Browser for SQLite.exe"
+        }
+    ],
+    "enabled_features": [
+        "Containers-DisposableClientVM"
+    ],
+    "disabled_features": [
+        "WindowsMediaPlayer",
+        "Internet-Explorer-Optional-amd64"
+    ],
+    "file_explorer_start_folder": 1,
+    "show_file_extensions": true,
+    "classic_context_menu": true,
+    "remove_desktop_shortcuts": true,
+    "activate_office": false,
+    "wallpaper_path": "C:/Users/p/Documents/GitHub/dotfiles/wallpaper.jpg",
+    "lockscreen_path": "C:/Users/p/Documents/GitHub/dotfiles/wallpaper.jpg",
+    "fonts_directory": "C:/Users/p/Documents/GitHub/dotfiles/windows/fonts",
+    "disk_timeout_ac": 0,
+    "disk_timeout_dc": 0,
+    "hibernate_timeout_ac": 0,
+    "hibernate_timeout_dc": 0,
+    "standby_timeout_ac": 0,
+    "standby_timeout_dc": 0,
+    "monitor_timeout_ac": 0,
+    "monitor_timeout_dc": 0,
+    "lockscreen_timeout_ac": 0,
+    "lockscreen_timeout_dc": 0,
+    "first_day_of_week": 0,
+    "short_date": "",
+    "long_date": "",
+    "short_time": "",
+    "time_format": "",
+    "timezone": "Libya Standard Time",
+    "git_username": "soIipsis",
+    "git_email": "",
+    "dotfiles": [
+        ".git-config"
+    ],
+    "package_providers": [
+        "choco",
+        "nuget"
+    ],
+    "chocolatey_packages": [
+        "wsl2",
+        "microsoft-windows-terminal"
+    ],
+    "pip_packages": [],
+    "winget_packages": [],
+    "wsl_packages": [],
+    "scoop_packages": [],
+    "windows_packages": [],
+    "uninstall_packages": true,
+    "reboot": true,
+    "reboot_time": 0
+}
