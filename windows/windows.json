@@ -4,7 +4,9 @@
     "environment_variables": {
         "path": "%SystemRoot%/system32;%ProgramData%;%SystemRoot%;%SystemRoot%/System32/Wbem;%SystemRoot%/System32/WindowsPowerShell/v1.0/;%SystemRoot%/System32/OpenSSH/;%ProgramFiles(x86)%/NVIDIA Corporation/PhysX/Common;%ProgramFiles%/NVIDIA Corporation/NVIDIA NvDLISR;%SystemRoot%/system32;%SystemRoot%;%SystemRoot%/System32/Wbem;%SYSTEMROOT%/System32/WindowsPowerShell/v1.0/;%SYSTEMROOT%/System32/OpenSSH/;%SystemDrive%/ProgramData/chocolatey;%SystemDrive%/Python312;%ProgramFiles%/Git/bin/git.exe;%SystemDrive%/Program Files/Git/cmd;%ProgramFiles%/Android/platform-tools/platform-tools;%ProgramData%/chocolatey/bin"
     },
-    "dotfiles": "all",
+    "dotfiles": [
+        ".wsl"
+    ],
     "shortcuts": [
         {
             "description": "Launch SQLite",

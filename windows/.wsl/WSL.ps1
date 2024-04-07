@@ -1,20 +1,44 @@
-. "../windows/Dotfiles.ps1"
+$ParentDirectory = Split-Path -Path $PSScriptRoot -Parent
+$DotfilesDirectory = Join-Path -Path $ParentDirectory -ChildPath "Dotfiles"
+$PackagesDirectory = Join-Path -Path $ParentDirectory -ChildPath "Packages"
+$HelpersDirectory = Join-Path -Path $ParentDirectory -ChildPath "Helpers"
+
+. $DotfilesDirectory
+. $PackagesDirectory
+. $HelpersDirectory
 
 function WSLConfig {
     if ($UninstallPackages) {
         return
     }
+    $WSL2Package = [PSCustomObject]@{
+        Name   = 'wsl2'
+        Params = @("/Version:2", "/Retry:true")
+    }
+
+    $WSLUbuntuPackage = [PSCustomObject]@{
+        Name   = "wsl-ubuntu-2004"
+        Params = @("/InstallRoot:true", "--execution-timeout", "3600")
+    } 
+
+    $Packages = @($WSL2Package, $WSLUbuntuPackage)
+    Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
     wsl --install -d ubuntu;
     refreshenv;
-    
+
+}
+
+function WSLConfigOnRestart {
+    if ($UninstallPackages) {
+        return
+    }
     # Update ubuntu
-    wsl sudo apt --yes update;
-    wsl sudo apt --yes upgrade;
+    wsl sudo -s
+    wsl apt --yes update;
+    wsl apt --yes upgrade;
 
     $WSLPackages = @("curl", "neofetch", "git", "vim", "zsh", "make", "g++", "gcc")
-    foreach ($Package in $WSLPackages) {
-        Install-Packages -Packages $WSLPackages -PackageProvider "wsl"
-    }
+    Install-Packages -Packages $WSLPackages -PackageProvider "wsl"
     refreshenv;
 
     wsl git config --global init.defaultBranch "main";
@@ -46,18 +70,21 @@ function WSLConfig {
     
 }
 
-$WSL2Package = [PSCustomObject]@{
-    Name   = 'wsl2'
-    Params = @("/Version:2", "/Retry:true")
-}
 
-$WSLUbuntuPackage = [PSCustomObject]@{
-    Name   = "wsl-ubuntu-2004"
-    Params = @("/InstallRoot:true", "--execution-timeout", "3600")
-} 
-
-$Packages = @($WSL2Package, $WSLUbuntuPackage)
-Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
-refreshenv;
 WSLConfig
+
+
+# schedule wsl on restart task
+$TaskName = "WSLConfigOnRestart"
+$ScriptPath = Join-Path -Path $PSScriptRoot -ChildPath "WSL.ps1"
+
+Unregister-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+$PSPath = (Get-Command powershell.exe).Definition
+$FunctionName = "WSLConfigOnRestart"
+$Action = New-ScheduledTaskAction -Execute $PSPath -Argument "-NonInteractive -NoProfile -NoLogo -NoProfile -NoExit -Command `"& { Import-Module PSWorkflow; . '$ScriptPath'; $FunctionName }`""
+$Option = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -WakeToRun
+$Trigger = New-JobTrigger -AtLogOn -RandomDelay (New-TimeSpan -Seconds 10)
+Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Settings $Option -RunLevel Highest
+Reboot -Reboot $true
+
 Write-Host "WSL was successfully configured." -ForegroundColor Green;

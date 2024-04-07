@@ -1,5 +1,7 @@
-. "..\windows\Helpers.ps1"
+$ParentDirectory = Split-Path -Path $PSScriptRoot -Parent
+$HelpersDirectory = Join-Path -Path $ParentDirectory -ChildPath "Helpers"
 
+. $HelpersDirectory
 
 function Get-Dotfile-Directories {
     param(
