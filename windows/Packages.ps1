@@ -38,7 +38,7 @@ function Install-Packages {
             }
             { $_ -in "wsl", "apt" } { 
                 $Action = if ($UninstallPackages) { "remove" } else { "install" } 
-                $Command = "wsl apt --yes --no-install-recommends $Action $Package" 
+                $Command = "wsl sudo apt --yes --no-install-recommends $Action $Package" 
             }
             "winget" { $Command = "winget $Action $Package" }
             "scoop" { $Command = "scoop $Action $Package" }

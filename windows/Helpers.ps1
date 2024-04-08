@@ -90,3 +90,28 @@ function Get-All-Files-In-Paths {
 
 
 
+function Set-ScheduledTask {
+    param (
+        [string]
+        $TaskName,
+
+        [string]
+        $ScriptPath,
+
+        [int]
+        $DelayInSeconds = 10,
+
+        $ActionArgs = "-NonInteractive -NoLogo -NoExit -Command `"& { Import-Module PSWorkflow; . '$ScriptPath'; $FunctionName }`"-Verb RunAs",
+
+        [string]
+        $FunctionName = $TaskName
+    )
+
+
+    Unregister-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+    $PSPath = (Get-Command powershell.exe).Definition
+    $Option = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -WakeToRun
+    $Trigger = New-JobTrigger -AtLogOn -RandomDelay (New-TimeSpan -Seconds $DelayInSeconds)
+    $Action = New-ScheduledTaskAction -Execute $PSPath -Argument $ActionArgs
+    Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Settings $Option -RunLevel Highest
+}

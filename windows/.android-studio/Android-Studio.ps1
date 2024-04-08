@@ -1,5 +1,10 @@
-. "..\windows\Dotfiles.ps1"
-. "..\windows\Helpers.ps1"
+$ParentDirectory = Split-Path -Path $PSScriptRoot -Parent
+$HelpersDirectory = Join-Path -Path $ParentDirectory -ChildPath "Helpers"
+$DotfilesDirectory = Join-Path -Path $ParentDirectory -ChildPath "Dotfiles"
+
+. $DotfilesDirectory
+. $HelpersDirectory
+
 function Install-SDK-Platform-Tools {
     Invoke-WebRequest -Uri "https://dl.google.com/android/repository/platform-tools-latest-windows.zip" -Method Get -OutFile "platform-tools.zip"
     Move-Item -Path "platform-tools.zip" -Destination "$env:ProgramFiles/Android/"

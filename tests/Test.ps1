@@ -1,12 +1,14 @@
 # Include files
-. "..\windows\Helpers.ps1"
-. "..\windows\Registry.ps1"
-. "..\windows\Dotfiles.ps1"
-. "..\windows\Variables.ps1"
-. "..\windows\Windows-Setup.ps1"
+$ParentDirectory = Split-Path -Path $PSScriptRoot -Parent
+$DotfilesDirectory = Join-Path -Path $ParentDirectory -ChildPath "windows/Dotfiles"
+$PackagesDirectory = Join-Path -Path $ParentDirectory -ChildPath "windows/Packages"
+$HelpersDirectory = Join-Path -Path $ParentDirectory -ChildPath "windows/Helpers"
+$SetupDirectory = Join-Path -Path $ParentDirectory -ChildPath "windows/Windows-Setup"
 
-. "..\windows\Package-Providers.ps1"
-. "..\windows\Packages.ps1"
+. $DotfilesDirectory
+. $PackagesDirectory
+. $HelpersDirectory
+. $SetupDirectory
 
 # Register-VBox-VM
 # Remove-VBox-VM
@@ -41,19 +43,19 @@ function Get-System-Dotfiles {
 # Install-Fonts -FontsDirectory $FontsDirectory
 
 # Set-Classic-ContextMenu -ClassicContextMenu $ClassicContextMenu
-Install-Dotfiles $Dotfiles
+# Install-Dotfiles $Dotfiles
 # Set-Lockscreen -LockscreenPath $LockscreenPath
 # Reboot -Reboot $Reboot -RebootTime $RebootTime
 
+function FunctionName {
+    Write-Host "hello"
+    
+}
 
-# $TaskName = "WSLConfigOnRestart"
-# $ScriptPath = "D:\soIipsis\dotfiles\tests\WSLRestart.ps1" 
 
-# Unregister-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
-# $PSPath = (Get-Command powershell.exe).Definition
-# $FunctionName = "SampleFunction"
-# $Action = New-ScheduledTaskAction -Execute $PSPath -Argument "-NonInteractive -NoProfile -NoLogo -NoProfile -NoExit -Command `"& { Import-Module PSWorkflow ; . '$ScriptPath'; $FunctionName }`""
-# $Option = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -WakeToRun
-# $Trigger = New-JobTrigger -AtLogOn -RandomDelay (New-TimeSpan -Seconds 10)
-# Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Settings $Option -RunLevel Highest
-Reboot -Reboot $true
+
+$TaskName = "FunctionName"
+$ScriptPath = "D:\soIipsis\dotfiles\tests\Test.ps1" 
+
+Set-ScheduledTask -TaskName $TaskName -ScriptPath $ScriptPath -DelayInSeconds 10
+# Reboot -Reboot $true

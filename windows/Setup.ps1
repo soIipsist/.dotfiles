@@ -41,5 +41,3 @@ Set-Windows-Shortcuts -Shortcuts $Shortcuts
 Remove-Desktop-Shortcuts -RemoveDesktopShortcuts $RemoveDesktopShortcuts
 Reboot -Reboot $Reboot -RebootTime $RebootTime
 
-$TaskName = "WSLConfigOnRestart"
-Unregister-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
