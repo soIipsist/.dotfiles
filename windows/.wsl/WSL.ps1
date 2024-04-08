@@ -18,14 +18,14 @@ function WSLConfig {
         Params = @("/Version:2", "/Retry:true")
     }
 
-    $WSLUbuntuPackage = [PSCustomObject]@{
-        Name   = "wsl-ubuntu-2004"
-        Params = @("/InstallRoot:true", "--execution-timeout", "3600")
-    } 
+    # $WSLUbuntuPackage = [PSCustomObject]@{
+    #     Name   = "wsl-ubuntu-2004"
+    #     Params = @("/InstallRoot:true", "--execution-timeout", "3600")
+    # } 
 
-    $Packages = @($WSL2Package, $WSLUbuntuPackage)
+    $Packages = @($WSL2Package)
     Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
-    wsl --install --no_launch -d ubuntu;
+    wsl --install -d ubuntu;
     refreshenv;
 
 }
