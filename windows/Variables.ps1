@@ -1,6 +1,7 @@
+$ParentDirectory = $PSScriptRoot
+$WindowsDataPath = Join-Path -Path $ParentDirectory -ChildPath "windows.json"
+$PackageDataPath = Join-Path -Path $ParentDirectory -ChildPath "packages.json"
 
-$WindowsDataPath = "..\windows\windows.json"
-$PackageDataPath = "..\windows\packages.json"
 # $WindowsDataPath = "..\windows\windows_example.json"
 $WindowsData = Get-Content -Path $WindowsDataPath -Raw | ConvertFrom-Json
 $PackageData = Get-Content -Path $PackageDataPath -Raw | ConvertFrom-Json

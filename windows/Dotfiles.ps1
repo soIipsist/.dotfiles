@@ -1,7 +1,3 @@
-$ParentDirectory = Split-Path -Path $PSScriptRoot -Parent
-$HelpersDirectory = Join-Path -Path $ParentDirectory -ChildPath "Helpers"
-
-. $HelpersDirectory
 
 function Get-Dotfile-Directories {
     param(
@@ -54,7 +50,9 @@ function Get-Dotfiles {
 
 function Install-Dotfiles {
     param(
-        [array]$Dotfiles = "all"
+        [array]$Dotfiles = "all",
+
+        [array] $ExcludedScripts = @("WSLRestart.ps1")
     )
     $DotfileDirectories = Get-Dotfile-Directories -Dotfiles $Dotfiles
 
@@ -65,7 +63,13 @@ function Install-Dotfiles {
     
         foreach ($Script in $Scripts) {
             $ScriptName = $Script.FullName
-            Invoke-Expression "& $ScriptName"
+
+            if ($Script.Name -in $ExcludedScripts) {
+                Write-Host $Script.Name 
+            }
+            else {
+                Invoke-Expression "& $ScriptName"
+            }
         }
     }
 
@@ -78,7 +82,7 @@ function Move-Dotfiles {
         $Dotfiles,
 
         [string]
-        $DestinationDirectory = $UserProfilePath
+        $DestinationDirectory = [System.Environment]::GetFolderPath('UserProfile')
     )
     
     if ( -not (Test-Path -Path $DestinationDirectory)) {

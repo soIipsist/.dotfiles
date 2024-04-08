@@ -1,11 +1,21 @@
 # Include files
-. "..\windows\Helpers.ps1"
-. "..\windows\Registry.ps1"
-. "..\windows\Dotfiles.ps1"
-. "..\windows\Variables.ps1"
-. "..\windows\Windows-Setup.ps1"
-. "..\windows\Package-Providers.ps1"
-. "..\windows\Packages.ps1"
+
+$ParentDirectory = $PSScriptRoot
+$HelpersPath = Join-Path -Path $ParentDirectory -ChildPath "windows/Helpers.ps1"
+$RegistryPath = Join-Path -Path $ParentDirectory -ChildPath "windows/Registry.ps1"
+$DotfilesPath = Join-Path -Path $ParentDirectory -ChildPath "windows/Dotfiles.ps1"
+$VariablesPath = Join-Path -Path $ParentDirectory -ChildPath "windows/Variables.ps1"
+$SetupPath = Join-Path -Path $ParentDirectory -ChildPath "windows/Windows-Setup.ps1"
+$ProvidersPath = Join-Path -Path $ParentDirectory -ChildPath "windows/Package-Providers.ps1"
+$PackagesPath = Join-Path -Path $ParentDirectory -ChildPath "windows/Packages.ps1"
+
+. $HelpersPath
+. $RegistryPath
+. $DotfilesPath
+. $VariablesPath
+. $SetupPath
+. $ProvidersPath
+. $PackagesPath
 
 Set-PC-Name -PCName $PCName
 Set-Product-Key -ProductKey $ProductKey
