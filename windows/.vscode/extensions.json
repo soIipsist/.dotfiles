@@ -5,6 +5,14 @@
     "ms-python.debugpy",
     "ms-python.python",
     "ms-python.vscode-pylance",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "mads-hartmann.bash-ide-vscode",
+    "ms-vscode.powershell",
+    "ms-vscode-remote.remote-wsl",
+    "christian-kohler.path-intellisense",
+    "ionutvmi.path-autocomplete",
+    "shd101wyy.markdown-preview-enhanced",
+    "kamikillerto.vscode-colorize",
+    "jakob101.RelativePath"
   ]
 }
