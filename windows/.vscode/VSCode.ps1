@@ -30,4 +30,4 @@ Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
 refreshenv;
 Install-Extensions
 Move-Dotfiles -Dotfiles $Dotfiles -DestinationDirectory $DestinationDirectory
-Write-Host "VSCode was successfully configured." -ForegroundColor Greesn;
+Write-Host "VSCode was successfully configured." -ForegroundColor Green;
