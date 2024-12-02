@@ -1,5 +1,4 @@
 source "../json.sh"
-source "../dotfiles.sh"
 
 git_config() {
     git_username=$(get_json_value "git_username")
@@ -19,6 +18,6 @@ git_config() {
 dir="$PWD/.git-config"
 dotfiles=$(get_dotfiles $dir)
 destination_directory="$HOME"
-# sudo -s 
+# sudo -s
 git_config
 move_dotfiles "${dotfiles[@]}" "${destination_directory}"

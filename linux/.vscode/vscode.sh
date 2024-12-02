@@ -1,8 +1,7 @@
 #!/bin/bash
 source "../json.sh"
-source "../dotfiles.sh"
 
-install_extensions(){
+install_extensions() {
     if [ -z "$1" ]; then
         echo "VSCode extensions not defined."
         return
@@ -13,7 +12,7 @@ install_extensions(){
     done
 }
 
-get_extensions(){
+get_extensions() {
     extensions=$(code --list-extensions)
 
     for extension in $extensions; do
@@ -25,4 +24,3 @@ get_extensions(){
 dir="$PWD/.vscode"
 extensions=$(get_json_value "recommendations" "$dir/extensions.json")
 install_extensions $extensions
-

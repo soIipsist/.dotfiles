@@ -1,5 +1,4 @@
 source "../json.sh"
-source "../dotfiles.sh"
 
 git_config() {
     git_username=$(get_json_value "git_username")

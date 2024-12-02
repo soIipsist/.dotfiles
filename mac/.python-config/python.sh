@@ -1,6 +1,5 @@
 #!/bin/bash
 source "../json.sh"
-source "../dotfiles.sh"
 
 install_pip_packages() {
     pip_packages=$1
