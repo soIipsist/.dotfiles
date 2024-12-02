@@ -4,11 +4,6 @@ import os
 import json
 import re
 
-parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-os.sys.path.insert(0, parentdir)
-
-from utils.path_utils import is_valid_dir, is_valid_path, is_valid_url
-
 
 def read_json_file(json_file, errors=None):
     try:
@@ -19,9 +14,11 @@ def read_json_file(json_file, errors=None):
         print(e)
 
 
+parent_directory = os.getcwd()
+
 from pprint import PrettyPrinter
 
-settings = read_json_file(f"{parentdir}/metadata/settings.json")
+settings = read_json_file(f"{parent_directory}/metadata/settings.json")
 pp = PrettyPrinter(indent=2)
 
 
@@ -29,7 +26,7 @@ def get_options(format: str, options_file: str = None):
     if options_file:
         options = read_json_file(options_file)
     else:
-        options = read_json_file(f"{parentdir}/metadata/{settings.get(format)}")
+        options = read_json_file(f"{parent_directory}/metadata/{settings.get(format)}")
 
     return options
 
@@ -48,10 +45,10 @@ def download(urls: list, options: dict, extract_info: bool):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("urls", nargs="+", type=is_valid_url)
+    parser.add_argument("urls", nargs="+", type=str)
     parser.add_argument("-f", "--format", default="video", choices=["video", "audio"])
-    parser.add_argument("-o", "--output_directory", type=is_valid_dir, default=None)
-    parser.add_argument("--options", default=None, type=is_valid_path)
+    parser.add_argument("-o", "--output_directory", type=str, default=None)
+    parser.add_argument("--options", default=None, type=str)
     parser.add_argument("--extract_info", default=False)
     args = vars(parser.parse_args())
 

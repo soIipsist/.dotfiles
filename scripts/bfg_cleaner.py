@@ -7,8 +7,6 @@ from pathlib import Path
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.sys.path.insert(0, parentdir)
 
-from utils.path_utils import is_valid_dir, is_valid_path
-
 
 def is_git_repository(git_repository: str):
     try:
@@ -86,13 +84,13 @@ if __name__ == "__main__":
         help="Git repository from which to erase file history.",
     )
     parser.add_argument(
-        "-f", "--file_path", type=is_valid_path, help="File path in git repository."
+        "-f", "--file_path", type=str, help="File path in git repository."
     )
     parser.add_argument(
         "-b",
         "--bfg_directory",
         default=os.getcwd(),
-        type=is_valid_dir,
+        type=str,
         help="bfg.jar path. If not specified, base directory will be used by default.",
     )
     parser.add_argument(
