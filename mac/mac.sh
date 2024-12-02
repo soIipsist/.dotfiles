@@ -1,11 +1,10 @@
 #!/bin/bash
 source "../json.sh"
-
 source "../os.sh"
 
 install_homebrew() {
     # check if homebrew is not in $PATH
-    if [[ ":$PATH:" == *"/opt/home:"* ]]; then
+    if [[ ":$PATH:" == *":/opt/homebrew/bin:"* ]]; then
         echo "Homebrew was already installed."
     else
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -21,33 +20,6 @@ install_brewfile() {
 
     echo $brewfile_path
     # brew bundle --file $brewfile_path
-}
-
-is_array() {
-    local var_name="$1"
-    if [[ "$(declare -p "$var_name" 2>/dev/null)" =~ "declare -a" ]]; then
-        # echo "is array"
-        return 0 # True, it's an array
-    else
-        # echo "not array"
-        return 1 # False, it's not an array
-    fi
-}
-
-get_dotfiles() {
-    if is_array $1; then
-        echo "${dotfiles[@]}"
-        return
-    else
-        cd "$1"
-        f=$(ls -d .* 2>/dev/null | grep -v '^\.\.$' | grep -v '^\.$')
-        dotfiles=()
-        for variable in $f; do
-            dotfiles+=("$1/$variable")
-        done
-    fi
-
-    printf '%s\n' "${dotfiles[@]}"
 }
 
 move_dotfiles() {
@@ -80,20 +52,26 @@ move_dotfiles() {
 
 }
 
-install_dotfiles() {
+get_dotfile_folders() {
     if [ -z "$1" ]; then
         dotfile_folders=$(ls -d .* | grep -v '^\.\.$' | grep -v '^\.$')
     else
         dotfile_folders=$1
     fi
+    echo $dotfile_folders
+}
+
+execute_dotfile_scripts() {
+    dotfile_folders=$(get_dotfile_folders)
 
     for folder in $dotfile_folders; do
         scripts=$(ls "$folder"/*.sh 2>/dev/null)
         for script in $scripts; do
             echo "Executing $script."
-            bash "$(pwd)/$script"
+            # bash "$(pwd)/$script"
         done
     done
+    echo $dotfile_folders
 }
 
 install_homebrew
@@ -108,10 +86,8 @@ brewfile_path=$(get_json_value "brewfile_path")
 wallpaper_path=$(get_json_value "wallpaper_path")
 
 install_brewfile
-set_hostname
-set_default_shell
-install_dotfiles $dotfiles
+# set_hostname
+# set_default_shell
 
-if [ ! -z $wallpaper_path ]; then
-    osascript prefs.scpt $wallpaper_path
-fi
+dotfile_folders=$(get_dotfile_folders $dotfiles)
+execute_dotfile_scripts $dotfile_folders
