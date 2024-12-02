@@ -1,12 +1,24 @@
 import yt_dlp
 import argparse
 import os
+import json
+import re
 
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.sys.path.insert(0, parentdir)
 
-from utils.file_handling import read_json_file
-from utils.path_operations import is_valid_dir, is_valid_path, is_valid_url
+from utils.path_utils import is_valid_dir, is_valid_path, is_valid_url
+
+
+def read_json_file(json_file, errors=None):
+    try:
+        with open(json_file, "r", errors=errors) as file:
+            json_object = json.load(file)
+            return json_object
+    except Exception as e:
+        print(e)
+
+
 from pprint import PrettyPrinter
 
 settings = read_json_file(f"{parentdir}/metadata/settings.json")

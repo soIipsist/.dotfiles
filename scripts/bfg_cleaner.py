@@ -7,7 +7,21 @@ from pathlib import Path
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.sys.path.insert(0, parentdir)
 
-from utils.path_operations import is_valid_dir, is_valid_path, is_git_repository
+from utils.path_utils import is_valid_dir, is_valid_path
+
+
+def is_git_repository(git_repository: str):
+    try:
+        subprocess.run(
+            ["git", "rev-parse", "--is-inside-work-tree"],
+            cwd=git_repository,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=True,
+        )
+        return git_repository
+    except subprocess.CalledProcessError:
+        raise ValueError(f"'{git_repository}' is not a git repository.")
 
 
 def find_bfg_path(bfg_directory: str):
