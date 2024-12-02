@@ -1,5 +1,4 @@
 export PATH="$HOME/.rbenv/bin:$PATH"
-
 dotfiles_directory="~/Desktop/soIipsis/.dotfiles"
 
 # PYTHONPATH
