@@ -22,36 +22,6 @@ install_brewfile() {
     # brew bundle --file $brewfile_path
 }
 
-move_dotfiles() {
-    if [ -z "$1" ]; then
-        echo "'dotfiles' argument is required."
-        return
-    fi
-
-    if [ -z "$2" ]; then
-        echo "'destination directory' argument is required."
-        return
-    fi
-
-    if [[ "$3" =~ ^[0-1]$ ]]; then
-        copy=$3
-    else
-        copy=1
-    fi
-
-    dotfiles=$1
-
-    for dotfile in $dotfiles; do
-        if [ "$copy" -eq 1 ]; then
-            sudo -s cp $dotfile $2
-        else
-            sudo -s mv $dotfile $2
-        fi
-
-    done
-
-}
-
 get_dotfile_folders() {
     if [ -z "$1" ]; then
         dotfile_folders=$(ls -d .* | grep -v '^\.\.$' | grep -v '^\.$')
@@ -61,17 +31,34 @@ get_dotfile_folders() {
     echo $dotfile_folders
 }
 
-execute_dotfile_scripts() {
-    dotfile_folders=$(get_dotfile_folders)
+install_dotfiles() {
+    dotfile_folders=$1
+    destination_directory=$2
 
-    for folder in $dotfile_folders; do
-        scripts=$(ls "$folder"/*.sh 2>/dev/null)
+    if [ -z "$2" ]; then
+        echo "'destination directory' argument is required."
+        return
+    fi
+
+    for folder in $1; do
+
+        # Collect .sh scripts
+        scripts=$(find "$folder" -maxdepth 1 -type f -name "*.sh" 2>/dev/null)
+
+        # Collect dotfiles
+        dotfiles=$(find "$folder" -maxdepth 1 -type f ! -name "*.sh" 2>/dev/null)
+
         for script in $scripts; do
             echo "Executing $script."
             # bash "$(pwd)/$script"
         done
+
+        for dotfile in $dotfiles; do
+            echo $dotfile
+            # sudo -s cp $dotfile $destination_directory
+        done
     done
-    echo $dotfile_folders
+
 }
 
 install_homebrew
@@ -85,9 +72,9 @@ default_shell=$(get_json_value "default_shell")
 brewfile_path=$(get_json_value "brewfile_path")
 wallpaper_path=$(get_json_value "wallpaper_path")
 
-install_brewfile
+# install_brewfile
 # set_hostname
 # set_default_shell
 
 dotfile_folders=$(get_dotfile_folders $dotfiles)
-execute_dotfile_scripts $dotfile_folders
+install_dotfiles "${dotfile_folders[@]}" $HOME
