@@ -23,13 +23,13 @@ Follow these steps to configure your environment:
 **Linux**:
 
 ```bash
-./setup.sh
+./linux.sh
 ```
 
 **macOS**:
 
 ```bash
-./setup.sh
+./mac.sh
 ```
 
 ## Valid Parameters

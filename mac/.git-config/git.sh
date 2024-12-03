@@ -15,6 +15,4 @@ git_config() {
     fi
 }
 
-# git_config
-# destination_directory="dir2"
-# echo "$destination_directory"
+git_config
