@@ -2,7 +2,6 @@ import yt_dlp
 import argparse
 import os
 import json
-import re
 
 
 def read_json_file(json_file, errors=None):
@@ -14,7 +13,8 @@ def read_json_file(json_file, errors=None):
         print(e)
 
 
-parent_directory = os.getcwd()
+parent_directory = os.path.dirname(os.path.abspath(__file__))
+
 
 from pprint import PrettyPrinter
 

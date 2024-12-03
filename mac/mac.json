@@ -3,7 +3,7 @@
   "local_hostname": "solipsist",
   "computer_name": "solipsist",
   "brewfile_path": "",
-  "dotfiles": [],
+  "dotfiles": [".bash", ".git-config", ".terminal", ".python-config"],
   "pip_packages": [],
   "git_username": "soIipsist",
   "git_email": "",

@@ -9,7 +9,6 @@ install_pip_packages() {
     done
 
 }
-# install python
-brew install python
+
 pip_packages=$(get_json_value "pip_packages")
 install_pip_packages "${pip_packages[@]}"

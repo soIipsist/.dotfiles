@@ -1,4 +1,4 @@
 #!/bin/bash
 
-destination_directory="/hello"
+destination_directory="dir"
 echo "$destination_directory"

@@ -40,6 +40,8 @@ install_dotfiles() {
         return
     fi
 
+    original_dest=$destination_directory
+
     for folder in $1; do
 
         # Collect .sh scripts
@@ -50,13 +52,23 @@ install_dotfiles() {
 
         for script in $scripts; do
             echo "Executing $script."
-            # bash "$(pwd)/$script"
+
+            new_dir=$(bash "$script")
+
+            if [ -n "$new_dir" ]; then
+                destination_directory="$new_dir"
+            else
+                destination_directory="$original_dest"
+            fi
         done
+
+        echo "DEST $destination_directory"
 
         for dotfile in $dotfiles; do
             echo $dotfile
             # sudo -s cp $dotfile $destination_directory
         done
+
     done
 
 }
@@ -76,5 +88,5 @@ wallpaper_path=$(get_json_value "wallpaper_path")
 # set_hostname
 # set_default_shell
 
-dotfile_folders=$(get_dotfile_folders $dotfiles)
+dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
 install_dotfiles "${dotfile_folders[@]}" $HOME
