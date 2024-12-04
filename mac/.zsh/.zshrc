@@ -13,5 +13,5 @@ export DOTFILES_DIRECTORY="~/Desktop/soIipsis/.dotfiles"
 alias python="python3"
 alias clera="clear"
 alias clearclear="clear"
-alias yt="python $DOTFILES_DIRECTORY/scripts/ytdlp.py"
+alias yt="python3 $DOTFILES_DIRECTORY/scripts/ytdlp.py"
 

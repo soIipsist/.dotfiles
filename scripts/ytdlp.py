@@ -33,20 +33,29 @@ def get_options(format: str, options_file: str = None):
 
 def download(urls: list, options: dict, extract_info: bool):
     for url in urls:
-        with yt_dlp.YoutubeDL(options) as ytdl:
-            if extract_info:
-                info = ytdl.extract_info(url, download=False)
-                print(info)
+        try:
+            with yt_dlp.YoutubeDL(options) as ytdl:
+                if extract_info:
+                    info = ytdl.extract_info(url, download=False)
+                    print(info)
 
-            status_code = ytdl.download(url)
-            print("Status code: ", status_code)
+                status_code = ytdl.download(url)
+                print("Status code: ", status_code)
+        except yt_dlp.utils.DownloadError as e:
+            print(f"Download error for {url}: {e}")
+        except SystemExit as e:
+            print(f"SystemExit encountered for {url}: {e}. Continuing with next URL...")
+        except Exception as e:
+            print(f"An unexpected error occurred with {url}: {e}")
+        finally:
+            print(f"Finished processing URL: {url}")
 
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("urls", nargs="+", type=str)
-    parser.add_argument("-f", "--format", default="video", choices=["video", "audio"])
+    parser.add_argument("-f", "--format", default="audio", choices=["video", "audio"])
     parser.add_argument("-o", "--output_directory", type=str, default=None)
     parser.add_argument("--options", default=None, type=str)
     parser.add_argument("--extract_info", default=False)

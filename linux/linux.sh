@@ -41,6 +41,7 @@ set_lockscreen_and_wallpaper() {
     fi
 }
 
+json_file="linux.json"
 hostname=$(get_json_value "hostname")
 apt_packages=$(get_json_value "apt_packages")
 dotfiles=$(get_json_value "dotfiles")
@@ -49,11 +50,13 @@ git_email=$(get_json_value "git_email")
 wallpaper_path=$(get_json_value "wallpaper_path")
 lockscreen_path=$(get_json_value "lockscreen_path")
 
-# for package in $installed_packages; do
-#     sudo apt install --yes --no-install-recommends "$package"
-# done
+echo $apt_packages
 
-# set_lockscreen_and_wallpaper "$wallpaper_path" "$lockscreen_path"
+for package in $installed_packages; do
+    sudo apt install --yes --no-install-recommends "$package"
+done
+
+set_lockscreen_and_wallpaper "$wallpaper_path" "$lockscreen_path"
 
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
 install_dotfiles "${dotfile_folders[@]}" $HOME

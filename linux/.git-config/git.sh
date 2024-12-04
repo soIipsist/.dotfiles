@@ -15,9 +15,4 @@ git_config() {
     fi
 }
 
-dir="$PWD/.git-config"
-dotfiles=$(get_dotfiles $dir)
-destination_directory="$HOME"
-# sudo -s
 git_config
-move_dotfiles "${dotfiles[@]}" "${destination_directory}"

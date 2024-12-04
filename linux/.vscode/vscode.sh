@@ -20,7 +20,5 @@ get_extensions() {
     done
 }
 
-# extensions=$(get_extensions)
-dir="$PWD/.vscode"
-extensions=$(get_json_value "recommendations" "$dir/extensions.json")
+extensions=$(get_json_value "recommendations" "$pwd/extensions.json")
 install_extensions $extensions

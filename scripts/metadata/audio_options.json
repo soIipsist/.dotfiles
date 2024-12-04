@@ -1,11 +1,10 @@
 {
-    "format": "bestaudio/best",
-    "progress": true,
-    "outtmpl": "%(title)s.%(ext)s",
-    "postprocessors": [
-        {
-            "key": "FFmpegExtractAudio",
-            "preferredcodec": "mp3"
-        }
-    ]
+  "format": "bestaudio/best",
+  "outtmpl": "%(title)s.%(ext)s",
+  "postprocessors": [
+    {
+      "key": "FFmpegExtractAudio",
+      "preferredcodec": "mp3"
+    }
+  ]
 }
