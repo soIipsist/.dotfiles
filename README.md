@@ -111,6 +111,6 @@ These parameters can be specified in the `mac.json` file:
 
 ### Examples
 
-- [windows_example.json](https://github.com/soIipsis/dotfiles/blob/main/examples/windows_example.json)
-- [linux_example.json](https://github.com/soIipsis/dotfiles/blob/main/examples/linux_example.json)
-- [mac_example.json](https://github.com/soIipsis/dotfiles/blob/main/examples/mac_example.json)
+- [windows_example.json](https://github.com/soIipsist/dotfiles/blob/main/examples/windows_example.json)
+- [linux_example.json](https://github.com/soIipsist/dotfiles/blob/main/examples/linux_example.json)
+- [mac_example.json](https://github.com/soIipsist/dotfiles/blob/main/examples/mac_example.json)

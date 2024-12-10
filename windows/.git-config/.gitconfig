@@ -1,9 +1,9 @@
 [user]
-	name = soIipsis
-	username = soIipsis
+name = soIipsist
+username = soIipsist
 [init]
-	defaultBranch = main
+defaultBranch = main
 [core]
-    editor = "code"
+editor = "code"
 [safe]
-	directory = F:/soIipsis/dotfiles
+directory = F:/soIipsist/dotfiles

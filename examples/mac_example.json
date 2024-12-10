@@ -1,15 +1,12 @@
 {
-    "hostname": "solipsist",
-    "local_hostname": "solipsist",
-    "computer_name": "solipsist",
-    "brewfile_path": "",
-    "dotfiles": [
-        ".zsh"
-    ],
-    "pip_packages": [
-    ],
-    "git_username": "soIipsis",
-    "git_email": "",
-    "default_shell": "zsh",
-    "wallpaper_path": "/Users/p/Desktop/test/wallpaper.jpg"
+  "hostname": "solipsist",
+  "local_hostname": "solipsist",
+  "computer_name": "solipsist",
+  "brewfile_path": "",
+  "dotfiles": [".zsh"],
+  "pip_packages": [],
+  "git_username": "soIipsist",
+  "git_email": "",
+  "default_shell": "zsh",
+  "wallpaper_path": "/Users/p/Desktop/test/wallpaper.jpg"
 }
