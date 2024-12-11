@@ -6,5 +6,6 @@
       "key": "FFmpegExtractAudio",
       "preferredcodec": "mp3"
     }
-  ]
+  ],
+  "ignoreerrors": true
 }

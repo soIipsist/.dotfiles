@@ -15,7 +15,6 @@ def read_json_file(json_file, errors=None):
 
 parent_directory = os.path.dirname(os.path.abspath(__file__))
 
-
 from pprint import PrettyPrinter
 
 settings = read_json_file(f"{parent_directory}/metadata/settings.json")
@@ -35,9 +34,27 @@ def download(urls: list, options: dict, extract_info: bool):
     for url in urls:
         try:
             with yt_dlp.YoutubeDL(options) as ytdl:
+
                 if extract_info:
                     info = ytdl.extract_info(url, download=False)
-                    print(info)
+
+                    original_filename = ytdl.prepare_filename(info)
+
+                    # Determine the final filename after postprocessing
+                    final_extension = options.get("postprocessors", [{}])[0].get(
+                        "preferredcodec"
+                    )
+                    if final_extension:
+                        final_filename = f"{os.path.splitext(original_filename)[0]}.{final_extension}"
+                    else:
+                        final_filename = original_filename
+
+                    print("Filename:", final_filename)
+
+                    # Check if the file already exists
+                    if os.path.exists(final_filename):
+                        print(f"File already exists, skipping: {final_filename}")
+                        continue
 
                 status_code = ytdl.download(url)
                 print("Status code: ", status_code)
@@ -58,7 +75,7 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--format", default="audio", choices=["video", "audio"])
     parser.add_argument("-o", "--output_directory", type=str, default=None)
     parser.add_argument("--options", default=None, type=str)
-    parser.add_argument("--extract_info", default=False)
+    parser.add_argument("-e", "--extract_info", default=False)
     args = vars(parser.parse_args())
 
     urls = args.get("urls")
