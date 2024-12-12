@@ -30,34 +30,50 @@ def get_options(format: str, options_file: str = None):
     return options
 
 
+def process_video_entry(entry, ytdl: yt_dlp.YoutubeDL, options):
+    """
+    Check for filename duplicates.
+    """
+    original_filename = ytdl.prepare_filename(entry)
+    final_extension = options.get("postprocessors", [{}])[0].get("preferredcodec")
+    final_filename = (
+        f"{os.path.splitext(original_filename)[0]}.{final_extension}"
+        if final_extension
+        else original_filename
+    )
+
+    print("Filename:", final_filename)
+
+    # Check if the file already exists
+    if os.path.exists(final_filename):
+        print(f"File already exists, skipping: {final_filename}")
+        return
+
+    # Download the file
+    status_code = ytdl.download(entry["webpage_url"])
+    print("Status code: ", status_code)
+
+
 def download(urls: list, options: dict, extract_info: bool):
     for url in urls:
         try:
             with yt_dlp.YoutubeDL(options) as ytdl:
-
                 if extract_info:
+                    # Extract video/playlist information
                     info = ytdl.extract_info(url, download=False)
 
-                    original_filename = ytdl.prepare_filename(info)
-
-                    # Determine the final filename after postprocessing
-                    final_extension = options.get("postprocessors", [{}])[0].get(
-                        "preferredcodec"
-                    )
-                    if final_extension:
-                        final_filename = f"{os.path.splitext(original_filename)[0]}.{final_extension}"
+                    # Check if it's a playlist
+                    if "entries" in info:
+                        print(
+                            f"Processing playlist: {info.get('title', 'Untitled Playlist')} ({len(info['entries'])} videos)"
+                        )
+                        for entry in info["entries"]:
+                            if not entry:
+                                print("Skipping unavailable video.")
+                                continue
+                            process_video_entry(entry, ytdl, options)
                     else:
-                        final_filename = original_filename
-
-                    print("Filename:", final_filename)
-
-                    # Check if the file already exists
-                    if os.path.exists(final_filename):
-                        print(f"File already exists, skipping: {final_filename}")
-                        continue
-
-                status_code = ytdl.download(url)
-                print("Status code: ", status_code)
+                        process_video_entry(info, ytdl, options)
         except yt_dlp.utils.DownloadError as e:
             print(f"Download error for {url}: {e}")
         except SystemExit as e:
@@ -68,25 +84,64 @@ def download(urls: list, options: dict, extract_info: bool):
             print(f"Finished processing URL: {url}")
 
 
+def get_urls(urls: list, remove_list: bool):
+    if remove_list:
+        urls = [url.split("&list")[0] if "&list" in url else url for url in urls]
+
+    return urls
+
+
+def str_to_bool(string: str):
+    return string in ["1", "true", True]
+
+
+bool_choices = [0, 1, "true", "false", True, False, None]
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("urls", nargs="+", type=str)
+    parser.add_argument(
+        "urls",
+        nargs="+",
+        type=str_to_bool,
+        choices=bool_choices,
+    )
+    parser.add_argument(
+        "-r", "--remove_list", default=True, type=str_to_bool, choices=bool_choices
+    )
     parser.add_argument("-f", "--format", default="audio", choices=["video", "audio"])
-    parser.add_argument("-o", "--output_directory", type=str, default=None)
+    parser.add_argument("-o", "--output_path", type=str, default=None)
+    parser.add_argument("-p", "--prefix", default=None, type=str)
     parser.add_argument("--options", default=None, type=str)
-    parser.add_argument("-e", "--extract_info", default=False)
+    parser.add_argument("-i", "--extract_info", default=True)
+    parser.add_argument("-e", "--extension", default=None)
     args = vars(parser.parse_args())
 
     urls = args.get("urls")
+    remove_list = args.get("remove_list")
     format = args.get("format")
     options = args.get("options")
     extract_info = args.get("extract_info")
-    output_directory = args.get("output_directory")
+    output_path = args.get("output_path")
+    prefix = args.get("prefix")
+    extension = args.get("extension")
     options = get_options(format, options)
+    outtmpl = f"%(title)s.%(ext)s"
 
-    if output_directory:
-        options["outtmpl"] = f"{output_directory}/%(title)s.%(ext)s"
+    if prefix:
+        outtmpl = f"{prefix} - {outtmpl}"
+
+    if output_path:
+        options["outtmpl"] = f"{output_path}/{outtmpl}"
+
+    if extension:
+        if format == "audio":
+            options["postprocessors"][0]["preferredcodec"] = extension
+        else:
+            options["format"] = (
+                f"bestvideo[ext={extension}]+bestaudio[ext=m4a]/{extension}"
+            )
 
     pp.pprint(options)
+    urls = get_urls(urls, remove_list)
     download(urls, options, extract_info)
