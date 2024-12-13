@@ -1,6 +1,8 @@
 # Scripts
 
-## ytdlp.py - download youtube videos
+## Python
+
+### ytdlp.py - download youtube videos
 
 You can download YouTube videos or videos from other sites using yt-dlp. The process is simplified by including default audio and video options in `.json` format.
 
@@ -8,7 +10,7 @@ You can download YouTube videos or videos from other sites using yt-dlp. The pro
 python ytdlp.py "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --format="audio"
 ```
 
-## bfg_cleaner.py - remove a file's commit history
+### bfg_cleaner.py - remove a file's commit history
 
 Using [bfg repo cleaner](https://rtyley.github.io/bfg-repo-cleaner/), you can remove a file's commit history from a repository without a trace.
 
@@ -23,4 +25,22 @@ options:
   -f FILE_PATH, --file_path FILE_PATH              File path in git repository.
   -b BFG_DIRECTORY, --bfg_directory BFG_DIRECTORY  bfg.jar path. If not specified, base directory will be used by default.
   -v BFG_VERSION, --bfg_version BFG_VERSION        Downloads the specified version of bfg if the relevant bfg.jar file is not already present.
+```
+
+## Powershell
+
+### Get-OEM-Key.ps1 - retrieve original OEM key
+
+Echoes the original product key shipped with Windows.
+
+```powershell
+./Get-OEM-Key.ps1
+```
+
+### Get-Product-Key.ps1 - retrieve DigitalProductId from the registry
+
+Echoes `DigitalProductId` from the registry.
+
+```powershell
+./Get-Product-Key.ps1
 ```
