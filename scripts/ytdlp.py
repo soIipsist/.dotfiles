@@ -5,6 +5,8 @@ import json
 from pprint import PrettyPrinter
 
 bool_choices = [0, 1, "true", "false", True, False, None]
+parent_directory = os.path.dirname(os.path.abspath(__file__))
+pp = PrettyPrinter(indent=2)
 
 
 def read_json_file(json_file, errors=None):
@@ -14,10 +16,6 @@ def read_json_file(json_file, errors=None):
             return json_object
     except Exception as e:
         print(e)
-
-
-parent_directory = os.path.dirname(os.path.abspath(__file__))
-pp = PrettyPrinter(indent=2)
 
 
 def get_options(format: str):

@@ -26,6 +26,8 @@ You can download YouTube videos or videos from other sites using yt-dlp. The pro
 python ytdlp.py "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --format="audio"
 ```
 
+**_NOTE:_ In order for this to work, you need to set up [ytdlp](https://github.com/yt-dlp/yt-dlp/wiki/Installation) and [ffmpeg](https://ffmpeg.org/download.html)**
+
 ### bfg_cleaner.py - remove a file's commit history
 
 Using [bfg repo cleaner](https://rtyley.github.io/bfg-repo-cleaner/), you can remove a file's commit history from a repository without a trace.

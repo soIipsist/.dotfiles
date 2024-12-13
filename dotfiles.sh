@@ -39,8 +39,9 @@ install_dotfiles() {
     done
 
     for dotfile in $dotfiles; do
-      echo $dotfile
-      # sudo -s cp $dotfile $destination_directory
+      basefile=$(basename "$dotfile")
+      sudo -s cp -f "$dotfile" "$destination_directory/$basefile"
+      echo "Copied $dotfile to $destination_directory/$basefile."
     done
 
   done

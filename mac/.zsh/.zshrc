@@ -17,7 +17,6 @@ export YTDLP_EXTRACT_INFO="1"
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 export DOTFILES_DIRECTORY="~/repos/soIipsist/.dotfiles"
 
-
 # aliases
 alias python="python3"
 alias clera="clear"
