@@ -21,24 +21,42 @@ def is_valid_shell_path(path: str):
     return path
 
 
+def get_appended_value(key: str, value: str) -> str:
+    """
+    Appends a new value to an existing environment variable.
+
+    """
+    if not value:
+        raise ValueError("Value to append cannot be None or empty.")
+
+    existing_value = os.environ.get(key)
+
+    separator = ";" if os.name == "nt" else ":"
+
+    if existing_value:
+        if value not in existing_value.split(separator):
+            return f"{existing_value.rstrip(separator)}{separator}{value}"
+        return existing_value
+    return value
+
+
 def set_environment_variables(
-    environment_variables: list, default_shell_path: str = None
+    environment_variables: list, default_shell_path: str = None, append: bool = False
 ):
-    """Sets sdk path as a PATH environment variable."""
+    """Sets environment variables based on default shell path."""
 
     for var in environment_variables:
         var: str
 
-        key, value = var.split("=", 1) if "=" in var else (var, None)
-        print(key, value)
+        key, value = var.split("=", 1)
+        home_dir = os.path.expanduser("~")
+        value = get_appended_value(value) if append else value
+
         try:
             if os.name == "nt":
-                current_path = os.environ.get("PATH", "")
-                updated_path = f"{current_path};{value}"
-                subprocess.run(["setx", "PATH", updated_path], check=True)
+                subprocess.run(["setx", key, value], check=True)
             else:
                 # Modify shell configuration files for macOS or Linux
-                home_dir = os.path.expanduser("~")
 
                 with open(default_shell_path, "a") as f:
                     f.write(f'\nexport {key}="{value}"\n')
@@ -56,8 +74,7 @@ def set_environment_variables(
                     )
                     print("Sourced config file successfully.")
 
-                else:
-                    os.environ[key] = f"{value}"
+                os.environ[key] = f"{value}"
 
         except Exception as e:
             print(f"An error occurred while setting the environment variable: {e}")
@@ -71,10 +88,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "-s", "--default_shell_path", default="bash", type=is_valid_shell_path
     )
-    parser.add_argument("-p", "--is_path", default=False, choices=bool_choices)
-
+    parser.add_argument(
+        "-a", "--append", type=bool, default=False, choices=bool_choices
+    )
     args = vars(parser.parse_args())
 
     environment_variables = args.get("environment_variables")
     shell = args.get("shell")
-    set_environment_variables(environment_variables, shell)
+    append = args.get("append")
+
+    set_environment_variables(environment_variables, shell, append)
