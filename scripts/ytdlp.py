@@ -35,6 +35,7 @@ def process_video_entry(entry, ytdl: yt_dlp.YoutubeDL, options):
     """
     Check for filename duplicates.
     """
+    print("PROCESSING FILE...")
     original_filename = ytdl.prepare_filename(entry)
     final_extension = options.get("postprocessors", [{}])[0].get("preferredcodec")
     final_filename = (
@@ -75,6 +76,8 @@ def download(urls: list, options: dict, extract_info: bool):
                             process_video_entry(entry, ytdl, options)
                     else:
                         process_video_entry(info, ytdl, options)
+                else:
+                    ytdl.download(url)
         except yt_dlp.utils.DownloadError as e:
             print(f"Download error for {url}: {e}")
         except SystemExit as e:
@@ -136,7 +139,9 @@ if __name__ == "__main__":
         choices=["video", "audio"],
     )
     parser.add_argument("-o", "--output_path", type=str, default=None)
-    parser.add_argument("-p", "--prefix", default="YTDLP_PREFIX", type=str)
+    parser.add_argument(
+        "-p", "--prefix", default=os.environ.get("YTDLP_PREFIX"), type=str
+    )
     parser.add_argument(
         "-i",
         "--extract_info",
@@ -167,12 +172,6 @@ if __name__ == "__main__":
 
     outtmpl = f"%(title)s.%(ext)s"
 
-    if prefix:
-        outtmpl = f"{prefix} - {outtmpl}"
-
-    if output_path:
-        options["outtmpl"] = f"{output_path}/{outtmpl}"
-
     if format == "audio":
         audio_extension = extension if extension else audio_extension
 
@@ -184,11 +183,17 @@ if __name__ == "__main__":
         new_opts = configure_options(format, video_extension, audio_extension)
         options.update(new_opts)
 
+    if prefix:
+        outtmpl = f"{prefix} - {outtmpl}"
+
+    if output_path:
+        outtmpl = f"{output_path}/{outtmpl}"
+
+    options["outtmpl"] = outtmpl
+
     pp.pprint(options)
     urls = get_urls(urls, remove_list)
-
-    print(urls)
-    # download(urls, options, extract_info)
+    download(urls, options, extract_info)
 
 
 # download playlist
