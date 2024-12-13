@@ -2,6 +2,14 @@
 
 ## Python
 
+### set_env.py - set environment variables
+
+This script allows you to modify existing environment variables or add new ones. It automatically updates the appropriate dotfiles for your chosen shell (e.g., Bash, Zsh, etc.).
+
+```python
+python set_env.py key=value, key2=value2 -s "bash"
+```
+
 ### ytdlp.py - download youtube videos
 
 You can download YouTube videos or videos from other sites using yt-dlp. The process is simplified by including default audio and video options in `.json` format.
