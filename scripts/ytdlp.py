@@ -15,15 +15,18 @@ def read_json_file(json_file, errors=None):
 
 
 parent_directory = os.path.dirname(os.path.abspath(__file__))
-settings = read_json_file(f"{parent_directory}/metadata/settings.json")
 pp = PrettyPrinter(indent=2)
 
 
-def get_options(format: str, options_file: str = None):
-    if options_file:
+def get_options(format: str):
+
+    # check if options exist as environment variables
+    options_file = f"{parent_directory}/metadata/{format}_options.json"
+
+    options = {}
+
+    if os.path.exists(options_file):
         options = read_json_file(options_file)
-    else:
-        options = read_json_file(f"{parent_directory}/metadata/{settings.get(format)}")
 
     return options
 
@@ -93,16 +96,11 @@ def str_to_bool(string: str):
     return string in ["1", "true", True]
 
 
-def configure_options(
-    format_type="video", video_extension="mp4", audio_extension="m4a"
-):
+def configure_options(format_type="video", video_extension=None, audio_extension=None):
     options = {}
 
-    if audio_extension is None:
-        audio_extension = "m4a"
-
-    if video_extension is None:
-        video_extension = "mp4"
+    audio_extension = audio_extension or ("m4a" if format_type == "video" else "mp3")
+    video_extension = video_extension or "mp4"
 
     if format_type == "video":
         options["format"] = (
@@ -127,37 +125,46 @@ bool_choices = [0, 1, "true", "false", True, False, None]
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "urls",
-        nargs="+",
-        type=str_to_bool,
-        choices=bool_choices,
-    )
+    parser.add_argument("urls", nargs="+", type=str)
     parser.add_argument(
         "-r", "--remove_list", default=True, type=str_to_bool, choices=bool_choices
     )
-    parser.add_argument("-f", "--format", default="audio", choices=["video", "audio"])
+    parser.add_argument(
+        "-f",
+        "--format",
+        default=os.environ.get("YTDLP_FORMAT"),
+        choices=["video", "audio"],
+    )
     parser.add_argument("-o", "--output_path", type=str, default=None)
-    parser.add_argument("-p", "--prefix", default=None, type=str)
-    parser.add_argument("--options", default=None, type=str)
-    parser.add_argument("-i", "--extract_info", default=True)
+    parser.add_argument("-p", "--prefix", default="YTDLP_PREFIX", type=str)
+    parser.add_argument(
+        "-i",
+        "--extract_info",
+        default=os.environ.get("YTDLP_EXTRACT_INFO"),
+        type=str_to_bool,
+        choices=bool_choices,
+    )
     parser.add_argument("-e", "--extension", default=None)
-    parser.add_argument("-a", "--audio_extension", default=None)
-    parser.add_argument("-v", "--video_extension", default=None)
+    parser.add_argument(
+        "-a", "--audio_extension", default=os.environ.get("YTDLP_AUDIO_EXT")
+    )
+    parser.add_argument(
+        "-v", "--video_extension", default=os.environ.get("YTDLP_VIDEO_EXT")
+    )
 
     args = vars(parser.parse_args())
 
     urls = args.get("urls")
     remove_list = args.get("remove_list")
     format = args.get("format")
-    options = args.get("options")
     extract_info = args.get("extract_info")
     output_path = args.get("output_path")
     prefix = args.get("prefix")
     extension = args.get("extension")
     audio_extension = args.get("audio_extension")
     video_extension = args.get("video_extension")
-    options = get_options(format, options)
+    options = get_options(format)
+
     outtmpl = f"%(title)s.%(ext)s"
 
     if prefix:
@@ -178,12 +185,14 @@ if __name__ == "__main__":
         options.update(new_opts)
 
     pp.pprint(options)
-    # urls = get_urls(urls, remove_list)
+    urls = get_urls(urls, remove_list)
+
+    print(urls)
     # download(urls, options, extract_info)
 
 
 # download playlist
 # python ytdlp.py "https://music.youtube.com/watch?v=owZyZrWppGg&list=PLcSQ3bJVgbvb43FGbe7c550xI7gZ9NmBW" -f audio
 
-# download video with mkv format
-# python ytdlp.py -e mp4 -i 0
+# download video with mp4 format
+# python ytdlp.py -e mp4 -i 1
