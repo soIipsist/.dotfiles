@@ -4,6 +4,8 @@ import os
 import json
 from pprint import PrettyPrinter
 
+bool_choices = [0, 1, "true", "false", True, False, None]
+
 
 def read_json_file(json_file, errors=None):
     try:
@@ -122,8 +124,6 @@ def configure_options(format_type="video", video_extension=None, audio_extension
 
     return options
 
-
-bool_choices = [0, 1, "true", "false", True, False, None]
 
 if __name__ == "__main__":
 
