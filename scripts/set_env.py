@@ -5,6 +5,10 @@ import subprocess
 bool_choices = [0, 1, "true", "false", True, False, None]
 
 
+def str_to_bool(string: str):
+    return string in ["1", "true", True]
+
+
 def is_valid_shell_path(path: str):
     if not os.path.exists(path):
         home_directory = os.path.expanduser("~")
@@ -16,7 +20,7 @@ def is_valid_shell_path(path: str):
         elif path == "fish":
             return os.path.join(home_directory, ".config", "fish", "config.fish")
         else:
-            raise EnvironmentError(f"Unsupported shell: {shell}")
+            raise EnvironmentError(f"Unsupported shell: {default_shell_path}")
 
     return path
 
@@ -49,8 +53,9 @@ def set_environment_variables(
         var: str
 
         key, value = var.split("=", 1)
-        home_dir = os.path.expanduser("~")
-        value = get_appended_value(value) if append else value
+        value = get_appended_value(key, value) if append else value
+
+        print(f"Setting environment variable {key}: {value}")
 
         try:
             if os.name == "nt":
@@ -61,20 +66,7 @@ def set_environment_variables(
                 with open(default_shell_path, "a") as f:
                     f.write(f'\nexport {key}="{value}"\n')
 
-                prompt = input(
-                    f"Environment variable was updated in {default_shell_path}. Would you like to execute it? (y/n)"
-                )
-
-                if prompt == "y":
-                    subprocess.run(
-                        f"source {default_shell_path}",
-                        shell=True,
-                        check=True,
-                        cwd=home_dir,
-                    )
-                    print("Sourced config file successfully.")
-
-                os.environ[key] = f"{value}"
+            os.environ[key] = f"{value}"
 
         except Exception as e:
             print(f"An error occurred while setting the environment variable: {e}")
@@ -89,12 +81,12 @@ if __name__ == "__main__":
         "-s", "--default_shell_path", default="bash", type=is_valid_shell_path
     )
     parser.add_argument(
-        "-a", "--append", type=bool, default=False, choices=bool_choices
+        "-a", "--append", type=str_to_bool, default=False, choices=bool_choices
     )
     args = vars(parser.parse_args())
 
     environment_variables = args.get("environment_variables")
-    shell = args.get("shell")
+    default_shell_path = args.get("default_shell_path")
     append = args.get("append")
 
-    set_environment_variables(environment_variables, shell, append)
+    set_environment_variables(environment_variables, default_shell_path, append)
