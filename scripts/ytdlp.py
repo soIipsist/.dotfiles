@@ -2,6 +2,7 @@ import yt_dlp
 import argparse
 import os
 import json
+from pprint import PrettyPrinter
 
 
 def read_json_file(json_file, errors=None):
@@ -14,9 +15,6 @@ def read_json_file(json_file, errors=None):
 
 
 parent_directory = os.path.dirname(os.path.abspath(__file__))
-
-from pprint import PrettyPrinter
-
 settings = read_json_file(f"{parent_directory}/metadata/settings.json")
 pp = PrettyPrinter(indent=2)
 
@@ -95,6 +93,35 @@ def str_to_bool(string: str):
     return string in ["1", "true", True]
 
 
+def configure_options(
+    format_type="video", video_extension="mp4", audio_extension="m4a"
+):
+    options = {}
+
+    if audio_extension is None:
+        audio_extension = "m4a"
+
+    if video_extension is None:
+        video_extension = "mp4"
+
+    if format_type == "video":
+        options["format"] = (
+            f"bestvideo[ext={video_extension}]+bestaudio[ext={audio_extension}]/{video_extension}"
+        )
+    elif format_type == "audio":
+        options["format"] = "bestaudio/best"
+        options["postprocessors"] = [
+            {
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": audio_extension,
+            }
+        ]
+    else:
+        raise ValueError("Invalid format_type. Choose 'video' or 'audio'.")
+
+    return options
+
+
 bool_choices = [0, 1, "true", "false", True, False, None]
 
 if __name__ == "__main__":
@@ -115,6 +142,9 @@ if __name__ == "__main__":
     parser.add_argument("--options", default=None, type=str)
     parser.add_argument("-i", "--extract_info", default=True)
     parser.add_argument("-e", "--extension", default=None)
+    parser.add_argument("-a", "--audio_extension", default=None)
+    parser.add_argument("-v", "--video_extension", default=None)
+
     args = vars(parser.parse_args())
 
     urls = args.get("urls")
@@ -125,6 +155,8 @@ if __name__ == "__main__":
     output_path = args.get("output_path")
     prefix = args.get("prefix")
     extension = args.get("extension")
+    audio_extension = args.get("audio_extension")
+    video_extension = args.get("video_extension")
     options = get_options(format, options)
     outtmpl = f"%(title)s.%(ext)s"
 
@@ -134,14 +166,24 @@ if __name__ == "__main__":
     if output_path:
         options["outtmpl"] = f"{output_path}/{outtmpl}"
 
-    if extension:
-        if format == "audio":
-            options["postprocessors"][0]["preferredcodec"] = extension
-        else:
-            options["format"] = (
-                f"bestvideo[ext={extension}]+bestaudio[ext=m4a]/{extension}"
-            )
+    if format == "audio":
+        audio_extension = extension if extension else audio_extension
+
+    if format == "video":
+        video_extension = extension if extension else video_extension
+
+    if extension or audio_extension or video_extension:
+        options: dict
+        new_opts = configure_options(format, video_extension, audio_extension)
+        options.update(new_opts)
 
     pp.pprint(options)
-    urls = get_urls(urls, remove_list)
-    download(urls, options, extract_info)
+    # urls = get_urls(urls, remove_list)
+    # download(urls, options, extract_info)
+
+
+# download playlist
+# python ytdlp.py "https://music.youtube.com/watch?v=owZyZrWppGg&list=PLcSQ3bJVgbvb43FGbe7c550xI7gZ9NmBW" -f audio
+
+# download video with mkv format
+# python ytdlp.py -e mp4 -i 0
