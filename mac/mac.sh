@@ -19,8 +19,7 @@ install_brewfile() {
         brewfile_path=$(pwd)/Brewfile
     fi
 
-    echo $brewfile_path
-    # brew bundle --file $brewfile_path
+    brew bundle --file $brewfile_path
 }
 
 install_homebrew

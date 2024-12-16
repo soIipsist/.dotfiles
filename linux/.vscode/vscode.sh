@@ -12,13 +12,7 @@ install_extensions() {
     done
 }
 
-get_extensions() {
-    extensions=$(code --list-extensions)
-
-    for extension in $extensions; do
-        echo "\""$extension\",""
-    done
-}
-
-extensions=$(get_json_value "recommendations" "$pwd/extensions.json")
+dir="$PWD/.vscode"
+json_file="$dir/extensions.json"
+extensions=$(get_json_value "recommendations")
 install_extensions $extensions
