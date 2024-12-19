@@ -99,15 +99,20 @@ def str_to_bool(string: str):
     return string in ["1", "true", True]
 
 
-def configure_options(format_type="video", video_extension=None, audio_extension=None):
+def configure_options(
+    format_type="video",
+    video_extension=None,
+    audio_extension=None,
+    video_sound_extension=None,
+):
     options = {}
-
-    audio_extension = audio_extension or ("m4a" if format_type == "video" else "mp3")
+    audio_extension = audio_extension or "mp3"
     video_extension = video_extension or "mp4"
+    video_sound_extension = video_sound_extension or "m4a"
 
     if format_type == "video":
         options["format"] = (
-            f"bestvideo[ext={video_extension}]+bestaudio[ext={audio_extension}]/{video_extension}"
+            f"bestvideo[ext={video_extension}]+bestaudio[ext={video_sound_extension}]/{video_extension}"
         )
     elif format_type == "audio":
         options["format"] = "bestaudio/best"
@@ -152,6 +157,9 @@ if __name__ == "__main__":
         "-a", "--audio_extension", default=os.environ.get("YTDLP_AUDIO_EXT")
     )
     parser.add_argument(
+        "-s", "--video_sound_extension", default=os.environ.get("YTDLP_VIDEO_SOUND_EXT")
+    )
+    parser.add_argument(
         "-v", "--video_extension", default=os.environ.get("YTDLP_VIDEO_EXT")
     )
 
@@ -166,6 +174,7 @@ if __name__ == "__main__":
     extension = args.get("extension")
     audio_extension = args.get("audio_extension")
     video_extension = args.get("video_extension")
+    video_sound_extension = args.get("video_sound_extension")
     options = get_options(format)
 
     outtmpl = f"%(title)s.%(ext)s"
@@ -178,7 +187,9 @@ if __name__ == "__main__":
 
     if extension or audio_extension or video_extension:
         options: dict
-        new_opts = configure_options(format, video_extension, audio_extension)
+        new_opts = configure_options(
+            format, video_extension, audio_extension, video_sound_extension
+        )
         options.update(new_opts)
 
     if prefix:
