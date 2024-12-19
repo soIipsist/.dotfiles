@@ -40,9 +40,18 @@ install_dotfiles() {
 
     for dotfile in $dotfiles; do
       basefile=$(basename "$dotfile")
+      if [ ! -d "$destination_directory" ]; then
+        mkdir -p "$destination_directory"
+        echo "Created directory: $destination_directory"
+      fi
+
       cp -f "$dotfile" "$destination_directory/$basefile"
       echo "Copied $dotfile to $destination_directory/$basefile."
-      source $destination_directory/$basefile
+
+      if [[ $basefile == *.sh ]]; then
+        source "$destination_directory/$basefile"
+      fi
+
     done
 
   done
