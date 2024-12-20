@@ -22,7 +22,7 @@ install_brewfile() {
     brew bundle --file $brewfile_path
 }
 
-install_homebrew
+# install_homebrew
 
 os=$(get_os)
 hostname=$(get_json_value "hostname")
