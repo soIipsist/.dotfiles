@@ -45,6 +45,14 @@ options:
   -v BFG_VERSION, --bfg_version BFG_VERSION        Downloads the specified version of bfg if the relevant bfg.jar file is not already present.
 ```
 
+### chrome_inspect.py
+
+Returns html content of currently active Chrome tab.
+
+``` python
+python chrome_inspect.py
+```
+
 ## Powershell
 
 ### Get-OEM-Key.ps1 - retrieve original OEM key
