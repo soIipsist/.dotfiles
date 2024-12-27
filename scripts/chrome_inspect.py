@@ -62,12 +62,12 @@ def get_default_chrome_executable_path():
         raise FileNotFoundError("Google Chrome executable not found")
 
 
-def get_default_chrome_profile_path():
+def get_default_chrome_profile_path(profile_name: str = "Default"):
     if os.name == "nt":  # Windows
         local_appdata = os.getenv("LOCALAPPDATA")
         if local_appdata:
             return os.path.join(
-                local_appdata, "Google", "Chrome", "User Data", "Default"
+                local_appdata, "Google", "Chrome", "User Data", profile_name
             )
         else:
             raise EnvironmentError(
@@ -77,16 +77,54 @@ def get_default_chrome_profile_path():
     elif os.name == "posix":  # macOS and Linux
         # Check if it's macOS
         if os.path.exists(
-            os.path.expanduser("~/Library/Application Support/Google/Chrome/Default")
+            os.path.expanduser(
+                f"~/Library/Application Support/Google/Chrome/{profile_name}"
+            )
         ):
             return os.path.expanduser(
-                "~/Library/Application Support/Google/Chrome/Default"
+                f"~/Library/Application Support/Google/Chrome/{profile_name}"
             )
         # Otherwise, assume Linux
-        return os.path.expanduser("~/.config/google-chrome/Default")
+        return os.path.expanduser(f"~/.config/google-chrome/{profile_name}")
 
     else:
         raise NotImplementedError(f"Unsupported operating system: {os.name}")
+
+
+def launch_chrome_in_debugging_mode(
+    chrome_path: str,
+    chrome_profile_path: str,
+    remote_debugging_port: str,
+    user_data_dir: str,
+):
+    cmd = [chrome_path]
+
+    cmd.append(f"--user-data-dir={user_data_dir}")
+    cmd.append(f"--profile-directory={chrome_profile_path}")
+    cmd.append(f"--remote-debugging-port={remote_debugging_port}")
+    cmd.append("--disable-application-cache")
+    cmd.append("--no-referrers")
+    cmd.append("--restore_last_session")
+    print(cmd)
+    return execute_command(cmd)
+
+
+def execute_command(cmd: list):
+    output = None
+    try:
+        result = subprocess.run(
+            cmd,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        output = result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        print("Error occurred:")
+        print(e.stderr)
+
+    return output
 
 
 if __name__ == "__main__":
@@ -107,6 +145,7 @@ if __name__ == "__main__":
         type=str,
         default=get_default_chrome_profile_path(),
     )
+    parser.add_argument("-n", "--profile_name", default="Profile 1", type=str)
     parser.add_argument("-u", "--user_data_dir", default="/tmp/chrome-debug")
     parser.add_argument("-r", "--remote_debugging_port", default="9222")
 
@@ -114,42 +153,24 @@ if __name__ == "__main__":
     chrome_path = args.get("chrome_path")
     chromedriver_path = args.get("chromedriver_path")
     chrome_profile_path = args.get("chrome_profile_path")
+    profile_name = args.get("profile_name")
     remote_debugging_port = args.get("remote_debugging_port")
     user_data_dir = args.get("user_data_dir")
+    chrome_profile_path = os.path.join(
+        os.path.dirname(chrome_profile_path), profile_name
+    )
 
-    # open chrome in debugging mode
-    cmd = [
-        chrome_path,
-        f"--remote-debugging-port={remote_debugging_port}",
-        f"--user-data-dir={user_data_dir}",
-    ]
-
-    # cmd = r'cp -r "%LOCALAPPDATA%\Google\Chrome\User Data\Default" C:\TempProfile /E /I /H /C /K /O /X'
-
-    # Execute the command
-    try:
-        result = subprocess.run(
-            cmd,
-            shell=True,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-        print(result.stdout)
-    except subprocess.CalledProcessError as e:
-        print("Error occurred:")
-        print(e.stderr)
+    print(chrome_profile_path)
+    launch_chrome_in_debugging_mode(
+        chrome_path, chrome_profile_path, remote_debugging_port, user_data_dir
+    )
 
     chrome_options = Options()
-    chrome_options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
+    chrome_options.add_experimental_option(
+        "debuggerAddress", f"127.0.0.1:{remote_debugging_port}"
+    )
     service = ChromeService(chromedriver_path)
-
     driver = webdriver.Chrome(options=chrome_options, service=service)
-    driver.get("https://www.google.com")
-    # Get the HTML content of the current page
     html = driver.execute_script("return document.documentElement.outerHTML;")
-    print(html)
 
-    # Close the browser
-    driver.quit()
+    # driver.quit()
