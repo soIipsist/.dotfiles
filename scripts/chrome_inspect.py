@@ -104,7 +104,7 @@ def launch_chrome_in_debugging_mode(
     cmd.append(f"--remote-debugging-port={remote_debugging_port}")
     cmd.append("--disable-application-cache")
     cmd.append("--no-referrers")
-    cmd.append("--restore_last_session")
+    cmd.append("--restore-last-session")
     print(cmd)
     return execute_command(cmd)
 
@@ -160,7 +160,6 @@ if __name__ == "__main__":
         os.path.dirname(chrome_profile_path), profile_name
     )
 
-    print(chrome_profile_path)
     launch_chrome_in_debugging_mode(
         chrome_path, chrome_profile_path, remote_debugging_port, user_data_dir
     )
@@ -171,6 +170,12 @@ if __name__ == "__main__":
     )
     service = ChromeService(chromedriver_path)
     driver = webdriver.Chrome(options=chrome_options, service=service)
-    html = driver.execute_script("return document.documentElement.outerHTML;")
+    window_handles = driver.window_handles
 
-    # driver.quit()
+    driver.switch_to.window(window_handles[-1])
+
+    current_url = driver.current_url
+    print("Current URL (Most Recent Tab):", current_url)
+
+    html_content = driver.execute_script("return document.documentElement.outerHTML;")
+    print("HTML Content of the Most Recent Tab:", html_content)
