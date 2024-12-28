@@ -10,6 +10,8 @@ export PATH="/Users/p/platform-tools/:$PATH"
 
 # YTDLP options
 export YTDLP_PATH="~/ytdlp/yt-dlp_macos"
+export YTDLP_VIDEO_DIRECTORY="/Users/p/Desktop/videos"
+export YTDLP_AUDIO_DIRECTORY="/Users/p/Desktop/music"
 export YTDLP_AUDIO_EXT="mp3"
 export YTDLP_VIDEO_EXT="mp4"
 export YTDLP_VIDEO_SOUND_EXT="m4a"

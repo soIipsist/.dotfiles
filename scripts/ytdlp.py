@@ -99,6 +99,18 @@ def str_to_bool(string: str):
     return string in ["1", "true", True]
 
 
+def get_output_directory(format: str, output_directory: str = None):
+
+    if not output_directory:
+        if format == "audio":
+            output_directory = os.environ.get("YTDLP_AUDIO_DIRECTORY")
+
+        elif format == "video":
+            output_directory = os.environ.get("YTDLP_VIDEO_DIRECTORY")
+
+    return output_directory
+
+
 def configure_options(
     format_type="video",
     video_extension=None,
@@ -138,10 +150,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "-f",
         "--format",
-        default=os.environ.get("YTDLP_FORMAT"),
+        default=os.environ.get("YTDLP_FORMAT", "video"),
         choices=["video", "audio"],
     )
-    parser.add_argument("-o", "--output_path", type=str, default=None)
+    parser.add_argument("-o", "--output_directory", type=str, default=None)
     parser.add_argument(
         "-p", "--prefix", default=os.environ.get("YTDLP_PREFIX"), type=str
     )
@@ -169,7 +181,7 @@ if __name__ == "__main__":
     remove_list = args.get("remove_list")
     format = args.get("format")
     extract_info = args.get("extract_info")
-    output_path = args.get("output_path")
+    output_directory = args.get("output_directory")
     prefix = args.get("prefix")
     extension = args.get("extension")
     audio_extension = args.get("audio_extension")
@@ -195,8 +207,10 @@ if __name__ == "__main__":
     if prefix:
         outtmpl = f"{prefix} - {outtmpl}"
 
-    if output_path:
-        outtmpl = f"{output_path}/{outtmpl}"
+    output_directory = get_output_directory(format, output_directory)
+
+    if output_directory:
+        outtmpl = f"{output_directory}/{outtmpl}"
 
     options["outtmpl"] = outtmpl
 

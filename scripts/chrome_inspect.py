@@ -171,9 +171,7 @@ if __name__ == "__main__":
     service = ChromeService(chromedriver_path)
     driver = webdriver.Chrome(options=chrome_options, service=service)
     window_handles = driver.window_handles
-
     driver.switch_to.window(window_handles[-1])
-
     current_url = driver.current_url
     print("Current URL (Most Recent Tab):", current_url)
 
