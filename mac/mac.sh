@@ -16,13 +16,13 @@ install_homebrew() {
 
 install_brewfile() {
     if [ -z $brewfile_path ]; then
-        brewfile_path=$(pwd)/Brewfile
+        return
     fi
 
     brew bundle --file $brewfile_path
 }
 
-# install_homebrew
+install_homebrew
 
 os=$(get_os)
 hostname=$(get_json_value "hostname")
@@ -33,9 +33,9 @@ default_shell=$(get_json_value "default_shell")
 brewfile_path=$(get_json_value "brewfile_path")
 wallpaper_path=$(get_json_value "wallpaper_path")
 
-# install_brewfile
-# set_hostname
-# set_default_shell
+install_brewfile
+set_hostname
+set_default_shell
 
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
 install_dotfiles "${dotfile_folders[@]}" $HOME
