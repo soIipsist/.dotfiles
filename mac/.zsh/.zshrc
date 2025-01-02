@@ -33,3 +33,4 @@ alias yabaistart="yabai --start-service"
 alias skhdstart="skhd --start-service"
 alias skhdstop="skhd --stop-service"
 alias vlc="/Applications/VLC.app/Contents/MacOS/VLC"
+alias cdf='cd "$(find . -type d | fzf)"'
