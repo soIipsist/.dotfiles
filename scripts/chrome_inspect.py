@@ -156,6 +156,7 @@ if __name__ == "__main__":
     profile_name = args.get("profile_name")
     remote_debugging_port = args.get("remote_debugging_port")
     user_data_dir = args.get("user_data_dir")
+
     chrome_profile_path = os.path.join(
         os.path.dirname(chrome_profile_path), profile_name
     )
