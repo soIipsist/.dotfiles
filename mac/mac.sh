@@ -2,7 +2,7 @@
 source "../json.sh"
 source "../os.sh"
 source "../dotfiles.sh"
-source "../mac/.git-config/git.sh"
+source "../git.sh"
 
 install_homebrew() {
     # check if homebrew is not in $PATH
@@ -47,6 +47,8 @@ install_pip_packages() {
 install_homebrew
 
 os=$(get_os)
+git_username=$(get_json_value "git_username")
+git_email=$(get_json_value "git_email")
 hostname=$(get_json_value "hostname")
 computer_name=$(get_json_value "computer_name")
 local_hostname=$(get_json_value "local_hostname")
@@ -62,6 +64,7 @@ install_brewfile
 set_hostname
 set_default_shell
 install_pip_packages "${pip_packages[@]}"
+git_config $git_username $git_email
 clone_git_repos "${git_repos[@]}" $git_home_path
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
 install_dotfiles "${dotfile_folders[@]}" $HOME

@@ -1,6 +1,7 @@
 #!/bin/bash
 source "../json.sh"
 source "../dotfiles.sh"
+source "../git.sh"
 
 set_lockscreen_and_wallpaper() {
     wallpaper_path="$1"
@@ -41,21 +42,24 @@ set_lockscreen_and_wallpaper() {
     fi
 }
 
-json_file="linux.json"
 hostname=$(get_json_value "hostname")
 apt_packages=$(get_json_value "apt_packages")
 dotfiles=$(get_json_value "dotfiles")
 git_username=$(get_json_value "git_username")
 git_email=$(get_json_value "git_email")
+git_home_path=$(get_json_value "git_home_path")
+git_repos=$(get_json_value "git_repos")
 wallpaper_path=$(get_json_value "wallpaper_path")
 lockscreen_path=$(get_json_value "lockscreen_path")
 
 echo $apt_packages
 
-for package in $installed_packages; do
+for package in $apt_packages; do
     sudo apt install --yes --no-install-recommends "$package"
 done
 
+git_config $git_username $git_email
+clone_git_repos "${git_repos[@]}" $git_home_path
 set_lockscreen_and_wallpaper "$wallpaper_path" "$lockscreen_path"
 
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")

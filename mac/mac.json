@@ -2,6 +2,6 @@
   "dotfiles": [".git-config"],
   "git_home_path": "",
   "git_username": "soIipsist",
-  "git_repos": ["https://github.com/ytdl-org/youtube-dl"],
+  "git_email": "${GIT_EMAIL}",
   "wallpaper_path": "/Users/p/Desktop/test/wallpaper.jpg"
 }
