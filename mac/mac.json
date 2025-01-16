@@ -1,9 +1,7 @@
 {
-  "dotfiles": [".zsh"],
-  "pip_packages": [
-    "yt-dlp",
-    "git+https://github.com/soIipsist/adb-wrapper@main"
-  ],
-  "git_repos": [],
+  "dotfiles": [".git-config"],
+  "git_home_path": "",
+  "git_username": "soIipsist",
+  "git_repos": ["https://github.com/ytdl-org/youtube-dl"],
   "wallpaper_path": "/Users/p/Desktop/test/wallpaper.jpg"
 }

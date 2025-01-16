@@ -2,6 +2,7 @@
 source "../json.sh"
 source "../os.sh"
 source "../dotfiles.sh"
+source "../mac/.git-config/git.sh"
 
 install_homebrew() {
     # check if homebrew is not in $PATH
@@ -52,6 +53,7 @@ local_hostname=$(get_json_value "local_hostname")
 dotfiles=$(get_json_value "dotfiles")
 pip_packages=$(get_json_value "pip_packages")
 git_repos=$(get_json_value "git_repos")
+git_home_path=$(get_json_value "git_home_path")
 default_shell=$(get_json_value "default_shell")
 brewfile_path=$(get_json_value "brewfile_path")
 wallpaper_path=$(get_json_value "wallpaper_path")
@@ -60,5 +62,6 @@ install_brewfile
 set_hostname
 set_default_shell
 install_pip_packages "${pip_packages[@]}"
+clone_git_repos "${git_repos[@]}" $git_home_path
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
 install_dotfiles "${dotfile_folders[@]}" $HOME
