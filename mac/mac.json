@@ -1,7 +1,7 @@
 {
-  "dotfiles": [".git-config"],
+  "dotfiles": [".zsh"],
   "git_home_path": "",
-  "git_username": "soIipsist",
-  "git_email": "${GIT_EMAIL}",
+  "git_username": "GIT_USERNAME",
+  "git_email": "GIT_EMAIL",
   "wallpaper_path": "/Users/p/Desktop/test/wallpaper.jpg"
 }

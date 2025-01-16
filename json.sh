@@ -27,5 +27,17 @@ get_json_value() {
     value=$(jq -r .$key[] "$json_file")
   fi
 
+  # check if this value exists in the .env file
+
+  ENV_FILE=".env"
+  if [ -f "$ENV_FILE" ]; then
+    env_value=$(grep -E "^$value=" "$ENV_FILE" | cut -d '=' -f2-)
+
+    if [ -n "$env_value" ]; then
+      echo "$env_value"
+      return 0
+    fi
+  fi
+
   echo $value
 }
