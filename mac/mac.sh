@@ -22,6 +22,27 @@ install_brewfile() {
     brew bundle --file $brewfile_path
 }
 
+install_pip_packages() {
+    pip_packages=$1
+
+    if [ -z "$pip_packages" ]; then
+        return
+    fi
+
+    # create venv if it doesn't exist
+    cd $HOME
+    if [ ! -d "$HOME/venv" ]; then
+        python -m venv venv
+    fi
+
+    source venv/bin/activate
+
+    for package in $pip_packages; do
+        pip install $package
+    done
+
+}
+
 install_homebrew
 
 os=$(get_os)
@@ -29,6 +50,8 @@ hostname=$(get_json_value "hostname")
 computer_name=$(get_json_value "computer_name")
 local_hostname=$(get_json_value "local_hostname")
 dotfiles=$(get_json_value "dotfiles")
+pip_packages=$(get_json_value "pip_packages")
+git_repos=$(get_json_value "git_repos")
 default_shell=$(get_json_value "default_shell")
 brewfile_path=$(get_json_value "brewfile_path")
 wallpaper_path=$(get_json_value "wallpaper_path")
@@ -36,6 +59,6 @@ wallpaper_path=$(get_json_value "wallpaper_path")
 install_brewfile
 set_hostname
 set_default_shell
-
+install_pip_packages "${pip_packages[@]}"
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
 install_dotfiles "${dotfile_folders[@]}" $HOME

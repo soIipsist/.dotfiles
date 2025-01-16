@@ -4,7 +4,11 @@
   "computer_name": "solipsist",
   "brewfile_path": "",
   "dotfiles": [".zsh"],
-  "pip_packages": [],
+  "pip_packages": [
+    "yt-dlp",
+    "git+https://github.com/soIipsist/adb-wrapper@main"
+  ],
+  "git_repos": [],
   "git_username": "soIipsist",
   "git_email": "",
   "default_shell": "zsh",

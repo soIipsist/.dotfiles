@@ -1,12 +1,9 @@
 {
-  "hostname": "solipsist",
-  "local_hostname": "solipsist",
-  "computer_name": "solipsist",
-  "brewfile_path": "",
   "dotfiles": [".zsh"],
-  "pip_packages": [],
-  "git_username": "soIipsist",
-  "git_email": "",
-  "default_shell": "zsh",
+  "pip_packages": [
+    "yt-dlp",
+    "git+https://github.com/soIipsist/adb-wrapper@main"
+  ],
+  "git_repos": [],
   "wallpaper_path": "/Users/p/Desktop/test/wallpaper.jpg"
 }
