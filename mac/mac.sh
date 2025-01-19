@@ -44,6 +44,16 @@ install_pip_packages() {
 
 }
 
+set_wallpaper() {
+    wallpaper_path=$1
+
+    if [ -z "$wallpaper_path" ]; then
+        return
+    fi
+
+    osascript prefs.scpt $wallpaper_path
+}
+
 install_homebrew
 
 os=$(get_os)
@@ -68,3 +78,4 @@ git_config $git_username $git_email
 clone_git_repos "${git_repos[@]}" $git_home_path
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
 install_dotfiles "${dotfile_folders[@]}" $HOME
+set_wallpaper $wallpaper_path
