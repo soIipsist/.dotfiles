@@ -23,12 +23,15 @@ export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 export DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
 export GIT_HOME="$HOME/repos/soIipsist"
 
+# VSCode variables
+export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/vscode-workspaces/.workspaces"
+export VSCODE_PROJECT_DIRECTORY="$GIT_HOME"
+
 # aliases
 alias python="python3"
 alias ytdlp="python3 $DOTFILES_DIRECTORY/scripts/ytdlp.py"
 alias ytdlp_mp3="python3 $DOTFILES_DIRECTORY/scripts/ytdlp.py -f audio -a mp3"
 alias ytdlp_mp4="python3 $DOTFILES_DIRECTORY/scripts/ytdlp.py -f video -v mp4"
-alias workspaces="python3 $DOTFILES_DIRECTORY/scripts/workspaces.py"
 alias yabais="yabai --start-service"
 alias yabaik="yabai --stop-service"
 alias skhds="skhd --start-service"
@@ -37,4 +40,5 @@ alias vlc="/Applications/VLC.app/Contents/MacOS/VLC"
 alias ios_backup="python3 $GIT_HOME/ios-backup-extractor/extract.py"
 alias adb_transfer="python3 $GIT_HOME/adb-wrapper/examples/transfer.py"
 alias adb_root="python3 $GIT_HOME/adb-wrapper/examples/root.py"
+alias vscode="python3 $GIT_HOME/vscode-workspaces/workspaces.py"
 alias cdf='cd "$(find . -type d | fzf)"'

@@ -1,13 +1,28 @@
 cmd - t : open -a /Applications/iTerm.app
 
-# yabai
+# focus windows
 alt - j : yabai -m window --focus south
 alt - k : yabai -m window --focus north
 alt - h : yabai -m window --focus west
 alt - l : yabai -m window --focus east
+
+alt - s : yabai -m display --focus west
+alt - g : yabai -m display --focus east
 
 # swap windows
 shift + alt - j : yabai -m window --swap south
 shift + alt - k : yabai -m window --swap north
 shift + alt - h : yabai -m window --swap west
 shift + alt - l : yabai -m window --swap east
+
+# move windows and split
+ctrl + alt - j : yabai -m window --warp south
+ctrl + alt - k : yabai -m window --warp north
+ctrl + alt - h : yabai -m window --warp west
+ctrl + alt - l : yabai -m window --warp east
+
+# maximize a window
+shift + alt - m : yabai -m window --toggle zoom-fullscreen
+
+# balance out windows
+shift + alt - e : yabai -m space --balance
