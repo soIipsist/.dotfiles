@@ -3513,7 +3513,7 @@ auhal-audio-device=71
 #audio-time-stretch=1
 
 # Audio output module (string)
-#aout=
+aout=macosx
 
 # Media role (string)
 #role=video

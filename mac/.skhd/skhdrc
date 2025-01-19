@@ -1,5 +1,3 @@
-cmd - t : open -a /Applications/iTerm.app
-
 # focus windows
 alt - j : yabai -m window --focus south
 alt - k : yabai -m window --focus north
@@ -26,3 +24,7 @@ shift + alt - m : yabai -m window --toggle zoom-fullscreen
 
 # balance out windows
 shift + alt - e : yabai -m space --balance
+
+# window shortcuts
+cmd - t : open -a /Applications/iTerm.app
+cmd - b : open -a /Applications/Google\ Chrome.app
