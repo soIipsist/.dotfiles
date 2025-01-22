@@ -47,19 +47,19 @@ alias cdf='cd "$(find . -type d | fzf)"'
 bindkey '^[[1;2D' backward-word # Shift + Left Arrow
 bindkey '^[[1;2C' forward-word  # Shift + Right Arrow
 
-bindkey '^[[1;2W' backward-kill-word # Shift + W
-bindkey '^[[1;2K' kill-line          # Shift + K
-bindkey '^[[1;2U' backward-kill-line # Shift + U
-bindkey '^[[1;2D' kill-word          # Shift + D
+bindkey '^[[1;5W' backward-kill-word # Ctrl + W
+bindkey '^[[1;5K' kill-line          # Ctrl + K
+bindkey '^[[1;5U' backward-kill-line # Ctrl + U
+bindkey '^[[1;5D' kill-word          # Ctrl + D
 
 # Insert and overwrite toggle
-bindkey '^[[1;2Q' overwrite-mode     # Shift + Q
-bindkey '^[[1;2F' autosuggest-accept # Shift + F
+bindkey '^[[1;5Q' overwrite-mode     # Ctrl + Q
+bindkey '^[[1;5F' autosuggest-accept # Ctrl + F
 
 bindkey '^[c' capitalize-word # Alt + C
 
 # Lowercase word
-bindkey '^[l' downcase-word # Alt + L
+bindkey '^[d' down-case-word # Alt + D
 
 # Uppercase word
-bindkey '^[u' upcase-word # Alt + U
+bindkey '^[u' up-case-word # Alt + U
