@@ -31,9 +31,10 @@ yabai -m config \
 
 yabai -m rule --add app="^System Settings$" manage=off
 yabai -m rule --add app="^Calculator$" manage=off
-yabai -m rule --add app="^Karabiner-Elements$" manage=off
 yabai -m rule --add app="^Finder$" manage=off
 yabai -m rule --add app="^Code$" manage=off
 yabai -m rule --add app="^Discord$" manage=off
-yabai -m rule --add app="^Github Desktop$" manage=off
+yabai -m rule --add app="^GitHub Desktop$" manage=off
 yabai -m rule --add app="^VLC$" manage=off
+yabai -m rule --add app="^Google Chrome$" manage=off
+echo "yabai configuration loaded."

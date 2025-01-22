@@ -34,8 +34,10 @@ alias ytdlp_mp3="python3 $DOTFILES_DIRECTORY/scripts/ytdlp.py -f audio -a mp3"
 alias ytdlp_mp4="python3 $DOTFILES_DIRECTORY/scripts/ytdlp.py -f video -v mp4"
 alias yabais="yabai --start-service"
 alias yabaik="yabai --stop-service"
+alias yabair="yabai --restart-service"
 alias skhds="skhd --start-service"
 alias skhdk="skhd --stop-service"
+alias skhdr="skhd --restart-service"
 alias vlc="/Applications/VLC.app/Contents/MacOS/VLC"
 alias ios_backup="python3 $GIT_HOME/ios-backup-extractor/extract.py"
 alias adb_transfer="python3 $GIT_HOME/adb-wrapper/examples/transfer.py"
@@ -70,8 +72,15 @@ function copy-line-to-keyboard() {
     echo -n "$BUFFER" | pbcopy
 }
 
+function copy-last-command-output() {
+    fc -ln -1 | pbcopy
+    echo "Last command's output copied to clipboard."
+}
+
 zle -N repeat-last-command
 zle -N copy-line-to-keyboard
+zle -N copy-last-command-output
 
-bindkey '^Xr' repeat-last-command   # Ctrl + X followed by R
-bindkey '^Xc' copy-line-to-keyboard # Ctrl + X followed by C
+bindkey '^Xr' repeat-last-command      # Ctrl + X followed by R
+bindkey '^Xc' copy-line-to-keyboard    # Ctrl + X followed by C
+bindkey '^Xo' copy-last-command-output # Ctrl + X followed by O
