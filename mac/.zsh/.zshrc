@@ -57,9 +57,21 @@ bindkey '^[[1;5Q' overwrite-mode     # Ctrl + Q
 bindkey '^[[1;5F' autosuggest-accept # Ctrl + F
 
 bindkey '^[c' capitalize-word # Alt + C
+bindkey '^[d' down-case-word  # Alt + D
+bindkey '^[u' up-case-word    # Alt + U
 
-# Lowercase word
-bindkey '^[d' down-case-word # Alt + D
+# zle functions
+function repeat-last-command() {
+    BUFFER=$(fc -ln -1)
+    zle accept-line
+}
 
-# Uppercase word
-bindkey '^[u' up-case-word # Alt + U
+function copy-line-to-keyboard() {
+    echo -n "$BUFFER" | pbcopy
+}
+
+zle -N repeat-last-command
+zle -N copy-line-to-keyboard
+
+bindkey '^Xr' repeat-last-command   # Ctrl + X followed by R
+bindkey '^Xc' copy-line-to-keyboard # Ctrl + X followed by C
