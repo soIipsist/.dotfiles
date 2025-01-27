@@ -25,6 +25,7 @@ install_dotfiles() {
 
     # Collect dotfiles
     dotfiles=$(find "$folder" -maxdepth 1 -type f ! -name "*.sh" 2>/dev/null)
+    destination_directory="$original_dest"
 
     for script in $scripts; do
       echo "Executing $script."
