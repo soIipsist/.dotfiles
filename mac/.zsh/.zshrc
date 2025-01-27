@@ -11,6 +11,9 @@ export PATH="$HOME/platform-tools/:$PATH"
 # tmux
 export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins/"
 
+# zoxide
+eval "$(zoxide init zsh)"
+
 # YTDLP options
 export YTDLP_PATH="$HOME/ytdlp/yt-dlp_macos"
 export YTDLP_VIDEO_DIRECTORY="$HOME/Desktop/videos"
