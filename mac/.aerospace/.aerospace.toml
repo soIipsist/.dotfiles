@@ -38,6 +38,13 @@ default-root-container-orientation = 'auto'
 # See https://nikitabobko.github.io/AeroSpace/guide#key-mapping
 key-mapping.preset = 'qwerty'
 
+# Mouse follows focus when focused monitor changes
+# Drop it from your config, if you don't like this behavior
+# See https://nikitabobko.github.io/AeroSpace/guide#on-focus-changed-callbacks
+# See https://nikitabobko.github.io/AeroSpace/commands#move-mouse
+# on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+# on-focus-changed = "move-mouse window-lazy-center"
+
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
 # Possible values:
 # - Constant:     gaps.outer.top = 8
@@ -45,13 +52,17 @@ key-mapping.preset = 'qwerty'
 #                 In this example, 24 is a default value when there is no match.
 #                 Monitor pattern is the same as for 'workspace-to-monitor-force-assignment'.
 #                 See: https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
+
+
 [gaps]
-inner.horizontal = 10
-inner.vertical =   10
-outer.left =       10
-outer.bottom =     10
-outer.top =        10
-outer.right =      10
+inner.horizontal = 5
+inner.vertical =   5
+outer.left =       5
+outer.bottom =     5
+outer.top =        5
+outer.right =      5
+
+
 
 # See https://nikitabobko.github.io/AeroSpace/guide#exec-env-vars
 [exec]                   # Again, you don't need to copy all config sections to your config.
@@ -137,6 +148,7 @@ alt-y = 'workspace Y'
 alt-z = 'workspace Z'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
+alt-shift-0 = 'fullscreen'
 alt-shift-1 = 'move-node-to-workspace 1'
 alt-shift-2 = 'move-node-to-workspace 2'
 alt-shift-3 = 'move-node-to-workspace 3'
@@ -191,3 +203,32 @@ alt-shift-j = ['join-with down', 'mode main']
 alt-shift-k = ['join-with up', 'mode main']
 alt-shift-l = ['join-with right', 'mode main']
 
+# Window rules
+# https://nikitabobko.github.io/AeroSpace/guide#callbacks
+#
+# To get app-id:
+# - https://nikitabobko.github.io/AeroSpace/goodness#popular-apps-ids
+# - `aerospace list-apps`
+[[on-window-detected]]
+if.app-id = 'com.googlecode.iterm2'
+run = ['move-node-to-workspace 1']
+
+[[on-window-detected]]
+if.app-id = 'com.microsoft.VSCode'
+run = ['move-node-to-workspace 2']
+
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+run = ['layout floating', 'move-node-to-workspace 3']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = ['layout floating','move-node-to-workspace 4']
+
+[[on-window-detected]]
+if.app-id = 'com.github.GitHubClient'
+run = ['layout floating','move-node-to-workspace 4']
+
+[[on-window-detected]]
+if.app-id = 'com.hnc.Discord'
+run = ['move-node-to-workspace 5']
