@@ -69,6 +69,8 @@ bindkey '^[c' capitalize-word # Alt + C
 bindkey '^[d' down-case-word  # Alt + D
 bindkey '^[u' up-case-word    # Alt + U
 
+bindkey -s ^f "tmux-sessionizer\n" # Ctrl + F
+
 # zle functions
 function repeat-last-command() {
     BUFFER=$(fc -ln -1)

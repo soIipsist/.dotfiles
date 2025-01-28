@@ -45,6 +45,8 @@ set_lockscreen_and_wallpaper() {
 hostname=$(get_json_value "hostname")
 apt_packages=$(get_json_value "apt_packages")
 dotfiles=$(get_json_value "dotfiles")
+scripts=$(get_json_value "scripts")
+excluded_scripts=$(get_json_value "excluded_scripts")
 git_username=$(get_json_value "git_username")
 git_email=$(get_json_value "git_email")
 git_home_path=$(get_json_value "git_home_path")
@@ -63,4 +65,4 @@ clone_git_repos "${git_repos[@]}" $git_home_path
 set_lockscreen_and_wallpaper "$wallpaper_path" "$lockscreen_path"
 
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
-install_dotfiles "${dotfile_folders[@]}" $HOME
+install_dotfiles "${dotfile_folders[@]}" $HOME $scripts $excluded_scripts

@@ -95,6 +95,7 @@ The following parameters are valid for the `linux.json` file:
 - **`wallpaper_path`**: Default wallpaper path.
 - **`lockscreen_path`**: Default lock screen path.
 - **`dotfiles`**: List of dotfile directory names in the `linux` subdirectory (default: all).
+- **`dotfiles_directory`**: Default dotfiles directory (default: `$HOME`).
 - **`scripts`**: List of scripts to be executed in the dotfile subdirectories. If not specified, all scripts will be executed.
 - **`excluded_scripts`**: The scripts specified will not be executed.
 
@@ -109,11 +110,12 @@ These parameters can be specified in the `mac.json` file:
 - **`pip_packages`**: List of `pip` packages to install.
 - **`git_home_path`**: Default `git` home path.
 - **`git_repos`**: List of git repositories to clone.
-- **`git_email`**: Global Git email.
-- **`git_username`**: Global Git username.
+- **`git_email`**: Global `git` email.
+- **`git_username`**: Global `git` username.
 - **`wallpaper_path`**: Default wallpaper path.
 - **`default_shell`**: Default shell.
 - **`dotfiles`**: List of dotfile directory names in the `mac` subdirectory (default: all).
+- **`dotfiles_directory`**: Default dotfiles directory (default: `$HOME`).
 - **`scripts`**: List of scripts to be executed in the dotfile subdirectories. If not specified, all scripts will be executed.
 - **`excluded_scripts`**: The scripts specified will not be executed.
 

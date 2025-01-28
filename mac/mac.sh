@@ -63,6 +63,9 @@ hostname=$(get_json_value "hostname")
 computer_name=$(get_json_value "computer_name")
 local_hostname=$(get_json_value "local_hostname")
 dotfiles=$(get_json_value "dotfiles")
+dotfiles_directory=$(get_json_value "dotfiles_directory")
+scripts=$(get_json_value "scripts")
+excluded_scripts=$(get_json_value "excluded_scripts")
 pip_packages=$(get_json_value "pip_packages")
 git_repos=$(get_json_value "git_repos")
 git_home_path=$(get_json_value "git_home_path")
@@ -77,5 +80,5 @@ install_pip_packages "${pip_packages[@]}"
 git_config $git_username $git_email
 clone_git_repos "${git_repos[@]}" $git_home_path
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
-install_dotfiles "${dotfile_folders[@]}" $HOME
+install_dotfiles "${dotfile_folders[@]}" $dotfiles_directory "${scripts[@]}" "${excluded_scripts[@]}"
 set_wallpaper $wallpaper_path
