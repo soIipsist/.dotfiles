@@ -88,19 +88,23 @@ sketchybar --default icon.font="SF Pro:Semibold:15.0" \
 
 # -- Left Side Items --
 # spaces
-SPACE_SIDS=(1 2 3 4 5 6 7 8 9 10)
 
-# for sid in "${SPACE_SIDS[@]}"; do
-#     sketchybar --add space space.$sid left \
-#         --set space.$sid space=$sid \
-#         icon=$sid \
-#         label.font="sketchybar-app-font:Regular:16.0" \
-#         label.padding_right=20 \
-#         label.y_offset=-1 \
-#         script="$PLUGIN_DIR/space.sh"
-# done
+sketchybar --add event aerospace_workspace_change
 
-# -- Right Side Of Notch Items --
+for sid in $(aerospace list-workspaces --all); do
+    sketchybar --add item space.$sid left \
+        --subscribe space.$sid aerospace_workspace_change \
+        --set space.$sid \
+        background.color=0x44ffffff \
+        background.corner_radius=5 \
+        background.height=20 \
+        background.drawing=off \
+        label="$sid" \
+        click_script="aerospace workspace $sid" \
+        script="$CONFIG_DIR/plugins/aerospace.sh $sid"
+done
+
+# -- Right Side Items --
 # media
 sketchybar --add item media e \
     --set media label.color=$ACCENT_COLOR \
@@ -112,13 +116,12 @@ sketchybar --add item media e \
     background.drawing=off \
     script="$PLUGIN_DIR/media.sh" \
     --subscribe media media_change
-# -- Right Side Items --
 
 # calendar
 sketchybar --add item calendar right \
     --set calendar icon=􀧞 \
     update_freq=30 \
-    script="$PLUGIN_DIR/calendar.sh"
+    script="$PLUGIN_DIR/clock.sh"
 
 # volume
 sketchybar --add item volume right \
@@ -129,7 +132,7 @@ sketchybar \
     --add item cpu right \
     --set cpu update_freq=2 icon=􀧓 script="$PLUGIN_DIR/cpu.sh" \
     --add item battery right \
-    --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
+    --set battery update_freq=120 icon=􀛨 script="$PLUGIN_DIR/battery.sh" \
     --subscribe battery system_woke power_source_change
 
 ##### Finalizing Setup #####
