@@ -1,3 +1,5 @@
 {
-  "dotfiles": [".tmux", ".zsh", ".aerospace"]
+  "dotfiles": [".tmux", ".zsh", ".aerospace"],
+  "scripts": [".zshrc"],
+  "excluded_scripts": ["tmux-sessionizer.sh"]
 }

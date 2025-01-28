@@ -95,6 +95,8 @@ The following parameters are valid for the `linux.json` file:
 - **`wallpaper_path`**: Default wallpaper path.
 - **`lockscreen_path`**: Default lock screen path.
 - **`dotfiles`**: List of dotfile directory names in the `linux` subdirectory (default: all).
+- **`scripts`**: List of scripts to be executed in the dotfile subdirectories. If not specified, all scripts will be executed.
+- **`excluded_scripts`**: The scripts specified will not be executed.
 
 ### macOS (mac.json)
 
@@ -112,6 +114,8 @@ These parameters can be specified in the `mac.json` file:
 - **`wallpaper_path`**: Default wallpaper path.
 - **`default_shell`**: Default shell.
 - **`dotfiles`**: List of dotfile directory names in the `mac` subdirectory (default: all).
+- **`scripts`**: List of scripts to be executed in the dotfile subdirectories. If not specified, all scripts will be executed.
+- **`excluded_scripts`**: The scripts specified will not be executed.
 
 ### Examples
 
