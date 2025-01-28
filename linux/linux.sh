@@ -45,6 +45,7 @@ set_lockscreen_and_wallpaper() {
 hostname=$(get_json_value "hostname")
 apt_packages=$(get_json_value "apt_packages")
 dotfiles=$(get_json_value "dotfiles")
+dotfiles_directory=$(get_json_value "dotfiles_directory")
 scripts=$(get_json_value "scripts")
 excluded_scripts=$(get_json_value "excluded_scripts")
 git_username=$(get_json_value "git_username")
@@ -54,15 +55,13 @@ git_repos=$(get_json_value "git_repos")
 wallpaper_path=$(get_json_value "wallpaper_path")
 lockscreen_path=$(get_json_value "lockscreen_path")
 
-echo $apt_packages
-
 for package in $apt_packages; do
     sudo apt install --yes --no-install-recommends "$package"
 done
 
-git_config $git_username $git_email
-clone_git_repos "${git_repos[@]}" $git_home_path
+git_config "$git_username" "$git_email"
+clone_git_repos "${git_repos[@]}" "$git_home_path"
 set_lockscreen_and_wallpaper "$wallpaper_path" "$lockscreen_path"
 
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
-install_dotfiles "${dotfile_folders[@]}" $HOME $scripts $excluded_scripts
+install_dotfiles "$dotfiles_directory" "$dotfile_folders" "$scripts" "$excluded_scripts"

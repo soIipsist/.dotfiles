@@ -1,6 +1,5 @@
 {
-  "dotfiles": [".tmux", ".zsh", ".aerospace"],
-  "dotfiles_directory": "/Users/p/temp",
-  "scripts": [".zshrc"],
-  "excluded_scripts": ["tmux-sessionizer.sh", "hi.sh", "boo.sh"]
+  "dotfiles": [".tmux", ".zsh", ".yabai", ".aerospace"],
+  "scripts": ["zsh.sh", "yabai.sh"],
+  "excluded_scripts": ["tmux-sessionizer.sh"]
 }

@@ -15,7 +15,10 @@ install_dotfiles() {
 
   if [ -z "$1" ]; then
     dotfiles_directory=$HOME
-    return
+  fi
+
+  if [ -z "$2" ]; then
+    dotfile_folders=$(get_dotfile_folders)
   fi
 
   original_dest=$dotfiles_directory
@@ -27,7 +30,6 @@ install_dotfiles() {
 
     if [[ -n "$scripts" ]]; then
       dotfile_scripts="${scripts[@]}"
-      echo "Scripts is not empty ${dotfile_scripts[@]}"
     fi
 
     # Collect dotfiles
@@ -38,13 +40,19 @@ install_dotfiles() {
 
       # check if script is in excluded_scripts or is not in scripts
       if [[ " ${excluded_scripts[*]} " =~ " ${script} " ]]; then
-        echo "EXCLUDED: $script"
+        continue
+      fi
+
+      script=$(basename $script)
+      script="$PWD/$folder/$script"
+
+      if ! ls "$script" &>/dev/null; then
         continue
       fi
 
       echo "Executing $script."
 
-      new_dir=$(bash "$script")
+      new_dir=$(source "$script")
 
       if [ -n "$new_dir" ]; then
         dotfiles_directory="$new_dir"
@@ -55,6 +63,7 @@ install_dotfiles() {
 
     for dotfile in $dotfiles; do
       basefile=$(basename "$dotfile")
+
       if [ ! -d "$dotfiles_directory" ]; then
         mkdir -p "$dotfiles_directory"
         echo "Created directory: $dotfiles_directory"
@@ -63,12 +72,6 @@ install_dotfiles() {
       cp -f "$dotfile" "$dotfiles_directory/$basefile"
       echo "Copied $dotfile to $dotfiles_directory/$basefile."
 
-      if [[ $basefile == *.sh ]]; then
-        source "$dotfiles_directory/$basefile"
-      fi
-
     done
-
   done
-
 }
