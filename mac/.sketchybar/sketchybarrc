@@ -1,0 +1,139 @@
+# This is a demo config to showcase some of the most important commands.
+# It is meant to be changed and configured, as it is intentionally kept sparse.
+# For a (much) more advanced configuration example see my dotfiles:
+# https://github.com/FelixKratz/dotfiles
+
+export WHITE=0xffffffff
+
+# -- Teal Scheme --
+export BAR_COLOR=0xff001f30
+export ITEM_BG_COLOR=0xff003547
+export ACCENT_COLOR=0xff2cf9ed
+
+# -- Gray Scheme --
+# export BAR_COLOR=0xff101314
+# export ITEM_BG_COLOR=0xff353c3f
+# export ACCENT_COLOR=0xffffffff
+
+# -- Purple Scheme --
+# export BAR_COLOR=0xff140c42
+# export ITEM_BG_COLOR=0xff2b1c84
+# export ACCENT_COLOR=0xffeb46f9
+
+# -- Red Scheme ---
+# export BAR_COLOR=0xff23090e
+# export ITEM_BG_COLOR=0xff591221
+# export ACCENT_COLOR=0xffff2453
+
+# -- Blue Scheme ---
+# export BAR_COLOR=0xff021254
+# export ITEM_BG_COLOR=0xff093aa8
+# export ACCENT_COLOR=0xff15bdf9
+
+# -- Green Scheme --
+# export BAR_COLOR=0xff003315
+# export ITEM_BG_COLOR=0xff008c39
+# export ACCENT_COLOR=0xff1dfca1
+
+# -- Orange Scheme --
+# export BAR_COLOR=0xff381c02
+# export ITEM_BG_COLOR=0xff99440a
+# export ACCENT_COLOR=0xfff97716
+
+# -- Yellow Scheme --
+# export BAR_COLOR=0xff2d2b02
+# export ITEM_BG_COLOR=0xff8e7e0a
+# export ACCENT_COLOR=0xfff7fc17
+
+# This is a demo config to show some of the most important commands more easily.
+# This is meant to be changed and configured, as it is intentionally kept sparse.
+# For a more advanced configuration example see my dotfiles:
+# https://github.com/FelixKratz/dotfiles
+
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+
+##### Bar Appearance #####
+# Configuring the general appearance of the bar, these are only some of the
+# options available. For all options see:
+# https://felixkratz.github.io/SketchyBar/config/bar
+# If you are looking for other colors, see the color picker:
+# https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
+
+sketchybar --bar height=37 \
+    blur_radius=30 \
+    position=top \
+    sticky=off \
+    padding_left=10 \
+    padding_right=10 \
+    color=$BAR_COLOR
+
+##### Changing Defaults #####
+# We now change some default values that are applied to all further items
+# For a full list of all available item properties see:
+# https://felixkratz.github.io/SketchyBar/config/items
+
+sketchybar --default icon.font="SF Pro:Semibold:15.0" \
+    icon.color=$WHITE \
+    label.font="SF Pro:Semibold:15.0" \
+    label.color=$WHITE \
+    background.color=$ITEM_BG_COLOR \
+    background.corner_radius=5 \
+    background.height=24 \
+    padding_left=5 \
+    padding_right=5 \
+    label.padding_left=4 \
+    label.padding_right=10 \
+    icon.padding_left=10 \
+    icon.padding_right=4
+
+# -- Left Side Items --
+# spaces
+SPACE_SIDS=(1 2 3 4 5 6 7 8 9 10)
+
+# for sid in "${SPACE_SIDS[@]}"; do
+#     sketchybar --add space space.$sid left \
+#         --set space.$sid space=$sid \
+#         icon=$sid \
+#         label.font="sketchybar-app-font:Regular:16.0" \
+#         label.padding_right=20 \
+#         label.y_offset=-1 \
+#         script="$PLUGIN_DIR/space.sh"
+# done
+
+# -- Right Side Of Notch Items --
+# media
+sketchybar --add item media e \
+    --set media label.color=$ACCENT_COLOR \
+    label.max_chars=20 \
+    icon.padding_left=0 \
+    scroll_texts=on \
+    icon=􀑪 \
+    icon.color=$ACCENT_COLOR \
+    background.drawing=off \
+    script="$PLUGIN_DIR/media.sh" \
+    --subscribe media media_change
+# -- Right Side Items --
+
+# calendar
+sketchybar --add item calendar right \
+    --set calendar icon=􀧞 \
+    update_freq=30 \
+    script="$PLUGIN_DIR/calendar.sh"
+
+# volume
+sketchybar --add item volume right \
+    --set volume script="$PLUGIN_DIR/volume.sh" \
+    --subscribe volume volume_change
+
+sketchybar \
+    --add item cpu right \
+    --set cpu update_freq=2 icon=􀧓 script="$PLUGIN_DIR/cpu.sh" \
+    --add item battery right \
+    --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
+    --subscribe battery system_woke power_source_change
+
+##### Finalizing Setup #####
+# The below command is only needed at the end of the initial configuration to
+# force all scripts to run the first time, it should never be run in an item script.
+
+sketchybar --update

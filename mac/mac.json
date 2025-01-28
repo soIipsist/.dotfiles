@@ -1,5 +1,5 @@
 {
-  "dotfiles": [".tmux", ".zsh", ".yabai", ".aerospace"],
-  "scripts": ["zsh.sh", "yabai.sh"],
+  "dotfiles": [".tmux", ".zsh", ".yabai", ".aerospace", ".sketchybar"],
+  "scripts": ["zsh.sh", "yabai.sh", "sketchybar.sh"],
   "excluded_scripts": ["tmux-sessionizer.sh"]
 }
