@@ -128,7 +128,11 @@ alt-6 = 'workspace 6'
 alt-7 = 'workspace 7'
 alt-8 = 'workspace 8'
 alt-9 = 'workspace 9'
-
+alt-t = 'workspace 1' # Terminal
+alt-c = 'workspace 2' # IDE/editor
+alt-b = 'workspace 3' # Browser 
+alt-f = 'workspace 4' # Finder
+alt-d = 'workspace 5' # DMs
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-shift-0 = 'fullscreen'

@@ -38,13 +38,13 @@ install_dotfiles() {
 
     for script in $dotfile_scripts; do
 
+      script_basename=$(basename $script)
+      script="$PWD/$folder/$script_basename"
+
       # check if script is in excluded_scripts or is not in scripts
-      if [[ " ${excluded_scripts[*]} " =~ " ${script} " ]]; then
+      if [[ " ${excluded_scripts[*]} " =~ " ${script} " || " ${excluded_scripts[*]} " =~ " ${script_basename} " ]]; then
         continue
       fi
-
-      script=$(basename $script)
-      script="$PWD/$folder/$script"
 
       if ! ls "$script" &>/dev/null; then
         continue
