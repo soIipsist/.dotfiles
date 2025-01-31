@@ -1,6 +1,5 @@
 {
-  "dotfiles": [".yabai", ".aerospace", ".tmux"],
-  "dotfiles_directory": "/Users/p/temp",
+  "dotfiles": [".sketchybar"],
   "scripts": [],
   "excluded_scripts": []
 }

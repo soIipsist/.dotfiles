@@ -6,9 +6,9 @@
 export WHITE=0xffffffff
 
 # -- Teal Scheme --
-export BAR_COLOR=0xff001f30
-export ITEM_BG_COLOR=0xff003547
-export ACCENT_COLOR=0xff2cf9ed
+# export BAR_COLOR=0xff001f30
+# export ITEM_BG_COLOR=0xff003547
+# export ACCENT_COLOR=0xff2cf9ed
 
 # -- Gray Scheme --
 # export BAR_COLOR=0xff101314
@@ -16,9 +16,9 @@ export ACCENT_COLOR=0xff2cf9ed
 # export ACCENT_COLOR=0xffffffff
 
 # -- Purple Scheme --
-# export BAR_COLOR=0xff140c42
-# export ITEM_BG_COLOR=0xff2b1c84
-# export ACCENT_COLOR=0xffeb46f9
+export BAR_COLOR=0xff140c42
+export ITEM_BG_COLOR=0xff2b1c84
+export ACCENT_COLOR=0xffeb46f9
 
 # -- Red Scheme ---
 # export BAR_COLOR=0xff23090e
@@ -50,6 +50,7 @@ export ACCENT_COLOR=0xff2cf9ed
 # For a more advanced configuration example see my dotfiles:
 # https://github.com/FelixKratz/dotfiles
 
+CONFIG_DIR="$HOME/.config/sketchybar"
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
 ##### Bar Appearance #####
@@ -128,11 +129,14 @@ sketchybar --add item volume right \
     --set volume script="$PLUGIN_DIR/volume.sh" \
     --subscribe volume volume_change
 
-sketchybar \
-    --add item cpu right \
-    --set cpu update_freq=2 icon=􀧓 script="$PLUGIN_DIR/cpu.sh" \
-    --add item battery right \
-    --set battery update_freq=120 icon=􀛨 script="$PLUGIN_DIR/battery.sh" \
+sketchybar --add item cpu right \
+    --set cpu update_freq=2 \
+    icon="􀧓" \
+    script="$PLUGIN_DIR/cpu.sh"
+
+sketchybar --add item battery right \
+    --set battery update_freq=120 \
+    script="$PLUGIN_DIR/battery.sh" \
     --subscribe battery system_woke power_source_change
 
 ##### Finalizing Setup #####
