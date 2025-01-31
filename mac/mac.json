@@ -1,5 +1,5 @@
 {
-  "dotfiles": [".sketchybar"],
+  "dotfiles": [".alacritty"],
   "scripts": [],
   "excluded_scripts": []
 }
