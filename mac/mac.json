@@ -1,5 +1,5 @@
 {
-  "dotfiles": [".alacritty"],
+  "dotfiles": [".sketchybar", ".aerospace", ".yabai", ".alacritty", ".fonts"],
   "scripts": [],
   "excluded_scripts": []
 }

@@ -7,8 +7,8 @@
 #"~/.config/alacritty/keybindings.toml",
 #]
 
-[shell]
-program               = "/usr/bin/zsh"
+[terminal.shell]
+program               = "/bin/zsh"
 args                  = [ "--login", ]
 
 #working_directory     = "None"
@@ -44,7 +44,7 @@ normal                = { family = "FantasqueSansMNerdFont Propo", style = "Regu
 bold                  = { family = "FantasqueSansMNerdFont Propo", style = "Bold" }
 italic                = { family = "FantasqueSansMNerdFont Propo", style = "Italic" }
 bold_italic           = { family = "FantasqueSansMNerdFont Propo", style = "Bold Italic" }
-#size                  = 11.25
+size                  = 11.25
 offset                = { x = 0, y = 0 }
 glyph_offset          = { x = 0, y = 0 }
 #builtin_box_drawing   = true
