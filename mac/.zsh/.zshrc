@@ -32,6 +32,7 @@ export GIT_HOME="$HOME/repos/soIipsist"
 # VSCode variables
 export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/vscode-workspaces/.workspaces"
 export VSCODE_PROJECT_DIRECTORY="$GIT_HOME"
+export OLLAMA_MODEL="deepseek-r1:14b"
 
 # aliases
 alias python="python3"
@@ -51,6 +52,7 @@ alias adb_root="python3 $GIT_HOME/adb-wrapper/examples/root.py"
 alias vscode="python3 $GIT_HOME/vscode-workspaces/workspaces.py"
 alias cdf='cd "$(find . -type d | fzf)"'
 alias dots="(cd $DOTFILES_DIRECTORY/mac && bash mac.sh)"
+alias llm="ollama run $OLLAMA_MODEL"
 
 # key bindings
 bindkey '^[[1;2D' backward-word # Shift + Left Arrow

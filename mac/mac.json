@@ -1,5 +1,5 @@
 {
-  "dotfiles": [".sketchybar", ".aerospace", ".yabai", ".alacritty", ".fonts"],
+  "dotfiles": [".zsh", ".sketchybar"],
   "scripts": [],
   "excluded_scripts": []
 }
