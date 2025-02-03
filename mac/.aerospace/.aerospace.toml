@@ -128,11 +128,12 @@ alt-6 = 'workspace 6'
 alt-7 = 'workspace 7'
 alt-8 = 'workspace 8'
 alt-9 = 'workspace 9'
-alt-t = ['workspace 1', "exec-and-forget open -a 'iTerm'"] # Terminal
-alt-c = ['workspace 2', "exec-and-forget open -a 'VS Code'"] # IDE/editor
-alt-b = ["workspace 3", "exec-and-forget open -a 'Google Chrome'"]# Browser 
-alt-f = ['workspace 4', "exec-and-forget open -a 'Finder'"] # Finder
-alt-d = ['workspace 5', "exec-and-forget open -a 'Discord'"] # DMs
+alt-t = ["exec-and-forget open -a 'iTerm'"] # Terminal
+alt-c = ["exec-and-forget open -a 'Visual Studio Code'"] # IDE/editor
+alt-b = ["exec-and-forget open -a 'Google Chrome'"]# Browser 
+alt-f = ["exec-and-forget open -a 'Finder'"] # Finder
+alt-d = ["exec-and-forget open -a 'Discord'"] # DMs
+alt-g = ["exec-and-forget open -a 'GitHub Desktop'"]
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-shift-0 = 'fullscreen'
