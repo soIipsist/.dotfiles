@@ -82,10 +82,7 @@ for sid in $(aerospace list-workspaces --all); do
 done
 
 sketchybar --add item separator left \
-    --set separator width=100 \
-    label="hello" \
-    label.drawing='off' \
-    icon="􀅉" \
+    --set separator icon="􀅉" \
     icon.font="$FONT" \
     background.padding_left=26 \
     background.padding_right=26
