@@ -79,6 +79,11 @@ set_default_shell
 install_pip_packages "${pip_packages[@]}"
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home_path"
+
+# copy colors to $HOME
+cp -f "$PWD/colors.sh" $HOME
+chmod +x "$HOME/colors.sh"
+
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
 install_dotfiles "$dotfiles_directory" "$dotfile_folders" "$scripts" "$excluded_scripts"
 set_wallpaper "$wallpaper_path"

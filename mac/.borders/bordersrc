@@ -1,11 +1,12 @@
 #!/bin/bash
+source "$HOME/colors.sh"
 
 options=(
 	style=round
-	width=5.0
+	width=$BORDER_WIDTH
 	hidpi=off
-	active_color=0xff4242DA
-	inactive_color=0xff414550
+	active_color=$BORDER_ACTIVE_COLOR
+	inactive_color=$BORDER_INACTIVE_COLOR
 )
 
 borders "${options[@]}"

@@ -19,12 +19,12 @@ PLUGIN_DIR="$CONFIG_DIR/plugins"
 # If you are looking for other colors, see the color picker:
 # https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
 
-sketchybar --bar height=37 \
+sketchybar --bar height=$SKETCHYBAR_HEIGHT \
     blur_radius=30 \
     position=top \
     sticky=off \
-    padding_left=10 \
-    padding_right=10 \
+    padding_left=$SKETCHYBAR_PADDING_LEFT \
+    padding_right=$SKETCHYBAR_PADDING_RIGHT \
     color=$SKETCHYBAR_PRIMARY_COLOR
 
 ##### Changing Defaults #####
@@ -72,7 +72,7 @@ done
 
 # reload button
 sketchybar --add item reload left \
-    --set reload icon="􀅉" \
+    --set reload icon="$SKETCHYBAR_ICON_RELOAD" \
     width=30 \
     background.color=$SKETCHYBAR_PRIMARY_COLOR \
     icon.font="$SKETCHYBAR_FONT" \
@@ -83,7 +83,7 @@ sketchybar --add item reload left \
 
 # copy from clipboard button
 sketchybar --add item clipboard left \
-    --set clipboard icon="􀉃" \
+    --set clipboard icon="$SKETCHYBAR_ICON_CLIPBOARD" \
     width=30 \
     background.color=$SKETCHYBAR_PRIMARY_COLOR \
     icon.font="$SKETCHYBAR_FONT" \
@@ -120,7 +120,7 @@ sketchybar --add item media e \
 
 # calendar
 sketchybar --add item calendar right \
-    --set calendar icon=􀧞 \
+    --set calendar icon="$SKETCHYBAR_ICON_CALENDAR" \
     update_freq=30 \
     script="$PLUGIN_DIR/calendar.sh" \
     click_script="open -a Calendar"
@@ -137,7 +137,7 @@ sketchybar --add item battery right \
 
 sketchybar --add item cpu right \
     --set cpu update_freq=2 \
-    icon=􀧓 \
+    icon="$SKETCHYBAR_ICON_CPU" \
     script="$PLUGIN_DIR/cpu.sh"
 
 ##### Finalizing Setup #####
