@@ -15,4 +15,7 @@ for script in "$source_scripts_directory"/*; do
     fi
 done
 
+# copy colors
+cp -f "$PWD/.zsh/colors.sh" $destination_directory
+chmod +x "$destination_directory/colors.sh"
 echo $destination_directory

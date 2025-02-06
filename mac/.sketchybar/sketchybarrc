@@ -2,25 +2,15 @@
 # It is meant to be changed and configured, as it is intentionally kept sparse.
 # For a (much) more advanced configuration example see my dotfiles:
 # https://github.com/FelixKratz/dotfiles
-
-export WHITE=0xffffffff
-
-# -- Purple Scheme --
-export BAR_COLOR=0xFF140C42
-export ITEM_BG_COLOR=0xFF2b1c84
-export ACCENT_COLOR=0xFFeb46f9
-
 # This is a demo config to show some of the most important commands more easily.
 # This is meant to be changed and configured, as it is intentionally kept sparse.
 # For a more advanced configuration example see my dotfiles:
 # https://github.com/FelixKratz/dotfiles
 
+source $HOME/colors.sh
+
 CONFIG_DIR="$HOME/.config/sketchybar"
 PLUGIN_DIR="$CONFIG_DIR/plugins"
-FONT_FAMILY="SF Pro"
-FONT_TYPEFACE="Bold"
-FONT_SIZE="15.0"
-FONT="$FONT_FAMILY:$FONT_TYPEFACE:$FONT_SIZE"
 
 ##### Bar Appearance #####
 # Configuring the general appearance of the bar, these are only some of the
@@ -35,18 +25,18 @@ sketchybar --bar height=37 \
     sticky=off \
     padding_left=10 \
     padding_right=10 \
-    color=$BAR_COLOR
+    color=$SKETCHYBAR_PRIMARY_COLOR
 
 ##### Changing Defaults #####
 # We now change some default values that are applied to all further items
 # For a full list of all available item properties see:
 # https://felixkratz.github.io/SketchyBar/config/items
 
-sketchybar --default icon.font="$FONT" \
+sketchybar --default icon.font="$SKETCHYBAR_FONT" \
     icon.color=$WHITE \
-    label.font="$FONT" \
+    label.font="$SKETCHYBAR_FONT" \
     label.color=$WHITE \
-    background.color=$ITEM_BG_COLOR \
+    background.color=$SKETCHYBAR_SECONDARY_COLOR \
     background.corner_radius=5 \
     background.height=24 \
     padding_left=5 \
@@ -63,7 +53,7 @@ sketchybar --add event aerospace_workspace_change
 for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item space.$sid left \
         --subscribe space.$sid aerospace_workspace_change \
-        --set space.$sid background.color=$ITEM_BG_COLOR \
+        --set space.$sid background.color=$SKETCHYBAR_SECONDARY_COLOR \
         background.drawing=off \
         background.corner_radius=5 \
         width=30 \
@@ -84,8 +74,8 @@ done
 sketchybar --add item reload left \
     --set reload icon="􀅉" \
     width=30 \
-    background.color=$BAR_COLOR \
-    icon.font="$FONT" \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    icon.font="$SKETCHYBAR_FONT" \
     label.align=center \
     icon.align=center \
     background.padding_left=15 \
@@ -95,8 +85,8 @@ sketchybar --add item reload left \
 sketchybar --add item clipboard left \
     --set clipboard icon="􀉃" \
     width=30 \
-    background.color=$BAR_COLOR \
-    icon.font="$FONT" \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    icon.font="$SKETCHYBAR_FONT" \
     label.align=center \
     icon.align=center \
     background.padding_left=15 \
@@ -107,22 +97,22 @@ sketchybar --add item clipboard left \
 sketchybar --add item active_workspace q \
     --set active_workspace width=50 \
     label.max_chars=30 \
-    background.color=$BAR_COLOR \
-    icon.font="$FONT" \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    icon.font="$SKETCHYBAR_FONT" \
     label.align=center
 
 # -- Right Side Items --
 # media
 sketchybar --add item media e \
-    --set media label.color=$ACCENT_COLOR \
+    --set media label.color=$SKETCHYBAR_ACCENT_COLOR \
     label.max_chars=20 \
     label.align=center \
     icon.align=center \
-    label.font="$FONT" \
+    label.font="$SKETCHYBAR_FONT" \
     label.padding_top=50 \
     icon.padding_left=0 \
     scroll_texts=on \
-    icon.color=$ACCENT_COLOR \
+    icon.color=$SKETCHYBAR_ACCENT_COLOR \
     background.drawing=off \
     script="$PLUGIN_DIR/media.sh" \
     click_script="$PLUGIN_DIR/media_click.sh" \
