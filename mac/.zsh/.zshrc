@@ -21,6 +21,11 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 export PATH="$HOME/platform-tools/:$PATH"
 
+# history
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE="2000"
+export SAVEHIST="2000"
+
 # tmux
 export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins/"
 
