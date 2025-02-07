@@ -3,6 +3,19 @@ plugins=(
 )
 source $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
+function repeat-last-command() {
+    BUFFER=$(fc -ln -1)
+    zle accept-line
+}
+
+function copy-line-to-keyboard() {
+    echo -n "$BUFFER" | pbcopy
+}
+
+function cap() { tee /tmp/capture.out; }
+
+function ret() { cat /tmp/capture.out; }
+
 # PATH variable
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
@@ -72,29 +85,6 @@ bindkey '^[d' down-case-word  # Alt + D
 bindkey '^[u' up-case-word    # Alt + U
 
 bindkey -s ^f "tmux-sessionizer\n" # Ctrl + F
-
-# zle functions
-function repeat-last-command() {
-    BUFFER=$(fc -ln -1)
-    zle accept-line
-}
-
-function copy-line-to-keyboard() {
-    echo -n "$BUFFER" | pbcopy
-}
-
-function copy-last-command-output() {
-    last_cmd=$(fc -ln -1 | tail -n 1 | tr -d '\n' | tr -cd '[:print:]')
-    output=$(eval "$last_cmd")
-    trimmed_output=$(printf "%s" "$output")
-    echo "$trimmed_output" | pbcopy
-    echo "Last command's output copied to clipboard."
-    zle accept-line
-}
-
-function cap() { tee /tmp/capture.out; }
-
-function ret() { cat /tmp/capture.out; }
 
 zle -N repeat-last-command
 zle -N copy-line-to-keyboard

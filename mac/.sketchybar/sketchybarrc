@@ -81,8 +81,9 @@ for sid in $(aerospace list-workspaces --all); do
         script="$PLUGIN_DIR/aerospace.sh $sid"
 done
 
-sketchybar --add item separator left \
-    --set separator icon="􀅉" \
+# reload button
+sketchybar --add item reload left \
+    --set reload icon="􀅉" \
     width=30 \
     background.color=$BAR_COLOR \
     icon.font="$FONT" \
@@ -91,6 +92,18 @@ sketchybar --add item separator left \
     background.padding_left=26 \
     background.padding_right=26 \
     click_script="$PLUGIN_DIR/reload.sh"
+
+# copy from clipboard button
+sketchybar --add item clipboard left \
+    --set clipboard icon="􀉃" \
+    width=30 \
+    background.color=$BAR_COLOR \
+    icon.font="$FONT" \
+    label.align=center \
+    icon.align=center \
+    background.padding_left=26 \
+    background.padding_right=26 \
+    click_script="/bin/bash -c cpout"
 
 # -- Right Side Items --
 # media
