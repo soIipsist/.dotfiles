@@ -1,8 +1,15 @@
 #!/bin/zsh
 
 HISTORY_FILE="$HOME/.zsh_history"
+
+if [[ -z "$1" ]]; then
+    depth=2
+else
+    depth=$1
+fi
+
 last_cmd=$(
-    tail -n 2 $HISTORY_FILE | head -n 1
+    tail -n $depth $HISTORY_FILE | head -n 1
 )
 echo $last_cmd
 echo "Last command: '$last_cmd'" >>/tmp/cpout_debug.log
