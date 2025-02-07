@@ -57,25 +57,24 @@ sketchybar --default icon.font="$FONT" \
     icon.padding_right=4
 
 # -- Left Side Items --
-# spaces
-
+# aerospace spaces
 sketchybar --add event aerospace_workspace_change
 
 for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item space.$sid left \
         --subscribe space.$sid aerospace_workspace_change \
-        --set space.$sid width=30 \
-        background.color=$ITEM_BG_COLOR \
-        background.corner_radius=5 \
-        background.height=30 \
+        --set space.$sid background.color=$ITEM_BG_COLOR \
         background.drawing=off \
-        padding_left=15 \
-        padding_right=15 \
-        label.align=center \
-        label.padding_left=7 \
-        label.padding_right=0 \
+        background.corner_radius=5 \
+        width=30 \
+        height=40 \
+        label.padding_left=10 \
+        label.position=center \
+        label.width=20 \
+        icon.position=center \
+        icon.width=0 \
         icon.padding_left=0 \
-        icon.align=center \
+        icon.padding_right=0 \
         label="$sid" \
         click_script="aerospace workspace $sid" \
         script="$PLUGIN_DIR/aerospace.sh $sid"
@@ -89,8 +88,7 @@ sketchybar --add item reload left \
     icon.font="$FONT" \
     label.align=center \
     icon.align=center \
-    background.padding_left=26 \
-    background.padding_right=26 \
+    background.padding_left=15 \
     click_script="$PLUGIN_DIR/reload.sh"
 
 # copy from clipboard button
@@ -101,9 +99,17 @@ sketchybar --add item clipboard left \
     icon.font="$FONT" \
     label.align=center \
     icon.align=center \
-    background.padding_left=26 \
-    background.padding_right=26 \
+    background.padding_left=15 \
+    background.padding_right=15 \
     click_script="$PLUGIN_DIR/clipboard.sh"
+
+# active workspace
+sketchybar --add item active_workspace q \
+    --set active_workspace width=50 \
+    label.max_chars=30 \
+    background.color=$BAR_COLOR \
+    icon.font="$FONT" \
+    label.align=center
 
 # -- Right Side Items --
 # media
@@ -116,7 +122,6 @@ sketchybar --add item media e \
     label.padding_top=50 \
     icon.padding_left=0 \
     scroll_texts=on \
-    icon=􀑪 \
     icon.color=$ACCENT_COLOR \
     background.drawing=off \
     script="$PLUGIN_DIR/media.sh" \
