@@ -25,6 +25,8 @@ export PATH="$HOME/platform-tools/:$PATH"
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE="2000"
 export SAVEHIST="2000"
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
 
 # tmux
 export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins/"

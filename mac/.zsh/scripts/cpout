@@ -1,25 +1,18 @@
 #!/bin/zsh
 
-# Start an interactive Zsh session temporarily to access history
 HISTORY_FILE="$HOME/.zsh_history"
 last_cmd=$(
-    tail -n 2 $HISTORY_FILE
+    tail -n 2 $HISTORY_FILE | head -n 1
 )
-
 echo $last_cmd
-# Debugging: Log last command
-# echo "Last command: '$last_cmd'" >>/tmp/cpout_debug.log
+echo "Last command: '$last_cmd'" >>/tmp/cpout_debug.log
 
-# # Ensure there's a valid last command
-# if [[ -z "$last_cmd" ]]; then
-#     echo "No previous command found."
-#     exit 1
-# fi
+if [[ -z "$last_cmd" ]]; then
+    echo "No previous command found."
+    exit 1
+fi
 
-# # Execute the last command and capture its output
-# output=$(eval "$last_cmd" 2>&1)
-
-# # Copy the output to the clipboard
-# echo "$output" | pbcopy
+output=$(eval "$last_cmd" 2>&1)
+echo "$output" | pbcopy
 
 echo "Last command's output copied to clipboard."

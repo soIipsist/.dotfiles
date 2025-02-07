@@ -103,7 +103,7 @@ sketchybar --add item clipboard left \
     icon.align=center \
     background.padding_left=26 \
     background.padding_right=26 \
-    click_script="/bin/bash -c cpout"
+    click_script="$PLUGIN_DIR/clipboard.sh"
 
 # -- Right Side Items --
 # media
