@@ -3,7 +3,7 @@ plugins_directory="$destination_directory/plugins"
 source_plugins_directory="$PWD/.sketchybar/plugins"
 
 # copy plugins
-files=("aerospace.sh" "battery.sh" "calendar.sh" "clock.sh" "cpu.sh" "front_app.sh" "icon_map_fn.sh" "media.sh" "space_windows.sh" "space.sh" "volume.sh")
+files=("aerospace.sh" "reload.sh" "battery.sh" "calendar.sh" "clock.sh" "cpu.sh" "front_app.sh" "icon_map_fn.sh" "media.sh" "space_windows.sh" "space.sh" "volume.sh")
 
 for file in "${files[@]}"; do
     cp -f "$source_plugins_directory/$file" "$plugins_directory"

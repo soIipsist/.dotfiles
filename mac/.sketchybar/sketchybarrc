@@ -83,9 +83,14 @@ done
 
 sketchybar --add item separator left \
     --set separator icon="􀅉" \
+    width=30 \
+    background.color=$BAR_COLOR \
     icon.font="$FONT" \
+    label.align=center \
+    icon.align=center \
     background.padding_left=26 \
-    background.padding_right=26
+    background.padding_right=26 \
+    click_script="$PLUGIN_DIR/reload.sh"
 
 # -- Right Side Items --
 # media
