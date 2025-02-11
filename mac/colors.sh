@@ -3,36 +3,6 @@ source "../json.sh"
 color_scheme="colors_1"
 json_file="colors/$color_scheme.json"
 
-# colors
-export PRIMARY_COLOR=0x140C42
-export SECONDARY_COLOR=0x2b1c84
-export ACCENT_COLOR=0xeb46f9
-
-# sketchybar
-export SKETCHYBAR_WHITE=$(get_json_value "SKETCHYBAR_WHITE" $json_file)
-export SKETCHYBAR_PRIMARY_COLOR=0xFF140C42
-export SKETCHYBAR_SECONDARY_COLOR=0xFF2b1c84
-export SKETCHYBAR_ACCENT_COLOR=0xFFeb46f9
-
-export SKETCHYBAR_FONT_FAMILY="Hack Nerd Font"
-export SKETCHYBAR_FONT_TYPEFACE="Bold"
-export SKETCHYBAR_FONT_SIZE="15.5"
-export SKETCHYBAR_FONT="$SKETCHYBAR_FONT_FAMILY:$SKETCHYBAR_FONT_TYPEFACE:$SKETCHYBAR_FONT_SIZE"
-
-export SKETCHYBAR_HEIGHT=37
-export SKETCHYBAR_PADDING_LEFT=10
-export SKETCHYBAR_PADDING_RIGHT=10
-
-export SKETCHYBAR_ICON_CALENDAR="􀧞"
-export SKETCHYBAR_ICON_CPU="􀧓"
-export SKETCHYBAR_ICON_RELOAD="􀅉"
-export SKETCHYBAR_ICON_CLIPBOARD="􀉃"
-
-# borders
-export BORDER_WIDTH=10.0
-export BORDER_ACTIVE_COLOR=0xFF160673
-export BORDER_INACTIVE_COLOR=0xff414550
-
-# vscode
-export VSCODE_TERMINAL_BACKGROUND=#000000
-export VSCODE_EDITOR_BACKGROUND=#000000
+while IFS='=' read -r key value; do
+    export "$key"="$value"
+done < <(jq -r 'to_entries | .[] | "\(.key)=\(.value)"' "$json_file")
