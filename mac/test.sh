@@ -4,15 +4,7 @@ source "../os.sh"
 source "../dotfiles.sh"
 source "../git.sh"
 
-variable="\$GIT_EMAIL"
-arr_variable="\$SOME_ARRAY"
+set_json_value "red" "#FF0000" "colors.json"
 
-val=$(get_env_variable $variable)
-echo $val
-
-val2=$(get_env_variable $arr_variable)
-# echo $val2
-
-for item in $val2; do
-    echo $item
-done
+set_json_value "red" "pink" "colors.json"
+set_json_value "blue" "pink" "colors.json"

@@ -1,5 +1,6 @@
 {
   "dotfiles": [".vscode", ".aerospace"],
   "scripts": [],
-  "pip_packages": []
+  "pip_packages": [],
+  "git_username": ""
 }

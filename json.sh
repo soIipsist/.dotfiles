@@ -32,9 +32,9 @@ get_json_value() {
     value=$(jq -r .$key[] "$json_file")
   fi
 
-  env_value=$(get_env_variable $value)
+  env_value=$(get_env_variable "$value")
 
-  if [ ! -z $env_value ]; then
+  if [ ! -z "$env_value" ]; then
     value="$env_value"
   fi
 
@@ -64,4 +64,13 @@ get_env_variable() {
       echo "$env_value"
     fi
   fi
+}
+
+set_json_value() {
+  key="$1"
+  value="$2"
+  json_file="$3"
+
+  cat <<<$(jq --arg k "$key" --arg v "$value" '.[$k] = $v' "$json_file") >$json_file
+
 }
