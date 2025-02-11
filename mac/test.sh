@@ -4,11 +4,15 @@ source "../os.sh"
 source "../dotfiles.sh"
 source "../git.sh"
 
-vals=("hello" "goodbye")
-# vals="red"
+variable="\$GIT_EMAIL"
+arr_variable="\$SOME_ARRAY"
 
-excluded_scripts=$(get_json_value "excluded_scripts")
-scripts=$(get_json_value "scripts")
-dotfiles=$(get_json_value "dotfiles")
+val=$(get_env_variable $variable)
+echo $val
 
-echo "${excluded_scripts[@]}"
+val2=$(get_env_variable $arr_variable)
+# echo $val2
+
+for item in $val2; do
+    echo $item
+done
