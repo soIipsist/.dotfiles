@@ -4,7 +4,7 @@ source "../os.sh"
 source "../dotfiles.sh"
 source "../git.sh"
 
-set_json_value "red" "#FF0000" "colors.json"
+json_file="colors/colors_1.json"
 
-set_json_value "red" "pink" "colors.json"
-set_json_value "blue" "pink" "colors.json"
+set_json_value "red" "#FF0000" $json_file
+set_json_value "red" "pink" $json_file

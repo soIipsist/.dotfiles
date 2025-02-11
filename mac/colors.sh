@@ -1,10 +1,15 @@
+source "../json.sh"
+
+color_scheme="colors_1"
+json_file="colors/$color_scheme.json"
+
 # colors
-export WHITE=0xffffffff
 export PRIMARY_COLOR=0x140C42
 export SECONDARY_COLOR=0x2b1c84
 export ACCENT_COLOR=0xeb46f9
 
 # sketchybar
+export SKETCHYBAR_WHITE=$(get_json_value "SKETCHYBAR_WHITE" $json_file)
 export SKETCHYBAR_PRIMARY_COLOR=0xFF140C42
 export SKETCHYBAR_SECONDARY_COLOR=0xFF2b1c84
 export SKETCHYBAR_ACCENT_COLOR=0xFFeb46f9
