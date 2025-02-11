@@ -13,6 +13,6 @@ install_extensions() {
 }
 
 dir="$PWD/.vscode"
-json_file="$dir/extensions.json"
-extensions=$(get_json_value "recommendations")
+extensions_path="$dir/extensions.json"
+extensions=$(get_json_value "recommendations" $extensions_path)
 install_extensions $extensions

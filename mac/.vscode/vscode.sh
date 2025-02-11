@@ -1,4 +1,3 @@
-#!/bin/bash
 source "../json.sh"
 
 install_extensions() {
@@ -13,6 +12,10 @@ install_extensions() {
 }
 
 dir="$PWD/.vscode"
-json_file="$dir/extensions.json"
-extensions=$(get_json_value "recommendations")
-install_extensions $extensions
+extensions_path="$dir/settings/extensions.json"
+settings_path="$dir/settings/settings.json"
+default_vs_code_path="$HOME/Library/Application Support/Code/User"
+
+extensions=$(get_json_value "recommendations" $extensions_path "")
+echo "$extensions"
+# install_extensions $extensions
