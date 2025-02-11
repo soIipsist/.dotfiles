@@ -4,15 +4,11 @@ source "../os.sh"
 source "../dotfiles.sh"
 source "../git.sh"
 
+vals=("hello" "goodbye")
+# vals="red"
+
 excluded_scripts=$(get_json_value "excluded_scripts")
 scripts=$(get_json_value "scripts")
 dotfiles=$(get_json_value "dotfiles")
 
-if [[ " ${excluded_scripts[*]} " =~ " ${script} " ]]; then
-    echo $script
-fi
-
 echo "${excluded_scripts[@]}"
-
-dotfiles_directory="$HOME/temp"
-install_dotfiles $dotfiles_directory "$dotfiles" "$scripts" "$excluded_scripts"

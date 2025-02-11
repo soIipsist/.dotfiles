@@ -1,5 +1,5 @@
 {
-  "dotfiles": [".zsh", ".sketchybar", ".borders"],
+  "dotfiles": [".vscode", ".aerospace"],
   "scripts": [],
-  "excluded_scripts": []
+  "pip_packages": []
 }

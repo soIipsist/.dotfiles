@@ -85,5 +85,6 @@ cp -f "$PWD/colors.sh" $HOME
 chmod +x "$HOME/colors.sh"
 
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
+
 install_dotfiles "$dotfiles_directory" "$dotfile_folders" "$scripts" "$excluded_scripts"
 set_wallpaper "$wallpaper_path"

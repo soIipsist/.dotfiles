@@ -8,7 +8,12 @@ get_default_json_file() {
 }
 
 get_json_value() {
+
   key="$1"
+  shift 1
+  json_file="$1"
+  shift 1
+  default_value="$@"
 
   if [ -z $json_file ]; then
     json_file=$(get_default_json_file)
@@ -22,7 +27,7 @@ get_json_value() {
   value=$(jq -r .$key "$json_file")
 
   if [ "$?" -ne 0 ] || [ "$value" = "null" ]; then
-    value=""
+    value="$default_value"
   elif [[ "$value" == \[* ]]; then
     value=$(jq -r .$key[] "$json_file")
   fi
@@ -39,5 +44,5 @@ get_json_value() {
     fi
   fi
 
-  echo $value
+  echo "$value"
 }
