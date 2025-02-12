@@ -1,6 +1,4 @@
 {
-  "dotfiles": [".vscode", ".aerospace"],
-  "scripts": [],
-  "pip_packages": [],
-  "git_username": ""
+  "dotfiles": [".colors", ".sketchybar", ".aerospace"],
+  "color_scheme": "colors_1"
 }

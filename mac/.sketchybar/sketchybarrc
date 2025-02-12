@@ -7,7 +7,7 @@
 # For a more advanced configuration example see my dotfiles:
 # https://github.com/FelixKratz/dotfiles
 
-source $HOME/colors.sh
+source $HOME/.config/colors/colors.sh
 
 CONFIG_DIR="$HOME/.config/sketchybar"
 PLUGIN_DIR="$CONFIG_DIR/plugins"
@@ -33,9 +33,9 @@ sketchybar --bar height=$SKETCHYBAR_HEIGHT \
 # https://felixkratz.github.io/SketchyBar/config/items
 
 sketchybar --default icon.font="$SKETCHYBAR_FONT" \
-    icon.color=$SKETCHYBAR_WHITE \
+    icon.color=$SKETCHYBAR_FONT_COLOR \
     label.font="$SKETCHYBAR_FONT" \
-    label.color=$SKETCHYBAR_WHITE \
+    label.color=$SKETCHYBAR_FONT_COLOR \
     background.color=$SKETCHYBAR_SECONDARY_COLOR \
     background.corner_radius=5 \
     background.height=24 \

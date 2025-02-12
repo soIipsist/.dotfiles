@@ -3,6 +3,7 @@ source "../json.sh"
 source "../os.sh"
 source "../dotfiles.sh"
 source "../git.sh"
+source "../colors.sh"
 
 install_homebrew() {
     # check if homebrew is not in $PATH
@@ -72,6 +73,7 @@ git_home_path=$(get_json_value "git_home_path")
 default_shell=$(get_json_value "default_shell")
 brewfile_path=$(get_json_value "brewfile_path")
 wallpaper_path=$(get_json_value "wallpaper_path")
+color_scheme=$(get_json_value "color_scheme")
 
 install_brewfile
 set_hostname
@@ -79,10 +81,6 @@ set_default_shell
 install_pip_packages "${pip_packages[@]}"
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home_path"
-
-# copy colors to $HOME
-cp -f "$PWD/colors.sh" $HOME
-chmod +x "$HOME/colors.sh"
 
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
 
