@@ -1,4 +1,4 @@
 {
-  "dotfiles": [".sketchybar", ".borders"],
+  "dotfiles": [".colors", ".zsh", ".sketchybar"],
   "color_scheme": "colors_1"
 }

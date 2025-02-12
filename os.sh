@@ -11,10 +11,10 @@ get_os() {
   echo $machine
 }
 
-set_default_shell(){
+set_default_shell() {
 
   if [ -z $default_shell ]; then
-    return 
+    return
   fi
 
   shell_dir="/bin/$default_shell"
@@ -29,7 +29,7 @@ set_hostname() {
   fi
 
   echo "Setting hostname to: $hostname"
-  
+
   if [ $os == 'mac' ]; then
     sudo -s scutil --set HostName $hostname
 
