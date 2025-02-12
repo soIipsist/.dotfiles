@@ -3,7 +3,6 @@ source "../json.sh"
 source "../os.sh"
 source "../dotfiles.sh"
 source "../git.sh"
-source "../colors.sh"
 
 install_homebrew() {
     # check if homebrew is not in $PATH
@@ -64,7 +63,7 @@ hostname=$(get_json_value "hostname")
 computer_name=$(get_json_value "computer_name")
 local_hostname=$(get_json_value "local_hostname")
 dotfiles=$(get_json_value "dotfiles")
-dotfiles_directory=$(get_json_value "dotfiles_directory")
+dotfiles_directory=$(get_json_value "dotfiles_directory" "" "$HOME")
 scripts=$(get_json_value "scripts")
 excluded_scripts=$(get_json_value "excluded_scripts")
 pip_packages=$(get_json_value "pip_packages")
@@ -83,6 +82,5 @@ git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home_path"
 
 dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
-
 install_dotfiles "$dotfiles_directory" "$dotfile_folders" "$scripts" "$excluded_scripts"
 set_wallpaper "$wallpaper_path"

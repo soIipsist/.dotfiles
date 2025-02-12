@@ -7,8 +7,6 @@
 # For a more advanced configuration example see my dotfiles:
 # https://github.com/FelixKratz/dotfiles
 
-source $HOME/.config/colors/colors.sh
-
 CONFIG_DIR="$HOME/.config/sketchybar"
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
@@ -19,129 +17,130 @@ PLUGIN_DIR="$CONFIG_DIR/plugins"
 # If you are looking for other colors, see the color picker:
 # https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
 
-sketchybar --bar height=$SKETCHYBAR_HEIGHT \
+sketchybar --bar height=37 \
     blur_radius=30 \
     position=top \
     sticky=off \
-    padding_left=$SKETCHYBAR_PADDING_LEFT \
-    padding_right=$SKETCHYBAR_PADDING_RIGHT \
-    color=$SKETCHYBAR_PRIMARY_COLOR
-
-##### Changing Defaults #####
-# We now change some default values that are applied to all further items
-# For a full list of all available item properties see:
-# https://felixkratz.github.io/SketchyBar/config/items
-
-sketchybar --default icon.font="$SKETCHYBAR_FONT" \
-    icon.color=$SKETCHYBAR_FONT_COLOR \
-    label.font="$SKETCHYBAR_FONT" \
-    label.color=$SKETCHYBAR_FONT_COLOR \
-    background.color=$SKETCHYBAR_SECONDARY_COLOR \
-    background.corner_radius=5 \
-    background.height=24 \
     padding_left=5 \
     padding_right=5 \
-    label.padding_left=4 \
-    label.padding_right=10 \
-    icon.padding_left=10 \
-    icon.padding_right=4
-
-# -- Left Side Items --
-# aerospace spaces
-sketchybar --add event aerospace_workspace_change
-
-for sid in $(aerospace list-workspaces --all); do
-    sketchybar --add item space.$sid left \
-        --subscribe space.$sid aerospace_workspace_change \
-        --set space.$sid background.color=$SKETCHYBAR_SECONDARY_COLOR \
-        background.drawing=off \
-        background.corner_radius=5 \
-        width=30 \
-        height=40 \
-        label.padding_left=10 \
-        label.position=center \
-        label.width=20 \
-        icon.position=center \
-        icon.width=0 \
-        icon.padding_left=0 \
-        icon.padding_right=0 \
-        label="$sid" \
-        click_script="aerospace workspace $sid" \
-        script="$PLUGIN_DIR/aerospace.sh $sid"
-done
-
-# reload button
-sketchybar --add item reload left \
-    --set reload icon="$SKETCHYBAR_ICON_RELOAD" \
-    width=30 \
-    background.color=$SKETCHYBAR_PRIMARY_COLOR \
-    icon.font="$SKETCHYBAR_FONT" \
-    label.align=center \
-    icon.align=center \
-    background.padding_left=15 \
-    click_script="$PLUGIN_DIR/reload.sh"
-
-# copy from clipboard button
-sketchybar --add item clipboard left \
-    --set clipboard icon="$SKETCHYBAR_ICON_CLIPBOARD" \
-    width=30 \
-    background.color=$SKETCHYBAR_PRIMARY_COLOR \
-    icon.font="$SKETCHYBAR_FONT" \
-    label.align=center \
-    icon.align=center \
-    background.padding_left=15 \
-    background.padding_right=15 \
-    click_script="$PLUGIN_DIR/clipboard.sh"
-
-# active workspace
-sketchybar --add item active_workspace q \
-    --set active_workspace width=50 \
-    label.max_chars=30 \
-    background.color=$SKETCHYBAR_PRIMARY_COLOR \
-    icon.font="$SKETCHYBAR_FONT" \
-    label.align=center
-
-# -- Right Side Items --
-# media
-sketchybar --add item media e \
-    --set media label.color=$SKETCHYBAR_ACCENT_COLOR \
-    label.max_chars=20 \
-    label.align=center \
-    icon.align=center \
-    label.font="$SKETCHYBAR_FONT" \
-    label.padding_top=50 \
-    icon.padding_left=0 \
-    scroll_texts=on \
-    icon.color=$SKETCHYBAR_ACCENT_COLOR \
-    background.drawing=off \
-    script="$PLUGIN_DIR/media.sh" \
-    click_script="$PLUGIN_DIR/media_click.sh" \
-    --subscribe media media_change
-
-# calendar
-sketchybar --add item calendar right \
-    --set calendar icon="$SKETCHYBAR_ICON_CALENDAR" \
-    update_freq=30 \
-    script="$PLUGIN_DIR/calendar.sh" \
-    click_script="open -a Calendar"
-
-# volume
-sketchybar --add item volume right \
-    --set volume script="$PLUGIN_DIR/volume.sh" \
-    --subscribe volume volume_change
-
-sketchybar --add item battery right \
-    --set battery update_freq=120 \
-    script="$PLUGIN_DIR/battery.sh" \
-    --subscribe battery system_woke power_source_change
-
-sketchybar --add item cpu right \
-    --set cpu update_freq=2 \
-    icon="$SKETCHYBAR_ICON_CPU" \
-    script="$PLUGIN_DIR/cpu.sh"
-
-##### Finalizing Setup #####
-# The below command is only needed at the end of the initial configuration to
-# force all scripts to run the first time, it should never be run in an item script.
+    color="$SKETCHYBAR_ACCENT_COLOR"
 
 sketchybar --update
+# ##### Changing Defaults #####
+# # We now change some default values that are applied to all further items
+# # For a full list of all available item properties see:
+# # https://felixkratz.github.io/SketchyBar/config/items
+
+# sketchybar --default icon.font="$SKETCHYBAR_FONT" \
+#     icon.color=$SKETCHYBAR_FONT_COLOR \
+#     label.font=$SKETCHYBAR_FONT \
+#     label.color=$SKETCHYBAR_FONT_COLOR \
+#     background.color=$SKETCHYBAR_SECONDARY_COLOR \
+#     background.corner_radius=5 \
+#     background.height=24 \
+#     padding_left=5 \
+#     padding_right=5 \
+#     label.padding_left=4 \
+#     label.padding_right=10 \
+#     icon.padding_left=10 \
+#     icon.padding_right=4
+
+# # -- Left Side Items --
+# # aerospace spaces
+# sketchybar --add event aerospace_workspace_change
+
+# for sid in $(aerospace list-workspaces --all); do
+#     sketchybar --add item space.$sid left \
+#         --subscribe space.$sid aerospace_workspace_change \
+#         --set space.$sid background.color=$SKETCHYBAR_SECONDARY_COLOR \
+#         background.drawing=off \
+#         background.corner_radius=5 \
+#         width=30 \
+#         height=40 \
+#         label.padding_left=10 \
+#         label.position=center \
+#         label.width=20 \
+#         icon.position=center \
+#         icon.width=0 \
+#         icon.padding_left=0 \
+#         icon.padding_right=0 \
+#         label="$sid" \
+#         click_script="aerospace workspace $sid" \
+#         script="$PLUGIN_DIR/aerospace.sh $sid"
+# done
+
+# # reload button
+# sketchybar --add item reload left \
+#     --set reload icon="$SKETCHYBAR_ICON_RELOAD" \
+#     width=30 \
+#     background.color=$SKETCHYBAR_PRIMARY_COLOR \
+#     icon.font="$SKETCHYBAR_FONT" \
+#     label.align=center \
+#     icon.align=center \
+#     background.padding_left=15 \
+#     click_script="$PLUGIN_DIR/reload.sh"
+
+# # copy from clipboard button
+# sketchybar --add item clipboard left \
+#     --set clipboard icon="$SKETCHYBAR_ICON_CLIPBOARD" \
+#     width=30 \
+#     background.color=$SKETCHYBAR_PRIMARY_COLOR \
+#     icon.font="$SKETCHYBAR_FONT" \
+#     label.align=center \
+#     icon.align=center \
+#     background.padding_left=15 \
+#     background.padding_right=15 \
+#     click_script="$PLUGIN_DIR/clipboard.sh"
+
+# # active workspace
+# sketchybar --add item active_workspace q \
+#     --set active_workspace width=50 \
+#     label.max_chars=30 \
+#     background.color=$SKETCHYBAR_PRIMARY_COLOR \
+#     icon.font="$SKETCHYBAR_FONT" \
+#     label.align=center
+
+# # -- Right Side Items --
+# # media
+# sketchybar --add item media e \
+#     --set media label.color=$SKETCHYBAR_ACCENT_COLOR \
+#     label.max_chars=20 \
+#     label.align=center \
+#     icon.align=center \
+#     label.font="$SKETCHYBAR_FONT" \
+#     label.padding_top=50 \
+#     icon.padding_left=0 \
+#     scroll_texts=on \
+#     icon.color=$SKETCHYBAR_ACCENT_COLOR \
+#     background.drawing=off \
+#     script="$PLUGIN_DIR/media.sh" \
+#     click_script="$PLUGIN_DIR/media_click.sh" \
+#     --subscribe media media_change
+
+# # calendar
+# sketchybar --add item calendar right \
+#     --set calendar icon="$SKETCHYBAR_ICON_CALENDAR" \
+#     update_freq=30 \
+#     script="$PLUGIN_DIR/calendar.sh" \
+#     click_script="open -a Calendar"
+
+# # volume
+# sketchybar --add item volume right \
+#     --set volume script="$PLUGIN_DIR/volume.sh" \
+#     --subscribe volume volume_change
+
+# sketchybar --add item battery right \
+#     --set battery update_freq=120 \
+#     script="$PLUGIN_DIR/battery.sh" \
+#     --subscribe battery system_woke power_source_change
+
+# sketchybar --add item cpu right \
+#     --set cpu update_freq=2 \
+#     icon="$SKETCHYBAR_ICON_CPU" \
+#     script="$PLUGIN_DIR/cpu.sh"
+
+# ##### Finalizing Setup #####
+# # The below command is only needed at the end of the initial configuration to
+# # force all scripts to run the first time, it should never be run in an item script.
+
+# sketchybar --update
