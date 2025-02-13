@@ -7,7 +7,7 @@
 # For a more advanced configuration example see my dotfiles:
 # https://github.com/FelixKratz/dotfiles
 
-source "$HOME/.config/colors/colors.sh"
+source "$HOME/.config/colors/colors.sh" # replace with $dotfiles_directory here
 
 CONFIG_DIR="$HOME/.config/sketchybar"
 PLUGIN_DIR="$CONFIG_DIR/plugins"

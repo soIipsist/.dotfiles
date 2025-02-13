@@ -8,10 +8,12 @@ if [ ! -z "$color_scheme" ]; then
     color_scheme_path="$destination_directory/$color_scheme.json"
 fi
 
-export_file="$destination_directory/colors.sh"
+exported_colors="$destination_directory/colors.sh"
 
-echo "#!/bin/bash" >"$export_file"
-jq -r 'to_entries | .[] | "export \(.key)=\"\(.value)\""' "$color_scheme_path" >>"$export_file"
+echo "#!/bin/bash" >"$exported_colors"
+jq -r 'to_entries | .[] | "export \(.key)=\"\(.value)\""' "$color_scheme_path" >>"$exported_colors"
 
 # Load into current shell session
-source "$export_file"
+source "$exported_colors"
+
+# reload vscode settings
