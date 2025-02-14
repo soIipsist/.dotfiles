@@ -1,4 +1,4 @@
 {
-  "dotfiles": [".colors", ".zsh", ".sketchybar"],
+  "dotfiles": [".vscode"],
   "color_scheme": "colors_1"
 }
