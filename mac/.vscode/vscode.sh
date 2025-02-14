@@ -18,7 +18,7 @@ default_vs_code_path="$HOME/Library/Application Support/Code/User"
 extensions=$(get_json_value "recommendations" $extensions_path "")
 
 for extension in $extensions; do
-    code --install-extension $extension --force 2>&1 | tee -a vscode_install.log
+    bash code --install-extension $extension --force
 done
 
 echo $destination_directory
