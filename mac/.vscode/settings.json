@@ -61,5 +61,7 @@
     "javascript",
     "typescript"
   ],
-  "workbench.colorCustomizations": {}
+  "workbench.colorCustomizations": {
+    "sideBar.background": "#181818"
+  }
 }

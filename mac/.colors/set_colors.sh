@@ -20,3 +20,6 @@ source "$exported_colors"
 vscode_source_path="$dotfiles_directory/.config/vscode/settings.json"
 vscode_destination_path="$HOME/Library/Application Support/Code/User/settings.json"
 envsubst <"$vscode_source_path" >"$vscode_destination_path"
+
+# set iterm2 color profile
+source "$dotfiles_directory/.config/iterm2/iterm2.sh"

@@ -1,4 +1,9 @@
 source "../json.sh"
+
+if [ -z "$dotfiles_directory" ]; then
+    dotfiles_directory="$HOME"
+fi
+
 destination_directory="$dotfiles_directory/.config/vscode"
 
 source_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
