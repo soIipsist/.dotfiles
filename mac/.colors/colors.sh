@@ -8,5 +8,6 @@ source_directory="$PWD/.colors"
 mkdir -p $destination_directory
 cp -f "$source_directory/set_colors.sh" "$destination_directory"
 chmod +x "$destination_directory/set_colors.sh"
+source "$destination_directory/set_colors.sh"
 
 echo $destination_directory

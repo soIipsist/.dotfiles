@@ -22,4 +22,4 @@ vscode_destination_path="$HOME/Library/Application Support/Code/User/settings.js
 envsubst <"$vscode_source_path" >"$vscode_destination_path"
 
 # set iterm2 color profile
-source "$dotfiles_directory/.config/iterm2/iterm2.sh"
+# source "$dotfiles_directory/.config/iterm2/iterm2.sh"

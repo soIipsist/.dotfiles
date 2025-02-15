@@ -23,37 +23,35 @@ cat <<EOF >"$PLIST_FILE"
         <dict>
 EOF
 
-# Define color mapping
-declare -A COLOR_KEYS=(
-    ["ITERM2_FOREGROUND"]="Foreground Color"
-    ["ITERM2_BACKGROUND"]="Background Color"
-    ["ITERM2_ANSI_BLACK"]="Ansi 0 Color"
-    ["ITERM2_ANSI_RED"]="Ansi 1 Color"
-    ["ITERM2_ANSI_GREEN"]="Ansi 2 Color"
-    ["ITERM2_ANSI_YELLOW"]="Ansi 3 Color"
-    ["ITERM2_ANSI_BLUE"]="Ansi 4 Color"
-    ["ITERM2_ANSI_MAGENTA"]="Ansi 5 Color"
-    ["ITERM2_ANSI_CYAN"]="Ansi 6 Color"
-    ["ITERM2_ANSI_WHITE"]="Ansi 7 Color"
-)
-
 # source colors
 source "$dotfiles_directory/.config/colors/colors.sh"
 
+COLOR_KEYS=(ITERM2_FOREGROUND ITERM2_BACKGROUND ITERM2_ANSI_BLACK ITERM2_ANSI_RED ITERM2_ANSI_GREEN ITERM2_ANSI_YELLOW ITERM2_ANSI_BLUE ITERM2_ANSI_MAGENTA ITERM2_ANSI_CYAN ITERM2_ANSI_WHITE)
 # Read colors from JSON and write to plist
-for key in "${!COLOR_KEYS[@]}"; do
-    hex_color=$(key)
+for key in "${COLOR_KEYS[@]}"; do
+    hex_color="${!key}" # Indirect expansion to get the actual value
 
-    if [[ "$hex_color" == "null" ]]; then
-        continue # Skip missing keys
-    fi
+    [ "$hex_color" = "null" ] && continue
 
     r=$(hex_to_float "${hex_color:0:2}")
     g=$(hex_to_float "${hex_color:2:2}")
     b=$(hex_to_float "${hex_color:4:2}")
 
+    case $key in
+    ITERM2_FOREGROUND) color_name="Foreground Color" ;;
+    ITERM2_BACKGROUND) color_name="Background Color" ;;
+    ITERM2_ANSI_BLACK) color_name="Ansi 0 Color" ;;
+    ITERM2_ANSI_RED) color_name="Ansi 1 Color" ;;
+    ITERM2_ANSI_GREEN) color_name="Ansi 2 Color" ;;
+    ITERM2_ANSI_YELLOW) color_name="Ansi 3 Color" ;;
+    ITERM2_ANSI_BLUE) color_name="Ansi 4 Color" ;;
+    ITERM2_ANSI_MAGENTA) color_name="Ansi 5 Color" ;;
+    ITERM2_ANSI_CYAN) color_name="Ansi 6 Color" ;;
+    ITERM2_ANSI_WHITE) color_name="Ansi 7 Color" ;;
+    esac
+
     cat <<EOF >>"$PLIST_FILE"
-            <key>${COLOR_KEYS[$key]}</key>
+            <key>$color_name</key>
             <dict>
                 <key>Red Component</key>
                 <real>$r</real>
@@ -63,6 +61,7 @@ for key in "${!COLOR_KEYS[@]}"; do
                 <real>$b</real>
             </dict>
 EOF
+
 done
 
 # Close plist
