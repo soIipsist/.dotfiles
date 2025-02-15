@@ -4,12 +4,12 @@
 <dict>
     <key>Custom Color Presets</key>
     <dict>
-        <key>MyCustomTheme</key>
+        <key>Custom color scheme</key>
         <dict>
             <key>Foreground Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>1.00000</real>
                 <key>Green Component</key>
                 <real>1.00000</real>
                 <key>Blue Component</key>
@@ -18,11 +18,11 @@
             <key>Background Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>0.06821</real>
                 <key>Green Component</key>
-                <real>0.53179</real>
+                <real>0.06821</real>
                 <key>Blue Component</key>
-                <real>0.53275</real>
+                <real>0.09380</real>
             </dict>
             <key>Ansi 0 Color</key>
             <dict>
@@ -36,9 +36,9 @@
             <key>Ansi 1 Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>1.00000</real>
                 <key>Green Component</key>
-                <real>0.57839</real>
+                <real>0.00000</real>
                 <key>Blue Component</key>
                 <real>0.00000</real>
             </dict>
@@ -47,18 +47,18 @@
                 <key>Red Component</key>
                 <real>0.00000</real>
                 <key>Green Component</key>
-                <real>0.02161</real>
+                <real>1.00000</real>
                 <key>Blue Component</key>
-                <real>0.57839</real>
+                <real>0.00000</real>
             </dict>
             <key>Ansi 3 Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>1.00000</real>
                 <key>Green Component</key>
                 <real>1.00000</real>
                 <key>Blue Component</key>
-                <real>0.57839</real>
+                <real>0.00000</real>
             </dict>
             <key>Ansi 4 Color</key>
             <dict>
@@ -67,30 +67,30 @@
                 <key>Green Component</key>
                 <real>0.00000</real>
                 <key>Blue Component</key>
-                <real>0.02161</real>
+                <real>1.00000</real>
             </dict>
             <key>Ansi 5 Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>1.00000</real>
                 <key>Green Component</key>
-                <real>0.57839</real>
+                <real>0.00000</real>
                 <key>Blue Component</key>
-                <real>0.02161</real>
+                <real>1.00000</real>
             </dict>
             <key>Ansi 6 Color</key>
             <dict>
                 <key>Red Component</key>
                 <real>0.00000</real>
                 <key>Green Component</key>
-                <real>0.02161</real>
+                <real>1.00000</real>
                 <key>Blue Component</key>
                 <real>1.00000</real>
             </dict>
             <key>Ansi 7 Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>1.00000</real>
                 <key>Green Component</key>
                 <real>1.00000</real>
                 <key>Blue Component</key>

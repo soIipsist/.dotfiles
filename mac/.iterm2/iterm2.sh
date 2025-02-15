@@ -4,7 +4,7 @@ fi
 
 JSON_FILE="colors.json"
 PLIST_FILE="iterm_colors.plist"
-PROFILE_NAME="MyCustomTheme" # Change this if needed
+PROFILE_NAME="Custom color scheme"
 
 # Function to convert hex to iTerm's float format (0.0 - 1.0)
 hex_to_float() {
@@ -33,9 +33,10 @@ for key in "${COLOR_KEYS[@]}"; do
 
     [ "$hex_color" = "null" ] && continue
 
-    r=$(hex_to_float "${hex_color:0:2}")
-    g=$(hex_to_float "${hex_color:2:2}")
-    b=$(hex_to_float "${hex_color:4:2}")
+    echo "$key - $hex_color"
+    r=$(hex_to_float "${hex_color:1:3}")
+    g=$(hex_to_float "${hex_color:3:5}")
+    b=$(hex_to_float "${hex_color:5:7}")
 
     case $key in
     ITERM2_FOREGROUND) color_name="Foreground Color" ;;
@@ -74,8 +75,8 @@ EOF
 
 echo "Conversion complete: $PLIST_FILE"
 
-# # import plist
-# defaults import com.googlecode.iterm2 itermcolors.plist
+# import plist
+defaults import com.googlecode.iterm2 iterm_colors.plist
 
 # destination_directory="$dotfiles_directory/.config/iterm2/iterm2.sh"
 
