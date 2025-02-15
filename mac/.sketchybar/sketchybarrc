@@ -122,7 +122,7 @@ sketchybar --add item media e \
 # calendar
 sketchybar --add item calendar right \
     --set calendar icon="$SKETCHYBAR_ICON_CALENDAR" \
-    update_freq=30 \
+    update_freq=10 \
     script="$PLUGIN_DIR/calendar.sh" \
     click_script="open -a Calendar"
 

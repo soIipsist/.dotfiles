@@ -62,6 +62,19 @@
     "typescript"
   ],
   "workbench.colorCustomizations": {
-    "sideBar.background": "#181818"
+    "activityBar.border": "$VSCODE_ACTIVITY_BAR_BORDER",
+    "badge.background": "$VSCODE_BADGE_BACKGROUND",
+    "editor.foreground": "$VSCODE_EDITOR_FOREGROUND",
+    "editor.background": "$VSCODE_EDITOR_BACKGROUND",
+    "scrollbarSlider.activeBackground": "$VSCODE_SCROLLBAR_SLIDER_ACTIVE_BACKGROUND",
+    "scrollbarSlider.hoverBackground": "$VSCODE_SCROLLBAR_SLIDER_HOVER_BACKGROUND",
+    "sideBar.background": "$VSCODE_SIDEBAR_BACKGROUND",
+    "sideBar.foreground": "$VSCODE_SIDEBAR_FOREGROUND",
+    "sideBarSectionHeader.background": "$VSCODE_SIDEBAR_SECTION_HEADER_BACKGROUND",
+    "sideBarSectionHeader.foreground": "VSCODE_SIDEBAR_SECTION_HEADER_FOREGROUND",
+    "statusBar.foreground": "$VSCODE_STATUSBAR_FOREGROUND",
+    "statusBar.background": "$VSCODE_STATUSBAR_BACKGROUND",
+    "list.activeBackground": "$VSCODE_LIST_ACTIVE_BACKGROUND",
+    "list.inactiveSelectionBackground": "$VSCODE_LIST_INACTIVE_SELECTION_BACKGROUND"
   }
 }

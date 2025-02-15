@@ -4,12 +4,18 @@ fi
 
 JSON_FILE="colors.json"
 PLIST_FILE="iterm_colors.plist"
-PROFILE_NAME="Custom color scheme"
 
 # Function to convert hex to iTerm's float format (0.0 - 1.0)
 hex_to_float() {
     printf "%.5f" "$(echo "ibase=16; scale=5; $(echo "$1" | tr 'a-f' 'A-F' | sed 's/\(..\)/0x\1 /g' | awk '{print $1/255}')" | bc)"
 }
+
+# source colors
+source "$dotfiles_directory/.config/colors/colors.sh"
+
+if [ -z "$ITERM2_PROFILE_NAME" ]; then
+    ITERM2_PROFILE_NAME="Custom profile"
+fi
 
 # Generate plist
 cat <<EOF >"$PLIST_FILE"
@@ -19,14 +25,23 @@ cat <<EOF >"$PLIST_FILE"
 <dict>
     <key>Custom Color Presets</key>
     <dict>
-        <key>$PROFILE_NAME</key>
+        <key>$ITERM2_PROFILE_NAME</key>
         <dict>
 EOF
 
-# source colors
-source "$dotfiles_directory/.config/colors/colors.sh"
+COLOR_KEYS=(
+    ITERM2_FOREGROUND
+    ITERM2_BACKGROUND
+    ITERM2_ANSI_BLACK
+    ITERM2_ANSI_RED
+    ITERM2_ANSI_GREEN
+    ITERM2_ANSI_YELLOW
+    ITERM2_ANSI_BLUE
+    ITERM2_ANSI_MAGENTA
+    ITERM2_ANSI_CYAN
+    ITERM2_ANSI_WHITE
+)
 
-COLOR_KEYS=(ITERM2_FOREGROUND ITERM2_BACKGROUND ITERM2_ANSI_BLACK ITERM2_ANSI_RED ITERM2_ANSI_GREEN ITERM2_ANSI_YELLOW ITERM2_ANSI_BLUE ITERM2_ANSI_MAGENTA ITERM2_ANSI_CYAN ITERM2_ANSI_WHITE)
 # Read colors from JSON and write to plist
 for key in "${COLOR_KEYS[@]}"; do
     hex_color="${!key}" # Indirect expansion to get the actual value
@@ -78,6 +93,8 @@ echo "Conversion complete: $PLIST_FILE"
 # import plist
 defaults import com.googlecode.iterm2 iterm_colors.plist
 
+cmd="tell application "iTerm2" to set color preset to "$PROFILE_NAME""
+osascript -e $cmd
 # destination_directory="$dotfiles_directory/.config/iterm2/iterm2.sh"
 
 # echo "$destination_directory"
