@@ -1,4 +1,6 @@
 {
-  "dotfiles": [".sketchybar"],
+  "dotfiles": [".git-config"],
+  "git_username": "$GIT_USERNAME",
+  "git_email": "$GIT_EMAIL",
   "color_scheme": "colors_1"
 }

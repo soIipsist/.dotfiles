@@ -8,3 +8,5 @@ editor = "code"
 
 [alias]
 gush = "!f() { git add . && git commit -m \"$@\" && git push; }; f"
+undo = reset HEAD~1 --mixed
+date = "!f() { d=\"$2\"; if [ -z \"$d\" ]; then d=\"1 days ago\"; fi;  git add . && git commit -m \"$1\" --date \"$d\" && git push; }; f"
