@@ -1,4 +1,6 @@
 {
-  "dotfiles": [".iterm2"],
+  "dotfiles": [".git-config", ".tmux"],
+  "git_username": "$GIT_USERNAME",
+  "git_email": "$GIT_EMAIL",
   "color_scheme": "colors_1"
 }

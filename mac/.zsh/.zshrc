@@ -92,8 +92,6 @@ bindkey '^[c' capitalize-word # Alt + C
 bindkey '^[d' down-case-word  # Alt + D
 bindkey '^[u' up-case-word    # Alt + U
 
-bindkey -s ^f "tmux-sessionizer\n" # Ctrl + F
-
 zle -N repeat-last-command
 zle -N copy-line-to-keyboard
 zle -N copy-last-command-output
@@ -101,3 +99,4 @@ zle -N copy-last-command-output
 bindkey '^Xr' repeat-last-command   # Ctrl + X followed by R
 bindkey '^Xc' copy-line-to-keyboard # Ctrl + X followed by C
 bindkey -s '^Xo' "cpout\n"          # Ctrl + X followed by O
+bindkey -s ^f "tmux-sessionizer\n"  # Ctrl + F

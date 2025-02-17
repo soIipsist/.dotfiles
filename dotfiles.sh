@@ -21,7 +21,7 @@ install_dotfiles() {
     dotfile_folders=$(get_dotfile_folders)
   fi
 
-  original_dest=$dotfiles_directory
+  original_dest="$dotfiles_directory"
 
   for folder in $dotfile_folders; do
 
@@ -51,13 +51,10 @@ install_dotfiles() {
       fi
 
       echo "Executing $script."
+      source "$script"
 
-      new_dir=$(source "$script")
-
-      if [ -n "$new_dir" ]; then
-        dotfiles_directory="$new_dir"
-      else
-        dotfiles_directory="$original_dest"
+      if [ -n "$destination_directory" ]; then # set destination directory
+        dotfiles_directory="$destination_directory"
       fi
     done
 
@@ -73,5 +70,6 @@ install_dotfiles() {
       echo "Copied $dotfile to $dotfiles_directory/$basefile."
 
     done
+    destination_directory=""
   done
 }

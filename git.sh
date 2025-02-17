@@ -1,8 +1,8 @@
 source "../json.sh"
 
 git_config() {
-  git_username=$1
-  git_email=$2
+  git_username="$1"
+  git_email="$2"
 
   if [ ! -z $git_username ]; then
     echo "Default git username was set to: $git_username"

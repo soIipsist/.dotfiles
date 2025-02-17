@@ -5,3 +5,6 @@ username = soIipsist
 defaultBranch = main
 [core]
 editor = "code"
+
+[alias]
+gush = "!f() { git add . && git commit -m \"$@\" && git push; }; f"

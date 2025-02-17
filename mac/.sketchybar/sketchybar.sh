@@ -9,5 +9,3 @@ for file in "${files[@]}"; do
     cp -f "$source_plugins_directory/$file" "$plugins_directory"
     chmod +x "$plugins_directory/$file"
 done
-
-echo $destination_directory
