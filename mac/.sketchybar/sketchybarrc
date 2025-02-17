@@ -97,7 +97,10 @@ sketchybar --add item clipboard left \
 
 # change theme
 
-THEME_OPTIONS=$(ls -a $HOME/.config/colors)
+THEME_OPTIONS=$(for file in "$HOME/.config/colors"/*.json; do
+    basename "$file" .json
+done)
+
 sketchybar --add item theme.logo left \
     --set theme.logo icon=􀣺 \
     background.color=$SKETCHYBAR_PRIMARY_COLOR \
@@ -111,8 +114,8 @@ sketchybar --add item theme.logo left \
     popup.background.border_color=0x6E305174
 
 for OPTION in $THEME_OPTIONS; do
-    sketchybar --add item apple.preferences popup.theme.logo \
-        --set apple.preferences icon=􀺽 \
+    sketchybar --add item apple.$OPTION popup.theme.logo \
+        --set apple.$OPTION icon=􀺽 \
         label="$OPTION" \
         click_script="open -a 'System Preferences';                    
                                                 sketchybar -m --set theme.logo popup.drawing=off"
