@@ -59,7 +59,7 @@ for sid in $(aerospace list-workspaces --all); do
         background.corner_radius=5 \
         width=30 \
         height=40 \
-        label.padding_left=10 \
+        label.padding_left=11 \
         label.position=center \
         label.width=20 \
         icon.position=center \
@@ -74,25 +74,49 @@ done
 # reload button
 sketchybar --add item reload left \
     --set reload icon="$SKETCHYBAR_ICON_RELOAD" \
-    width=30 \
     background.color=$SKETCHYBAR_PRIMARY_COLOR \
     icon.font="$SKETCHYBAR_FONT" \
+    width=50 \
+    icon.width=50 \
+    label.position=center \
     label.align=center \
     icon.align=center \
-    background.padding_left=15 \
     click_script="$PLUGIN_DIR/reload.sh"
 
 # copy from clipboard button
 sketchybar --add item clipboard left \
     --set clipboard icon="$SKETCHYBAR_ICON_CLIPBOARD" \
-    width=30 \
     background.color=$SKETCHYBAR_PRIMARY_COLOR \
     icon.font="$SKETCHYBAR_FONT" \
+    width=50 \
+    icon.width=50 \
     label.align=center \
     icon.align=center \
-    background.padding_left=15 \
-    background.padding_right=15 \
+    label.width=0 \
     click_script="$PLUGIN_DIR/clipboard.sh"
+
+# change theme
+
+THEME_OPTIONS=$(ls -a $HOME/.config/colors)
+sketchybar --add item theme.logo left \
+    --set theme.logo icon=􀣺 \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    width=50 \
+    icon.width=50 \
+    label.align=center \
+    icon.align=center \
+    label.width=0 \
+    click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
+    popup.background.color="$SKETCHYBAR_PRIMARY_COLOR" \
+    popup.background.border_color=0x6E305174
+
+for OPTION in $THEME_OPTIONS; do
+    sketchybar --add item apple.preferences popup.theme.logo \
+        --set apple.preferences icon=􀺽 \
+        label="$OPTION" \
+        click_script="open -a 'System Preferences';                    
+                                                sketchybar -m --set theme.logo popup.drawing=off"
+done
 
 # active workspace
 sketchybar --add item active_workspace q \
@@ -123,21 +147,25 @@ sketchybar --add item media e \
 sketchybar --add item calendar right \
     --set calendar icon="$SKETCHYBAR_ICON_CALENDAR" \
     update_freq=10 \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
     script="$PLUGIN_DIR/calendar.sh" \
     click_script="open -a Calendar"
 
 # volume
 sketchybar --add item volume right \
     --set volume script="$PLUGIN_DIR/volume.sh" \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
     --subscribe volume volume_change
 
 sketchybar --add item battery right \
     --set battery update_freq=120 \
     script="$PLUGIN_DIR/battery.sh" \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
     --subscribe battery system_woke power_source_change
 
 sketchybar --add item cpu right \
     --set cpu update_freq=2 \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
     icon="$SKETCHYBAR_ICON_CPU" \
     script="$PLUGIN_DIR/cpu.sh"
 
