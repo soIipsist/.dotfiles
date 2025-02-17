@@ -131,7 +131,6 @@ alt-c = ["exec-and-forget open -a 'Visual Studio Code'"] # IDE/editor
 alt-b = ["exec-and-forget open -a 'Google Chrome'"]# Browser 
 alt-f = ["exec-and-forget open -a 'Finder'"] # Finder
 alt-d = ["exec-and-forget open -a 'Discord'"] # DMs
-alt-g = ["exec-and-forget open -a 'GitHub Desktop'"]
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-shift-0 = 'fullscreen'
@@ -184,10 +183,6 @@ run = ['layout floating', 'move-node-to-workspace 3']
 
 [[on-window-detected]]
 if.app-id = 'com.apple.finder'
-run = ['layout floating','move-node-to-workspace 4']
-
-[[on-window-detected]]
-if.app-id = 'com.github.GitHubClient'
 run = ['layout floating','move-node-to-workspace 4']
 
 [[on-window-detected]]

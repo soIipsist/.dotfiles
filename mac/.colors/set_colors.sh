@@ -17,7 +17,7 @@ jq -r 'to_entries | .[] | "export \(.key)=\"\(.value)\""' "$color_scheme_path" >
 source "$exported_colors"
 
 # copy vscode settings path
-vscode_source_path="$dotfiles_directory/.config/vscode/settings.json"
+vscode_source_path="$dotfiles_directory/.config/vscode/vscode_settings.json"
 vscode_destination_path="$HOME/Library/Application Support/Code/User/settings.json"
 envsubst <"$vscode_source_path" >"$vscode_destination_path"
 

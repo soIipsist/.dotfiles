@@ -1,6 +1,7 @@
 {
-  "editor.fontFamily": "Fira Code",
-  "editor.fontLigatures": false,
+  "editor.fontFamily": "$VSCODE_FONT_FAMILY",
+  "editor.fontSize": "${env:VSCODE_FONT_SIZE}",
+  "editor.fontLigatures": "$VSCODE_FONT_LIGATURES",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "explorer.fileNesting.patterns": {
     "*.ts": "${capture}.js",
