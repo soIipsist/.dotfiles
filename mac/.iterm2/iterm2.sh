@@ -3,15 +3,18 @@ hex_to_float() {
     printf "%.5f" "$(echo "ibase=16; scale=5; $(echo "$1" | tr 'a-f' 'A-F' | sed 's/\(..\)/0x\1 /g' | awk '{print $1/255}')" | bc)"
 }
 
+PLIST_FILE="iterm_colors.plist"
+
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
 
-PLIST_FILE="iterm_colors.plist"
-
 if [ -z "$ITERM2_PROFILE_NAME" ]; then
     ITERM2_PROFILE_NAME="Custom profile"
 fi
+
+# source colors
+source "$dotfiles_directory/.config/colors/colors.sh"
 
 # Generate plist
 cat <<EOF >"$PLIST_FILE"
@@ -103,7 +106,6 @@ for key in "${COLOR_KEYS[@]}"; do
     ITERM2_TAB_COLOR) color_name="Tab Color" ;;
     ITERM2_MARK_COLOR) color_name="Mark Color" ;;
     ITERM2_HIGHLIGHT_COLOR) color_name="Highlight Color" ;;
-    *) color_name="Unknown Color ($key)" ;;
     esac
 
     cat <<EOF >>"$PLIST_FILE"
@@ -130,9 +132,5 @@ EOF
 
 echo "Conversion complete: $PLIST_FILE"
 
-# import plist
-defaults import com.googlecode.iterm2 iterm_colors.plist
-
-cmd="tell application "iTerm2" to set color preset to "$PROFILE_NAME""
-osascript -e $cmd
-# destination_directory="$dotfiles_directory/.config/iterm2/iterm2.sh"
+defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "~/dotfiles/iterm2"
+defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
