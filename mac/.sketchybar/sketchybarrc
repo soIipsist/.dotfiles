@@ -102,6 +102,10 @@ THEME_OPTIONS=$(for file in "$HOME/.config/colors"/*.json; do
     basename "$file" .json
 done)
 
+if [ -z "$color_scheme" ]; then
+    color_scheme="${THEME_OPTIONS[0]}"
+fi
+
 sketchybar --add item colors.logo left \
     --set colors.logo icon=$SKETCHYBAR_ICON_COLOR_MENU \
     background.color=$SKETCHYBAR_PRIMARY_COLOR \
@@ -111,16 +115,16 @@ sketchybar --add item colors.logo left \
     label.align=center \
     icon.font=$SKETCHYBAR_FONT \
     icon.align=center \
-    label=${THEME_OPTIONS[0]} \
+    label=$color_scheme \
     click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
     popup.background.color="$SKETCHYBAR_PRIMARY_COLOR" \
     popup.background.border_color=0x6E305174
 
 for OPTION in $THEME_OPTIONS; do
     sketchybar --add item colors.$OPTION popup.colors.logo \
-        --set colors.$OPTION icon=􀺽 \
+        --set colors.$OPTION icon=$SKETCHYBAR_ICON_COLOR_MENU \
         label="$OPTION" \
-        click_script="$PLUGIN_DIR/color_theme.sh $OPTION"
+        click_script="source $PLUGIN_DIR/color_theme.sh $OPTION $PLUGIN_DIR; source $PLUGIN_DIR/reload.sh"
 done
 
 # active workspace
