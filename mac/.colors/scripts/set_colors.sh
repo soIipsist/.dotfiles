@@ -8,6 +8,10 @@ if [ -z "$color_scheme" ]; then
     color_scheme="colors_1"
 fi
 
+if [ ! -z "$1" ]; then
+    color_scheme="$1"
+fi
+
 destination_directory="$dotfiles_directory/.config/colors"
 color_scheme_path="$destination_directory/$color_scheme.json"
 exported_colors="$destination_directory/colors.sh"

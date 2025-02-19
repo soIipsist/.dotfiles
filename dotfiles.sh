@@ -18,7 +18,7 @@ install_dotfiles() {
   fi
 
   if [ -z "$2" ]; then
-    dotfile_folders=$(get_dotfile_folders)
+    return
   fi
 
   original_dest="$dotfiles_directory"
