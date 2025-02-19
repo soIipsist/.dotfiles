@@ -3,7 +3,8 @@ if [ -z $dotfiles_directory ]; then
 fi
 
 destination_directory="$dotfiles_directory/.config/colors"
-source_directory="$PWD/.colors"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source_directory="$SCRIPT_DIR"
 
 mkdir -p "$destination_directory"
 cp -f "$source_directory/scripts/set_colors.sh" "$destination_directory"

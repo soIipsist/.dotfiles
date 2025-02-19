@@ -31,4 +31,8 @@ if [ -f $vscode_source_path ]; then
 fi
 
 # set iterm2 color profile
-# source "$dotfiles_directory/.config/iterm2/iterm2.sh"
+iterm_path="$dotfiles_directory/.config/iterm2/iterm2.sh"
+
+if [ -f $iterm_path ]; then
+    source "$iterm_path"
+fi

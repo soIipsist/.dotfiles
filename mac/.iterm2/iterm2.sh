@@ -1,17 +1,13 @@
-if [ -z "$dotfiles_directory" ]; then
-    dotfiles_directory="$HOME"
-fi
-
-JSON_FILE="colors.json"
-PLIST_FILE="iterm_colors.plist"
-
 # Function to convert hex to iTerm's float format (0.0 - 1.0)
 hex_to_float() {
     printf "%.5f" "$(echo "ibase=16; scale=5; $(echo "$1" | tr 'a-f' 'A-F' | sed 's/\(..\)/0x\1 /g' | awk '{print $1/255}')" | bc)"
 }
 
-# source colors
-source "$dotfiles_directory/.config/colors/colors.sh"
+if [ -z "$dotfiles_directory" ]; then
+    dotfiles_directory="$HOME"
+fi
+
+PLIST_FILE="iterm_colors.plist"
 
 if [ -z "$ITERM2_PROFILE_NAME" ]; then
     ITERM2_PROFILE_NAME="Custom profile"
@@ -32,8 +28,15 @@ EOF
 COLOR_KEYS=(
     ITERM2_FOREGROUND
     ITERM2_BACKGROUND
+    ITERM2_BOLD_COLOR
     ITERM2_SELECTION_COLOR
-    ITERM2_SELECTED_COLOR
+    ITERM2_SELECTED_TEXT_COLOR
+    ITERM2_LINK_COLOR
+    ITERM2_CURSOR_COLOR
+    ITERM2_CURSOR_GUIDE_COLOR
+    ITERM2_BADGE_COLOR
+
+    # ANSI 16 Colors
     ITERM2_ANSI_BLACK
     ITERM2_ANSI_RED
     ITERM2_ANSI_GREEN
@@ -42,6 +45,20 @@ COLOR_KEYS=(
     ITERM2_ANSI_MAGENTA
     ITERM2_ANSI_CYAN
     ITERM2_ANSI_WHITE
+    ITERM2_ANSI_BRIGHT_BLACK
+    ITERM2_ANSI_BRIGHT_RED
+    ITERM2_ANSI_BRIGHT_GREEN
+    ITERM2_ANSI_BRIGHT_YELLOW
+    ITERM2_ANSI_BRIGHT_BLUE
+    ITERM2_ANSI_BRIGHT_MAGENTA
+    ITERM2_ANSI_BRIGHT_CYAN
+    ITERM2_ANSI_BRIGHT_WHITE
+
+    # Additional UI Colors
+    ITERM2_SMART_CURSOR_COLOR
+    ITERM2_TAB_COLOR
+    ITERM2_MARK_COLOR
+    ITERM2_HIGHLIGHT_COLOR
 )
 
 # Read colors from JSON and write to plist
@@ -58,6 +75,14 @@ for key in "${COLOR_KEYS[@]}"; do
     case $key in
     ITERM2_FOREGROUND) color_name="Foreground Color" ;;
     ITERM2_BACKGROUND) color_name="Background Color" ;;
+    ITERM2_SELECTION_COLOR) color_name="Selection Color" ;;
+    ITERM2_SELECTED_TEXT_COLOR) color_name="Selected Text Color" ;;
+    ITERM2_LINK_COLOR) color_name="Link Color" ;;
+    ITERM2_CURSOR_COLOR) color_name="Cursor Color" ;;
+    ITERM2_CURSOR_TEXT_COLOR) color_name="Cursor Text Color" ;;
+    ITERM2_CURSOR_GUIDE_COLOR) color_name="Cursor Guide Color" ;;
+    ITERM2_BADGE_COLOR) color_name="Badge Color" ;;
+    ITERM2_BOLD_COLOR) color_name="Bold Color" ;;
     ITERM2_ANSI_BLACK) color_name="Ansi 0 Color" ;;
     ITERM2_ANSI_RED) color_name="Ansi 1 Color" ;;
     ITERM2_ANSI_GREEN) color_name="Ansi 2 Color" ;;
@@ -66,6 +91,19 @@ for key in "${COLOR_KEYS[@]}"; do
     ITERM2_ANSI_MAGENTA) color_name="Ansi 5 Color" ;;
     ITERM2_ANSI_CYAN) color_name="Ansi 6 Color" ;;
     ITERM2_ANSI_WHITE) color_name="Ansi 7 Color" ;;
+    ITERM2_ANSI_BRIGHT_BLACK) color_name="Ansi 8 Color" ;;
+    ITERM2_ANSI_BRIGHT_RED) color_name="Ansi 9 Color" ;;
+    ITERM2_ANSI_BRIGHT_GREEN) color_name="Ansi 10 Color" ;;
+    ITERM2_ANSI_BRIGHT_YELLOW) color_name="Ansi 11 Color" ;;
+    ITERM2_ANSI_BRIGHT_BLUE) color_name="Ansi 12 Color" ;;
+    ITERM2_ANSI_BRIGHT_MAGENTA) color_name="Ansi 13 Color" ;;
+    ITERM2_ANSI_BRIGHT_CYAN) color_name="Ansi 14 Color" ;;
+    ITERM2_ANSI_BRIGHT_WHITE) color_name="Ansi 15 Color" ;;
+    ITERM2_SMART_CURSOR_COLOR) color_name="Smart Cursor Color" ;;
+    ITERM2_TAB_COLOR) color_name="Tab Color" ;;
+    ITERM2_MARK_COLOR) color_name="Mark Color" ;;
+    ITERM2_HIGHLIGHT_COLOR) color_name="Highlight Color" ;;
+    *) color_name="Unknown Color ($key)" ;;
     esac
 
     cat <<EOF >>"$PLIST_FILE"
@@ -98,5 +136,3 @@ defaults import com.googlecode.iterm2 iterm_colors.plist
 cmd="tell application "iTerm2" to set color preset to "$PROFILE_NAME""
 osascript -e $cmd
 # destination_directory="$dotfiles_directory/.config/iterm2/iterm2.sh"
-
-# echo "$destination_directory"
