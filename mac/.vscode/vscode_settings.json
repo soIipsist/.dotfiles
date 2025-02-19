@@ -72,7 +72,7 @@
     "sideBar.background": "$VSCODE_SIDEBAR_BACKGROUND",
     "sideBar.foreground": "$VSCODE_SIDEBAR_FOREGROUND",
     "sideBarSectionHeader.background": "$VSCODE_SIDEBAR_SECTION_HEADER_BACKGROUND",
-    "sideBarSectionHeader.foreground": "VSCODE_SIDEBAR_SECTION_HEADER_FOREGROUND",
+    "sideBarSectionHeader.foreground": "$VSCODE_SIDEBAR_SECTION_HEADER_FOREGROUND",
     "statusBar.foreground": "$VSCODE_STATUSBAR_FOREGROUND",
     "statusBar.background": "$VSCODE_STATUSBAR_BACKGROUND",
     "list.activeBackground": "$VSCODE_LIST_ACTIVE_BACKGROUND",
