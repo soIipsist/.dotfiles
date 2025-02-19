@@ -98,9 +98,10 @@ sketchybar --add item clipboard left \
 
 # color theme menu
 
-COLOR_SCHEME_FILES=$(for file in "$HOME/.config/colors"/*.json; do
-    basename "$file" .json
-done)
+COLOR_SCHEME_FILES=()
+for file in "$HOME/.config/colors"/*.json; do
+    COLOR_SCHEME_FILES+=("$file")
+done
 
 if [ -z "$COLOR_SCHEME_NAME" ]; then
     COLOR_SCHEME_NAME="${COLOR_SCHEME_FILES[0]}"
@@ -121,11 +122,14 @@ sketchybar --add item colors.logo left \
     click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
     popup.background.color="$SKETCHYBAR_PRIMARY_COLOR"
 
-for FILE in $COLOR_SCHEME_FILES; do
+for FILE in "${COLOR_SCHEME_FILES[@]}"; do
+    COLOR_NAME=$(jq -r ".COLOR_SCHEME_NAME" $FILE)
+    COLOR_SCHEME=$(basename $FILE .json)
+
     sketchybar --add item colors.$FILE popup.colors.logo \
         --set colors.$FILE icon=$SKETCHYBAR_ICON_COLOR_MENU \
-        label="$FILE" \
-        click_script="$PLUGIN_DIR/color_theme.sh $FILE $PLUGIN_DIR;"
+        label="$COLOR_NAME" \
+        click_script="$PLUGIN_DIR/color_theme.sh $COLOR_SCHEME $PLUGIN_DIR;"
 done
 
 # active workspace
