@@ -98,33 +98,34 @@ sketchybar --add item clipboard left \
 
 # color theme menu
 
-THEME_OPTIONS=$(for file in "$HOME/.config/colors"/*.json; do
+COLOR_SCHEME_FILES=$(for file in "$HOME/.config/colors"/*.json; do
     basename "$file" .json
 done)
 
-if [ -z "$color_scheme" ]; then
-    color_scheme="${THEME_OPTIONS[0]}"
+if [ -z "$COLOR_SCHEME_NAME" ]; then
+    COLOR_SCHEME_NAME="${COLOR_SCHEME_FILES[0]}"
 fi
 
 sketchybar --add item colors.logo left \
     --set colors.logo icon=$SKETCHYBAR_ICON_COLOR_MENU \
     background.color=$SKETCHYBAR_PRIMARY_COLOR \
-    width=50 \
-    icon.width=20 \
+    width=45 \
+    icon.width=15 \
     icon.height=50 \
     label.align=center \
     icon.font=$SKETCHYBAR_FONT \
+    icon.font.size=17 \
     icon.align=center \
-    label=$color_scheme \
+    label=$COLOR_SCHEME_NAME \
+    label.padding_left=15 \
     click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
-    popup.background.color="$SKETCHYBAR_PRIMARY_COLOR" \
-    popup.background.border_color=0x6E305174
+    popup.background.color="$SKETCHYBAR_PRIMARY_COLOR"
 
-for OPTION in $THEME_OPTIONS; do
-    sketchybar --add item colors.$OPTION popup.colors.logo \
-        --set colors.$OPTION icon=$SKETCHYBAR_ICON_COLOR_MENU \
-        label="$OPTION" \
-        click_script="source $PLUGIN_DIR/color_theme.sh $OPTION $PLUGIN_DIR; source $PLUGIN_DIR/reload.sh"
+for FILE in $COLOR_SCHEME_FILES; do
+    sketchybar --add item colors.$FILE popup.colors.logo \
+        --set colors.$FILE icon=$SKETCHYBAR_ICON_COLOR_MENU \
+        label="$FILE" \
+        click_script="$PLUGIN_DIR/color_theme.sh $FILE $PLUGIN_DIR;"
 done
 
 # active workspace

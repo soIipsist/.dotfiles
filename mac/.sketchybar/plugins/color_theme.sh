@@ -1,6 +1,5 @@
 OPTION="$1"
 PLUGIN_DIR="$2"
-
 color_scheme="$OPTION"
 
 if [ -z "$dotfiles_directory" ]; then
@@ -12,3 +11,5 @@ source "$set_colors_path"
 
 sketchybar -m --set colors.logo label="$color_scheme"
 sketchybar -m --set colors.logo popup.drawing=off
+
+source $PLUGIN_DIR/reload.sh

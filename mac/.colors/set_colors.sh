@@ -1,7 +1,6 @@
 # sets default color scheme based on $color_scheme provided
 
 destination_directory="$dotfiles_directory/.config/colors"
-color_scheme_path="$destination_directory/colors_1.json"
 
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory=$HOME
@@ -12,7 +11,6 @@ if [ -z "$color_scheme" ]; then
 fi
 
 color_scheme_path="$destination_directory/$color_scheme.json"
-
 exported_colors="$destination_directory/colors.sh"
 
 echo "#!/bin/bash" >"$exported_colors"
