@@ -34,6 +34,8 @@ install_dotfiles() {
 
     # Collect dotfiles
     dotfiles=$(find "$folder" -maxdepth 1 -type f ! -name "*.sh" 2>/dev/null)
+
+    echo "YOLO $dotfiles"
     dotfiles_directory="$original_dest"
 
     for script in $dotfile_scripts; do

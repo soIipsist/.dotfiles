@@ -14,8 +14,8 @@ if [ -z "$ITERM2_PROFILE_NAME" ]; then
 fi
 ITERM2_PROFILE_NAME="main"
 
-MAIN_PLIST="com.googlecode.iterm2.plist"
-COLORS_PLIST="main.itermcolors"
+MAIN_PLIST="$PWD/.iterm2/com.googlecode.iterm2.plist"
+COLORS_PLIST="$PWD/.iterm2/main.itermcolors"
 
 destination_directory="$dotfiles_directory/.config/iterm2"
 
