@@ -30,9 +30,8 @@ if [ -f $vscode_source_path ]; then
     envsubst <"$vscode_source_path" >"$vscode_destination_path"
 fi
 
-# set iterm2 color profile
-iterm_path="$dotfiles_directory/.config/iterm2/iterm2.sh"
+set_theme_path="$dotfiles_directory/.config/iterm2/set_theme.sh"
 
-if [ -f $iterm_path ]; then
-    source "$iterm_path"
+if [ -f $set_theme_path ]; then
+    source "$set_theme_path"
 fi

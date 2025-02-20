@@ -3,21 +3,10 @@ hex_to_float() {
     printf "%.5f" "$(echo "ibase=16; scale=5; $(echo "$1" | tr 'a-f' 'A-F' | sed 's/\(..\)/0x\1 /g' | awk '{print $1/255}')" | bc)"
 }
 
-source "$dotfiles_directory/.config/colors/colors.sh"
-
-if [ -z "$dotfiles_directory" ]; then
-    dotfiles_directory="$HOME"
-fi
-
-if [ -z "$ITERM2_PROFILE_NAME" ]; then
-    ITERM2_PROFILE_NAME="main"
-fi
+THEME_DIR="$1"
 ITERM2_PROFILE_NAME="main"
-
-MAIN_PLIST="$PWD/.iterm2/com.googlecode.iterm2.plist"
-COLORS_PLIST="$PWD/.iterm2/main.itermcolors"
-
-destination_directory="$dotfiles_directory/.config/iterm2"
+MAIN_PLIST="$THEME_DIR/com.googlecode.iterm2.plist"
+COLORS_PLIST="$THEME_DIR/$ITERM2_PROFILE_NAME.itermcolors"
 
 # Append to com.googlecode.iterm2.plist
 
