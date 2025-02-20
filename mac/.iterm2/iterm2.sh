@@ -3,21 +3,25 @@ hex_to_float() {
     printf "%.5f" "$(echo "ibase=16; scale=5; $(echo "$1" | tr 'a-f' 'A-F' | sed 's/\(..\)/0x\1 /g' | awk '{print $1/255}')" | bc)"
 }
 
-PLIST_FILE="iterm_colors.plist"
+source "$dotfiles_directory/.config/colors/colors.sh"
 
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
 
 if [ -z "$ITERM2_PROFILE_NAME" ]; then
-    ITERM2_PROFILE_NAME="Custom profile"
+    ITERM2_PROFILE_NAME="main"
 fi
+ITERM2_PROFILE_NAME="main"
 
-# source colors
-source "$dotfiles_directory/.config/colors/colors.sh"
+MAIN_PLIST="com.googlecode.iterm2.plist"
+COLORS_PLIST="main.itermcolors"
 
-# Generate plist
-cat <<EOF >"$PLIST_FILE"
+destination_directory="$dotfiles_directory/.config/iterm2"
+
+# Append to com.googlecode.iterm2.plist
+
+cat <<EOF >"$MAIN_PLIST"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -26,6 +30,13 @@ cat <<EOF >"$PLIST_FILE"
     <dict>
         <key>$ITERM2_PROFILE_NAME</key>
         <dict>
+EOF
+
+cat <<EOF >"$COLORS_PLIST"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
 EOF
 
 COLOR_KEYS=(
@@ -66,7 +77,7 @@ COLOR_KEYS=(
 
 # Read colors from JSON and write to plist
 for key in "${COLOR_KEYS[@]}"; do
-    hex_color="${!key}" # Indirect expansion to get the actual value
+    hex_color=$(eval echo "\$$key")
 
     [ "$hex_color" = "null" ] && continue
 
@@ -108,7 +119,18 @@ for key in "${COLOR_KEYS[@]}"; do
     ITERM2_HIGHLIGHT_COLOR) color_name="Highlight Color" ;;
     esac
 
-    cat <<EOF >>"$PLIST_FILE"
+    cat <<EOF >>"$MAIN_PLIST"
+            <key>$color_name</key>
+            <dict>
+                <key>Red Component</key>
+                <real>$r</real>
+                <key>Green Component</key>
+                <real>$g</real>
+                <key>Blue Component</key>
+                <real>$b</real>
+            </dict>
+EOF
+    cat <<EOF >>"$COLORS_PLIST"
             <key>$color_name</key>
             <dict>
                 <key>Red Component</key>
@@ -123,14 +145,20 @@ EOF
 done
 
 # Close plist
-cat <<EOF >>"$PLIST_FILE"
+cat <<EOF >>"$MAIN_PLIST"
         </dict>
     </dict>
 </dict>
 </plist>
 EOF
 
-echo "Conversion complete: $PLIST_FILE"
+cat <<EOF >>"$COLORS_PLIST"
+</dict>
+</plist>
+EOF
 
-defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "~/dotfiles/iterm2"
+echo "Conversion complete: $MAIN_PLIST"
+
+defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$destination_directory"
 defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
+killall iTerm2
