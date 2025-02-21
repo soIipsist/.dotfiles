@@ -7,6 +7,4 @@ fi
 defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$PrefsFolder"
 defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
 
-# set fonts
-
-killall iTerm2
+killall iTerm2 && open -a iTerm

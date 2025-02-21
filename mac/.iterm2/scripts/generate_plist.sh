@@ -21,6 +21,18 @@ cat <<EOF >"$MAIN_PLIST"
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>New Bookmarks</key>
+    <array>
+        <dict>
+            <key>Name</key>
+            <string>$ITERM2_PROFILE_NAME</string>
+            <key>Normal Font</key>
+            <string>$ITERM2_NORMAL_FONT</string>
+            <key>Non Ascii Font</key>
+            <string>$ITERM2_NON_ASCII_FONT</string>          
+        </dict>
+    </array>
+
     <key>Custom Color Presets</key>
     <dict>
         <key>$ITERM2_PROFILE_NAME</key>

@@ -168,3 +168,4 @@ scripts/git/bfg.jar
 *.vtt
 refs.txt
 .DS_Store
+mac/.iterm2/scripts/kevin.plist
