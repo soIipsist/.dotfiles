@@ -32,6 +32,4 @@ fi
 
 # generate new plist
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SCRIPT_DIR="$(dirname "$SCRIPT_DIR")"
-
-# source "$dotfiles_directory/.config/iterm2/theme/generate_plist.sh" "$dotfiles_directory/.config/iterm2/theme"
+source "$dotfiles_directory/.config/colors/generate_plist.sh"

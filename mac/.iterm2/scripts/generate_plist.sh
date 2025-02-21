@@ -3,10 +3,14 @@ hex_to_float() {
     printf "%.5f" "$(echo "ibase=16; scale=5; $(echo "$1" | tr 'a-f' 'A-F' | sed 's/\(..\)/0x\1 /g' | awk '{print $1/255}')" | bc)"
 }
 
-THEME_DIR="$1"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BASE_SCRIPT_DIR="$(basename $(dirname $SCRIPT_DIR))"
+
+echo "SCRIPTS: $SCRIPT_DIR $BASE_SCRIPT_DIR" >/tmp/debug.txt
+
 ITERM2_PROFILE_NAME="main"
-MAIN_PLIST="$THEME_DIR/com.googlecode.iterm2.plist"
-COLORS_PLIST="$THEME_DIR/$ITERM2_PROFILE_NAME.itermcolors"
+MAIN_PLIST="$SCRIPT_DIR/com.googlecode.iterm2.plist"
+COLORS_PLIST="$SCRIPT_DIR/$ITERM2_PROFILE_NAME.itermcolors"
 
 # source colors
 if [ -z "$dotfiles_directory" ]; then
