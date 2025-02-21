@@ -30,74 +30,74 @@
             <key>Background Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.50523</real>
+                <real>0.15775</real>
                 <key>Green Component</key>
-                <real>0.45339</real>
+                <real>0.02936</real>
                 <key>Blue Component</key>
-                <real>0.02500</real>
+                <real>0.31385</real>
             </dict>
             <key>Bold Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>0.06385</real>
                 <key>Green Component</key>
-                <real>0.00000</real>
+                <real>0.06385</real>
                 <key>Blue Component</key>
-                <real>1.00000</real>
+                <real>0.34477</real>
             </dict>
             <key>Selection Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>0.28518</real>
                 <key>Green Component</key>
-                <real>0.00000</real>
+                <real>0.07500</real>
                 <key>Blue Component</key>
-                <real>1.00000</real>
+                <real>0.52743</real>
             </dict>
             <key>Selected Text Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>0.28518</real>
                 <key>Green Component</key>
-                <real>0.00000</real>
+                <real>0.07500</real>
                 <key>Blue Component</key>
-                <real>1.00000</real>
+                <real>0.52743</real>
             </dict>
             <key>Link Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>0.06385</real>
                 <key>Green Component</key>
-                <real>0.00000</real>
+                <real>0.06385</real>
                 <key>Blue Component</key>
-                <real>1.00000</real>
+                <real>0.34477</real>
             </dict>
             <key>Cursor Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>0.28518</real>
                 <key>Green Component</key>
-                <real>0.00000</real>
+                <real>0.07500</real>
                 <key>Blue Component</key>
-                <real>1.00000</real>
+                <real>0.52743</real>
             </dict>
             <key>Cursor Guide Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>0.28518</real>
                 <key>Green Component</key>
-                <real>0.00000</real>
+                <real>0.07500</real>
                 <key>Blue Component</key>
-                <real>1.00000</real>
+                <real>0.52743</real>
             </dict>
             <key>Badge Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.00000</real>
+                <real>0.06385</real>
                 <key>Green Component</key>
-                <real>0.00000</real>
+                <real>0.06385</real>
                 <key>Blue Component</key>
-                <real>1.00000</real>
+                <real>0.34477</real>
             </dict>
             <key>Ansi 0 Color</key>
             <dict>

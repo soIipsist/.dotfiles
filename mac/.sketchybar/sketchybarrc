@@ -114,7 +114,7 @@ sketchybar --add item colors.logo left \
     icon.width=15 \
     icon.height=50 \
     label.align=center \
-    icon.font=$SKETCHYBAR_FONT \
+    icon.font=$SKETCHYBAR_FONT_2 \
     icon.font.size=17 \
     icon.align=center \
     label="$COLOR_SCHEME_NAME" \
@@ -137,7 +137,8 @@ sketchybar --add item active_workspace q \
     --set active_workspace width=50 \
     label.max_chars=30 \
     background.color=$SKETCHYBAR_PRIMARY_COLOR \
-    icon.font="$SKETCHYBAR_FONT" \
+    label.font="$SKETCHYBAR_FONT_2" \
+    icon.font="$SKETCHYBAR_FONT_2" \
     label.align=center
 
 # -- Right Side Items --
@@ -147,7 +148,7 @@ sketchybar --add item media e \
     label.max_chars=20 \
     label.align=center \
     icon.align=center \
-    label.font="$SKETCHYBAR_FONT" \
+    label.font="$SKETCHYBAR_FONT_2" \
     label.padding_top=50 \
     icon.padding_left=0 \
     scroll_texts=on \

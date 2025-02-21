@@ -30,8 +30,8 @@ if [ -f $vscode_source_path ]; then
     envsubst <"$vscode_source_path" >"$vscode_destination_path"
 fi
 
-set_theme_path="$dotfiles_directory/.config/iterm2/set_theme.sh"
+# generate new plist
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(dirname "$SCRIPT_DIR")"
 
-if [ -f $set_theme_path ]; then
-    source "$set_theme_path"
-fi
+# source "$dotfiles_directory/.config/iterm2/theme/generate_plist.sh" "$dotfiles_directory/.config/iterm2/theme"
