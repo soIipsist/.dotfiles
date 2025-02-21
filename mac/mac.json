@@ -1,4 +1,4 @@
 {
-  "dotfiles": [".yabai", ".tmux", ".skhd", ".aerospace", ".zsh"],
+  "dotfiles": [".iterm2"],
   "color_scheme": "colors_1"
 }

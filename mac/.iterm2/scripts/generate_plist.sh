@@ -8,6 +8,12 @@ ITERM2_PROFILE_NAME="main"
 MAIN_PLIST="$THEME_DIR/com.googlecode.iterm2.plist"
 COLORS_PLIST="$THEME_DIR/$ITERM2_PROFILE_NAME.itermcolors"
 
+# source colors
+if [ -z "$dotfiles_directory" ]; then
+    dotfiles_directory="$HOME"
+fi
+source "$dotfiles_directory/.config/colors/colors.sh"
+
 # Append to com.googlecode.iterm2.plist
 
 cat <<EOF >"$MAIN_PLIST"
