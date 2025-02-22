@@ -4,16 +4,10 @@ hex_to_float() {
 }
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BASE_SCRIPT_DIR="$(basename $(dirname $SCRIPT_DIR))"
+SCRIPT_DIR="$(dirname $SCRIPT_DIR)" # move outside of scripts
 
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
-fi
-
-if [ $BASE_SCRIPT_DIR == "colors" ]; then
-    SCRIPT_DIR="$dotfiles_directory/.config/colors" # move default plist to colors folder
-else
-    SCRIPT_DIR="$(dirname $SCRIPT_DIR)" # move outside of scripts
 fi
 
 MAIN_PLIST="$SCRIPT_DIR/com.googlecode.iterm2.plist"
