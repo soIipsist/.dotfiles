@@ -19,6 +19,8 @@ exported_colors="$destination_directory/colors.sh"
 echo "#!/bin/bash" >"$exported_colors"
 jq -r 'to_entries | .[] | "export \(.key)=\"\(.value)\""' "$color_scheme_path" >>"$exported_colors"
 
+echo "#1: $ITERM2_BACKGROUND" >>/tmp/debug.txt
+
 # Load into current shell session
 source "$exported_colors"
 
@@ -30,8 +32,11 @@ if [ -f "$vscode_source_path" ]; then
     envsubst <"$vscode_source_path" >"$vscode_destination_path"
 fi
 
-generate_plist_path="$dotfiles_directory/.config/colors/generate_plist.sh"
+generate_plist_path="$destination_directory/generate_plist.sh"
 
 if [ -f "$generate_plist_path" ]; then
     source "$generate_plist_path"
+    echo "#2: $ITERM2_BACKGROUND" >>/tmp/debug.txt
 fi
+
+# python "$destination_directory/set_preset.py"

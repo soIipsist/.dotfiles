@@ -16,7 +16,6 @@ else
     SCRIPT_DIR="$(dirname $SCRIPT_DIR)" # move outside of scripts
 fi
 
-ITERM2_PROFILE_NAME="main"
 MAIN_PLIST="$SCRIPT_DIR/com.googlecode.iterm2.plist"
 COLORS_PLIST="$SCRIPT_DIR/$ITERM2_PROFILE_NAME.itermcolors"
 
@@ -25,6 +24,7 @@ if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
 source "$dotfiles_directory/.config/colors/colors.sh"
+echo "NAME: $ITERM2_PROFILE_NAME BACKGROUND: $ITERM2_BACKGROUND" >>/tmp/debug.txt
 
 # Append to com.googlecode.iterm2.plist
 
