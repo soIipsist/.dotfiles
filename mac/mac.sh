@@ -44,31 +44,6 @@ install_pip_packages() {
 
 }
 
-get_wallpaper_path() {
-    wallpaper_path="$(get_json_value "wallpaper_path")"
-    color_scheme="$1"
-    dotfiles_directory="$2"
-
-    destination_directory="$dotfiles_directory/.config/colors"
-    color_scheme_path="$destination_directory/$color_scheme.json"
-
-    if [[ -f "$color_scheme_path" && -z "$wallpaper_path" ]]; then
-        wallpaper_path=$(get_json_value "WALLPAPER_PATH" "$color_scheme_path")
-    fi
-
-    echo "$wallpaper_path"
-}
-
-set_wallpaper() {
-    wallpaper_path="$1"
-
-    if [ -z "$wallpaper_path" ]; then
-        return
-    fi
-
-    osascript prefs.scpt $wallpaper_path
-}
-
 install_homebrew
 
 os=$(get_os)
@@ -87,7 +62,7 @@ git_home_path=$(get_json_value "git_home_path")
 default_shell=$(get_json_value "default_shell")
 brewfile_path=$(get_json_value "brewfile_path")
 color_scheme=$(get_json_value "color_scheme")
-wallpaper_path=$(get_wallpaper_path "$color_scheme" "$dotfiles_directory")
+wallpaper_path=$(get_json_value "wallpaper_path")
 
 install_brewfile
 set_hostname
@@ -97,4 +72,7 @@ install_pip_packages "${pip_packages[@]}"
 install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home_path"
-set_wallpaper "$wallpaper_path"
+
+if [ -n "$wallpaper_path" ]; then
+    osascript prefs.scpt $wallpaper_path
+fi

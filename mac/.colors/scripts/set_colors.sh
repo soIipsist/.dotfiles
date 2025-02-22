@@ -42,4 +42,9 @@ if [ -f "$generate_plist_path" ]; then
     source "$generate_plist_path"
 fi
 
-python "/Users/p/repos/soIipsist/.dotfiles/mac/.iterm2/scripts/set_preset.py"
+# python "/Users/p/repos/soIipsist/.dotfiles/mac/.iterm2/scripts/set_preset.py"
+
+if [ -n "$WALLPAPER_PATH" ]; then
+    script="$GIT_DOTFILES_DIRECTORY/mac/prefs.scpt"
+    osascript $script $WALLPAPER_PATH
+fi
