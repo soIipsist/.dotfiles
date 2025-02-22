@@ -2,7 +2,11 @@ plugins=(
     zsh-autosuggestions
 )
 source $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source "$HOME/.config/colors/set_colors.sh"
+
+if [[ ! -f /tmp/colors_loaded ]]; then
+    source "$HOME/.config/colors/set_colors.sh"
+    touch /tmp/colors_loaded
+fi
 
 function repeat-last-command() {
     BUFFER=$(fc -ln -1)

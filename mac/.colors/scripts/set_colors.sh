@@ -26,10 +26,12 @@ source "$exported_colors"
 vscode_source_path="$dotfiles_directory/.config/vscode/vscode_settings.json"
 vscode_destination_path="$HOME/Library/Application Support/Code/User/settings.json"
 
-if [ -f $vscode_source_path ]; then
+if [ -f "$vscode_source_path" ]; then
     envsubst <"$vscode_source_path" >"$vscode_destination_path"
 fi
 
-# generate new plist
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$dotfiles_directory/.config/colors/generate_plist.sh"
+generate_plist_path="$dotfiles_directory/.config/colors/generate_plist.sh"
+
+if [ -f "$generate_plist_path" ]; then
+    source "$generate_plist_path"
+fi

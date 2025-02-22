@@ -6,7 +6,15 @@ hex_to_float() {
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_SCRIPT_DIR="$(basename $(dirname $SCRIPT_DIR))"
 
-echo "SCRIPTS: $SCRIPT_DIR $BASE_SCRIPT_DIR" >/tmp/debug.txt
+if [ -z "$dotfiles_directory" ]; then
+    dotfiles_directory="$HOME"
+fi
+
+if [ $BASE_SCRIPT_DIR == "colors" ]; then
+    SCRIPT_DIR="$dotfiles_directory/.config/colors" # move default plist to colors folder
+else
+    SCRIPT_DIR="$(dirname $SCRIPT_DIR)" # move outside of scripts
+fi
 
 ITERM2_PROFILE_NAME="main"
 MAIN_PLIST="$SCRIPT_DIR/com.googlecode.iterm2.plist"
@@ -25,18 +33,6 @@ cat <<EOF >"$MAIN_PLIST"
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>New Bookmarks</key>
-    <array>
-        <dict>
-            <key>Name</key>
-            <string>$ITERM2_PROFILE_NAME</string>
-            <key>Normal Font</key>
-            <string>$ITERM2_NORMAL_FONT</string>
-            <key>Non Ascii Font</key>
-            <string>$ITERM2_NON_ASCII_FONT</string>          
-        </dict>
-    </array>
-
     <key>Custom Color Presets</key>
     <dict>
         <key>$ITERM2_PROFILE_NAME</key>
@@ -87,15 +83,16 @@ COLOR_KEYS=(
 )
 
 # Read colors from JSON and write to plist
+colors_str=""
 for key in "${COLOR_KEYS[@]}"; do
     hex_color=$(eval echo "\$$key")
 
     [ "$hex_color" = "null" ] && continue
 
     echo "$key - $hex_color"
-    r=$(hex_to_float "${hex_color:1:3}")
-    g=$(hex_to_float "${hex_color:3:5}")
-    b=$(hex_to_float "${hex_color:5:7}")
+    r=$(hex_to_float "${hex_color:1:2}")
+    g=$(hex_to_float "${hex_color:3:2}")
+    b=$(hex_to_float "${hex_color:5:2}")
 
     case $key in
     ITERM2_FOREGROUND) color_name="Foreground Color" ;;
@@ -130,8 +127,7 @@ for key in "${COLOR_KEYS[@]}"; do
     ITERM2_HIGHLIGHT_COLOR) color_name="Highlight Color" ;;
     esac
 
-    cat <<EOF >>"$MAIN_PLIST"
-            <key>$color_name</key>
+    colors_str+="<key>$color_name</key>
             <dict>
                 <key>Red Component</key>
                 <real>$r</real>
@@ -139,26 +135,33 @@ for key in "${COLOR_KEYS[@]}"; do
                 <real>$g</real>
                 <key>Blue Component</key>
                 <real>$b</real>
-            </dict>
-EOF
-    cat <<EOF >>"$COLORS_PLIST"
-            <key>$color_name</key>
-            <dict>
-                <key>Red Component</key>
-                <real>$r</real>
-                <key>Green Component</key>
-                <real>$g</real>
-                <key>Blue Component</key>
-                <real>$b</real>
-            </dict>
+            </dict>"
+done
+
+cat <<EOF >>"$MAIN_PLIST"
+            $colors_str
 EOF
 
-done
+cat <<EOF >>"$COLORS_PLIST"
+        $colors_str
+EOF
 
 # Close plist
 cat <<EOF >>"$MAIN_PLIST"
         </dict>
     </dict>
+    <key>New Bookmarks</key>
+    <array>
+        <dict>
+            <key>Name</key>
+            <string>$ITERM2_PROFILE_NAME</string>
+            <key>Normal Font</key>
+            <string>$ITERM2_NORMAL_FONT</string>
+            <key>Non Ascii Font</key>
+            <string>$ITERM2_NON_ASCII_FONT</string>          
+        </dict>
+        $colors_str
+    </array>
 </dict>
 </plist>
 EOF
