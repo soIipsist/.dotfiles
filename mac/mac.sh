@@ -44,8 +44,23 @@ install_pip_packages() {
 
 }
 
+get_wallpaper_path() {
+    wallpaper_path="$(get_json_value "wallpaper_path")"
+    color_scheme="$1"
+    dotfiles_directory="$2"
+
+    destination_directory="$dotfiles_directory/.config/colors"
+    color_scheme_path="$destination_directory/$color_scheme.json"
+
+    if [[ -f "$color_scheme_path" && -z "$wallpaper_path" ]]; then
+        wallpaper_path=$(get_json_value "WALLPAPER_PATH" "$color_scheme_path")
+    fi
+
+    echo "$wallpaper_path"
+}
+
 set_wallpaper() {
-    wallpaper_path=$1
+    wallpaper_path="$1"
 
     if [ -z "$wallpaper_path" ]; then
         return
@@ -71,8 +86,8 @@ git_repos=$(get_json_value "git_repos")
 git_home_path=$(get_json_value "git_home_path")
 default_shell=$(get_json_value "default_shell")
 brewfile_path=$(get_json_value "brewfile_path")
-wallpaper_path=$(get_json_value "wallpaper_path")
 color_scheme=$(get_json_value "color_scheme")
+wallpaper_path=$(get_wallpaper_path "$color_scheme" "$dotfiles_directory")
 
 install_brewfile
 set_hostname
