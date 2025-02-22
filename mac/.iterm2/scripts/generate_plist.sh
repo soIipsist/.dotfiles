@@ -127,15 +127,8 @@ for key in "${COLOR_KEYS[@]}"; do
     ITERM2_HIGHLIGHT_COLOR) color_name="Highlight Color" ;;
     esac
 
-    colors_str+="<key>$color_name</key>
-            <dict>
-                <key>Red Component</key>
-                <real>$r</real>
-                <key>Green Component</key>
-                <real>$g</real>
-                <key>Blue Component</key>
-                <real>$b</real>
-            </dict>"
+    colors_str+=$(printf "\n            <key>%s</key>\n            <dict>\n                <key>Red Component</key>\n                <real>%s</real>\n                <key>Green Component</key>\n                <real>%s</real>\n                <key>Blue Component</key>\n                <real>%s</real>\n            </dict>" "$color_name" "$r" "$g" "$b")
+
 done
 
 cat <<EOF >>"$MAIN_PLIST"
@@ -158,9 +151,8 @@ cat <<EOF >>"$MAIN_PLIST"
             <key>Normal Font</key>
             <string>$ITERM2_NORMAL_FONT</string>
             <key>Non Ascii Font</key>
-            <string>$ITERM2_NON_ASCII_FONT</string>          
+            <string>$ITERM2_NON_ASCII_FONT</string>
         </dict>
-        $colors_str
     </array>
 </dict>
 </plist>

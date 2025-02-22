@@ -51,7 +51,7 @@ export YTDLP_EXTRACT_INFO="1"
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 
 # useful paths
-export DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
+export GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
 export GIT_HOME="$HOME/repos/soIipsist"
 
 # VSCode variables
@@ -61,9 +61,9 @@ export OLLAMA_MODEL="deepseek-r1:14b"
 
 # aliases
 alias python="python3"
-alias ytdlp="python3 $DOTFILES_DIRECTORY/scripts/ytdlp.py"
-alias ytdlp_mp3="python3 $DOTFILES_DIRECTORY/scripts/ytdlp.py -f audio -a mp3"
-alias ytdlp_mp4="python3 $DOTFILES_DIRECTORY/scripts/ytdlp.py -f video -v mp4"
+alias ytdlp="python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py"
+alias ytdlp_mp3="python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py -f audio -a mp3"
+alias ytdlp_mp4="python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py -f video -v mp4"
 alias yabais="yabai --start-service"
 alias yabaik="yabai --stop-service"
 alias yabair="yabai --restart-service"
@@ -76,7 +76,7 @@ alias adb_transfer="python3 $GIT_HOME/adb-wrapper/examples/transfer.py"
 alias adb_root="python3 $GIT_HOME/adb-wrapper/examples/root.py"
 alias vscode="python3 $GIT_HOME/vscode-workspaces/workspaces.py"
 alias cdf='cd "$(find . -type d | fzf)"'
-alias dots="(cd $DOTFILES_DIRECTORY/mac && bash mac.sh)"
+alias dots="(cd $GIT_DOTFILES_DIRECTORY/mac && bash mac.sh)"
 alias llm="ollama run $OLLAMA_MODEL"
 
 # key bindings
