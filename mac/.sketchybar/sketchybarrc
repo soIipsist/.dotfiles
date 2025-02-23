@@ -7,6 +7,10 @@
 # For a more advanced configuration example see my dotfiles:
 # https://github.com/FelixKratz/dotfiles
 
+# "PRIMARY_COLOR": "#140C42",
+# "SECONDARY_COLOR": "#2b1c84",
+# "ACCENT_COLOR": "#eb46f9",
+
 source "$HOME/.config/colors/colors.sh" # replace with $dotfiles_directory here
 
 CONFIG_DIR="$HOME/.config/sketchybar"
@@ -114,7 +118,8 @@ sketchybar --add item colors.logo left \
     icon.width=15 \
     icon.height=50 \
     label.align=center \
-    icon.font=$SKETCHYBAR_FONT_2 \
+    label.font="$SKETCHYBAR_FONT_2" \
+    icon.font="$SKETCHYBAR_FONT_2" \
     icon.font.size=17 \
     icon.align=center \
     label="$COLOR_SCHEME_NAME" \
@@ -129,6 +134,7 @@ for FILE in "${COLOR_SCHEME_FILES[@]}"; do
     sketchybar --add item colors.$FILE popup.colors.logo \
         --set colors.$FILE icon=$SKETCHYBAR_ICON_COLOR_MENU \
         label="$COLOR_NAME" \
+        background.color=$SKETCHYBAR_PRIMARY_COLOR \
         click_script="$PLUGIN_DIR/color_theme.sh $COLOR_SCHEME $PLUGIN_DIR;"
 done
 

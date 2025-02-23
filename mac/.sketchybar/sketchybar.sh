@@ -1,3 +1,9 @@
+if [ -z "$dotfiles_directory" ]; then
+    dotfiles_directory="$HOME"
+fi
+
+# if [ -z ]
+
 destination_directory="$dotfiles_directory/.config/sketchybar"
 plugins_directory="$destination_directory/plugins"
 source_plugins_directory="$PWD/.sketchybar/plugins"

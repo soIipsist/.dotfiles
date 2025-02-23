@@ -119,6 +119,7 @@ These parameters can be specified in the `mac.json` file:
 - **`scripts`**: List of scripts to be executed in the dotfile subdirectories. If not specified, all scripts will be executed.
 - **`excluded_scripts`**: The scripts specified will not be executed.
 - **`color_scheme`**: The default color scheme file. A `colors.json` file can be used to specify personalized color values. (default: `.colors/colors_1.json`)
+- **`sketchybar_template`**: The default sketchybar template file. All available sketchybar templates can be found in `.sketchybar/templates`. Custom templates can also be defined, as long as `colors.sh` is sourced.
 
 ### Examples
 

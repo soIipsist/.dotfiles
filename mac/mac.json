@@ -1,4 +1,5 @@
 {
-  "dotfiles": [".colors"],
-  "wallpaper_path": "/Users/p/repos/soIipsist/.dotfiles/wallpapers/synthwave_1.jpg"
+  "dotfiles": [".sketchybar", ".colors"],
+  "color_scheme": "light_theme",
+  "sketchybar_template": ""
 }
