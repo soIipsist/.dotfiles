@@ -19,11 +19,11 @@ if [ -z "$dotfiles_directory" ]; then
 fi
 source "$dotfiles_directory/.config/colors/colors.sh"
 
-echo "NAME: $ITERM2_PROFILE_NAME 
-BACKGROUND: $ITERM2_BACKGROUND
-MAIN_PLIST: $MAIN_PLIST
-COLORS_PLIST: $COLORS_PLIST
-" >>/tmp/debug.txt
+# echo "NAME: $ITERM2_PROFILE_NAME
+# BACKGROUND: $ITERM2_BACKGROUND
+# MAIN_PLIST: $MAIN_PLIST
+# COLORS_PLIST: $COLORS_PLIST
+# " >>/tmp/debug.txt
 
 # Append to com.googlecode.iterm2.plist
 

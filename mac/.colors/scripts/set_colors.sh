@@ -9,7 +9,7 @@ if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
 fi
 
 if [ -z "$color_scheme" ]; then
-    color_scheme="colors_1"
+    color_scheme="light_theme"
 fi
 
 if [ ! -z "$1" ]; then
@@ -53,10 +53,11 @@ fi
 # set sketchybar template
 if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
     sketchybar_templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
-    sketchybar_template_path="$source_templates_directory/$sketchybar_template"
+    sketchybar_template_path="$sketchybar_templates_directory/$SKETCHYBAR_TEMPLATE"
 
     if [ -f "$sketchybar_template_path" ]; then
-        cp -f "$source_templates_directory/$sketchybar_template" "$HOME/sketchybarrc"
+        cp -f "$sketchybar_template_path" "$HOME/.config/sketchybar/sketchybarrc"
+        sketchybar --reload
     fi
 
 fi
