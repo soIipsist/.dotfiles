@@ -62,6 +62,7 @@ git_home_path=$(get_json_value "git_home_path")
 default_shell=$(get_json_value "default_shell")
 brewfile_path=$(get_json_value "brewfile_path")
 color_scheme=$(get_json_value "color_scheme")
+sketchybar_template=$(get_json_value "sketchybar_template")
 wallpaper_path=$(get_json_value "wallpaper_path")
 
 install_brewfile

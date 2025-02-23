@@ -44,7 +44,19 @@ fi
 
 # python "/Users/p/repos/soIipsist/.dotfiles/mac/.iterm2/scripts/set_preset.py"
 
+# set wallpaper
 if [ -n "$WALLPAPER_PATH" ]; then
     script="$GIT_DOTFILES_DIRECTORY/mac/prefs.scpt"
     osascript $script $WALLPAPER_PATH
+fi
+
+# set sketchybar template
+if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
+    sketchybar_templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
+    sketchybar_template_path="$source_templates_directory/$sketchybar_template"
+
+    if [ -f "$sketchybar_template_path" ]; then
+        cp -f "$source_templates_directory/$sketchybar_template" "$HOME/sketchybarrc"
+    fi
+
 fi

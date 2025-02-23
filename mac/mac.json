@@ -1,5 +1,5 @@
 {
   "dotfiles": [".sketchybar", ".colors"],
   "color_scheme": "light_theme",
-  "sketchybar_template": ""
+  "sketchybar_template": "main"
 }

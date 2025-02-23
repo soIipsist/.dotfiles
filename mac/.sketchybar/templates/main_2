@@ -1,0 +1,175 @@
+# This is a demo config to showcase some of the most important commands.
+# It is meant to be changed and configured, as it is intentionally kept sparse.
+# For a (much) more advanced configuration example see my dotfiles:
+# https://github.com/FelixKratz/dotfiles
+# This is a demo config to show some of the most important commands more easily.
+# This is meant to be changed and configured, as it is intentionally kept sparse.
+# For a more advanced configuration example see my dotfiles:
+# https://github.com/FelixKratz/dotfiles
+
+source "$HOME/.config/colors/colors.sh" # replace with $dotfiles_directory here
+
+CONFIG_DIR="$HOME/.config/sketchybar"
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+
+##### Bar Appearance #####
+# Configuring the general appearance of the bar, these are only some of the
+# options available. For all options see:
+# https://felixkratz.github.io/SketchyBar/config/bar
+# If you are looking for other colors, see the color picker:
+# https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
+
+sketchybar --bar height=37 \
+    blur_radius=30 \
+    position=top \
+    sticky=off \
+    padding_left=$SKETCHYBAR_PADDING_LEFT \
+    padding_right=$SKETCHYBAR_PADDING_RIGHT \
+    color="$SKETCHYBAR_PRIMARY_COLOR"
+
+##### Changing Defaults #####
+# We now change some default values that are applied to all further items
+# For a full list of all available item properties see:
+# https://felixkratz.github.io/SketchyBar/config/items
+
+sketchybar --default \
+    icon.color=$SKETCHYBAR_FONT_COLOR \
+    label.font="$SKETCHYBAR_FONT" \
+    icon.font="$SKETCHYBAR_FONT" \
+    label.color=$SKETCHYBAR_FONT_COLOR \
+    background.color=$SKETCHYBAR_SECONDARY_COLOR \
+    background.corner_radius=5 \
+    background.height=24 \
+    padding_left=5 \
+    padding_right=5 \
+    label.padding_left=4 \
+    label.padding_right=10 \
+    icon.padding_left=10 \
+    icon.padding_right=4 \
+    click_script="sketchybar -m --set theme.logo popup.drawing=off"
+
+# -- Left Side Items --
+# aerospace spaces
+sketchybar --add event aerospace_workspace_change
+
+for sid in $(aerospace list-workspaces --all); do
+    sketchybar --add item space.$sid left \
+        --subscribe space.$sid aerospace_workspace_change \
+        --set space.$sid background.color=$SKETCHYBAR_SECONDARY_COLOR \
+        background.drawing=off \
+        background.corner_radius=5 \
+        width=30 \
+        height=40 \
+        label.padding_left=11 \
+        label.position=center \
+        label.width=20 \
+        icon.position=center \
+        icon.width=0 \
+        icon.padding_left=0 \
+        icon.padding_right=0 \
+        label="$sid" \
+        click_script="aerospace workspace $sid" \
+        script="$PLUGIN_DIR/aerospace.sh $sid"
+done
+
+# reload button
+sketchybar --add item reload left \
+    --set reload icon="$SKETCHYBAR_ICON_RELOAD" \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    icon.font="$SKETCHYBAR_FONT" \
+    width=50 \
+    icon.width=50 \
+    label.position=center \
+    label.align=center \
+    icon.align=center \
+    click_script="$PLUGIN_DIR/reload.sh"
+
+# copy from clipboard button
+sketchybar --add item clipboard left \
+    --set clipboard icon="$SKETCHYBAR_ICON_CLIPBOARD" \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    icon.font="$SKETCHYBAR_FONT" \
+    width=50 \
+    icon.width=30 \
+    label.align=center \
+    icon.align=center \
+    label.width=0 \
+    click_script="$PLUGIN_DIR/clipboard.sh"
+
+# color theme menu
+
+COLOR_SCHEME_FILES=()
+for file in "$HOME/.config/colors"/*.json; do
+    COLOR_SCHEME_FILES+=("$file")
+done
+
+if [ -z "$COLOR_SCHEME_NAME" ]; then
+    COLOR_SCHEME_NAME="${COLOR_SCHEME_FILES[0]}"
+fi
+
+sketchybar --add item colors.logo left \
+    --set colors.logo icon=$SKETCHYBAR_ICON_COLOR_MENU \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    width=100 \
+    icon.width=15 \
+    icon.height=50 \
+    label.align=center \
+    label.font="$SKETCHYBAR_FONT_2" \
+    icon.font="$SKETCHYBAR_FONT_2" \
+    icon.font.size=17 \
+    icon.align=center \
+    label="$COLOR_SCHEME_NAME" \
+    label.padding_left=15 \
+    click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
+    popup.background.color="$SKETCHYBAR_PRIMARY_COLOR"
+
+for FILE in "${COLOR_SCHEME_FILES[@]}"; do
+    COLOR_NAME=$(jq -r ".COLOR_SCHEME_NAME" $FILE)
+    COLOR_SCHEME=$(basename $FILE .json)
+
+    sketchybar --add item colors.$FILE popup.colors.logo \
+        --set colors.$FILE icon=$SKETCHYBAR_ICON_COLOR_MENU \
+        label="$COLOR_NAME" \
+        background.color=$SKETCHYBAR_PRIMARY_COLOR \
+        click_script="$PLUGIN_DIR/color_theme.sh $COLOR_SCHEME $PLUGIN_DIR;"
+done
+
+# active workspace
+sketchybar --add item active_workspace q \
+    --set active_workspace width=50 \
+    label.max_chars=30 \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    label.font="$SKETCHYBAR_FONT_2" \
+    icon.font="$SKETCHYBAR_FONT_2" \
+    label.align=center
+
+# -- Right Side Items --
+# media
+sketchybar --add item media e \
+    --set media label.color=$SKETCHYBAR_ACCENT_COLOR \
+    label.max_chars=20 \
+    label.align=center \
+    icon.align=center \
+    label.font="$SKETCHYBAR_FONT_2" \
+    label.padding_top=50 \
+    icon.padding_left=0 \
+    scroll_texts=on \
+    icon.color=$SKETCHYBAR_ACCENT_COLOR \
+    background.drawing=off \
+    script="$PLUGIN_DIR/media.sh" \
+    click_script="$PLUGIN_DIR/media_click.sh" \
+    --subscribe media media_change
+
+# calendar
+sketchybar --add item calendar right \
+    --set calendar icon="$SKETCHYBAR_ICON_CALENDAR" \
+    update_freq=10 \
+    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    script="$PLUGIN_DIR/calendar.sh" \
+    click_script="open -a Calendar"
+
+##### Finalizing Setup #####
+# The below command is only needed at the end of the initial configuration to
+# force all scripts to run the first time, it should never be run in an item script.
+
+sketchybar --update

@@ -1,12 +1,15 @@
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
-
-# if [ -z ]
-
 destination_directory="$dotfiles_directory/.config/sketchybar"
 plugins_directory="$destination_directory/plugins"
 source_plugins_directory="$PWD/.sketchybar/plugins"
+source_templates_directory="$PWD/.sketchybar/templates"
+
+# copy sketchybar template, if defined
+if [ -n "$sketchybar_template" ]; then
+    cp -f "$source_templates_directory/$sketchybar_template" "$PWD/.sketchybar/sketchybarrc" #replace sketchybarrc with template
+fi
 
 # copy plugins
 files=($(ls $source_plugins_directory))
