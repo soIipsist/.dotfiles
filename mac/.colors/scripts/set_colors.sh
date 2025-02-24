@@ -62,7 +62,7 @@ if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
 fi
 
 if [ -n "$ITERM2_AUTOSUGGEST_COLOR" ]; then # replace existing autosuggest color, if it exists
-    zsh_path="$dotfiles_directory/.zshrc"
+    zshrc_path="$dotfiles_directory/.zshrc"
     var_name="ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE"
     new_value="fg=$ITERM2_AUTOSUGGEST_COLOR"
 
