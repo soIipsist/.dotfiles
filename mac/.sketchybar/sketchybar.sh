@@ -18,6 +18,3 @@ for file in "${files[@]}"; do
     cp -f "$source_plugins_directory/$file" "$plugins_directory"
     chmod +x "$plugins_directory/$file"
 done
-
-# source "$dotfiles_directory/.config/sketchybar/plugins/reload.sh"
-# destination_directory="$dotfiles_directory/.config/sketchybar"

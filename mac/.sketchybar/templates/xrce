@@ -169,4 +169,5 @@ sketchybar --add bracket right_bracket battery cpu volume wifi centre \
     --set right_bracket \
     background.color=$COLOR_BACKGROUND \
     background.border_color=$COLOR_DEFAULT
+
 sketchybar --update
