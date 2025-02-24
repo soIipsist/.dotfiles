@@ -1,4 +1,4 @@
 {
-  "dotfiles": [".colors"],
-  "color_scheme": "light_theme"
+  "dotfiles": [".sketchybar"],
+  "color_scheme": "xrce_theme"
 }

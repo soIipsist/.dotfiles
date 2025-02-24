@@ -13,7 +13,7 @@ if [ ! -z "$1" ]; then
 fi
 
 if [ -z "$color_scheme" ]; then
-    color_scheme="light_theme"
+    color_scheme="main_theme"
 fi
 
 destination_directory="$dotfiles_directory/.config/colors"

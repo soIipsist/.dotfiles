@@ -7,7 +7,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source_directory="$SCRIPT_DIR"
 
 mkdir -p "$destination_directory"
-sync
 
 cp -f "$source_directory/scripts/set_colors.sh" "$destination_directory"
 chmod +x "$destination_directory/set_colors.sh"
