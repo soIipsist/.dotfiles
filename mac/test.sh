@@ -4,25 +4,31 @@ source "../dotfiles.sh"
 source "../git.sh"
 source "../json.sh"
 
-get_wallpaper_path() {
-    wallpaper_path="$(get_json_value "wallpaper_path")"
-    color_scheme="$1"
-    dotfiles_directory="$2"
-
-    destination_directory="$dotfiles_directory/.config/colors"
-    color_scheme_path="$destination_directory/$color_scheme.json"
-
-    if [[ -f "$color_scheme_path" && -z "$wallpaper_path" ]]; then
-        wallpaper_path=$(get_json_value "WALLPAPER_PATH" "$color_scheme_path")
-    fi
-
-    echo "$wallpaper_path"
-
+hex2rgb() {
+    # reset $1 to scrubbed hex: '#01efa9' becomes '01EFA9'
+    set -- "$(echo "$1" | tr -d '#' | tr '[:lower:]' '[:upper:]')"
+    START=0
+    STR=
+    while ((START < ${#1})); do
+        # double each char under len 6 : FAB => FFAABB
+        if ((${#1} < 6)); then
+            STR="$(printf "${1:${START}:1}%.0s" 1 2)"
+            ((START += 1))
+        else
+            STR="${1:${START}:2}"
+            ((START += 2))
+        fi
+        echo "ibase=16; ${STR}" | bc
+    done
+    unset START STR
 }
-dotfiles_directory=$(get_json_value "dotfiles_directory" "" "$HOME") # will be $HOME by default
-color_scheme=$(get_json_value "color_scheme")
+hex_color="#FF1481"
+read r g b <<<$(hex2rgb "$hex_color")
 
-echo $color_scheme
-wallpaper_path=$(get_wallpaper_path "$color_scheme" "$dotfiles_directory")
+r_float=$(echo "scale=10; $r / 255" | bc -l)
+g_float=$(echo "scale=10; $g / 255" | bc -l)
+b_float=$(echo "scale=10; $b / 255" | bc -l)
 
-echo $wallpaper_path
+printf "%.8f" "$(echo $b_float)"
+
+# echo "ibase=16; $(echo "$hex_color" | tr '[:lower:]' '[:upper:]')" | bc

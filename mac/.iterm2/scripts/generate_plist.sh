@@ -1,6 +1,21 @@
 # Function to convert hex to iTerm's float format (0.0 - 1.0)
-hex_to_float() {
-    printf "%.5f" "$(echo "ibase=16; scale=5; $(echo "$1" | tr 'a-f' 'A-F' | sed 's/\(..\)/0x\1 /g' | awk '{print $1/255}')" | bc)"
+hex_to_rgb() {
+    # reset $1 to scrubbed hex: '#01efa9' becomes '01EFA9'
+    set -- "$(echo "$1" | tr -d '#' | tr '[:lower:]' '[:upper:]')"
+    START=0
+    STR=
+    while ((START < ${#1})); do
+        # double each char under len 6 : FAB => FFAABB
+        if ((${#1} < 6)); then
+            STR="$(printf "${1:${START}:1}%.0s" 1 2)"
+            ((START += 1))
+        else
+            STR="${1:${START}:2}"
+            ((START += 2))
+        fi
+        echo "ibase=16; ${STR}" | bc
+    done
+    unset START STR
 }
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -88,10 +103,13 @@ for key in "${COLOR_KEYS[@]}"; do
 
     [ "$hex_color" = "null" ] && continue
 
-    echo "$key - $hex_color"
-    r=$(hex_to_float "${hex_color:1:2}")
-    g=$(hex_to_float "${hex_color:3:2}")
-    b=$(hex_to_float "${hex_color:5:2}")
+    read r g b <<<$(hex_to_rgb "$hex_color")
+
+    r=$(printf "%.5f" "$(echo "scale=5; $r / 255" | bc -l)")
+    g=$(printf "%.5f" "$(echo "scale=5; $g / 255" | bc -l)")
+    b=$(printf "%.5f" "$(echo "scale=5; $b / 255" | bc -l)")
+
+    echo "$key - $hex_color - ($r, $g, $b)"
 
     case $key in
     ITERM2_FOREGROUND) color_name="Foreground Color" ;;
@@ -126,7 +144,8 @@ for key in "${COLOR_KEYS[@]}"; do
     ITERM2_HIGHLIGHT_COLOR) color_name="Highlight Color" ;;
     esac
 
-    colors_str+=$(printf "\n            <key>%s</key>\n            <dict>\n                <key>Red Component</key>\n                <real>%s</real>\n                <key>Green Component</key>\n                <real>%s</real>\n                <key>Blue Component</key>\n                <real>%s</real>\n            </dict>" "$color_name" "$r" "$g" "$b")
+    a=1
+    colors_str+=$(printf "\n            <key>%s</key>\n            <dict>\n                <key>Red Component</key>\n                <real>%s</real>\n                <key>Green Component</key>\n                <real>%s</real>\n                <key>Blue Component</key>\n                <real>%s</real>\n                <key>Alpha Component</key>\n                <real>%s</real>\n            </dict>" "$color_name" "$r" "$g" "$b" "$a")
 
 done
 

@@ -32,6 +32,10 @@ setopt INC_APPEND_HISTORY
 # zsh suggestions
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#D4CDD4"
 
+# iterm2
+export CLICOLOR=1
+export TERM=xterm-256color
+
 # tmux
 export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins/"
 
