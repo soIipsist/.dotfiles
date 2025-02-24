@@ -1,3 +1,5 @@
+source "$dotfiles_directory/.config/colors/set_colors.sh" "$color_scheme"
+
 sketchybar --reload
 aerospace reload-config
 brew services restart borders

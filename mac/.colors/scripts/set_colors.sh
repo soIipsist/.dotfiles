@@ -8,12 +8,12 @@ if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
     GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
 fi
 
-if [ -z "$color_scheme" ]; then
-    color_scheme="light_theme"
-fi
-
 if [ ! -z "$1" ]; then
     color_scheme="$1"
+fi
+
+if [ -z "$color_scheme" ]; then
+    color_scheme="light_theme"
 fi
 
 destination_directory="$dotfiles_directory/.config/colors"
@@ -59,5 +59,16 @@ if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
         cp -f "$sketchybar_template_path" "$HOME/.config/sketchybar/sketchybarrc"
         sketchybar --reload
     fi
+fi
 
+if [ -n "$ITERM2_AUTOSUGGEST_COLOR" ]; then # replace existing autosuggest color, if it exists
+    zsh_path="$dotfiles_directory/.zshrc"
+    var_name="ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE"
+    new_value="fg=$ITERM2_AUTOSUGGEST_COLOR"
+
+    if grep -q "^$var_name=" "$zshrc_path"; then
+        sed -i '' "s|^$var_name=.*|$var_name=\"$new_value\"|" "$zshrc_path"
+    else
+        echo "$var_name=\"$new_value\"" >>"$zshrc_path"
+    fi
 fi

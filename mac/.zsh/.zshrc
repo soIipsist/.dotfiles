@@ -29,6 +29,9 @@ export SAVEHIST="2000"
 setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
 
+# zsh suggestions
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#D4CDD4"
+
 # tmux
 export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins/"
 
