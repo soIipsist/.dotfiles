@@ -44,4 +44,4 @@ else
     fi
 fi
 
-sketchybar --set $NAME background.color=$COLOR icon=$ICON label="$LABEL"
+sketchybar --set $NAME background.color=$COLOR_BACKGROUND icon=$ICON label="$LABEL"

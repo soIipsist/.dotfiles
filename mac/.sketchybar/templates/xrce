@@ -10,7 +10,6 @@ sketchybar --default padding_left=8 padding_right=4 \
     icon.color=$COLOR_DEFAULT \
     icon.highlight_color=$COLOR_BACKGROUND \
     icon.padding_left=6 icon.padding_right=2 \
-    icon.font="Nerd Font:Regular:16.0" \
     label.color=$COLOR_DEFAULT \
     label.highlight_color=$COLOR_BACKGROUND \
     label.padding_left=2 \
@@ -19,18 +18,14 @@ sketchybar --default padding_left=8 padding_right=4 \
 
 sketchybar --add event window_change \
     --add event window_focus \
-    --add event title_change
+    --add event title_change \
+    --add event aerospace_workspace_change
 
-sketchybar --add item logo left --set logo script="$PLUGIN_DIR/logo.sh" background.border_width=0 background.height=24 icon=$ICON_APPLE click_script="./bin/menus -s 0" --subscribe logo mouse.clicked window_focus front_app_switched space_change title_change
-sketchybar --add bracket apple logo --set apple background.color=$COLOR_BACKGROUND background.border_color=$COLOR_DEFAULT
-sketchybar --add item seperator.r0 left --set seperator.r0 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
+sketchybar --add item logo left --set logo script="$PLUGIN_DIR/logo.sh" \ background.border_width=0 background.height=24 icon=$ICON_APPLE click_script="./bin/menus -s 0" --subscribe logo mouse.clicked window_focus front_app_switched space_change title_change
 sketchybar --add item title left --set title script="$PLUGIN_DIR/title.sh" padding_left=2 padding_right=8 background.border_width=0 background.height=24 click_script="./bin/menus -s 1" --subscribe title window_focus front_app_switched space_change title_change
-sketchybar --add bracket window title --set window background.color=$COLOR_BACKGROUND background.border_color=$COLOR_DEFAULT
 sketchybar --add item seperator.r1 left --set seperator.r1 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
 
 COLORS_SPACE=($COLOR_RED_BRIGHT $COLOR_GREEN_BRIGHT $COLOR_YELLOW_BRIGHT $COLOR_BLUE_BRIGHT $COLOR_MAGENTA_BRIGHT $COLOR_CYAN_BRIGHT $COLOR_WHITE_BRIGHT)
-# aerospace spaces
-sketchybar --add event aerospace_workspace_change
 
 for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item space.$sid left \
@@ -51,22 +46,127 @@ for sid in $(aerospace list-workspaces --all); do
         click_script="aerospace workspace $sid" \
         script="$PLUGIN_DIR/aerospace.sh $sid"
 done
+sketchybar --add item seperator.r2 left --set seperator.r1 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
+sketchybar --add bracket apple logo title '/space\..*/' \
+    --set apple \
+    background.color=$COLOR_BACKGROUND \
+    background.border_color=$COLOR_DEFAULT
 
-sketchybar --add bracket spaces '/space\..*/' --set spaces background.color=$COLOR_BACKGROUND
+# reload button
+sketchybar --add item reload left \
+    --set reload icon="$ICON_RELOAD" \
+    icon.width=30 \
+    label.align=center \
+    label.width=0 \
+    icon.align=center \
+    icon.font="$FONT" \
+    label.color=$COLOR_DEFAULT \
+    label.highlight_color=$COLOR_BACKGROUND \
+    click_script="$PLUGIN_DIR/reload.sh"
 
-sketchybar --add item centre right --set centre icon.color=$COLOR_DEFAULT background.color=$COLOR_BACKGROUND icon=$ICON_CMD padding_left=6 padding_right=4 icon.padding_left=8 icon.padding_right=0 background.border_width=0 background.corner_radius=6 background.height=24 click_script="osascript -e 'tell application \"System Events\" to click menu bar item 2 of menu bar 1 of application process \"ControlCenter\"'" \
-    --add bracket control centre --set control background.color=$COLOR_BACKGROUND background.border_color=$COLOR_DEFAULT \
-    --add item seperator.r2 right --set seperator.r2 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
+# copy from clipboard button
+sketchybar --add item clipboard left \
+    --set clipboard icon="$ICON_CLIPBOARD" \
+    icon.font="$FONT" \
+    icon.width=30 \
+    label.align=center \
+    icon.align=center \
+    label.width=0 \
+    icon.padding_left=5 \
+    icon.padding_right=15 \
+    label.color=$COLOR_DEFAULT \
+    label.highlight_color=$COLOR_BACKGROUND \
+    click_script="$PLUGIN_DIR/clipboard.sh"
 
-sketchybar --add item microphone right --set microphone script="$PLUGIN_DIR/microphone.sh" update_freq=1 padding_left=4 padding_right=8 icon.padding_left=8 icon.padding_right=0 background.border_width=0 background.corner_radius=6 background.height=24 \
-    --add item screenrec right --set screenrec script="$PLUGIN_DIR/screenrec.sh" update_freq=1 padding_left=8 padding_right=4 icon.padding_left=8 icon.padding_right=0 background.border_width=0 background.corner_radius=6 background.height=24 \
-    --add bracket privacy microphone screenrec --set privacy background.color=$COLOR_BACKGROUND background.border_color=$COLOR_DEFAULT \
-    --add item seperator.r3 right --set seperator.r3 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
+# color theme menu
 
-sketchybar --add item wifi right --set wifi script="$PLUGIN_DIR/wifi.sh" update_freq=5 padding_left=2 padding_right=8 background.border_width=0 background.corner_radius=6 background.height=24 icon.highlight=on label.highlight=on click_script="osascript -e 'tell application \"System Events\" to click menu bar item 3 of menu bar 1 of application process \"ControlCenter\"'" --subscribe wifi wifi_change \
-    --add item volume right --set volume script="$PLUGIN_DIR/volume.sh" padding_left=4 padding_right=4 background.border_width=0 background.corner_radius=6 background.height=24 click_script="osascript -e 'tell application \"System Events\" to click menu bar item 4 of menu bar 1 of application process \"ControlCenter\"'" --subscribe volume volume_change \
-    --add item battery right --set battery script="$PLUGIN_DIR/battery.sh" update_freq=120 padding_left=8 padding_right=2 background.border_width=0 background.corner_radius=6 background.height=24 click_script="osascript -e 'tell application \"System Events\" to click menu bar item 5 of menu bar 1 of application process \"ControlCenter\"'" --subscribe battery system_woke power_source_change \
-    --add bracket status wifi volume battery --set status background.color=$COLOR_BACKGROUND background.border_color=$COLOR_DEFAULT \
-    --add item seperator.r5 right --set seperator.r5 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
+COLOR_SCHEME_FILES=()
+for file in "$HOME/.config/colors"/*.json; do
+    COLOR_SCHEME_FILES+=("$file")
+done
 
+if [ -z "$COLOR_SCHEME_NAME" ]; then
+    COLOR_SCHEME_NAME="${COLOR_SCHEME_FILES[0]}"
+fi
+
+sketchybar --add item colors.logo left \
+    --set colors.logo icon=$ICON_COLOR_MENU \
+    background.border_width=0 \
+    icon.height=50 \
+    label.align=center \
+    label.font="$FONT" \
+    icon.font="$FONT" \
+    icon.font.size=17 \
+    icon.padding_left=5 \
+    icon.align=center \
+    label="$COLOR_SCHEME_NAME" \
+    label.padding_left=10 \
+    label.padding_right=10 \
+    click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
+    popup.border_color=$COLOR_DEFAULT \
+    popup.border_width=0 \
+    popup.background.color="$COLOR_BACKGROUND"
+
+for FILE in "${COLOR_SCHEME_FILES[@]}"; do
+    COLOR_NAME=$(jq -r ".COLOR_SCHEME_NAME" $FILE)
+    COLOR_SCHEME=$(basename $FILE .json)
+
+    sketchybar --add item colors.$FILE popup.colors.logo \
+        --set colors.$FILE icon=$ICON_COLOR_MENU \
+        label="$COLOR_NAME" \
+        click_script="$PLUGIN_DIR/color_theme.sh $COLOR_SCHEME $PLUGIN_DIR;"
+done
+
+sketchybar --add bracket icon_buttons reload clipboard '/colors\..*/' \
+    --set icon_buttons \
+    background.color=$COLOR_BACKGROUND \
+    background.border_color=$COLOR_DEFAULT
+
+# sketchybar --add bracket spaces '/space\..*/' --set spaces background.color=$COLOR_BACKGROUND
+
+sketchybar --add item centre right \
+    --set centre \
+    icon.color=$COLOR_DEFAULT \
+    icon=$ICON_CMD \
+    padding_left=4 \
+    padding_right=4 \
+    icon.padding_left=4 \
+    icon.padding_right=0 \
+    background.corner_radius=6 \
+    background.height=24
+
+sketchybar --add item wifi right \
+    --set wifi \
+    script="$PLUGIN_DIR/wifi.sh" \
+    update_freq=5 \
+    padding_left=2 \
+    padding_right=4 \
+    background.corner_radius=6 \
+    background.height=24 \
+    background.border_width=0 \
+    --subscribe wifi wifi_change
+
+sketchybar --add item volume right \
+    --set volume \
+    script="$PLUGIN_DIR/volume.sh" \
+    padding_left=4 \
+    padding_right=4 \
+    background.corner_radius=6 \
+    background.height=24 \
+    --subscribe volume volume_change
+
+sketchybar --add item battery right \
+    --set battery \
+    script="$PLUGIN_DIR/battery.sh" \
+    update_freq=120 \
+    padding_left=8 \
+    padding_right=2 \
+    background.corner_radius=6 \
+    background.height=24 \
+    --subscribe battery system_woke power_source_change
+
+sketchybar --add bracket right_bracket battery cpu volume wifi centre \
+    --set right_bracket \
+    background.color=$COLOR_BACKGROUND \
+    background.border_color=$COLOR_DEFAULT
 sketchybar --update

@@ -19,4 +19,5 @@ for file in "${files[@]}"; do
     chmod +x "$plugins_directory/$file"
 done
 
-source "$dotfiles_directory/.config/sketchybar/plugins/reload.sh"
+# source "$dotfiles_directory/.config/sketchybar/plugins/reload.sh"
+# destination_directory="$dotfiles_directory/.config/sketchybar"
