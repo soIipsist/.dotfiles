@@ -1,11 +1,18 @@
 {
   "hostname": "pc",
-  "apt_packages": [],
+  "apt_packages": [
+    "neofetch",
+    "htop",
+    "curl",
+    "tmux",
+    "vim",
+    "zsh",
+    "screen",
+    "cron",
+    "rsync",
+    "build-essential",
+    "openssh-server"
+  ],
   "pip_packages": [],
-  "dotfiles": [],
-  "wallpaper_path": "",
-  "lockscreen_path": "",
-  "git_home_path": "",
-  "git_username": "",
-  "git_email": ""
+  "dotfiles": []
 }

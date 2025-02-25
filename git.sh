@@ -16,18 +16,18 @@ git_config() {
 }
 
 clone_git_repos() {
-  git_repos=$1
-  git_home_path=$2
+  git_repos="$1"
+  git_home="$2"
 
   if [ -z "$git_repos" ]; then
     return
   fi
 
-  if [ -z "$git_home_path" ]; then
-    git_home_path=$HOME
+  if [ -z "$git_home" ]; then
+    git_home=$HOME
   fi
 
-  cd $git_home_path
+  cd $git_home
 
   for repo in $git_repos; do
     git clone $repo

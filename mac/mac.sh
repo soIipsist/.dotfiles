@@ -58,7 +58,7 @@ scripts=$(get_json_value "scripts")
 excluded_scripts=$(get_json_value "excluded_scripts")
 pip_packages=$(get_json_value "pip_packages")
 git_repos=$(get_json_value "git_repos")
-git_home_path=$(get_json_value "git_home_path")
+git_home=$(get_json_value "git_home")
 default_shell=$(get_json_value "default_shell")
 brewfile_path=$(get_json_value "brewfile_path")
 color_scheme=$(get_json_value "color_scheme")
@@ -72,7 +72,7 @@ install_pip_packages "${pip_packages[@]}"
 
 install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
 git_config "$git_username" "$git_email"
-clone_git_repos "${git_repos[@]}" "$git_home_path"
+clone_git_repos "${git_repos[@]}" "$git_home"
 
 if [ -n "$wallpaper_path" ]; then
     osascript prefs.scpt $wallpaper_path

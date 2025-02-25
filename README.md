@@ -88,7 +88,7 @@ The following parameters are valid for the `linux.json` file:
 - **`hostname`**: Name of your PC.
 - **`apt_packages`**: List of `apt` packages to install.
 - **`pip_packages`**: List of `pip` packages to install.
-- **`git_home_path`**: Default `git` home path.
+- **`git_home`**: Default `git` home path.
 - **`git_repos`**: List of git repositories to clone.
 - **`git_email`**: Global Git email.
 - **`git_username`**: Global Git username.
@@ -108,7 +108,7 @@ These parameters can be specified in the `mac.json` file:
 - **`computer_name`**: `ComputerName`.
 - **`brewfile_path`**: Path to the `brewfile` for installing `brew` packages (default: `mac/Brewfile`).
 - **`pip_packages`**: List of `pip` packages to install.
-- **`git_home_path`**: Default `git` home path.
+- **`git_home`**: Default `git` home path.
 - **`git_repos`**: List of git repositories to clone.
 - **`git_email`**: Global `git` email.
 - **`git_username`**: Global `git` username.
