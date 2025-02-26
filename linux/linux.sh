@@ -55,7 +55,6 @@ git_repos=$(get_json_value "git_repos")
 wallpaper_path=$(get_json_value "wallpaper_path")
 lockscreen_path=$(get_json_value "lockscreen_path")
 
-sudo su
 for package in $apt_packages; do
     sudo apt install --yes --no-install-recommends "$package"
 done

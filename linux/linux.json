@@ -11,7 +11,9 @@
     "cron",
     "rsync",
     "build-essential",
-    "openssh-server"
+    "openssh-server",
+    "unattended-upgrades",
+    "bash-completion"
   ],
   "pip_packages": [],
   "dotfiles": []

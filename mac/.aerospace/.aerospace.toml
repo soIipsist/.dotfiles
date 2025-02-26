@@ -182,6 +182,10 @@ if.app-id = 'com.google.Chrome'
 run = ['layout floating', 'move-node-to-workspace 3']
 
 [[on-window-detected]]
+if.app-id = 'com.apple.Safari'
+run = ['layout floating', 'move-node-to-workspace 3']
+
+[[on-window-detected]]
 if.app-id = 'com.hnc.Discord'
 run = ['move-node-to-workspace 5']
 
