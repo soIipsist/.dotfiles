@@ -42,6 +42,19 @@ set_lockscreen_and_wallpaper() {
     fi
 }
 
+install_zoxide() {
+    if [ -z "$1" ] || [ "$1" == false ]; then
+        return
+    fi
+
+    curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+
+    if ! grep -q 'eval "$(zoxide init bash)"' "$shell_path"; then
+        echo 'eval "$(zoxide init bash)"' >>"$shell_path"
+    fi
+
+}
+
 hostname=$(get_json_value "hostname")
 apt_packages=$(get_json_value "apt_packages")
 dotfiles=$(get_json_value "dotfiles")
@@ -55,10 +68,12 @@ git_repos=$(get_json_value "git_repos")
 wallpaper_path=$(get_json_value "wallpaper_path")
 lockscreen_path=$(get_json_value "lockscreen_path")
 install_homebrew_flag=$(get_json_value "install_homebrew")
+install_zoxide_flag=$(get_json_value "install_zoxide")
 brew_packages=$(get_json_value "brew_packages")
 brew_cask_packages=$(get_json_value "brew_cask_packages")
 
 install_homebrew "$install_homebrew_flag"
+install_zoxide "$install_zoxide_flag"
 install_brew_packages "$brew_packages" "$brew_cask_packages"
 
 apt_packages_array=($apt_packages)

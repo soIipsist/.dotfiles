@@ -90,6 +90,7 @@ The following parameters are valid for the `linux.json` file:
 - **`scripts`**: List of scripts to be executed in the dotfile subdirectories. If not specified, all scripts will be executed.
 - **`excluded_scripts`**: The scripts specified will not be executed.
 - **`install_homebrew`**: Install homebrew to your machine (default: `false`).
+- **`install_zoxide`**: Install zoxide (default: `false`).
 
 ### macOS (mac.json)
 

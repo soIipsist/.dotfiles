@@ -21,5 +21,6 @@
   "pip_packages": [],
   "dotfiles": [],
   "install_homebrew": true,
+  "install_zoxide": true,
   "brew_packages": ["fzf"]
 }
