@@ -1,6 +1,4 @@
 {
   "dotfiles": [".aerospace"],
-  "install_homebrew": true,
-  "brew_packages": ["fzf"],
-  "brew_cask_packages": ["discord", "google-chrome"]
+  "install_homebrew": true
 }

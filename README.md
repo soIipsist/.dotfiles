@@ -8,29 +8,19 @@ Each operating system has a subdirectory containing a setup script, a `.json` co
 
 Follow these steps to configure your environment:
 
-1. Navigate to the appropriate operating system directory (`windows`, `mac`, or `linux`) and locate the configuration file specific to your OS (with a `.json` extension).
+1. **Navigate to the appropriate directory for your operating system**  
+   Choose the directory corresponding to your operating system (`windows`, `mac`, or `linux`). Inside that directory, locate the configuration file specific to your OS (with a `.json` extension).
 
-2. Open the configuration file for your operating system and adjust the configurations as needed. Refer to this [section](#valid-parameters) for a comprehensive list of valid parameters.
+2. **Edit the configuration file**  
+   Open the configuration file for your operating system and adjust the settings as needed. For a comprehensive list of valid configuration parameters, refer to the [valid parameters section](#valid-parameters).
 
-3. Execute the provided setup script in the terminal or command prompt with administrator privileges:
+3. **Execute the setup script**  
+   Once you've configured the necessary settings, run the provided setup shell script to complete the installation:
 
-**Windows (Powershell)**:
+   ```bash
+   ./setup.sh
 
-```powershell
-./Setup.ps1
-```
-
-**Linux**:
-
-```bash
-./linux.sh
-```
-
-**macOS**:
-
-```bash
-./mac.sh
-```
+This will automatically configure your environment based on your edits to the configuration file.
 
 ## Valid Parameters
 
