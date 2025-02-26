@@ -2,6 +2,7 @@
 source "../json.sh"
 source "../dotfiles.sh"
 source "../git.sh"
+source "../os.sh"
 
 set_lockscreen_and_wallpaper() {
     wallpaper_path="$1"
@@ -54,6 +55,12 @@ git_home=$(get_json_value "git_home")
 git_repos=$(get_json_value "git_repos")
 wallpaper_path=$(get_json_value "wallpaper_path")
 lockscreen_path=$(get_json_value "lockscreen_path")
+install_homebrew_flag=$(get_json_value "install_homebrew")
+brew_packages=$(get_json_value "brew_packages")
+brew_cask_packages=$(get_json_value "brew_cask_packages")
+
+install_homebrew "$install_homebrew_flag"
+install_brew_packages "$brew_packages" "$brew_cask_packages"
 
 for package in $apt_packages; do
     sudo apt install --yes --no-install-recommends "$package"

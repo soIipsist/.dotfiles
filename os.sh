@@ -102,3 +102,12 @@ install_pip_packages() {
   done
 
 }
+
+install_brew_packages() {
+  [ -z "$1$2" ] && return
+
+  install_homebrew true
+
+  for package in $1; do brew install "$package"; done
+  for package in $2; do brew install --cask "$package"; done
+}

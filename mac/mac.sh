@@ -5,6 +5,8 @@ source "../dotfiles.sh"
 source "../git.sh"
 
 install_brewfile() {
+    brewfile_path="$1"
+
     if [ -z $brewfile_path ]; then
         return
     fi
@@ -31,9 +33,12 @@ color_scheme=$(get_json_value "color_scheme")
 sketchybar_template=$(get_json_value "sketchybar_template")
 wallpaper_path=$(get_json_value "wallpaper_path")
 install_homebrew_flag=$(get_json_value "install_homebrew")
+brew_packages=$(get_json_value "brew_packages")
+brew_cask_packages=$(get_json_value "brew_cask_packages")
 
 install_homebrew "$install_homebrew_flag"
-install_brewfile
+install_brew_packages "$brew_packages" "$brew_cask_packages"
+install_brewfile "$brewfile_path"
 set_hostname
 set_default_shell
 install_pip_packages "${pip_packages[@]}"

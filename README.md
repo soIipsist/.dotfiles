@@ -111,6 +111,7 @@ These parameters can be specified in the `mac.json` file:
 - **`install_homebrew`**: Install homebrew to your machine (default: `false`).
 - **`brewfile_path`**: Path to the `brewfile` for installing `brew` packages (default: `mac/Brewfile`).
 - **`brew_packages`**: List of `brew` packages to install.
+- **`brew_cask_packages`**: List of `brew` cask packages to install.
 - **`pip_packages`**: List of `pip` packages to install.
 - **`git_home`**: Default `git` home path.
 - **`git_repos`**: List of git repositories to clone.

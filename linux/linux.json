@@ -20,5 +20,6 @@
   ],
   "pip_packages": [],
   "dotfiles": [],
-  "install_homebrew": true
+  "install_homebrew": true,
+  "brew_packages": ["fzf"]
 }
