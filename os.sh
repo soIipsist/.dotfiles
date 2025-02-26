@@ -32,8 +32,8 @@ install_homebrew() {
   shell_path=$(get_default_shell_path)
 
   # check if homebrew is not in $PATH
-  if [[ ":$PATH:" == *":/opt/homebrew/bin:"* ]]; then
-    echo "Homebrew was already installed."
+  if command -v brew &>/dev/null; then
+    echo "Homebrew is already installed."
   else
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     echo "export PATH=/opt/homebrew/bin:$PATH" >>$shell_path
