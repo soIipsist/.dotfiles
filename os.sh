@@ -31,13 +31,26 @@ install_homebrew() {
   fi
   shell_path=$(get_default_shell_path)
 
-  # check if homebrew is not in $PATH
   if command -v brew &>/dev/null; then
     echo "Homebrew is already installed."
   else
+    echo "Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-    echo "export PATH=/opt/homebrew/bin:$PATH" >>$shell_path
-    source $shell_path
+  fi
+
+  # Ensure Homebrew's path is added to the shell profile if not already present
+  if ! grep -q '/opt/homebrew/bin' "$shell_path"; then
+    echo 'export PATH="/opt/homebrew/bin:$PATH"' >>"$shell_path"
+  fi
+
+  source "$shell_path"
+
+  os=$(get_os)
+  if [ "$os" == "linux" ]; then
+    if ! grep -q 'brew shellenv' "$shell_path"; then
+      echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >>"$shell_path"
+    fi
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
   fi
 }
 

@@ -9,7 +9,9 @@ set_lockscreen_and_wallpaper() {
     lockscreen_path="$2"
     desktop_environment="$XDG_CURRENT_DESKTOP"
 
-    echo "Current desktop environment: $desktop_environment"
+    if [ -n "$desktop_environment" ]; then
+        echo "Current desktop environment: $desktop_environment"
+    fi
 
     case "$desktop_environment" in
     "GNOME")
@@ -26,9 +28,6 @@ set_lockscreen_and_wallpaper() {
         ;;
     "X-Cinnamon")
         wallpaper_command="gsettings set org.cinnamon.desktop.background picture-uri '$wallpaper_path'"
-        ;;
-    *)
-        echo "Unknown desktop environment: $desktop_environment."
         ;;
     esac
 
