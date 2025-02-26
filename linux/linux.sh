@@ -62,9 +62,8 @@ brew_cask_packages=$(get_json_value "brew_cask_packages")
 install_homebrew "$install_homebrew_flag"
 install_brew_packages "$brew_packages" "$brew_cask_packages"
 
-for package in $apt_packages; do
-    sudo apt install --yes --no-install-recommends "$package"
-done
+apt_packages_array=($apt_packages)
+sudo apt install --yes --no-install-recommends "${apt_packages_array[@]}"
 
 install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
 git_config "$git_username" "$git_email"
