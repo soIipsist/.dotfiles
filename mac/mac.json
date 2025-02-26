@@ -1,4 +1,5 @@
 {
   "dotfiles": [".aerospace"],
-  "color_scheme": "xrce_theme"
+  "color_scheme": "xrce_theme",
+  "install_homebrew": true
 }

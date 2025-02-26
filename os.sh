@@ -11,6 +11,36 @@ get_os() {
   echo $machine
 }
 
+get_default_shell_path() {
+
+  case "$SHELL" in
+  /bin/bash) echo "$HOME/.bashrc" ;;
+  /bin/zsh) echo "$HOME/.zshrc" ;;
+  /bin/fish) echo "$HOME/.config/fish/config.fish" ;;
+  /bin/dash) echo "$HOME/.profile" ;;
+  /usr/bin/tcsh | /bin/tcsh) echo "$HOME/.tcshrc" ;;
+  /usr/bin/csh | /bin/csh) echo "$HOME/.cshrc" ;;
+  *) echo "$HOME/.bashrc" ;;
+  esac
+}
+
+install_homebrew() {
+
+  if [ -z "$1" ] || [ "$1" == false ]; then
+    return
+  fi
+  shell_path=$(get_default_shell_path)
+
+  # check if homebrew is not in $PATH
+  if [[ ":$PATH:" == *":/opt/homebrew/bin:"* ]]; then
+    echo "Homebrew was already installed."
+  else
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    echo "export PATH=/opt/homebrew/bin:$PATH" >>$shell_path
+    source $shell_path
+  fi
+}
+
 set_default_shell() {
 
   if [ -z $default_shell ]; then
@@ -50,4 +80,25 @@ set_hostname() {
   else
     return
   fi
+}
+
+install_pip_packages() {
+  pip_packages=$1
+
+  if [ -z "$pip_packages" ]; then
+    return
+  fi
+
+  # create venv if it doesn't exist
+  cd $HOME
+  if [ ! -d "$HOME/venv" ]; then
+    python -m venv venv
+  fi
+
+  source venv/bin/activate
+
+  for package in $pip_packages; do
+    pip install $package
+  done
+
 }

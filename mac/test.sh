@@ -5,5 +5,11 @@ source "../git.sh"
 source "../json.sh"
 
 os=$(get_os)
-
 echo $os
+
+# Example usage:
+default_shell_config=$(get_default_shell_path)
+echo "Default shell configuration file: $default_shell_config"
+
+install_homebrew_flag=$(get_json_value "install_homebrew")
+install_homebrew "$install_homebrew_flag"

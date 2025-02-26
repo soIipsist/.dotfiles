@@ -13,8 +13,12 @@
     "build-essential",
     "openssh-server",
     "unattended-upgrades",
-    "bash-completion"
+    "bash-completion",
+    "procps",
+    "file",
+    "git"
   ],
   "pip_packages": [],
-  "dotfiles": []
+  "dotfiles": [],
+  "install_homebrew": true
 }

@@ -88,6 +88,7 @@ The following parameters are valid for the `linux.json` file:
 - **`hostname`**: Name of your PC.
 - **`apt_packages`**: List of `apt` packages to install.
 - **`pip_packages`**: List of `pip` packages to install.
+- **`brew_packages`**: List of `brew` packages to install.
 - **`git_home`**: Default `git` home path.
 - **`git_repos`**: List of git repositories to clone.
 - **`git_email`**: Global Git email.
@@ -98,6 +99,7 @@ The following parameters are valid for the `linux.json` file:
 - **`dotfiles_directory`**: Default dotfiles directory (default: `$HOME`).
 - **`scripts`**: List of scripts to be executed in the dotfile subdirectories. If not specified, all scripts will be executed.
 - **`excluded_scripts`**: The scripts specified will not be executed.
+- **`install_homebrew`**: Install homebrew to your machine (default: `false`).
 
 ### macOS (mac.json)
 
@@ -106,7 +108,9 @@ These parameters can be specified in the `mac.json` file:
 - **`hostname`**: `HostName` of your PC.
 - **`local_hostname`**: `LocalHostName` of your PC.
 - **`computer_name`**: `ComputerName`.
+- **`install_homebrew`**: Install homebrew to your machine (default: `false`).
 - **`brewfile_path`**: Path to the `brewfile` for installing `brew` packages (default: `mac/Brewfile`).
+- **`brew_packages`**: List of `brew` packages to install.
 - **`pip_packages`**: List of `pip` packages to install.
 - **`git_home`**: Default `git` home path.
 - **`git_repos`**: List of git repositories to clone.

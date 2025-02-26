@@ -59,9 +59,7 @@ for package in $apt_packages; do
     sudo apt install --yes --no-install-recommends "$package"
 done
 
+install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home"
 set_lockscreen_and_wallpaper "$wallpaper_path" "$lockscreen_path"
-
-dotfile_folders=$(get_dotfile_folders "${dotfiles[@]}")
-install_dotfiles "$dotfiles_directory" "$dotfile_folders" "$scripts" "$excluded_scripts"
