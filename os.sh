@@ -43,9 +43,6 @@ install_homebrew() {
     echo 'export PATH="/opt/homebrew/bin:$PATH"' >>"$shell_path"
   fi
 
-  echo "Reloading shell..."
-  # exec $SHELL
-
   os=$(get_os)
   if [ "$os" == "linux" ]; then
     if ! grep -q 'brew shellenv' "$shell_path"; then

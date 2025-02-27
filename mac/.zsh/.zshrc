@@ -30,7 +30,7 @@ setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
 
 # zsh suggestions
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#D4CDD4"
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff"
 
 # iterm2
 export CLICOLOR=1

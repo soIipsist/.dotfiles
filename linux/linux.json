@@ -16,7 +16,9 @@
     "bash-completion",
     "procps",
     "file",
-    "git"
+    "git",
+    "exfat-fuse",
+    "exfat-utils"
   ],
   "pip_packages": [],
   "dotfiles": [],
