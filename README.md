@@ -18,7 +18,7 @@ Follow these steps to configure your environment:
    Once you've configured the necessary settings, run the provided setup shell script to complete the installation:
 
    ```bash
-   ./setup.sh
+    ./setup.sh <dotfile_folder_1> <dotfile_folder_2>
 
 This will automatically configure your environment based on your edits to the configuration file.
 

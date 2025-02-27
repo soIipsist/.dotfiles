@@ -53,11 +53,13 @@ install_zoxide() {
         echo 'eval "$(zoxide init bash)"' >>"$shell_path"
     fi
 
+    sudo mv ~/.local/bin/zoxide /usr/local/bin/
 }
+dotfile_args=("$@")
 
 hostname=$(get_json_value "hostname")
 apt_packages=$(get_json_value "apt_packages")
-dotfiles=$(get_json_value "dotfiles")
+dotfiles=$(get_json_value "dotfiles" "" "${dotfile_args[@]}")        # dotfiles argument will be used by default
 dotfiles_directory=$(get_json_value "dotfiles_directory" "" "$HOME") # will be $HOME by default
 scripts=$(get_json_value "scripts")
 excluded_scripts=$(get_json_value "excluded_scripts")

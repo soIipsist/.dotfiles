@@ -39,11 +39,12 @@ install_homebrew() {
   fi
 
   # Ensure Homebrew's path is added to the shell profile if not already present
-  if ! grep -q '/opt/homebrew/bin' "$shell_path"; then
+  if ! grep -q 'export PATH="/opt/homebrew/bin' "$shell_path"; then
     echo 'export PATH="/opt/homebrew/bin:$PATH"' >>"$shell_path"
   fi
 
-  source "$shell_path"
+  echo "Reloading shell..."
+  # exec $SHELL
 
   os=$(get_os)
   if [ "$os" == "linux" ]; then

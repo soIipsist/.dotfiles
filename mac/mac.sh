@@ -13,14 +13,14 @@ install_brewfile() {
 
     brew bundle --file $brewfile_path
 }
+dotfile_args=("$@")
 
-os=$(get_os)
 git_username=$(get_json_value "git_username")
 git_email=$(get_json_value "git_email")
 hostname=$(get_json_value "hostname")
 computer_name=$(get_json_value "computer_name")
 local_hostname=$(get_json_value "local_hostname")
-dotfiles=$(get_json_value "dotfiles")
+dotfiles=$(get_json_value "dotfiles" "" "${dotfile_args[@]}")        # dotfiles argument will be used by default
 dotfiles_directory=$(get_json_value "dotfiles_directory" "" "$HOME") # will be $HOME by default
 scripts=$(get_json_value "scripts")
 excluded_scripts=$(get_json_value "excluded_scripts")
@@ -35,6 +35,10 @@ wallpaper_path=$(get_json_value "wallpaper_path")
 install_homebrew_flag=$(get_json_value "install_homebrew")
 brew_packages=$(get_json_value "brew_packages")
 brew_cask_packages=$(get_json_value "brew_cask_packages")
+
+if [ -n "$dotfile_args" ]; then
+    dotfiles="${dotfile_args[@]}"
+fi
 
 install_homebrew "$install_homebrew_flag"
 install_brew_packages "$brew_packages" "$brew_cask_packages"

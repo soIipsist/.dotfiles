@@ -1,5 +1,7 @@
 source "os.sh"
 
+dotfiles=("$@")
+
 os=$(get_os)
 
 if [[ "$os" == "windows" ]]; then
@@ -12,5 +14,5 @@ else
         echo "Error: Directory '$os' not found"
         exit 1
     }
-    bash "$os.sh"
+    bash "$os.sh" "${dotfiles[@]}"
 fi
