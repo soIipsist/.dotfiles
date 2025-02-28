@@ -53,20 +53,8 @@ fi
 # set sketchybar template
 if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
     templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
-    template_path="$templates_directory/$SKETCHYBAR_TEMPLATE"
-
-    # copy sketchybar template, if it the template path exists
-    if [ -f "$template_path" ]; then
-        cp -f "$template_path" "$dotfiles_directory/.config/sketchybar/sketchybarrc"
-        sketchybar --reload
-    else
-        # copy bottom and top parts
-        cp -f "$templates_directory/bottom_$SKETCHYBAR_TEMPLATE" "$dotfiles_directory/.config/bottombar/sketchybarrc"
-        cp -f "$templates_directory/top_$SKETCHYBAR_TEMPLATE" "$dotfiles_directory/.config/sketchybar/sketchybarrc"
-
-        sketchybar --reload
-        bottombar --reload
-    fi
+    sketchybar_template="$SKETCHYBAR_TEMPLATE"
+    source "$templates_directory/sketchybarrc.sh"
 fi
 
 if [ -n "$ITERM2_AUTOSUGGEST_COLOR" ]; then # replace existing autosuggest color, if it exists

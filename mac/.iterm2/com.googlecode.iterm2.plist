@@ -21,11 +21,11 @@
             <key>Background Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.28627</real>
+                <real>0.23137</real>
                 <key>Green Component</key>
-                <real>0.07843</real>
+                <real>0.08235</real>
                 <key>Blue Component</key>
-                <real>0.50588</real>
+                <real>0.38823</real>
                 <key>Alpha Component</key>
                 <real>1</real>
             </dict>
@@ -43,11 +43,11 @@
             <key>Selection Color</key>
             <dict>
                 <key>Red Component</key>
-                <real>0.49019</real>
+                <real>0.32941</real>
                 <key>Green Component</key>
-                <real>0.13333</real>
+                <real>0.12941</real>
                 <key>Blue Component</key>
-                <real>0.87058</real>
+                <real>0.54117</real>
                 <key>Alpha Component</key>
                 <real>1</real>
             </dict>

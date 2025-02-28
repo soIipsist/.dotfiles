@@ -1,5 +1,5 @@
 {
-  "dotfiles": [".sketchybar"],
+  "dotfiles": [".colors", ".sketchybar"],
   "sketchybar_template": "xrce",
   "wallpaper_path": "/wallpapers/diane.jpg",
   "install_homebrew": true
