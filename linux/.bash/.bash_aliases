@@ -19,12 +19,3 @@ mnt_exfat() {
     fi
     sudo mount -t exfat -o uid=$(id -u),gid=$(id -g) "$1" "$2"
 }
-
-unmnt_usb() {
-    if [ $# -ne 1 ]; then
-        echo "Usage: unmnt_usb <mount_point>"
-        return 1
-    fi
-    sudo umount "$1"
-    echo "Unmounted $1 successfully."
-}

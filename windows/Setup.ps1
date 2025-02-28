@@ -1,4 +1,7 @@
 # Include files
+param(
+    [array]$DotfileArgs = @()
+)
 
 $ParentDirectory = $PSScriptRoot
 $HelpersPath = Join-Path -Path $ParentDirectory -ChildPath "Helpers.ps1"
@@ -16,6 +19,10 @@ $PackagesPath = Join-Path -Path $ParentDirectory -ChildPath "Packages.ps1"
 . $SetupPath
 . $ProvidersPath
 . $PackagesPath
+
+if ($DotfileArgs.Count -gt 0){
+    $Dotfiles = $DotfileArgs
+}
 
 Set-PC-Name -PCName $PCName
 Set-Product-Key -ProductKey $ProductKey
