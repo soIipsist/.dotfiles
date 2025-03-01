@@ -76,6 +76,7 @@ brew_cask_packages=$(get_json_value "brew_cask_packages")
 
 install_homebrew "$install_homebrew_flag"
 install_zoxide "$install_zoxide_flag"
+set_hostname "$hostname"
 install_brew_packages "$brew_packages" "$brew_cask_packages"
 
 apt_packages_array=($apt_packages)

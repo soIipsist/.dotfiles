@@ -43,7 +43,7 @@ fi
 install_homebrew "$install_homebrew_flag"
 install_brew_packages "$brew_packages" "$brew_cask_packages"
 install_brewfile "$brewfile_path"
-set_hostname
+set_hostname "$hostname"
 set_default_shell
 install_pip_packages "${pip_packages[@]}"
 

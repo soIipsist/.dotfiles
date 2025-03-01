@@ -65,6 +65,8 @@ set_default_shell() {
 }
 
 set_hostname() {
+  hostname="$1"
+
   if [ -z "$hostname" ]; then
     return
   fi

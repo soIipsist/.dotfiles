@@ -1,5 +1,5 @@
 {
-  "hostname": "pc",
+  "hostname": "solipsist",
   "apt_packages": [
     "neofetch",
     "htop",
@@ -19,5 +19,6 @@
     "git"
   ],
   "pip_packages": [],
-  "brew_packages": ["fzf"]
+  "brew_packages": ["fzf"],
+  "install_homebrew": true
 }
