@@ -17,14 +17,23 @@ function Get-Default-Values-From-Json {
             }
         }
 
-        # check if value is a relative path to .dotfiles
-        if ($value -is [string] -and $value.StartsWith("/")) {
-            $newValue = $value -replace "^/", "$DotfilesDirectory/.dotfiles/"
-            $WindowsData.$key = $newValue
-        }
     }
     
     return $WindowsData
+}
+
+function Replace-Root {
+    param (
+        [string]$Value,
+        [string]$RootPath
+    )
+
+    # Ensure the value starts with '/' before replacing
+    if ($Value -match "^/") {
+        return "$RootPath$Value"
+    }
+
+    return $Value
 }
 
 $ParentDirectory = $PSScriptRoot
@@ -49,9 +58,9 @@ $global:ShowFileExtensions = $WindowsData.show_file_extensions
 $global:ClassicContextMenu = $WindowsData.classic_context_menu
 $global:RemoveDesktopShortcuts = $WindowsData.remove_desktop_shortcuts
 $global:ActivateOffice = $WindowsData.activate_office
-$global:FontsDirectory = $WindowsData.fonts_directory
-$global:WallpaperPath = $WindowsData.wallpaper_path
-$global:LockscreenPath = $WindowsData.lockscreen_path
+$global:FontsDirectory = Replace-Root -Value $WindowsData.fonts_directory -RootPath $DotfilesDirectory
+$global:WallpaperPath = Replace-Root -Value $WindowsData.wallpaper_path -RootPath $DotfilesDirectory
+$global:LockscreenPath = Replace-Root -Value $WindowsData.lockscreen_path -RootPath $DotfilesDirectory
 
 # packages, dotfiles
 $global:Dotfiles = $WindowsData.dotfiles
@@ -92,7 +101,6 @@ $global:GitUserEmail = $WindowsData.git_email
 # reboot
 $global:Reboot = $WindowsData.reboot
 $global:RebootTime = $WindowsData.reboot_time
-
 
 # system env
 $global:UserProfilePath = [System.Environment]::GetFolderPath('UserProfile')

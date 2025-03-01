@@ -67,8 +67,13 @@ git_username=$(get_json_value "git_username")
 git_email=$(get_json_value "git_email")
 git_home=$(get_json_value "git_home")
 git_repos=$(get_json_value "git_repos")
+
 wallpaper_path=$(get_json_value "wallpaper_path")
+wallpaper_path=$(replace_root $wallpaper_path $GIT_DOTFILES_DIRECTORY)
+
 lockscreen_path=$(get_json_value "lockscreen_path")
+lockscreen_path=$(replace_root $lockscreen_path $GIT_DOTFILES_DIRECTORY)
+
 install_homebrew_flag=$(get_json_value "install_homebrew")
 install_zoxide_flag=$(get_json_value "install_zoxide")
 brew_packages=$(get_json_value "brew_packages")

@@ -479,6 +479,4 @@ function Reboot {
         Restart-Computer;
     }
 
-
-    
 }

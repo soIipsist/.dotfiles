@@ -39,14 +39,6 @@ get_json_value() {
     value="$env_value"
   fi
 
-  # echo relative path to .dotfiles directory, if value starts with '/'
-  if [[ $value == /* ]]; then
-
-    if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
-      GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
-    fi
-    value="$GIT_DOTFILES_DIRECTORY/${value:1}"
-  fi
   echo "$value"
 }
 

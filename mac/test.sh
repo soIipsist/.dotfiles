@@ -8,7 +8,7 @@ os=$(get_os)
 echo $os
 
 val=$(get_json_value "wallpaper_path")
-echo $val
+echo $(replace_root $val $GIT_DOTFILES_DIRECTORY)
 
 # Example usage:
 # default_shell_config=$(get_default_shell_path)
