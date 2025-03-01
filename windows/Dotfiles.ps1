@@ -103,7 +103,6 @@ function Move-Dotfiles {
             $Dotfile = $Dotfile.FullName
         } 
 
-      
         if (Test-Path -Path $Dotfile) {
             Copy-Item -Path $Dotfile -Destination $DestinationDirectory
             Write-Host "Copied $Dotfile to $DestinationDirectory" -ForegroundColor DarkBlue

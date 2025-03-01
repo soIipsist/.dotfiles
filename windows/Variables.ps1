@@ -1,6 +1,7 @@
 function Get-Default-Values-From-Json {
     param (
-        [object]$WindowsData 
+        [object]$WindowsData,
+        [string]$DotfilesDirectory 
     )
     
     foreach ($key in $WindowsData.PSObject.Properties.Name) {
@@ -15,17 +16,26 @@ function Get-Default-Values-From-Json {
                 $WindowsData.$key = $envVarValue
             }
         }
+
+        # check if value is a relative path to .dotfiles
+        if ($value -is [string] -and $value.StartsWith("/")) {
+            $newValue = $value -replace "^/", "$DotfilesDirectory/.dotfiles/"
+            $WindowsData.$key = $newValue
+        }
     }
     
     return $WindowsData
 }
 
 $ParentDirectory = $PSScriptRoot
+$DotfilesDirectory = Split-Path -Path $PSScriptRoot -Parent
 $WindowsDataPath = Join-Path -Path $ParentDirectory -ChildPath "windows.json"
 # $WindowsDataPath = "..\windows\windows_example.json"
 
 $WindowsData = Get-Content -Path $WindowsDataPath -Raw | ConvertFrom-Json
-$WindowsData = Get-Default-Values-From-Json -WindowsData $WindowsData
+$WindowsData = Get-Default-Values-From-Json -WindowsData $WindowsData -DotfilesDirectory $ParentDirectory
+
+Write-Host $DotfilesDirectory
 
 # windows settings
 $global:PCName = $WindowsData.pc_name

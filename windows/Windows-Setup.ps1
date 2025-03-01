@@ -262,7 +262,7 @@ function Enable-Microsoft-Office {
     cscript ospp.vbs /setprt:1688
     cscript ospp.vbs /act
 }
- 
+
 function Set-Wallpaper {
     param(
         [string] $WallpaperPath
@@ -333,42 +333,41 @@ function Install-Fonts {
             Write-Host "Installing $FontFamily..." -ForegroundColor Green   
             Get-ChildItem $FileName | ForEach-Object { $fonts.CopyHere($_.fullname) }
         }
-         
+        
     }
     
 
 }
 
 function Set-Power-Configuration {
-    param(
-       
+    param(       
         $DiskTimeoutAC = 0,
 
     
         $DiskTimeoutDC = 0,
 
-         
+        
         $HibernateTimeoutAC = 0,
         
     
         $HibernateTimeoutDC = 0,
 
-         
+    
         $StandbyTimeoutAC = 0,
 
-     
+    
         $StandbyTimeoutDC = 0,
 
-         
+        
         $MonitorTimeoutAC = 0,
 
-         
+        
         $MonitorTimeoutDC = 0,
 
-         
+        
         $LockscreenTimeoutAC = 0,
 
-     
+    
         $LockscreenTimeoutDC = 0
         
     )
@@ -399,7 +398,7 @@ function Set-Power-Configuration {
     # Set turn off disk timeout (in minutes / 0: never)
     powercfg -change "disk-timeout-ac" $DiskTimeoutAC;
     powercfg -change "disk-timeout-dc" $DiskTimeoutDC;
-  
+
     # Set hibernate timeout (in minutes / 0: never)
     powercfg -change "hibernate-timeout-ac" $HibernateTimeoutAC;
     powercfg -change "hibernate-timeout-dc" $HibernateTimeoutDC;
@@ -420,7 +419,6 @@ function Set-Power-Configuration {
     Write-Host "Power plan successfully updated." -ForegroundColor Green;
 }
 
- 
 
 function Set-Regional-Format {
 
@@ -429,10 +427,8 @@ function Set-Regional-Format {
 
         $ShortDate = "dd/MM/yyyy",
 
-
         $LongDate = "dddd, d MMMM, yyyy",
 
-       
         $ShortTime = "HH:mm",
 
         $TimeFormat = "HH:mm:ss"
@@ -458,8 +454,7 @@ function Set-Regional-Format {
             $RegValue = $RegistryValues[$i]
             Write-Host "Successfully set registry value '$RegValue' to '$Var'"
             Set-ItemProperty -Path $RegPath -Name $RegValue -Value $Var;
-        }
-         
+        }         
     }
 
     Write-Host "Regional format successfully updated." -ForegroundColor Green;
@@ -484,6 +479,6 @@ function Reboot {
         Restart-Computer;
     }
 
-   
+
     
 }

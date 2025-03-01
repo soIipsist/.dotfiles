@@ -67,11 +67,11 @@ function Install-Packages {
             $ParamsCommand = Get-Params-Command -PackageProvider $PackageProvider -Params $PackageParams
             $Command += "$ParamsCommand"
         }
-      
+    
         if ($Command) {
             Invoke-Expression $Command
         }
-       
+    
     }
 }
 
@@ -95,7 +95,7 @@ function Get-Params-Command {
         }
         
         Default { 
-           
+        
         }
     }
     $ParamsCommand = $Params -join " "
@@ -105,9 +105,8 @@ function Get-Params-Command {
     }
     else {
         $Command += " $ParamsCommand"
-    }
-     
- 
+    }     
+
     return $Command
 
 }

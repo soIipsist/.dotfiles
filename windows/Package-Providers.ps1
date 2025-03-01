@@ -44,7 +44,7 @@ function Install-Scoop {
         Invoke-Expression "& {$(Invoke-RestMethod get.scoop.sh)} -RunAsAdmin"
     }
 
-   
+
     if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
         $GitPath = Join-Path -Path $PSScriptRoot -ChildPath "/.git-config/Git.ps1"
         Invoke-Expression "& $GitPath"
@@ -64,7 +64,6 @@ function Install-Scoop {
     Write-Host "Scoop was successfully installed." -ForegroundColor Yellow
 }
 
- 
 
 function Install-Provider {
     param(
@@ -95,7 +94,6 @@ function Install-PackageProviders {
         $PackageProviders = @('chocolatey', 'winget', 'scoop', 'nuget') 
     }
     Write-Host "$PackageProviders"
-    # $PackageProviders
     foreach ($Provider in $PackageProviders) {
         Install-Provider -PackageProviderName $Provider
     }

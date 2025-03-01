@@ -2,7 +2,7 @@ function Get-Registry-Key-Values {
     param (
         [string] $Path
     )
- 
+
     $registryItems = Get-ItemProperty -Path $Path
     return $registryItems
 }
