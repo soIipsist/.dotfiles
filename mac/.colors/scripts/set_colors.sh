@@ -52,12 +52,20 @@ fi
 
 # set sketchybar template
 if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
-    sketchybar_templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
-    sketchybar_template_path="$sketchybar_templates_directory/$SKETCHYBAR_TEMPLATE"
+    templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
+    template_path="$templates_directory/$SKETCHYBAR_TEMPLATE"
 
-    if [ -f "$sketchybar_template_path" ]; then
-        cp -f "$sketchybar_template_path" "$HOME/.config/sketchybar/sketchybarrc"
+    # copy sketchybar template, if it the template path exists
+    if [ -f "$template_path" ]; then
+        cp -f "$template_path" "$dotfiles_directory/.config/sketchybar/sketchybarrc"
         sketchybar --reload
+    else
+        # copy bottom and top parts
+        cp -f "$templates_directory/bottom_$SKETCHYBAR_TEMPLATE" "$dotfiles_directory/.config/bottombar/sketchybarrc"
+        cp -f "$templates_directory/top_$SKETCHYBAR_TEMPLATE" "$dotfiles_directory/.config/sketchybar/sketchybarrc"
+
+        sketchybar --reload
+        bottombar --reload
     fi
 fi
 

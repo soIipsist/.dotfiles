@@ -1,5 +1,6 @@
 {
-  "dotfiles": [".aerospace"],
+  "dotfiles": [".sketchybar"],
+  "sketchybar_template": "main",
   "wallpaper_path": "/wallpapers/diane.jpg",
   "install_homebrew": true
 }
