@@ -4,7 +4,7 @@
 # the item invoking this script:
 # https://felixkratz.github.io/bottombar/config/events#events-and-scripting
 
-source "$HOME/.config/colors.sh"
+source "$HOME/.config/colors/colors.sh"
 
 HOUR=$(date '+%H')
 

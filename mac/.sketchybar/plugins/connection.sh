@@ -2,18 +2,18 @@
 
 source "$HOME/.config/colors/colors.sh"
 
-PORT=$(nmap localhost | grep open | wc -l | awk '{print $1}')
+CONN=$(netstat | grep ESTABLISHED | wc -l | awk '{print $1}')
 
-case $PORT in
-1[0-5])
+case $CONN in
+3[0-9])
 	BCOLOR=$COLOR_ORANGE_BRIGHT
 	COLOR=$COLOR_BACKGROUND
 	;;
-[6-9])
+2[0-9])
 	BCOLOR=$COLOR_YELLOW_BRIGHT
 	COLOR=$COLOR_BACKGROUND
 	;;
-[0-5])
+[0-9] | 1[0-9])
 	BCOLOR=$COLOR_DEFAULT
 	COLOR=$COLOR_BACKGROUND
 	;;
@@ -23,4 +23,4 @@ case $PORT in
 	;;
 esac
 
-bottombar --set $NAME icon.color=$COLOR background.color=$BCOLOR label="opened: $PORT " label.color=$COLOR
+bottombar --set $NAME icon.color=$COLOR background.color=$BCOLOR label="request: $CONN " label.color=$COLOR

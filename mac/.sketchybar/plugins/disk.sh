@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source "$HOME/.config/colors.sh"
+source "$HOME/.config/colors/colors.sh"
 
 DISK=$(df -lh | grep /dev/disk3s5 | awk '{print $5}')
 BCOLOR=$COLOR_DEFAULT
