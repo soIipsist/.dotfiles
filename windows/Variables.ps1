@@ -1,10 +1,31 @@
+function Get-Default-Values-From-Json {
+    param (
+        [object]$WindowsData 
+    )
+    
+    foreach ($key in $WindowsData.PSObject.Properties.Name) {
+        $value = $WindowsData.$key
+        
+        # Check if value is a string, starts with $, and corresponds to an environment variable
+        if ($value -is [string] -and $value.StartsWith("$") ) {
+            $envVarName = $value.Substring(1) # Remove the $ symbol
+            $envVarValue = [System.Environment]::GetEnvironmentVariable($envVarName)
+            
+            if ($envVarValue) {
+                $WindowsData.$key = $envVarValue
+            }
+        }
+    }
+    
+    return $WindowsData
+}
+
 $ParentDirectory = $PSScriptRoot
 $WindowsDataPath = Join-Path -Path $ParentDirectory -ChildPath "windows.json"
-$PackageDataPath = Join-Path -Path $ParentDirectory -ChildPath "packages.json"
-
 # $WindowsDataPath = "..\windows\windows_example.json"
+
 $WindowsData = Get-Content -Path $WindowsDataPath -Raw | ConvertFrom-Json
-$PackageData = Get-Content -Path $PackageDataPath -Raw | ConvertFrom-Json
+$WindowsData = Get-Default-Values-From-Json -WindowsData $WindowsData
 
 # windows settings
 $global:PCName = $WindowsData.pc_name
@@ -30,14 +51,6 @@ $global:WSLPackages = $WindowsData.wsl_packages
 $global:ScoopPackages = $WindowsData.scoop_packages
 $global:WindowsPackages = $WindowsData.windows_packages
 $global:PipPackages = $WindowsData.pip_packages
-
-$global:ChocolateyPackages += $PackageData.chocolatey_packages
-$global:ChocolateyPackages += $PackageData.packages
-$global:WingetPackages += $PackageData.winget_packages
-$global:WSLPackages += $PackageData.wsl_packages
-$global:ScoopPackages += $PackageData.scoop_packages
-$global:WindowsPackages += $PackageData.windows_packages
-$global:PipPackages += $PackageData.pip_packages
 
 $global:UninstallPackages = $WindowsData.uninstall_packages
 $global:PackageProviders = $WindowsData.package_providers

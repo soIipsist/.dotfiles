@@ -36,8 +36,8 @@
   "short_time": "HH:mm",
   "time_format": "HH:mm:ss",
   "activate_office": false,
-  "wallpaper_path": "D:/soIipsist/dotfiles/wallpaper.jpg",
-  "lockscreen_path": "D:/soIipsist/dotfiles/wallpaper.jpg",
+  "wallpaper_path": "/.dotfiles/wallpapers/diane.jpg",
+  "lockscreen_path": "/.dotfiles/wallpapers/diane.jpg",
   "fonts_directory": "D:/soIipsist/dotfiles/windows/fonts",
   "timezone": "Syria Standard Time",
   "git_username": "soIipsist",
@@ -46,5 +46,11 @@
   "package_providers": "all",
   "uninstall_packages": false,
   "reboot": true,
-  "reboot_time": 0
+  "reboot_time": 0,
+  "chocolatey_packages": [],
+  "pip_packages": [],
+  "winget_packages": [],
+  "wsl_packages": [],
+  "scoop_packages": [],
+  "windows_packages": []
 }

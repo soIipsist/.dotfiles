@@ -30,7 +30,7 @@ function Get-Workspace-Disk {
     Return $WorkspaceDisk
 }
 
- 
+
 
 function Get-All-Files-In-Paths {
     [CmdletBinding()]
@@ -38,8 +38,7 @@ function Get-All-Files-In-Paths {
         [Parameter(Position = 0, Mandatory = $true)]
         [array]
         $Paths,
-
-       
+    
         $Filter = "$null",
 
         [bool]
@@ -82,8 +81,6 @@ function Get-All-Files-In-Paths {
         $items = Invoke-Expression $expression
         $itemsList += $items
     }
- 
-  
     return $itemsList
 }
 
