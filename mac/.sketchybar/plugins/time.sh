@@ -1,9 +1,5 @@
 #!/bin/sh
 
-# The $NAME variable is passed from bottombar and holds the name of
-# the item invoking this script:
-# https://felixkratz.github.io/bottombar/config/events#events-and-scripting
-
 source "$HOME/.config/colors/colors.sh"
 
 HOUR=$(date '+%H')
@@ -46,4 +42,4 @@ case $HOUR in
     ;;
 esac
 
-bottombar --set $NAME label="$(date '+%I:%M %p')" background.color=$BCOLOR icon.color=$COLOR label.color=$COLOR
+sketchybar --set $NAME label="$(date '+%I:%M %p')" background.color=$BCOLOR icon.color=$COLOR label.color=$COLOR

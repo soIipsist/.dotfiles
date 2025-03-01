@@ -23,4 +23,4 @@ case $PORT in
 	;;
 esac
 
-bottombar --set $NAME icon.color=$COLOR background.color=$BCOLOR label="opened: $PORT " label.color=$COLOR
+sketchybar --set $NAME icon.color=$COLOR background.color=$BCOLOR label="opened: $PORT " label.color=$COLOR

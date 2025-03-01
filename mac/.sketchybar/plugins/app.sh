@@ -27,4 +27,4 @@ case $PROCESS in
 	;;
 esac
 
-bottombar --set $NAME icon.color=$COLOR background.color=$BCOLOR label="running: $PROCESS " label.color=$COLOR
+sketchybar --set $NAME icon.color=$COLOR background.color=$BCOLOR label="running: $PROCESS " label.color=$COLOR

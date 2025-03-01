@@ -2,7 +2,10 @@ if [ ! -z "$color_scheme" ]; then
     source "$dotfiles_directory/.config/colors/set_colors.sh" "$color_scheme"
 fi
 
-sketchybar --reload
+pkill -x bottombar
+sleep 0.5
+bottombar &
+
 aerospace reload-config
 brew services restart borders
 

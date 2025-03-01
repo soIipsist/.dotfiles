@@ -23,4 +23,4 @@ case $CONN in
 	;;
 esac
 
-bottombar --set $NAME icon.color=$COLOR background.color=$BCOLOR label="request: $CONN " label.color=$COLOR
+sketchybar --set $NAME icon.color=$COLOR background.color=$BCOLOR label="request: $CONN " label.color=$COLOR

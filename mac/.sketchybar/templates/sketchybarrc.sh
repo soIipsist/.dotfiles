@@ -10,7 +10,6 @@ sketchybar_template_path="$templates_directory/$sketchybar_template"
 
 if [ -f "$sketchybar_template_path" ]; then # sketchybar only
     cp -f "$templates_directory/$sketchybar_template" "$dotfiles_directory/.config/sketchybar/sketchybarrc"
-    echo "Successfully copied "
     sketchybar --reload
 else
     # copy bottom and top parts

@@ -21,8 +21,21 @@ for dir in "${dirs[@]}"; do
     fi
 
     for file in "$PWD/.sketchybar/plugins"/*; do
-        cp -f "$file" "$dir/plugins"
-        chmod +x "$dir/plugins/$(basename "$file")"
+        original_name=$(basename $file)
+
+        if [ "$dir" == "$dotfiles_directory/.config/bottombar" ]; then
+            # Create a temporary file with 'sketchybar' replaced with 'bottombar'
+            temp_file=$(mktemp)
+            sed 's/sketchybar/bottombar/g' "$file" >"$temp_file"
+            file="$temp_file"
+        fi
+
+        cp -f "$file" "$dir/plugins/$original_name"
+        chmod +x "$dir/plugins/$original_name"
+
+        if [ -f "$temp_file" ]; then
+            rm -f "$temp_file"
+        fi
     done
 done
 

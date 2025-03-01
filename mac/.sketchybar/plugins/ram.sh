@@ -33,7 +33,7 @@ case $MEMORY in
 	;;
 esac
 
-bottombar --set $NAME icon=$ICON \
+sketchybar --set $NAME icon=$ICON \
 	icon.color=$COLOR \
 	background.color=$BCOLOR \
 	label=" $MEMORY% " \
