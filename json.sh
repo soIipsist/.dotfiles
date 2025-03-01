@@ -32,12 +32,21 @@ get_json_value() {
     value=$(jq -r .$key[] "$json_file")
   fi
 
+  # get environment variable, if it exists
   env_value=$(get_env_variable "$value")
 
   if [ ! -z "$env_value" ]; then
     value="$env_value"
   fi
 
+  # echo relative path to .dotfiles directory, if value starts with '/'
+  if [[ $value == /* ]]; then
+
+    if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+      GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
+    fi
+    value="$GIT_DOTFILES_DIRECTORY/${value:1}"
+  fi
   echo "$value"
 }
 

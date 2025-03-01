@@ -124,3 +124,15 @@ install_brew_packages() {
   for package in $1; do brew install "$package"; done
   for package in $2; do brew install --cask "$package"; done
 }
+
+replace_root() {
+  local value="$1"
+  local root_path="$2"
+
+  # If value starts with '/', replace the leading '/' with root_path
+  if [[ $value == /* ]]; then
+    echo "$root_path/${value:1}"
+  else
+    echo "$value"
+  fi
+}
