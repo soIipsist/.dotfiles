@@ -1,4 +1,5 @@
 #!/bin/zsh
+# copy output from previous command (executes again)
 
 HISTORY_FILE="$HOME/.zsh_history"
 
