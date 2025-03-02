@@ -13,7 +13,7 @@ if [ ! -z "$1" ]; then
 fi
 
 if [ -z "$color_scheme" ]; then
-    color_scheme="main_theme"
+    color_scheme="main"
 fi
 
 destination_directory="$dotfiles_directory/.config/colors"
@@ -47,16 +47,6 @@ if [ -f "$tmux_config_path" ]; then
     envsubst <"$tmux_config_path" >"$tmux_destination_path"
 fi
 
-# load iterm2 colors
-iterm2_path="$GIT_DOTFILES_DIRECTORY/mac/.iterm2/scripts"
-generate_plist_path="$iterm2_path/generate_plist.sh"
-
-if [ -f "$generate_plist_path" ]; then
-    source "$generate_plist_path"
-fi
-
-# python "/Users/p/repos/soIipsist/.dotfiles/mac/.iterm2/scripts/set_preset.py"
-
 # set wallpaper
 if [ -n "$WALLPAPER_PATH" ]; then
     script="$GIT_DOTFILES_DIRECTORY/mac/prefs.scpt"
@@ -64,9 +54,9 @@ if [ -n "$WALLPAPER_PATH" ]; then
 fi
 
 # set sketchybar template
-if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
+if [ -n "$SKETCHYBAR_TYPE" ]; then
     templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
-    sketchybar_template="$SKETCHYBAR_TEMPLATE"
+    sketchybar_type="$SKETCHYBAR_TYPE"
     source "$templates_directory/sketchybarrc.sh"
 fi
 

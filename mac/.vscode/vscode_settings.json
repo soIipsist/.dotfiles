@@ -1,7 +1,7 @@
 {
   "editor.fontFamily": "$VSCODE_FONT_FAMILY",
-  "editor.fontSize": "$VSCODE_FONT_SIZE",
-  "editor.fontLigatures": "$VSCODE_FONT_LIGATURES",
+  "editor.fontSize": $VSCODE_FONT_SIZE,
+  "editor.fontLigatures": $VSCODE_FONT_LIGATURES,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "explorer.fileNesting.patterns": {
     "*.ts": "${capture}.js",
