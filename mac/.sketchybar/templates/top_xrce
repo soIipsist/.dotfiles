@@ -30,7 +30,7 @@ COLORS_SPACE=($COLOR_RED_BRIGHT $COLOR_GREEN_BRIGHT $COLOR_YELLOW_BRIGHT $COLOR_
 for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item space.$sid left \
         --subscribe space.$sid aerospace_workspace_change \
-        --set space.$sid background.color=$SKETCHYBAR_SECONDARY_COLOR \
+        --set space.$sid background.color=$COLOR_SECONDARY \
         background.drawing=off \
         background.corner_radius=5 \
         width=30 \

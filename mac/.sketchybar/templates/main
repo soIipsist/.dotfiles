@@ -7,9 +7,9 @@
 # For a more advanced configuration example see my dotfiles:
 # https://github.com/FelixKratz/dotfiles
 
-# "PRIMARY_COLOR": "#140C42",
-# "SECONDARY_COLOR": "#2b1c84",
-# "ACCENT_COLOR": "#eb46f9",
+# "COLOR_BACKGROUND": "#140C42",
+# "COLOR_SECONDARY": "#2b1c84",
+# "COLOR_ACCENT": "#eb46f9",
 
 source "$HOME/.config/colors/colors.sh" # replace with $dotfiles_directory here
 
@@ -27,9 +27,9 @@ sketchybar --bar height=37 \
     blur_radius=30 \
     position=top \
     sticky=off \
-    padding_left=$SKETCHYBAR_PADDING_LEFT \
-    padding_right=$SKETCHYBAR_PADDING_RIGHT \
-    color="$SKETCHYBAR_PRIMARY_COLOR"
+    padding_left=$PADDING_LEFT \
+    padding_right=$PADDING_RIGHT \
+    color="$COLOR_BACKGROUND"
 
 ##### Changing Defaults #####
 # We now change some default values that are applied to all further items
@@ -37,11 +37,11 @@ sketchybar --bar height=37 \
 # https://felixkratz.github.io/SketchyBar/config/items
 
 sketchybar --default \
-    icon.color=$SKETCHYBAR_FONT_COLOR \
-    label.font="$SKETCHYBAR_FONT" \
-    icon.font="$SKETCHYBAR_FONT" \
-    label.color=$SKETCHYBAR_FONT_COLOR \
-    background.color=$SKETCHYBAR_SECONDARY_COLOR \
+    icon.color=$COLOR_DEFAULT \
+    label.font="$FONT" \
+    icon.font="$FONT" \
+    label.color=$COLOR_DEFAULT \
+    background.color=$COLOR_SECONDARY \
     background.corner_radius=5 \
     background.height=24 \
     padding_left=5 \
@@ -59,7 +59,7 @@ sketchybar --add event aerospace_workspace_change
 for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item space.$sid left \
         --subscribe space.$sid aerospace_workspace_change \
-        --set space.$sid background.color=$SKETCHYBAR_SECONDARY_COLOR \
+        --set space.$sid background.color=$COLOR_SECONDARY \
         background.drawing=off \
         background.corner_radius=5 \
         width=30 \
@@ -78,9 +78,9 @@ done
 
 # reload button
 sketchybar --add item reload left \
-    --set reload icon="$SKETCHYBAR_ICON_RELOAD" \
-    background.color=$SKETCHYBAR_PRIMARY_COLOR \
-    icon.font="$SKETCHYBAR_FONT" \
+    --set reload icon="$ICON_RELOAD" \
+    background.color=$COLOR_BACKGROUND \
+    icon.font="$FONT" \
     width=50 \
     icon.width=50 \
     label.position=center \
@@ -90,9 +90,9 @@ sketchybar --add item reload left \
 
 # copy from clipboard button
 sketchybar --add item clipboard left \
-    --set clipboard icon="$SKETCHYBAR_ICON_CLIPBOARD" \
-    background.color=$SKETCHYBAR_PRIMARY_COLOR \
-    icon.font="$SKETCHYBAR_FONT" \
+    --set clipboard icon="$ICON_CLIPBOARD" \
+    background.color=$COLOR_BACKGROUND \
+    icon.font="$FONT" \
     width=50 \
     icon.width=30 \
     label.align=center \
@@ -112,29 +112,29 @@ if [ -z "$COLOR_SCHEME_NAME" ]; then
 fi
 
 sketchybar --add item colors.logo left \
-    --set colors.logo icon=$SKETCHYBAR_ICON_COLOR_MENU \
-    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    --set colors.logo icon=$ICON_COLOR_MENU \
+    background.color=$COLOR_BACKGROUND \
     width=100 \
     icon.width=15 \
     icon.height=50 \
     label.align=center \
-    label.font="$SKETCHYBAR_FONT_2" \
-    icon.font="$SKETCHYBAR_FONT_2" \
+    label.font="$FONT_2" \
+    icon.font="$FONT_2" \
     icon.font.size=17 \
     icon.align=center \
     label="$COLOR_SCHEME_NAME" \
     label.padding_left=15 \
     click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
-    popup.background.color="$SKETCHYBAR_PRIMARY_COLOR"
+    popup.background.color="$COLOR_BACKGROUND"
 
 for FILE in "${COLOR_SCHEME_FILES[@]}"; do
     COLOR_NAME=$(jq -r ".COLOR_SCHEME_NAME" $FILE)
     COLOR_SCHEME=$(basename $FILE .json)
 
     sketchybar --add item colors.$FILE popup.colors.logo \
-        --set colors.$FILE icon=$SKETCHYBAR_ICON_COLOR_MENU \
+        --set colors.$FILE icon=$ICON_COLOR_MENU \
         label="$COLOR_NAME" \
-        background.color=$SKETCHYBAR_PRIMARY_COLOR \
+        background.color=$COLOR_BACKGROUND \
         click_script="$PLUGIN_DIR/color_theme.sh $COLOR_SCHEME $PLUGIN_DIR;"
 done
 
@@ -142,23 +142,23 @@ done
 sketchybar --add item active_workspace q \
     --set active_workspace width=50 \
     label.max_chars=30 \
-    background.color=$SKETCHYBAR_PRIMARY_COLOR \
-    label.font="$SKETCHYBAR_FONT_2" \
-    icon.font="$SKETCHYBAR_FONT_2" \
+    background.color=$COLOR_BACKGROUND \
+    label.font="$FONT_2" \
+    icon.font="$FONT_2" \
     label.align=center
 
 # -- Right Side Items --
 # media
 sketchybar --add item media e \
-    --set media label.color=$SKETCHYBAR_ACCENT_COLOR \
+    --set media label.color=$COLOR_ACCENT \
     label.max_chars=20 \
     label.align=center \
     icon.align=center \
-    label.font="$SKETCHYBAR_FONT_2" \
+    label.font="$FONT_2" \
     label.padding_top=50 \
     icon.padding_left=0 \
     scroll_texts=on \
-    icon.color=$SKETCHYBAR_ACCENT_COLOR \
+    icon.color=$COLOR_ACCENT \
     background.drawing=off \
     script="$PLUGIN_DIR/media.sh" \
     click_script="$PLUGIN_DIR/media_click.sh" \
@@ -166,30 +166,30 @@ sketchybar --add item media e \
 
 # calendar
 sketchybar --add item calendar right \
-    --set calendar icon="$SKETCHYBAR_ICON_CALENDAR" \
+    --set calendar icon="$ICON_CALENDAR" \
     update_freq=10 \
-    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    background.color=$COLOR_BACKGROUND \
     script="$PLUGIN_DIR/calendar.sh" \
     click_script="open -a Calendar"
 
 # volume
 sketchybar --add item volume right \
     --set volume script="$PLUGIN_DIR/volume.sh" \
-    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    background.color=$COLOR_BACKGROUND \
     --subscribe volume volume_change
 
 # battery
 sketchybar --add item battery right \
     --set battery update_freq=120 \
     script="$PLUGIN_DIR/battery.sh" \
-    background.color=$SKETCHYBAR_PRIMARY_COLOR \
+    background.color=$COLOR_BACKGROUND \
     --subscribe battery system_woke power_source_change
 
 # cpu
 sketchybar --add item cpu right \
     --set cpu update_freq=2 \
-    background.color=$SKETCHYBAR_PRIMARY_COLOR \
-    icon="$SKETCHYBAR_ICON_CPU" \
+    background.color=$COLOR_BACKGROUND \
+    icon="$ICON_CPU" \
     script="$PLUGIN_DIR/cpu.sh"
 
 ##### Finalizing Setup #####

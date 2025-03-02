@@ -3,6 +3,7 @@
   "SKETCHYBAR_TEMPLATE": "xrce",
   "WALLPAPER_PATH": "/Users/p/repos/soIipsist/.dotfiles/wallpapers/diane.jpg",
   "FONT": "Nerd Font:Regular:16.0",
+  "FONT_2": "Hack Nerd Font:Bold:14.0",
   "COLOR_BACKGROUND": "0xe01d2021",
   "COLOR_FOREGROUND": "0xe0fbf1c7",
   "COLOR_DEFAULT": "0xffdddddd",
@@ -117,7 +118,7 @@
 
   "VSCODE_FONT_FAMILY": "Menlo, Monaco, 'Courier New', monospace",
   "VSCODE_FONT_LIGATURES": true,
-  "VSCODE_FONT_SIZE": 15,
+  "VSCODE_FONT_SIZE": 12,
   "VSCODE_ACTIVITY_BAR_BORDER": "default",
   "VSCODE_BADGE_BACKGROUND": "default",
   "VSCODE_EDITOR_FOREGROUND": "default",

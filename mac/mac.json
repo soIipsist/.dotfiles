@@ -1,6 +1,7 @@
 {
-  "dotfiles": [".tmux"],
-  "sketchybar_template": "xrce",
+  "dotfiles": [".colors", ".sketchybar"],
+  "sketchybar_template": "main",
+  "color_scheme": "xrce_theme",
   "wallpaper_path": "/wallpapers/diane.jpg",
   "install_homebrew": true
 }

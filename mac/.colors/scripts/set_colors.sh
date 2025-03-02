@@ -21,7 +21,12 @@ color_scheme_path="$destination_directory/$color_scheme.json"
 exported_colors="$destination_directory/colors.sh"
 
 echo "#!/bin/bash" >"$exported_colors"
-jq -r 'to_entries | .[] | "export \(.key)=\"\(.value)\""' "$color_scheme_path" >>"$exported_colors"
+jq -r 'to_entries | .[] | 
+  if (.value | type == "string") then 
+    "export \(.key)=\"\(.value)\""
+  else 
+    "export \(.key)=\(.value)"
+  end' "$color_scheme_path" >>"$exported_colors"
 
 # Load colors into current shell session
 source "$exported_colors"

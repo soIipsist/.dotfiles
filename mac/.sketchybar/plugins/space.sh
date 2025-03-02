@@ -6,11 +6,11 @@
 
 if [ $SELECTED = true ]; then
     sketchybar --set "$NAME" background.drawing=on \
-        background.color=$ACCENT_COLOR \
+        background.color=$COLOR_ACCENT \
         label.color=$BAR_COLOR \
         icon.color=$BAR_COLOR
 else
     sketchybar --set "$NAME" background.drawing=off \
-        label.color=$ACCENT_COLOR \
-        icon.color=$ACCENT_COLOR
+        label.color=$COLOR_ACCENT \
+        icon.color=$COLOR_ACCENT
 fi
