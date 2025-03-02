@@ -23,7 +23,7 @@ exported_colors="$destination_directory/colors.sh"
 echo "#!/bin/bash" >"$exported_colors"
 jq -r 'to_entries | .[] | "export \(.key)=\"\(.value)\""' "$color_scheme_path" >>"$exported_colors"
 
-# Load into current shell session
+# Load colors into current shell session
 source "$exported_colors"
 
 # copy vscode settings path
@@ -32,6 +32,14 @@ vscode_destination_path="$HOME/Library/Application Support/Code/User/settings.js
 
 if [ -f "$vscode_source_path" ]; then
     envsubst <"$vscode_source_path" >"$vscode_destination_path"
+fi
+
+# copy tmux config path
+tmux_config_path="$GIT_DOTFILES_DIRECTORY/mac/.tmux/.tmux.conf"
+tmux_destination_path="$HOME/.tmux/.tmux.conf"
+
+if [ -f "$tmux_config_path" ]; then
+    envsubst <"$tmux_config_path" >"$tmux_destination_path"
 fi
 
 # load iterm2 colors

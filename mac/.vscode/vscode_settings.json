@@ -17,12 +17,19 @@
     "*.sdb": "${capture}.${extname}-*",
     "*.s3db": "${capture}.${extname}-*"
   },
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "*.tmux.conf": "plaintext"
+  },
+  "[plaintext]": {
+    "editor.formatOnSave": false
+  },
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
   },
-  "editor.formatOnSave": true,
   "[shellscript]": {
-    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode",
+    "editor.formatOnSave": false
   },
   "[markdown]": {
     "editor.defaultFormatter": "yzhang.markdown-all-in-one"
@@ -62,6 +69,7 @@
     "javascript",
     "typescript"
   ],
+
   "workbench.colorCustomizations": {
     "activityBar.border": "$VSCODE_ACTIVITY_BAR_BORDER",
     "badge.background": "$VSCODE_BADGE_BACKGROUND",
