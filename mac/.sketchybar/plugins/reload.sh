@@ -1,5 +1,5 @@
-if [ ! -z "$color_scheme" ]; then
-    source "$dotfiles_directory/.config/colors/set_colors.sh" "$color_scheme"
+if [ ! -z "$color_preset" ]; then
+    source "$dotfiles_directory/.config/colors/set_colors.sh" "$color_preset"
 fi
 
 pkill -x bottombar

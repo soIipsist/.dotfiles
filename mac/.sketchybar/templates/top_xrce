@@ -85,8 +85,8 @@ for file in "$HOME/.config/colors"/*.json; do
     COLOR_SCHEME_FILES+=("$file")
 done
 
-if [ -z "$COLOR_SCHEME_NAME" ]; then
-    COLOR_SCHEME_NAME="${COLOR_SCHEME_FILES[0]}"
+if [ -z "$COLOR_PRESET" ]; then
+    COLOR_PRESET="${COLOR_SCHEME_FILES[0]}"
 fi
 
 sketchybar --add item colors.logo left \
@@ -99,7 +99,7 @@ sketchybar --add item colors.logo left \
     icon.font.size=17 \
     icon.padding_left=5 \
     icon.align=center \
-    label="$COLOR_SCHEME_NAME" \
+    label="$COLOR_PRESET" \
     label.padding_left=10 \
     label.padding_right=10 \
     click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
@@ -108,7 +108,7 @@ sketchybar --add item colors.logo left \
     popup.background.color="$COLOR_BACKGROUND"
 
 for FILE in "${COLOR_SCHEME_FILES[@]}"; do
-    COLOR_NAME=$(jq -r ".COLOR_SCHEME_NAME" $FILE)
+    COLOR_NAME=$(jq -r ".COLOR_PRESET" $FILE)
     COLOR_SCHEME=$(basename $FILE .json)
 
     sketchybar --add item colors.$FILE popup.colors.logo \

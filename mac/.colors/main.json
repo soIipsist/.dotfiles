@@ -1,7 +1,7 @@
 {
-  "COLOR_SCHEME_NAME": "main",
-  "SKETCHYBAR_TYPE": "main",
-  "WALLPAPER_PATH": "/Users/p/repos/soIipsist/.dotfiles/wallpapers/synthwave_astronaut.jpg",
+  "COLOR_PRESET": "main",
+  "SKETCHYBAR_TEMPLATE": "main",
+  "WALLPAPER_PATH": "/wallpapers/synthwave_astronaut.jpg",
   "FONT": "Hack Nerd Font:Bold:15.0",
   "FONT_2": "Hack Nerd Font:Bold:14.0",
   "COLOR_DEFAULT": "0xffffffff",

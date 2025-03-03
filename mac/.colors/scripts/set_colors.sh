@@ -1,4 +1,4 @@
-# sets default color scheme based on $color_scheme provided
+# sets default color scheme based on $color_preset provided
 
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
@@ -9,16 +9,19 @@ if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
 fi
 
 if [ ! -z "$1" ]; then
-    color_scheme="$1"
+    color_preset="$1"
 fi
 
-if [ -z "$color_scheme" ]; then
-    color_scheme="main"
+if [ -z "$color_preset" ]; then
+    color_preset="main"
 fi
 
+templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
 destination_directory="$dotfiles_directory/.config/colors"
-color_scheme_path="$destination_directory/$color_scheme.json"
+color_preset_path="$destination_directory/$color_preset.json"
 exported_colors="$destination_directory/colors.sh"
+
+# export and source colors.sh
 
 echo "#!/bin/bash" >"$exported_colors"
 jq -r 'to_entries | .[] | 
@@ -26,9 +29,8 @@ jq -r 'to_entries | .[] |
     "export \(.key)=\"\(.value)\""
   else 
     "export \(.key)=\(.value)"
-  end' "$color_scheme_path" >>"$exported_colors"
+  end' "$color_preset_path" >>"$exported_colors"
 
-# Load colors into current shell session
 source "$exported_colors"
 
 # copy vscode settings path
@@ -49,14 +51,17 @@ fi
 
 # set wallpaper
 if [ -n "$WALLPAPER_PATH" ]; then
+    if [[ $WALLPAPER_PATH == /* ]]; then
+        WALLPAPER_PATH="$GIT_DOTFILES_DIRECTORY/${WALLPAPER_PATH:1}"
+    fi
+
     script="$GIT_DOTFILES_DIRECTORY/mac/prefs.scpt"
     osascript $script $WALLPAPER_PATH
 fi
 
 # set sketchybar template
-if [ -n "$SKETCHYBAR_TYPE" ]; then
-    templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
-    sketchybar_type="$SKETCHYBAR_TYPE"
+if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
+    sketchybar_template="$SKETCHYBAR_TEMPLATE"
     source "$templates_directory/sketchybarrc.sh"
 fi
 

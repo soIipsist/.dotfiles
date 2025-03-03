@@ -1,5 +1,6 @@
 {
   "dotfiles": [".zsh"],
-  "sketchybar_type": "main",
+  "color_preset": "main",
+  "sketchybar_template": "main",
   "install_homebrew": true
 }

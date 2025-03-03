@@ -1,6 +1,6 @@
 {
-  "COLOR_SCHEME_NAME": "xrce",
-  "SKETCHYBAR_TYPE": "xrce",
+  "COLOR_PRESET": "xrce",
+  "SKETCHYBAR_TEMPLATE": "xrce",
   "WALLPAPER_PATH": "/Users/p/repos/soIipsist/.dotfiles/wallpapers/diane.jpg",
   "FONT": "Nerd Font:Regular:16.0",
   "FONT_2": "Hack Nerd Font:Bold:14.0",

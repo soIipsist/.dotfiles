@@ -1,16 +1,3 @@
-# This is a demo config to showcase some of the most important commands.
-# It is meant to be changed and configured, as it is intentionally kept sparse.
-# For a (much) more advanced configuration example see my dotfiles:
-# https://github.com/FelixKratz/dotfiles
-# This is a demo config to show some of the most important commands more easily.
-# This is meant to be changed and configured, as it is intentionally kept sparse.
-# For a more advanced configuration example see my dotfiles:
-# https://github.com/FelixKratz/dotfiles
-
-# "COLOR_BACKGROUND": "#140C42",
-# "COLOR_SECONDARY": "#2b1c84",
-# "COLOR_ACCENT": "#eb46f9",
-
 source "$HOME/.config/colors/colors.sh" # replace with $dotfiles_directory here
 
 CONFIG_DIR="$HOME/.config/sketchybar"
@@ -107,8 +94,8 @@ for file in "$HOME/.config/colors"/*.json; do
     COLOR_SCHEME_FILES+=("$file")
 done
 
-if [ -z "$COLOR_SCHEME_NAME" ]; then
-    COLOR_SCHEME_NAME="${COLOR_SCHEME_FILES[0]}"
+if [ -z "$COLOR_PRESET" ]; then
+    COLOR_PRESET="${COLOR_SCHEME_FILES[0]}"
 fi
 
 sketchybar --add item colors.logo left \
@@ -122,13 +109,13 @@ sketchybar --add item colors.logo left \
     icon.font="$FONT_2" \
     icon.font.size=17 \
     icon.align=center \
-    label="$COLOR_SCHEME_NAME" \
+    label="$COLOR_PRESET" \
     label.padding_left=15 \
     click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
     popup.background.color="$COLOR_BACKGROUND"
 
 for FILE in "${COLOR_SCHEME_FILES[@]}"; do
-    COLOR_NAME=$(jq -r ".COLOR_SCHEME_NAME" $FILE)
+    COLOR_NAME=$(jq -r ".COLOR_PRESET" $FILE)
     COLOR_SCHEME=$(basename $FILE .json)
 
     sketchybar --add item colors.$FILE popup.colors.logo \
