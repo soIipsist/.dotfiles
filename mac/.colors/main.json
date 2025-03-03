@@ -1,6 +1,6 @@
 {
-  "COLOR_PRESET": "main",
-  "SKETCHYBAR_TEMPLATE": "main",
+  "THEME": "main",
+  "SKETCHYBAR_TEMPLATE": ["main"],
   "WALLPAPER_PATH": "/wallpapers/synthwave_astronaut.jpg",
   "FONT": "Hack Nerd Font:Bold:15.0",
   "FONT_2": "Hack Nerd Font:Bold:14.0",

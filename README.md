@@ -114,8 +114,7 @@ These parameters can be specified in the `mac.json` file:
 - **`dotfiles_directory`**: Default dotfiles directory (default: `$HOME`).
 - **`scripts`**: List of scripts to be executed in the dotfile subdirectories. If not specified, all scripts will be executed.
 - **`excluded_scripts`**: The scripts specified will not be executed.
-- **`color_preset`**: The default color preset file. A `colors.json` file can be used to specify personalized color values. (default: `.colors/main.json`)
-- **`sketchybar_template`**: The default sketchybar layout. All available sketchybar templates can be found in `.sketchybar/templates`. Custom templates can also be defined, as long as `colors.sh` is sourced.
+- **`theme`**: You can change the default theme based on your preferences. A `theme.json` file can be used to specify personalized color values. (default: `.colors/main.json`)
 
 ### Examples
 

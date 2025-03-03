@@ -1,4 +1,4 @@
-# sets default color scheme based on $color_preset provided
+# sets default color scheme based on $theme provided
 
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
@@ -9,19 +9,19 @@ if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
 fi
 
 if [ ! -z "$1" ]; then
-    color_preset="$1"
+    theme="$1"
 fi
 
-if [ -z "$color_preset" ]; then
-    color_preset="main"
+if [ -z "$theme" ]; then
+    theme="main"
 fi
 
 templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
 destination_directory="$dotfiles_directory/.config/colors"
-color_preset_path="$destination_directory/$color_preset.json"
+theme_path="$destination_directory/$theme.json"
 exported_colors="$destination_directory/colors.sh"
 
-# export and source colors.sh
+# export from theme.json file and source colors.sh
 
 echo "#!/bin/bash" >"$exported_colors"
 jq -r 'to_entries | .[] | 
@@ -29,7 +29,7 @@ jq -r 'to_entries | .[] |
     "export \(.key)=\"\(.value)\""
   else 
     "export \(.key)=\(.value)"
-  end' "$color_preset_path" >>"$exported_colors"
+  end' "$theme_path" >>"$exported_colors"
 
 source "$exported_colors"
 
@@ -61,8 +61,7 @@ fi
 
 # set sketchybar template
 if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
-    sketchybar_template="$SKETCHYBAR_TEMPLATE"
-    source "$templates_directory/sketchybarrc.sh"
+    source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"
 fi
 
 if [ -n "$ITERM2_AUTOSUGGEST_COLOR" ]; then # replace existing autosuggest color, if it exists

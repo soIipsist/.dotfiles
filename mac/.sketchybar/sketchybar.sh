@@ -2,6 +2,10 @@ if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
 
+if [ -z "$SKETCHYBAR_TEMPLATE" ]; then
+    SKETCHYBAR_TEMPLATE="main"
+fi
+
 # create symbolic link for bottom bar
 # ln -s $(which sketchybar) $(dirname $(which sketchybar))/bottombar
 
@@ -39,4 +43,4 @@ for dir in "${dirs[@]}"; do
     done
 done
 
-source "$templates_directory/sketchybarrc.sh"
+source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"
