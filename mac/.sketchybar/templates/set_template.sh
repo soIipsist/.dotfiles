@@ -12,12 +12,16 @@ plugins_folder="$source_directory/plugins"
 
 COUNTER=0
 
+# kill all processes
+pkill bottombar
+pkill leftbar
+pkill rightbar
+
 for template in "${templates[@]}"; do
     sketchybar_template_path="$templates_directory/$template"
     sketchybar_folder="${sketchybar_folders[$COUNTER]}"
     sketchybarrc_path="$sketchybar_folder/sketchybarrc"
     sketchybar_plugins_folder="$sketchybar_folder/plugins"
-
     bar_name=$(basename $sketchybar_folder)
 
     echo $sketchybar_folder
