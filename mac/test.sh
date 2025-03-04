@@ -4,19 +4,7 @@ source "../dotfiles.sh"
 source "../git.sh"
 source "../json.sh"
 
-os=$(get_os)
-echo $os
+template=$(get_json_value "SKETCHYBAR_TEMPLATE" "$GIT_DOTFILES_DIRECTORY/mac/.colors/main.json")
+echo $template
 
-val=$(get_json_value "wallpaper_path")
-echo $(replace_root $val $GIT_DOTFILES_DIRECTORY)
-
-# Example usage:
-# default_shell_config=$(get_default_shell_path)
-# echo "Default shell configuration file: $default_shell_config"
-
-# install_homebrew_flag=$(get_json_value "install_homebrew")
-# install_homebrew "$install_homebrew_flag"
-
-# if command -v brew &>/dev/null; then
-#     echo "Homebrew is already installed."
-# fi
+source "./.sketchybar/templates/set_template.sh" $template
