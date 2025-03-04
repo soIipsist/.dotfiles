@@ -61,8 +61,8 @@ fi
 
 # set sketchybar template
 if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
-    copy_plugins=1
-    source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE" "$copy_plugins"
+    export COPY_PLUGINS=1
+    source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"
 fi
 
 if [ -n "$ITERM2_AUTOSUGGEST_COLOR" ]; then # replace existing autosuggest color, if it exists

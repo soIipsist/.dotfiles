@@ -1,10 +1,5 @@
-if [ ! -z "$theme" ]; then
-    source "$dotfiles_directory/.config/colors/set_colors.sh" "$theme"
-fi
-
-pkill -x bottombar
+source "$dotfiles_directory/.config/colors/set_colors.sh" "$theme"
 sleep 0.5
-bottombar &
 
 aerospace reload-config
 brew services restart borders
