@@ -2,7 +2,7 @@ plugins=(
     zsh-autosuggestions
 )
 source $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source "$HOME/.config/colors/colors.sh"
+source "$HOME/.config/themes/theme.sh"
 
 # precmd() {
 #     exec 2>&- >&-
@@ -39,9 +39,6 @@ export HISTSIZE="2000"
 export SAVEHIST="2000"
 setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
-
-# zsh suggestions
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff"
 
 # iterm2
 export CLICOLOR=1
@@ -118,3 +115,6 @@ bindkey '^Xr' repeat-last-command   # Ctrl + X followed by R
 bindkey '^Xc' copy-line-to-keyboard # Ctrl + X followed by C
 bindkey -s '^Xo' "cpout\n"          # Ctrl + X followed by O
 bindkey -s ^f "tmux-sessionizer\n"  # Ctrl + F
+
+# zsh suggestions
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff"

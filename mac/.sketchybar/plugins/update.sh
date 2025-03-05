@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source "$HOME/.config/colors/colors.sh"
+source "$HOME/.config/themes/theme.sh"
 
 BREW=$(brew outdated | wc -l | awk '{ print $1 }')
 if [[ $BREW == 0 ]]; then

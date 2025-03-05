@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source "$HOME/.config/colors/colors.sh"
+source "$HOME/.config/themes/theme.sh"
 
 WIFI=$(ipconfig getsummary en0 | awk -F ' SSID : ' '/ SSID : / {print $2}')
 HOTSPOT=$(ipconfig getsummary en0 | grep sname | awk '{print $3}')

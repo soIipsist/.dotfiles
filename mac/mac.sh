@@ -4,7 +4,7 @@ source "../os.sh"
 source "../dotfiles.sh"
 source "../git.sh"
 source "../wallpaper.sh"
-source "set_theme.sh"
+source "../mac/set_theme.sh"
 
 install_from_brewfile() {
     brewfile_path="$1"
@@ -15,6 +15,7 @@ install_from_brewfile() {
 
     brew bundle --file $brewfile_path
 }
+
 dotfile_args=("$@")
 
 git_username=$(get_json_value "git_username")
@@ -53,5 +54,5 @@ fi
 # clone_git_repos "${git_repos[@]}" "$git_home"
 # set_wallpaper_mac "$wallpaper_path"
 
-theme="main"
-source "set_theme.sh" "$theme"
+theme="xrce"
+set_theme "$theme"

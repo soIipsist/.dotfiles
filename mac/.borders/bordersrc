@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$HOME/.config/colors/colors.sh"
+source "$HOME/.config/themes/theme.sh"
 
 options=(
 	style=round

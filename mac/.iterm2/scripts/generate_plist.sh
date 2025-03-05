@@ -32,7 +32,7 @@ COLORS_PLIST="$SCRIPT_DIR/main.itermcolors"
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
-source "$dotfiles_directory/.config/colors/colors.sh"
+source "$dotfiles_directory/.config/themes/theme.sh"
 
 # echo "NAME: $ITERM2_PROFILE_NAME
 # BACKGROUND: $ITERM2_BACKGROUND

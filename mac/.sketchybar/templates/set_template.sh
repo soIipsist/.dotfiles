@@ -85,7 +85,7 @@ for template in $templates; do
     cp -f "$sketchybar_template_path" "$sketchybarrc_path"
 
     # append "source colors.sh" and $PLUGIN_DIR
-    colors_path="$dotfiles_directory/.config/colors/colors.sh"
+    colors_path="$dotfiles_directory/.config/themes/theme.sh"
     echo $'\n'"Colors path: $colors_path."
     echo "Plugins directory: $sketchybar_plugins_folder"
 

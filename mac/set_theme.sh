@@ -1,18 +1,5 @@
 source "../os.sh"
-
-set_vscode_theme() {
-    vscode_source_path="$dotfiles_directory/.config/vscode/vscode_settings.json"
-    vscode_destination_path="$HOME/Library/Application Support/Code/User/settings.json"
-
-    if [ -z "$1" ]; then
-        vscode_source_path="$1" # if argument is defined, set it as vscode source path
-    fi
-
-    if [ -f "$vscode_source_path" ]; then
-        envsubst <"$vscode_source_path" >"$vscode_destination_path"
-    fi
-
-}
+source "../wallpaper.sh"
 
 set_autosuggest_color() {
     if [ -n "$ITERM2_AUTOSUGGEST_COLOR" ]; then # replace existing autosuggest color, if it exists
@@ -28,52 +15,49 @@ set_autosuggest_color() {
     fi
 }
 
-set_tmux_theme() {
-    tmux_config_path="$GIT_DOTFILES_DIRECTORY/mac/.tmux/.tmux.conf"
-    tmux_destination_path="$HOME/.tmux/.tmux.conf"
-
-    if [ -f "$tmux_config_path" ]; then
-        envsubst <"$tmux_config_path" >"$tmux_destination_path"
-    fi
-
-}
-
 export_colors() {
 
-    colors_path="$dotfiles_directory/.config/colors/colors.sh"
+    theme_colors_path="$dotfiles_directory/.config/themes/theme.sh"
 
     if [ -z "$1" ]; then
-        colors_path="$1"
+        theme_colors_path="$1"
     fi
 
-    echo "#!/bin/bash" >"$exported_colors"
+    echo "#!/bin/bash" >"$theme_colors_path"
     jq -r 'to_entries | .[] | 
   if (.value | type == "string") then 
     "export \(.key)=\"\(.value)\""
   else 
     "export \(.key)=\(.value)"
-  end' "$theme_path" >>"$colors_path"
+  end' "$theme_path" >>"$theme_colors_path"
 
     source "$colors_path"
 }
 
-set_sketchybar_template() {
+set_theme() {
+    theme="$1"
 
+    if [ -z $theme ]; then
+        return 0
+    fi
+    if [ -z "$dotfiles_directory" ]; then
+        dotfiles_directory="$HOME"
+    fi
+    theme_path="$dotfiles_directory/.config/colors/$theme.json"
+    colors_path="$dotfiles_directory/.config/themes/theme.sh"
+    templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
+
+    # source colors to get all variables
+    source "$colors_path"
+    WALLPAPER_PATH=$(replace_root "$WALLPAPER_PATH" "$GIT_DOTFILES_DIRECTORY")
+
+    set_wallpaper_mac "$WALLPAPER_PATH"
+    set_autosuggest_color
+
+    # set sketchybar template
     if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
         export COPY_PLUGINS=1
         source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"
     fi
-}
 
-set_theme() {
-    THEME="$1"
-
-    if [ -z "$dotfiles_directory" ]; then
-        dotfiles_directory="$HOME"
-    fi
-    theme_path="$dotfiles_directory/.config/colors/$THEME.json"
-
-    # source colors to get all variables
-    source "$colors_path"
-    set_wallpaper "$wallpaper_path"
 }

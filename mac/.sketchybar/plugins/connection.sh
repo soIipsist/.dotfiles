@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source "$HOME/.config/colors/colors.sh"
+source "$HOME/.config/themes/theme.sh"
 
 CONN=$(netstat | grep ESTABLISHED | wc -l | awk '{print $1}')
 
