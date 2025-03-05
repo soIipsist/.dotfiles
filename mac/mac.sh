@@ -53,3 +53,5 @@ clone_git_repos "${git_repos[@]}" "$git_home"
 if [ -n "$wallpaper_path" ]; then
     osascript prefs.scpt $wallpaper_path
 fi
+
+set_theme "$theme"

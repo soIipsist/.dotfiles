@@ -2,10 +2,6 @@ if [ -z $dotfiles_directory ]; then
     dotfiles_directory="$HOME"
 fi
 
-if [ -z $theme ]; then
-    theme="main"
-fi
-
 destination_directory="$dotfiles_directory/.config/colors"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source_directory="$SCRIPT_DIR"
