@@ -4,7 +4,7 @@ source "../os.sh"
 source "../dotfiles.sh"
 source "../git.sh"
 
-install_brewfile() {
+install_from_brewfile() {
     brewfile_path="$1"
 
     if [ -z $brewfile_path ]; then
@@ -30,8 +30,7 @@ git_home=$(get_json_value "git_home")
 default_shell=$(get_json_value "default_shell")
 brewfile_path=$(get_json_value "brewfile_path")
 theme=$(get_json_value "theme" "" "main") # main color preset used my default
-wallpaper_path=$(get_json_value "wallpaper_path")
-wallpaper_path=$(replace_root $wallpaper_path $GIT_DOTFILES_DIRECTORY)
+wallpaper_path=$(replace_root "$(get_json_value "wallpaper_path")" "$GIT_DOTFILES_DIRECTORY")
 install_homebrew_flag=$(get_json_value "install_homebrew")
 brew_packages=$(get_json_value "brew_packages")
 brew_cask_packages=$(get_json_value "brew_cask_packages")
@@ -41,10 +40,10 @@ if [ -n "$dotfile_args" ]; then
 fi
 
 install_homebrew "$install_homebrew_flag"
+install_from_brewfile "$brewfile_path"
 install_brew_packages "$brew_packages" "$brew_cask_packages"
-install_brewfile "$brewfile_path"
 set_hostname "$hostname"
-set_default_shell
+set_default_shell "$default_shell"
 install_pip_packages "${pip_packages[@]}"
 
 install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"

@@ -63,6 +63,7 @@ for template in "${templates[@]}"; do
     fi
 
     cp -f "$sketchybar_template_path" "$sketchybarrc_path"
+    echo "Copied $sketchybar_template_path to $sketchybarrc_path."
     COUNTER=$((COUNTER + 1))
 
 done

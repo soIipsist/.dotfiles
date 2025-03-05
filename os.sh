@@ -53,6 +53,7 @@ install_homebrew() {
 }
 
 set_default_shell() {
+  default_shell="$1"
 
   if [ -z $default_shell ]; then
     return
@@ -129,10 +130,31 @@ replace_root() {
   local value="$1"
   local root_path="$2"
 
-  # If value starts with '/', replace the leading '/' with root_path
-  if [[ $value == /* ]]; then
+  # If value starts with '/' and value doesn't start with root path
+  if [[ $value == /* && $value != $root_path* ]]; then
     echo "$root_path/${value:1}"
   else
     echo "$value"
+  fi
+}
+
+echo_line_to_file() {
+  local line="$1"
+  local file_path="$2"
+  local line_number="$3"
+
+  if [ ! -f $file_path ]; then
+    echo "File $file_path does not exist"
+    return
+  fi
+
+  # If line_number is empty, append to the bottom
+  if [[ -z "$line_number" ]]; then
+    echo "$line" >>"$file_path"
+  else
+    # Insert line at specific line_number
+    sed -i "" "${line_number}i\\
+$line
+" "$file_path"
   fi
 }
