@@ -1,4 +1,9 @@
-# sets default color scheme based on $theme provided
+# sets default color scheme based on $THEME provided
+THEME="$1"
+
+if [ -z "$THEME" ]; then
+    THEME="main"
+fi
 
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
@@ -8,20 +13,12 @@ if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
     GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
 fi
 
-if [ ! -z "$1" ]; then
-    theme="$1"
-fi
-
-if [ -z "$theme" ]; then
-    theme="main"
-fi
-
 templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
 destination_directory="$dotfiles_directory/.config/colors"
-theme_path="$destination_directory/$theme.json"
+theme_path="$destination_directory/$THEME.json"
 exported_colors="$destination_directory/colors.sh"
 
-# export from theme.json file and source colors.sh
+# export from .json file and source colors.sh
 
 echo "#!/bin/bash" >"$exported_colors"
 jq -r 'to_entries | .[] | 
@@ -62,6 +59,7 @@ fi
 # set sketchybar template
 if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
     export COPY_PLUGINS=1
+    SKETCHYBAR_TEMPLATE=("$SKETCHYBAR_TEMPLATE")
     source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"
 fi
 

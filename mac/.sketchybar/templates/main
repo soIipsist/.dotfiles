@@ -110,14 +110,14 @@ sketchybar --add item colors.logo left \
     popup.background.color="$COLOR_BACKGROUND"
 
 for FILE in "${THEME_FILES[@]}"; do
-    THEME_NAME=$(jq -r ".THEME" $FILE)
-    COLOR_THEME=$(basename $FILE .json)
+    THEME_NAME=$(jq -r ".THEME_NAME" $FILE)
+    THEME=$(basename $FILE .json)
 
     sketchybar --add item colors.$FILE popup.colors.logo \
         --set colors.$FILE icon=$ICON_COLOR_MENU \
         label="$THEME_NAME" \
         background.color=$COLOR_BACKGROUND \
-        click_script="$PLUGIN_DIR/color_theme.sh $COLOR_THEME $PLUGIN_DIR;"
+        click_script="$PLUGIN_DIR/theme.sh $THEME $PLUGIN_DIR;"
 done
 
 # active workspace

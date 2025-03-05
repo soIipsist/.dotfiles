@@ -1,4 +1,4 @@
-COLOR_THEME="$1"
+THEME="$1"
 PLUGIN_DIR="$2"
 
 if [ -z "$dotfiles_directory" ]; then
@@ -6,6 +6,6 @@ if [ -z "$dotfiles_directory" ]; then
 fi
 
 set_colors_path="$dotfiles_directory/.config/colors/set_colors.sh"
-source "$set_colors_path" "$COLOR_THEME"
+source "$set_colors_path" "$THEME"
 
 source $PLUGIN_DIR/reload.sh

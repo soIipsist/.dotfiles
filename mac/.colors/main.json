@@ -1,6 +1,6 @@
 {
-  "THEME": "main",
-  "SKETCHYBAR_TEMPLATE": ["main", "xrce_1"],
+  "THEME_NAME": "Be Back Soon",
+  "SKETCHYBAR_TEMPLATE": ["main", "xrce_bottom"],
   "WALLPAPER_PATH": "/wallpapers/synthwave_astronaut.jpg",
   "FONT": "Hack Nerd Font:Bold:15.0",
   "FONT_2": "Hack Nerd Font:Bold:14.0",

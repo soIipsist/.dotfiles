@@ -6,5 +6,8 @@ if [ -z "$SKETCHYBAR_TEMPLATE" ]; then
     SKETCHYBAR_TEMPLATE="main"
 fi
 
-COPY_PLUGINS=1
-source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE" "$COPY_PLUGINS"
+export COPY_PLUGINS=0
+SKETCHYBAR_TEMPLATE=("$SKETCHYBAR_TEMPLATE")
+templates_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/templates"
+
+source "$templates_directory/set_template.sh" $SKETCHYBAR_TEMPLATE
