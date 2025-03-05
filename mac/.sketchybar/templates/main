@@ -82,8 +82,8 @@ for file in "$HOME/.config/colors"/*.json; do
     THEME_FILES+=("$file")
 done
 
-if [ -z "$THEME" ]; then
-    THEME="${THEME_FILES[0]}"
+if [ -z "$SELECTED_THEME" ]; then
+    SELECTED_THEME="${THEME_FILES[0]}"
 fi
 
 sketchybar --add item colors.logo left \
@@ -97,7 +97,7 @@ sketchybar --add item colors.logo left \
     icon.font="$FONT_2" \
     icon.font.size=17 \
     icon.align=center \
-    label="$(basename $THEME)" \
+    label="$SELECTED_THEME" \
     label.padding_left=15 \
     click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
     popup.background.color="$COLOR_BACKGROUND"

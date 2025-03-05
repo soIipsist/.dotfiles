@@ -5,8 +5,6 @@ if [ -z "$THEME" ]; then
     THEME="main"
 fi
 
-echo "setting theme  $THEME" >/tmp/debug.txt
-
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
