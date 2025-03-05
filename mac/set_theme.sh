@@ -1,11 +1,5 @@
-THEME="$1"
+source "../os.sh"
 
-get_theme_path() {
-    if [ -z "$THEME" ]; then
-        return 0
-    fi
-
-}
 set_vscode_theme() {
     vscode_source_path="$dotfiles_directory/.config/vscode/vscode_settings.json"
     vscode_destination_path="$HOME/Library/Application Support/Code/User/settings.json"
@@ -61,4 +55,25 @@ export_colors() {
   end' "$theme_path" >>"$colors_path"
 
     source "$colors_path"
+}
+
+set_sketchybar_template() {
+
+    if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
+        export COPY_PLUGINS=1
+        source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"
+    fi
+}
+
+set_theme() {
+    THEME="$1"
+
+    if [ -z "$dotfiles_directory" ]; then
+        dotfiles_directory="$HOME"
+    fi
+    theme_path="$dotfiles_directory/.config/colors/$THEME.json"
+
+    # source colors to get all variables
+    source "$colors_path"
+    set_wallpaper "$wallpaper_path"
 }

@@ -3,6 +3,8 @@ source "../json.sh"
 source "../os.sh"
 source "../dotfiles.sh"
 source "../git.sh"
+source "../wallpaper.sh"
+source "set_theme.sh"
 
 install_from_brewfile() {
     brewfile_path="$1"
@@ -39,19 +41,17 @@ if [ -n "$dotfile_args" ]; then
     dotfiles="${dotfile_args[@]}"
 fi
 
-install_homebrew "$install_homebrew_flag"
-install_from_brewfile "$brewfile_path"
-install_brew_packages "$brew_packages" "$brew_cask_packages"
-set_hostname "$hostname"
-set_default_shell "$default_shell"
-install_pip_packages "${pip_packages[@]}"
+# install_homebrew "$install_homebrew_flag"
+# install_from_brewfile "$brewfile_path"
+# install_brew_packages "$brew_packages" "$brew_cask_packages"
+# set_hostname "$hostname"
+# set_default_shell "$default_shell"
+# install_pip_packages "${pip_packages[@]}"
 
-install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
-git_config "$git_username" "$git_email"
-clone_git_repos "${git_repos[@]}" "$git_home"
+# install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
+# git_config "$git_username" "$git_email"
+# clone_git_repos "${git_repos[@]}" "$git_home"
+# set_wallpaper_mac "$wallpaper_path"
 
-if [ -n "$wallpaper_path" ]; then
-    osascript prefs.scpt $wallpaper_path
-fi
-
-set_theme "$theme"
+theme="main"
+source "set_theme.sh" "$theme"
