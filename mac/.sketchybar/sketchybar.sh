@@ -8,5 +8,4 @@ fi
 
 export COPY_PLUGINS=0
 templates_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/templates"
-
-source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"
+source "$templates_directory/set_template.sh" "${SKETCHYBAR_TEMPLATE[@]}"
