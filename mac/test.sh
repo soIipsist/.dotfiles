@@ -9,4 +9,4 @@ export COPY_PLUGINS=1
 
 # source "./.sketchybar/sketchybar.sh" "${SKETCHYBAR_TEMPLATE[@]}"
 
-source "./.sketchybar/templates/set_template.sh" "${SKETCHYBAR_TEMPLATE[@]}"
+source "./.sketchybar/templates/set_template.sh" "$SKETCHYBAR_TEMPLATE"

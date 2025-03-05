@@ -1,5 +1,5 @@
 {
-  "dotfiles": [".vscode"],
-  "theme": "main",
+  "dotfiles": [".sketchybar"],
+  "theme": "xrce",
   "install_homebrew": true
 }

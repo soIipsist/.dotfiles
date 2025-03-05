@@ -15,6 +15,7 @@ echo_line_to_file() {
         echo "$line" >>"$file_path"
     else
         # Insert line at specific line_number
+        current_line=$(sed -n "${line_number}p" "$file_path")
         sed -i "" "${line_number}i\\
 $line
 " "$file_path"
@@ -71,7 +72,7 @@ for template in $templates; do
             fi
 
             cp -f "$file" "$sketchybar_plugins_folder/$original_name"
-            echo "Copied $file to $sketchybar_plugins_folder/$original_name."
+            # echo "Copied $file to $sketchybar_plugins_folder/$original_name."
 
             chmod +x "$sketchybar_plugins_folder/$original_name"
 
@@ -95,9 +96,9 @@ for template in $templates; do
 
     # spawn new process of $bar_name
 
-    if [ ! "$bar_name" == "sketchybar" ]; then
-        $bar_name &
-    fi
+    # if [ ! "$bar_name" == "sketchybar" ]; then
+    #     $bar_name &
+    # fi
 
     COUNTER=$((COUNTER + 1))
 

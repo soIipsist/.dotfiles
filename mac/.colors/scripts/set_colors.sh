@@ -5,6 +5,8 @@ if [ -z "$THEME" ]; then
     THEME="main"
 fi
 
+echo "setting theme  $THEME" >/tmp/debug.txt
+
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
@@ -59,8 +61,7 @@ fi
 # set sketchybar template
 if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
     export COPY_PLUGINS=1
-
-    source "$templates_directory/set_template.sh" "${SKETCHYBAR_TEMPLATE[@]}"
+    source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"
 fi
 
 if [ -n "$ITERM2_AUTOSUGGEST_COLOR" ]; then # replace existing autosuggest color, if it exists

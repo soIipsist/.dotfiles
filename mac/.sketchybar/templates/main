@@ -97,7 +97,7 @@ sketchybar --add item colors.logo left \
     icon.font="$FONT_2" \
     icon.font.size=17 \
     icon.align=center \
-    label="$THEME" \
+    label="$(basename $THEME)" \
     label.padding_left=15 \
     click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
     popup.background.color="$COLOR_BACKGROUND"

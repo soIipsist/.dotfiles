@@ -19,7 +19,10 @@
   },
   "editor.formatOnSave": true,
   "files.associations": {
-    "*.tmux.conf": "plaintext"
+    "*.tmux.conf": "plaintext",
+    "main": "shellscript",
+    "xrce_top": "shellscript",
+    "xrce_bottom": "shellscript"
   },
   "[plaintext]": {
     "editor.formatOnSave": false
