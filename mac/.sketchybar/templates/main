@@ -1,3 +1,7 @@
+if [ -z "$dotfiles_directory" ]; then
+    dotfiles_directory="$HOME"
+fi
+
 source "$dotfiles_directory/.config/themes/theme.sh"
 PLUGIN_DIR="$dotfiles_directory/.config/sketchybar/plugins"
 
@@ -21,7 +25,6 @@ sketchybar --default \
     label.color=$COLOR_DEFAULT \
     background.color=$COLOR_SECONDARY \
     background.corner_radius=5 \
-    background.height=24 \
     padding_left=5 \
     padding_right=5 \
     label.padding_left=4 \
@@ -38,18 +41,15 @@ for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item space.$sid left \
         --subscribe space.$sid aerospace_workspace_change \
         --set space.$sid background.color=$COLOR_SECONDARY \
-        background.drawing=off \
+        background.drawing=on \
         background.corner_radius=5 \
         width=30 \
-        height=40 \
-        label.padding_left=11 \
-        label.position=center \
-        label.width=20 \
-        icon.position=center \
-        icon.width=0 \
-        icon.padding_left=0 \
-        icon.padding_right=0 \
         label="$sid" \
+        label.align=center \
+        label.width=auto \
+        label.padding_left=30 \
+        label.padding_right=0 \
+        icon.width=0 \
         click_script="aerospace workspace $sid" \
         script="$PLUGIN_DIR/aerospace.sh $sid"
 done
@@ -61,7 +61,6 @@ sketchybar --add item reload left \
     icon.font="$FONT" \
     width=50 \
     icon.width=50 \
-    label.position=center \
     label.align=center \
     icon.align=center \
     click_script="$PLUGIN_DIR/reload.sh"
@@ -81,16 +80,21 @@ sketchybar --add item clipboard left \
 # color theme menu
 
 THEME_FILES=()
-for file in "$HOME/.config/colors"/*.json; do
+for file in "$HOME/.config/themes"/*.json; do
+    if [[ $(basename "$file") == "icons.json" ]]; then
+        continue
+    fi
     THEME_FILES+=("$file")
 done
 
-if [ -z "$SELECTED_THEME" ]; then
-    SELECTED_THEME="${THEME_FILES[0]}"
+SELECTED_THEME_NAME=$(jq -r ".THEME_NAME" "${THEME_FILES[0]}")
+
+if [ -z "$SELECTED_THEME_NAME" ]; then
+    SELECTED_THEME_NAME="${THEME_FILES[0]}"
 fi
 
-sketchybar --add item colors.logo left \
-    --set colors.logo icon=$ICON_COLOR_MENU \
+sketchybar --add item themes.logo left \
+    --set themes.logo icon=$ICON_COLOR_MENU \
     background.color=$COLOR_BACKGROUND \
     width=100 \
     icon.width=15 \
@@ -100,7 +104,7 @@ sketchybar --add item colors.logo left \
     icon.font="$FONT_2" \
     icon.font.size=17 \
     icon.align=center \
-    label="$SELECTED_THEME" \
+    label="$SELECTED_THEME_NAME" \
     label.padding_left=15 \
     click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
     popup.background.color="$COLOR_BACKGROUND"
@@ -109,8 +113,8 @@ for FILE in "${THEME_FILES[@]}"; do
     THEME_NAME=$(jq -r ".THEME_NAME" $FILE)
     THEME=$(basename $FILE .json)
 
-    sketchybar --add item colors.$FILE popup.colors.logo \
-        --set colors.$FILE icon=$ICON_COLOR_MENU \
+    sketchybar --add item themes.$FILE popup.themes.logo \
+        --set themes.$FILE icon=$ICON_COLOR_MENU \
         label="$THEME_NAME" \
         background.color=$COLOR_BACKGROUND \
         click_script="$PLUGIN_DIR/theme.sh $THEME $PLUGIN_DIR;"
@@ -133,8 +137,6 @@ sketchybar --add item media e \
     label.align=center \
     icon.align=center \
     label.font="$FONT_2" \
-    label.padding_top=50 \
-    icon.padding_left=0 \
     scroll_texts=on \
     icon.color=$COLOR_ACCENT \
     background.drawing=off \

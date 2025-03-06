@@ -1,3 +1,7 @@
+if [ -z "$dotfiles_directory" ]; then
+    dotfiles_directory="$HOME"
+fi
+
 source "$dotfiles_directory/.config/themes/theme.sh"
 PLUGIN_DIR="$dotfiles_directory/.config/sketchybar/plugins"
 
@@ -81,7 +85,7 @@ sketchybar --add item clipboard left \
 # color theme menu
 
 THEME_FILES=()
-for file in "$HOME/.config/colors"/*.json; do
+for file in "$HOME/.config/themes"/*.json; do
     THEME_FILES+=("$file")
 done
 
@@ -89,8 +93,8 @@ if [ -z "$THEME" ]; then
     THEME="${THEME_FILES[0]}"
 fi
 
-sketchybar --add item colors.logo left \
-    --set colors.logo icon=$ICON_COLOR_MENU \
+sketchybar --add item themes.logo left \
+    --set themes.logo icon=$ICON_COLOR_MENU \
     background.border_width=0 \
     icon.height=50 \
     label.align=center \
@@ -111,13 +115,13 @@ for FILE in "${THEME_FILES[@]}"; do
     THEME_NAME=$(jq -r ".THEME_NAME" $FILE)
     THEME=$(basename $FILE .json)
 
-    sketchybar --add item colors.$FILE popup.colors.logo \
-        --set colors.$FILE icon=$ICON_COLOR_MENU \
+    sketchybar --add item themes.$FILE popup.themes.logo \
+        --set themes.$FILE icon=$ICON_COLOR_MENU \
         label="$THEME_NAME" \
         click_script="$PLUGIN_DIR/theme.sh $THEME $PLUGIN_DIR;"
 done
 
-sketchybar --add bracket icon_buttons reload clipboard '/colors\..*/' \
+sketchybar --add bracket icon_buttons reload clipboard '/themes\..*/' \
     --set icon_buttons \
     background.color=$COLOR_BACKGROUND \
     background.border_color=$COLOR_DEFAULT

@@ -20,5 +20,29 @@ for file in "$source_plugins_directory"/*; do
     chmod +x "$dest_plugin"
 done
 
-# copy set_template script
-source "$plugins_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"
+sketchybar_config_folders=("sketchybar" "bottombar" "leftbar" "rightbar")
+
+for folder in "${sketchybar_config_folders[@]}"; do
+    sketchybar_config_folder="$dotfiles_directory/.config/$folder"
+    mkdir -p "$sketchybar_config_folder"
+
+    # Create symlinks
+    if [[ "$folder" == "sketchybar" ]]; then
+        mkdir -p "$plugins_directory"
+        echo "Created: $plugins_directory."
+    else
+        symlink_target="$(dirname "$(which sketchybar)")/$folder"
+        sketchybar_bin="$(which sketchybar)"
+
+        # Check if symlink exists and if it points to the correct file
+        if [[ -L "$symlink_target" ]]; then
+            if [[ "$(readlink "$symlink_target")" != "$sketchybar_bin" ]]; then
+                echo "Updating symlink: $symlink_target -> $sketchybar_bin"
+                ln -sf "$sketchybar_bin" "$symlink_target"
+            fi
+        else
+            echo "Creating new symlink: $symlink_target -> $sketchybar_bin"
+            ln -s "$sketchybar_bin" "$symlink_target"
+        fi
+    fi
+done
