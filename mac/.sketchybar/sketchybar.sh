@@ -5,9 +5,11 @@ fi
 # copy plugins to /sketchybar/plugins
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-source_plugins_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar"
+source_plugins_directory="$SCRIPT_DIR/plugins"
 plugins_directory="$dotfiles_directory/.config/sketchybar/plugins"
-templates_directory="$SCRIPT_DIR/templates"
+
+# create sketchybar dir
+mkdir -p "$dotfiles_directory/.config/sketchybar"
 
 rm "$plugins_directory"/*.sh
 
@@ -18,4 +20,5 @@ for file in "$source_plugins_directory"/*; do
     chmod +x "$dest_plugin"
 done
 
-source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"
+# copy set_template script
+source "$plugins_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"

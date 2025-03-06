@@ -4,9 +4,9 @@ source "../dotfiles.sh"
 source "../git.sh"
 source "../json.sh"
 
-SKETCHYBAR_TEMPLATE=$(get_json_value "SKETCHYBAR_TEMPLATE" "$GIT_DOTFILES_DIRECTORY/mac/.colors/main.json")
-export COPY_PLUGINS=1
+SKETCHYBAR_TEMPLATE=$(get_json_value "SKETCHYBAR_TEMPLATE" "$GIT_DOTFILES_DIRECTORY/mac/.themes/main.json")
 
 # source "./.sketchybar/sketchybar.sh" "${SKETCHYBAR_TEMPLATE[@]}"
 
-source "./.sketchybar/templates/set_template.sh" "$SKETCHYBAR_TEMPLATE"
+# echo $SKETCHYBAR_TEMPLATE
+source "./.sketchybar/plugins/set_template.sh" "$SKETCHYBAR_TEMPLATE"

@@ -21,8 +21,9 @@ export_colors() {
     theme_path="$1"
     theme_colors_path="$dotfiles_directory/.config/themes/theme.sh"
 
-    mkdir -p "$(dirname $theme_colors_path)"
-    touch "$theme_colors_path"
+    if [ ! -f "$theme_colors_path" ]; then
+        touch "$theme_colors_path"
+    fi
 
     echo "#!/bin/bash" >"$theme_colors_path"
     jq -r 'to_entries | .[] | 
@@ -35,6 +36,22 @@ export_colors() {
     source "$theme_colors_path"
 }
 
+set_sketchybar_template() {
+
+    # set sketchybar template only if set_template exists in sketchybar folder
+
+    set_template_path="$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
+
+    if [ ! -f "$set_template_path" ]; then
+        echo "sketchybar: set_template.sh does not exist, run with .sketchybar."
+        return 0
+    fi
+
+    if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
+        source "$set_template_path" "$SKETCHYBAR_TEMPLATE"
+    fi
+}
+
 set_theme() {
     theme="$1"
 
@@ -44,9 +61,13 @@ set_theme() {
     if [ -z "$dotfiles_directory" ]; then
         dotfiles_directory="$HOME"
     fi
+
     theme_path="$dotfiles_directory/.config/themes/$theme.json"
     colors_path="$dotfiles_directory/.config/themes/theme.sh"
-    templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
+    set_templates_path="$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
+
+    # make sure /themes exists
+    mkdir -p "$dotfiles_directory/.config/themes"
 
     # export and source colors to get all variables
     export_colors "$theme_path"
@@ -55,11 +76,7 @@ set_theme() {
 
     set_wallpaper_mac "$WALLPAPER_PATH"
     set_autosuggest_color
-
-    # set sketchybar template
-    if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
-        source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"
-    fi
+    set_sketchybar_template
 
     echo "Theme was changed to $theme."
 

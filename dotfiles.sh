@@ -72,4 +72,6 @@ install_dotfiles() {
     done
     destination_directory=""
   done
+
+  dotfiles_directory="$original_dest"
 }
