@@ -2,7 +2,7 @@ if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
 
-source "$dotfiles_directory/.config/colors/set_colors.sh" "$theme"
+source "$dotfiles_directory/.config/themes/set_theme.sh" "$theme"
 sleep 0.5
 
 aerospace reload-config

@@ -32,7 +32,7 @@ git_repos=$(get_json_value "git_repos")
 git_home=$(get_json_value "git_home")
 default_shell=$(get_json_value "default_shell")
 brewfile_path=$(get_json_value "brewfile_path")
-theme=$(get_json_value "theme" "" "main") # main color preset used my default
+theme=$(get_json_value "theme") # main color preset used my default
 wallpaper_path=$(replace_root "$(get_json_value "wallpaper_path")" "$GIT_DOTFILES_DIRECTORY")
 install_homebrew_flag=$(get_json_value "install_homebrew")
 brew_packages=$(get_json_value "brew_packages")
@@ -42,17 +42,16 @@ if [ -n "$dotfile_args" ]; then
     dotfiles="${dotfile_args[@]}"
 fi
 
-# install_homebrew "$install_homebrew_flag"
-# install_from_brewfile "$brewfile_path"
-# install_brew_packages "$brew_packages" "$brew_cask_packages"
-# set_hostname "$hostname"
-# set_default_shell "$default_shell"
-# install_pip_packages "${pip_packages[@]}"
+install_homebrew "$install_homebrew_flag"
+install_from_brewfile "$brewfile_path"
+install_brew_packages "$brew_packages" "$brew_cask_packages"
+set_hostname "$hostname"
+set_default_shell "$default_shell"
+install_pip_packages "${pip_packages[@]}"
 
-# install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
-# git_config "$git_username" "$git_email"
-# clone_git_repos "${git_repos[@]}" "$git_home"
-# set_wallpaper_mac "$wallpaper_path"
+install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
+git_config "$git_username" "$git_email"
+clone_git_repos "${git_repos[@]}" "$git_home"
+set_wallpaper_mac "$wallpaper_path"
 
-theme="xrce"
 set_theme "$theme"

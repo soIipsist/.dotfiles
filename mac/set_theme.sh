@@ -16,12 +16,8 @@ set_autosuggest_color() {
 }
 
 export_colors() {
-
+    theme_path="$1"
     theme_colors_path="$dotfiles_directory/.config/themes/theme.sh"
-
-    if [ -z "$1" ]; then
-        theme_colors_path="$1"
-    fi
 
     echo "#!/bin/bash" >"$theme_colors_path"
     jq -r 'to_entries | .[] | 
@@ -47,7 +43,8 @@ set_theme() {
     colors_path="$dotfiles_directory/.config/themes/theme.sh"
     templates_directory="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/templates"
 
-    # source colors to get all variables
+    # export and source colors to get all variables
+    export_colors "$theme_path"
     source "$colors_path"
     WALLPAPER_PATH=$(replace_root "$WALLPAPER_PATH" "$GIT_DOTFILES_DIRECTORY")
 
@@ -59,5 +56,7 @@ set_theme() {
         export COPY_PLUGINS=1
         source "$templates_directory/set_template.sh" "$SKETCHYBAR_TEMPLATE"
     fi
+
+    echo "Theme was changed to $theme."
 
 }
