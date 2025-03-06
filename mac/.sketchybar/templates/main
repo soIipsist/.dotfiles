@@ -167,7 +167,7 @@ sketchybar --add item battery right \
 sketchybar --add item cpu right \
     --set cpu update_freq=2 \
     background.color=$COLOR_BACKGROUND \
-    icon="$ICON_CPU" \
+    icon="$ICON_CPU_1" \
     script="$PLUGIN_DIR/cpu.sh"
 
 ##### Finalizing Setup #####

@@ -17,8 +17,10 @@ set_autosuggest_color() {
     fi
 }
 
-export_colors() {
-    theme_path="$1"
+export_theme() {
+    theme_path="$1" # some theme.json file
+    icons_path="$(dirname $theme_path)/icons.json"
+
     theme_colors_path="$dotfiles_directory/.config/themes/theme.sh"
 
     if [ ! -f "$theme_colors_path" ]; then
@@ -29,9 +31,20 @@ export_colors() {
     jq -r 'to_entries | .[] | 
   if (.value | type == "string") then 
     "export \(.key)=\"\(.value)\""
+  elif (.value | type == "array") then 
+    "export \(.key)=\"" + (.value | join(" ")) + "\""
   else 
     "export \(.key)=\(.value)"
   end' "$theme_path" >>"$theme_colors_path"
+
+    jq -r 'to_entries | .[] | 
+  if (.value | type == "string") then 
+    "export \(.key)=\"\(.value)\""
+  elif (.value | type == "array") then 
+    "export \(.key)=\"" + (.value | join(" ")) + "\""
+  else 
+    "export \(.key)=\(.value)"
+  end' "$icons_path" >>"$theme_colors_path"
 
     source "$theme_colors_path"
 }
@@ -70,9 +83,10 @@ set_theme() {
     mkdir -p "$dotfiles_directory/.config/themes"
 
     # export and source colors to get all variables
-    export_colors "$theme_path"
+    export_theme "$theme_path"
     source "$colors_path"
     WALLPAPER_PATH=$(replace_root "$WALLPAPER_PATH" "$GIT_DOTFILES_DIRECTORY")
+    SKETCHYBAR_TEMPLATE=("$SKETCHYBAR_TEMPLATE")
 
     set_wallpaper_mac "$WALLPAPER_PATH"
     set_autosuggest_color

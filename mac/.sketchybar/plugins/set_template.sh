@@ -48,7 +48,8 @@ COUNTER=0
 for template in $templates; do
 
     config_folder="${config_folders[$COUNTER]}"
-    set_template "$config_folder" "$template"
+    echo $config_folder
+    # set_template "$config_folder" "$template"
 
     COUNTER=$((COUNTER + 1))
 

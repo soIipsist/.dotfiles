@@ -54,5 +54,5 @@ git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home"
 set_wallpaper_mac "$wallpaper_path"
 
-# theme="main"
-# set_theme "$theme"
+theme="main"
+set_theme "$theme"
