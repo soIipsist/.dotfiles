@@ -4,17 +4,6 @@ plugins=(
 source $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source "$HOME/.config/themes/theme.sh"
 
-# precmd() {
-#     exec 2>&- >&-
-#     lastline=$(tail -1 /tmp/command.txt)
-#     sleep 0.1
-#     exec >/dev/tty 2>&1
-# }
-
-# preexec() {
-#     exec > >(tee /tmp/command.txt &)
-# }
-
 function repeat-last-command() {
     BUFFER=$(fc -ln -1)
     zle accept-line

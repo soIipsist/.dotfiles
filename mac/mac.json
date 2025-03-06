@@ -1,5 +1,4 @@
 {
-  "dotfiles": [".themes"],
-  "wallpaper_path": "/wallpapers/diane.jpg",
+  "dotfiles": [".zsh"],
   "install_homebrew": true
 }

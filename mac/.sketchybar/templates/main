@@ -1,3 +1,6 @@
+source "$dotfiles_directory/.config/themes/theme.sh"
+PLUGIN_DIR="$dotfiles_directory/.config/sketchybar/plugins"
+
 sketchybar --bar height=37 \
     blur_radius=30 \
     position=top \

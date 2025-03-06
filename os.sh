@@ -137,3 +137,25 @@ replace_root() {
     echo "$value"
   fi
 }
+
+echo_line_to_file() {
+  local line="$1"
+  local file_path="$2"
+  local line_number="$3"
+
+  if [ ! -f $file_path ]; then
+    echo "File $file_path does not exist"
+    return
+  fi
+
+  # If line_number is empty, append to the bottom
+  if [[ -z "$line_number" ]]; then
+    echo "$line" >>"$file_path"
+  else
+    # Insert line at specific line_number
+    current_line=$(sed -n "${line_number}p" "$file_path")
+    sed -i "" "${line_number}i\\
+$line
+" "$file_path"
+  fi
+}
