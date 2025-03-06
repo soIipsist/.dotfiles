@@ -1,5 +1,5 @@
 {
-  "dotfiles": [".borders"],
+  "dotfiles": [".sketchybar"],
   "theme": "main",
   "install_homebrew": true
 }

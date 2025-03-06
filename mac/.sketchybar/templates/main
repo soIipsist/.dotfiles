@@ -1,6 +1,9 @@
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
+if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+    GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
+fi
 
 source "$dotfiles_directory/.config/themes/theme.sh"
 PLUGIN_DIR="$dotfiles_directory/.config/sketchybar/plugins"
@@ -98,7 +101,6 @@ sketchybar --add item themes.logo left \
     background.color=$COLOR_BACKGROUND \
     width=100 \
     icon.width=15 \
-    icon.height=50 \
     label.align=center \
     label.font="$FONT_2" \
     icon.font="$FONT_2" \
@@ -117,7 +119,7 @@ for FILE in "${THEME_FILES[@]}"; do
         --set themes.$FILE icon=$ICON_COLOR_MENU \
         label="$THEME_NAME" \
         background.color=$COLOR_BACKGROUND \
-        click_script="$PLUGIN_DIR/theme.sh $THEME $PLUGIN_DIR;"
+        click_script="$PLUGIN_DIR/theme_click.sh $THEME"
 done
 
 # active workspace

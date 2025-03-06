@@ -1,8 +1,31 @@
-source "../os.sh"
-source "../wallpaper.sh"
+# change theme on click
+if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+  GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
+fi
 
+echo "Clicked theme: $1" >/tmp/debug.txt
+THEME="$1"
+
+# Check if the theme is passed correctly
+if [ -z "$THEME" ]; then
+  echo "Error: No theme passed." >>/tmp/debug.txt
+  exit 1
+fi
+
+if [ ! -f "$GIT_DOTFILES_DIRECTORY/os.sh" ]; then
+  echo "Error: os.sh not found" >/tmp/debug.txt
+  exit 1
+fi
+source "$GIT_DOTFILES_DIRECTORY/os.sh"
+
+if [ ! -f "$GIT_DOTFILES_DIRECTORY/wallpaper.sh" ]; then
+  echo "Error: wallpaper.sh not found" >/tmp/debug.txt
+  exit 1
+fi
+
+# Define your functions
 set_autosuggest_color() {
-  if [ -z "$ITERM2_AUTOSUGGEST_COLOR" ]; then # replace existing autosuggest color, if it exists
+  if [ -z "$ITERM2_AUTOSUGGEST_COLOR" ]; then
     return 0
   fi
 
@@ -18,7 +41,7 @@ set_autosuggest_color() {
 }
 
 export_theme() {
-  theme_path="$1" # some theme.json file
+  theme_path="$1"
   icons_path="$(dirname $theme_path)/icons.json"
 
   theme_colors_path="$dotfiles_directory/.config/themes/theme.sh"
@@ -50,48 +73,32 @@ export_theme() {
 }
 
 set_sketchybar_template() {
-
-  # set sketchybar template only if set_template exists in sketchybar folder
-
   set_template_path="$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
 
   if [ ! -f "$set_template_path" ]; then
-    echo "sketchybar: set_template.sh does not exist, run with .sketchybar."
+    echo "sketchybar: set_template.sh does not exist" >>/tmp/debug.txt
     return 0
   fi
 
   if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
     source "$set_template_path" "$SKETCHYBAR_TEMPLATE"
   fi
+  echo "sketchybar_template $SKETCHYBAR_TEMPLATE" >>/tmp/debug.txt
 }
 
-set_theme() {
-  theme="$1"
+theme_path="$dotfiles_directory/.config/themes/$THEME.json"
 
-  if [ -z $theme ]; then
-    return 0
-  fi
-  if [ -z "$dotfiles_directory" ]; then
-    dotfiles_directory="$HOME"
-  fi
+if [ ! -f "$theme_path" ]; then
+  echo "Theme file does not exist: $theme_path" >>/tmp/debug.txt
+  exit 1
+fi
 
-  theme_path="$dotfiles_directory/.config/themes/$theme.json"
-  colors_path="$dotfiles_directory/.config/themes/theme.sh"
-  set_templates_path="$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
+export_theme "$theme_path"
+source "$dotfiles_directory/.config/themes/theme.sh"
 
-  # make sure /themes exists
-  mkdir -p "$dotfiles_directory/.config/themes"
+WALLPAPER_PATH=$(replace_root "$WALLPAPER_PATH" "$GIT_DOTFILES_DIRECTORY")
+set_wallpaper_mac "$WALLPAPER_PATH"
+set_autosuggest_color
+set_sketchybar_template
 
-  # export and source colors to get all variables
-  export_theme "$theme_path"
-  source "$colors_path"
-  WALLPAPER_PATH=$(replace_root "$WALLPAPER_PATH" "$GIT_DOTFILES_DIRECTORY")
-  SKETCHYBAR_TEMPLATE=("$SKETCHYBAR_TEMPLATE")
-
-  set_wallpaper_mac "$WALLPAPER_PATH"
-  set_autosuggest_color
-  set_sketchybar_template
-
-  echo "Theme was changed to $theme."
-
-}
+echo "Theme was changed to $THEME." >>/tmp/debug.txt
