@@ -13,7 +13,9 @@ for bar_name in "${sketchybar_names[@]}"; do
     sketchybar_config_folder="$dotfiles_directory/.config/$bar_name"
     sketchybar_plugins_directory="$dotfiles_directory/.config/$bar_name/plugins"
     mkdir -p "$sketchybar_config_folder"
+    echo "Created $sketchybar_config_folder."
     mkdir -p "$sketchybar_plugins_directory"
+    echo "Created $sketchybar_plugins_directory."
 
     # remove all existing plugins
     rm "$sketchybar_plugins_directory"/*.sh

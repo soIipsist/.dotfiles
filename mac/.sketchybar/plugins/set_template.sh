@@ -16,6 +16,7 @@ fi
 
 SKETCHYBAR_DIR="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar"
 sketchybar_config_folders=(sketchybar "bottombar" "leftbar" "rightbar")
+positions=(top bottom left right)
 
 for template in $templates; do
 
@@ -23,6 +24,7 @@ for template in $templates; do
     sketchybarrc_path="$sketchybar_config_folder/sketchybarrc"
     sketchybar_template_path="$SKETCHYBAR_DIR/templates/$template"
     bar_name=$(basename "$sketchybar_config_folder")
+    position="${positions[$COUNTER]}"
 
     mkdir -p "$sketchybar_config_folder"
 
@@ -36,12 +38,15 @@ for template in $templates; do
     cp -f "$sketchybar_template_path" "$sketchybarrc_path"
     echo "Copied $sketchybar_template_path to $sketchybarrc_path."
 
+    # set bar position
+    sed -i '' "/^sketchybar --bar/ s/position=[^ ]*/position=$position/" "$sketchybarrc_path"
+
     # spawn new process of $bar_name
     if [ "$bar_name" = "sketchybar" ]; then
         brew services restart sketchybar
     else
         # replace 'sketchybar' keyword with 'bar_name'
-        sed -i '' "s/sketchybar /$bar_name /g" "$sketchybarrc_path"
+        sed -i '' "s/sketchybar/$bar_name/g" "$sketchybarrc_path"
         "$bar_name" &
     fi
 

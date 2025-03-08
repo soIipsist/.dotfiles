@@ -8,7 +8,7 @@ fi
 source "$dotfiles_directory/.config/themes/theme.sh"
 PLUGIN_DIR="$dotfiles_directory/.config/sketchybar/plugins"
 
-sketchybar --bar color=0x00000000 height=40 margin=0 y_offset=3 padding_left=8 padding_right=8 sticky=on topmost=window label.font="$FONT"
+sketchybar --bar position=top color=0x00000000 height=40 margin=0 y_offset=3 padding_left=8 padding_right=8 sticky=on topmost=window label.font="$FONT"
 sketchybar --default padding_left=8 padding_right=4 \
     background.border_color=$COLOR_DEFAULT \
     background.border_width=2 \
@@ -28,7 +28,7 @@ sketchybar --add event window_change \
     --add event title_change \
     --add event aerospace_workspace_change
 
-sketchybar --add item logo left --set logo script="$PLUGIN_DIR/logo.sh" \ background.border_width=0 background.height=24 icon=$ICON_APPLE click_script="./bin/menus -s 0" --subscribe logo mouse.clicked window_focus front_app_switched space_change title_change
+sketchybar --add item logo left --set logo script="$PLUGIN_DIR/app_icon.sh" \ background.border_width=0 background.height=24 icon=$ICON_APPLE click_script="./bin/menus -s 0" --subscribe logo mouse.clicked window_focus front_app_switched space_change title_change
 sketchybar --add item title left --set title script="$PLUGIN_DIR/title.sh" padding_left=2 padding_right=8 background.border_width=0 background.height=24 click_script="./bin/menus -s 1" --subscribe title window_focus front_app_switched space_change title_change
 sketchybar --add item seperator.r1 left --set seperator.r1 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
 
@@ -38,21 +38,19 @@ for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item space.$sid left \
         --subscribe space.$sid aerospace_workspace_change \
         --set space.$sid background.color=$COLOR_SECONDARY \
-        background.drawing=off \
+        background.drawing=on \
         background.corner_radius=5 \
         width=30 \
-        height=40 \
-        label.padding_left=11 \
-        label.position=center \
-        label.width=20 \
-        icon.position=center \
-        icon.width=0 \
-        icon.padding_left=0 \
-        icon.padding_right=0 \
         label="$sid" \
+        label.align=center \
+        label.width=auto \
+        label.padding_left=30 \
+        label.padding_right=0 \
+        icon.width=0 \
         click_script="aerospace workspace $sid" \
         script="$PLUGIN_DIR/aerospace.sh $sid"
 done
+
 sketchybar --add item seperator.r2 left --set seperator.r1 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
 sketchybar --add bracket apple logo title '/space\..*/' \
     --set apple \
@@ -89,29 +87,31 @@ sketchybar --add item clipboard left \
 
 THEME_FILES=()
 for file in "$HOME/.config/themes"/*.json; do
+    if [[ $(basename "$file") == "icons.json" ]]; then
+        continue
+    fi
     THEME_FILES+=("$file")
 done
 
-if [ -z "$THEME" ]; then
-    THEME="${THEME_FILES[0]}"
+SELECTED_THEME_NAME=$(jq -r ".THEME_NAME" "${THEME_FILES[0]}")
+
+if [ -z "$SELECTED_THEME_NAME" ]; then
+    SELECTED_THEME_NAME="${THEME_FILES[0]}"
 fi
 
 sketchybar --add item themes.logo left \
     --set themes.logo icon=$ICON_COLOR_MENU \
-    background.border_width=0 \
-    icon.height=50 \
+    background.color=$COLOR_BACKGROUND \
+    width=100 \
+    icon.width=15 \
     label.align=center \
-    label.font="$FONT" \
-    icon.font="$FONT" \
+    label.font="$FONT_2" \
+    icon.font="$FONT_2" \
     icon.font.size=17 \
-    icon.padding_left=5 \
     icon.align=center \
-    label="$THEME" \
-    label.padding_left=10 \
-    label.padding_right=10 \
+    label="$SELECTED_THEME_NAME" \
+    label.padding_left=15 \
     click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
-    popup.border_color=$COLOR_DEFAULT \
-    popup.border_width=0 \
     popup.background.color="$COLOR_BACKGROUND"
 
 for FILE in "${THEME_FILES[@]}"; do
@@ -121,16 +121,17 @@ for FILE in "${THEME_FILES[@]}"; do
     sketchybar --add item themes.$FILE popup.themes.logo \
         --set themes.$FILE icon=$ICON_COLOR_MENU \
         label="$THEME_NAME" \
-        click_script="$PLUGIN_DIR/theme.sh $THEME $PLUGIN_DIR;"
+        background.color=$COLOR_BACKGROUND \
+        click_script="$PLUGIN_DIR/theme_click.sh $THEME $PLUGIN_DIR"
 done
 
+# icon_buttons
 sketchybar --add bracket icon_buttons reload clipboard '/themes\..*/' \
     --set icon_buttons \
     background.color=$COLOR_BACKGROUND \
     background.border_color=$COLOR_DEFAULT
 
-# sketchybar --add bracket spaces '/space\..*/' --set spaces background.color=$COLOR_BACKGROUND
-
+# centre
 sketchybar --add item centre right \
     --set centre \
     icon.color=$COLOR_DEFAULT \
@@ -142,6 +143,7 @@ sketchybar --add item centre right \
     background.corner_radius=6 \
     background.height=24
 
+# wifi
 sketchybar --add item wifi right \
     --set wifi \
     script="$PLUGIN_DIR/wifi.sh" \
@@ -153,6 +155,7 @@ sketchybar --add item wifi right \
     background.border_width=0 \
     --subscribe wifi wifi_change
 
+# volume
 sketchybar --add item volume right \
     --set volume \
     script="$PLUGIN_DIR/volume.sh" \
@@ -162,6 +165,7 @@ sketchybar --add item volume right \
     background.height=24 \
     --subscribe volume volume_change
 
+# battery
 sketchybar --add item battery right \
     --set battery \
     script="$PLUGIN_DIR/battery.sh" \
@@ -172,6 +176,7 @@ sketchybar --add item battery right \
     background.height=24 \
     --subscribe battery system_woke power_source_change
 
+# bracket
 sketchybar --add bracket right_bracket battery cpu volume wifi centre \
     --set right_bracket \
     background.color=$COLOR_BACKGROUND \
