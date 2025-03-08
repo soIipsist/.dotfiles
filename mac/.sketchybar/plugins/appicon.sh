@@ -2,10 +2,10 @@
 
 source "$HOME/.config/themes/theme.sh"
 
-LABEL=$(yabai -m query --windows --window | jq -r '.app')
+LABEL=$(aerospace list-windows --focused --format %{app-name})
 
 case "$LABEL" in
-  "Terminal" | "kitty")
+  "Terminal" | "kitty"| "iTerm2")
     RESULT="󰆍"
     if grep -q "btop" <<< "$2"; then RESULT=$ICON_CHART
     elif grep -q "brew" <<< "$2"; then RESULT=$ICON_PACKAGE
@@ -47,8 +47,8 @@ case "$LABEL" in
   "Disk Utility") RESULT=$ICON_DISK ;;
   "Screenshot" | "Preview") RESULT=$ICON_PREVIEW ;;
   "Passwords") RESULT=$ICON_PASSKEY ;;
-  "") RESULT=$ICON_FILE ;;
-  *) RESULT="󰧱" ;;
+  "") RESULT=$ICON_APPLE ;;
+  *) RESULT=$ICON_APPLE ;;
 esac
 
-sketchybar --set app_icon icon=$RESULT
+sketchybar --set appicon icon=$RESULT

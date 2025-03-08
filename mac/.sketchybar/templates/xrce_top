@@ -28,8 +28,17 @@ sketchybar --add event window_change \
     --add event title_change \
     --add event aerospace_workspace_change
 
-sketchybar --add item logo left --set logo script="$PLUGIN_DIR/app_icon.sh" \ background.border_width=0 background.height=24 icon=$ICON_APPLE click_script="./bin/menus -s 0" --subscribe logo mouse.clicked window_focus front_app_switched space_change title_change
-sketchybar --add item title left --set title script="$PLUGIN_DIR/title.sh" padding_left=2 padding_right=8 background.border_width=0 background.height=24 click_script="./bin/menus -s 1" --subscribe title window_focus front_app_switched space_change title_change
+sketchybar --add item appicon left --set appicon script="$PLUGIN_DIR/appicon.sh" \ background.border_width=0 background.height=24 icon=$ICON_APPLE click_script="./bin/menus -s 0" --subscribe appicon mouse.clicked window_focus front_app_switched space_change title_change
+
+# active workspace
+sketchybar --add item active_workspace left \
+    --set active_workspace label.max_chars=30 \
+    padding_left=2 \
+    padding_right=8 \
+    label.font="$FONT_2" \
+    icon.font="$FONT_2" \
+    label.align=center
+
 sketchybar --add item seperator.r1 left --set seperator.r1 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
 
 COLORS_SPACE=($COLOR_RED_BRIGHT $COLOR_GREEN_BRIGHT $COLOR_YELLOW_BRIGHT $COLOR_BLUE_BRIGHT $COLOR_MAGENTA_BRIGHT $COLOR_CYAN_BRIGHT $COLOR_WHITE_BRIGHT)
@@ -52,9 +61,8 @@ for sid in $(aerospace list-workspaces --all); do
 done
 
 sketchybar --add item seperator.r2 left --set seperator.r1 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
-sketchybar --add bracket apple logo title '/space\..*/' \
-    --set apple \
-    background.color=$COLOR_BACKGROUND \
+sketchybar --add bracket apple appicon active_workspace '/space\..*/' \
+    --set apple background.color=$COLOR_BACKGROUND \
     background.border_color=$COLOR_DEFAULT
 
 # reload button
