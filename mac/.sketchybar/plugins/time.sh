@@ -42,4 +42,4 @@ case $HOUR in
     ;;
 esac
 
-sketchybar --set $NAME label="$(date '+%I:%M %p')" background.color=$BCOLOR icon.color=$COLOR label.color=$COLOR
+sketchybar --set time label="$(date '+%I:%M %p')" background.color=$BCOLOR icon.color=$COLOR label.color=$COLOR

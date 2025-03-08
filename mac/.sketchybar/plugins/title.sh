@@ -6,4 +6,4 @@ if [[ $LABEL = "" ]]; then
   LABEL="Desktop"
 fi
 
-sketchybar --set $NAME label="$LABEL"
+sketchybar --set title label="$LABEL"

@@ -3,7 +3,11 @@ if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
   GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
 fi
 
-echo "Clicked theme: $1" >/tmp/debug.txt
+if [ -z "$dotfiles_directory" ]; then
+  dotfiles_directory="$HOME"
+fi
+
+echo "Clicked theme: $1" >>/tmp/debug.txt
 THEME="$1"
 
 # Check if the theme is passed correctly
@@ -80,6 +84,8 @@ set_sketchybar_template() {
     return 0
   fi
 
+  echo "SKETCHYBAR_TEMPLATE: $SKETCHYBAR_TEMPLATE" >>/tmp/debug.txt
+
   if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
     source "$set_template_path" "$SKETCHYBAR_TEMPLATE"
   fi
@@ -94,11 +100,11 @@ if [ ! -f "$theme_path" ]; then
 fi
 
 export_theme "$theme_path"
-source "$dotfiles_directory/.config/themes/theme.sh"
 
 WALLPAPER_PATH=$(replace_root "$WALLPAPER_PATH" "$GIT_DOTFILES_DIRECTORY")
 set_wallpaper_mac "$WALLPAPER_PATH"
 set_autosuggest_color
 set_sketchybar_template
 
+source "$dotfiles_directory/.config/themes/theme.sh"
 echo "Theme was changed to $THEME." >>/tmp/debug.txt

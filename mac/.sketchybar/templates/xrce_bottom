@@ -1,6 +1,9 @@
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
+if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+    GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
+fi
 
 source "$dotfiles_directory/.config/themes/theme.sh"
 PLUGIN_DIR="$dotfiles_directory/.config/sketchybar/plugins"
@@ -34,11 +37,11 @@ sketchybar --add item notif right --set notif icon.color=$COLOR_DEFAULT backgrou
     --add item seperator.r3 right --set seperator.r3 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
 
 sketchybar --add item time right --set time script="$PLUGIN_DIR/time.sh" update_freq=5 padding_left=2 padding_right=8 background.border_width=0 background.corner_radius=6 background.height=24 icon=$ICON_CLOCK \
-    --add item date right --set date script="$PLUGIN_DIR/calendar.sh" update_freq=60 padding_left=8 padding_right=2 background.height=24 icon=$ICON_CALENDAR \
+    --add item calendar right --set date script="$PLUGIN_DIR/calendar.sh" update_freq=60 padding_left=8 padding_right=2 background.height=24 icon=$ICON_CALENDAR \
     --add bracket clock time date --set clock background.color=$COLOR_BACKGROUND background.border_color=$COLOR_DEFAULT \
     --add item seperator.r4 right --set seperator.r4 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
 
-sketchybar --add item appcount right --set appcount script="$PLUGIN_DIR/app.sh" update_freq=5 padding_left=4 padding_right=8 background.border_width=0 background.corner_radius=6 background.height=24 icon=$ICON_PROCESS icon.highlight=on label.highlight=on \
+sketchybar --add item appcount right --set appcount script="$PLUGIN_DIR/appcount.sh" update_freq=5 padding_left=4 padding_right=8 background.border_width=0 background.corner_radius=6 background.height=24 icon=$ICON_PROCESS icon.highlight=on label.highlight=on \
     --add item portcount right --set portcount script="$PLUGIN_DIR/port.sh" update_freq=5 padding_left=4 padding_right=4 background.border_width=0 background.corner_radius=6 background.height=24 icon=$ICON_PORT icon.highlight=on label.highlight=on \
     --add item conncount right --set conncount script="$PLUGIN_DIR/connection.sh" update_freq=5 padding_left=8 padding_right=4 background.border_width=0 background.corner_radius=6 background.height=24 icon=$ICON_CONNECT icon.highlight=on label.highlight=on \
     --add bracket process appcount portcount conncount --set process background.color=$COLOR_BACKGROUND background.border_color=$COLOR_DEFAULT \

@@ -27,7 +27,7 @@ case $PROC in
     ;;
 esac
 
-bottombar --set $NAME icon=$ICON \
+bottombar --set cpu icon=$ICON \
     icon.color=$COLOR \
     background.color=$BCOLOR \
     label=" $PROC% " \

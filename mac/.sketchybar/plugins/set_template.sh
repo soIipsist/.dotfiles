@@ -37,11 +37,11 @@ for template in $templates; do
     echo "Copied $sketchybar_template_path to $sketchybarrc_path."
 
     # spawn new process of $bar_name
-    if [ "$bar_name" == "sketchybar" ]; then
+    if [ "$bar_name" = "sketchybar" ]; then
         brew services restart sketchybar
     else
         # replace 'sketchybar' with 'bar_name'
-        sed -i "s/sketchybar /$bar_name/g" "$sketchybarrc_path"
+        sed -i '' "s/sketchybar /$bar_name /g" "$sketchybarrc_path"
         "$bar_name" &
     fi
 

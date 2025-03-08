@@ -51,4 +51,4 @@ case "$LABEL" in
   *) RESULT="󰧱" ;;
 esac
 
-sketchybar --set $NAME icon=$RESULT
+sketchybar --set app_icon icon=$RESULT

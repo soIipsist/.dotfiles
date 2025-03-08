@@ -1,10 +1,14 @@
 if [ -z "$dotfiles_directory" ]; then
     export dotfiles_directory="$HOME"
 fi
-source "/Users/p/repos/soIipsist/.dotfiles/mac/set_theme.sh" "$1"
-
-reload_path="$PLUGIN_DIR/reload.sh"
-if [ ! -f "$reload_path" ]; then
-
+if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+    GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
 fi
-source "$PLUGIN_DIR/reload.sh"
+
+theme="$1"
+if [ -z "$theme" ]; then
+    theme="main"
+fi
+
+source "$GIT_DOTFILES_DIRECTORY/mac/set_theme.sh" "$theme"
+# sketchybar -m --set themes.logo popup.drawing=toggle

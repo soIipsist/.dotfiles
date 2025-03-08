@@ -1,6 +1,6 @@
 {
   "THEME_NAME": "Y DO WE EXIST",
-  "SKETCHYBAR_TEMPLATE": ["main"],
+  "SKETCHYBAR_TEMPLATE": ["main", "main"],
   "WALLPAPER_PATH": "/wallpapers/synthwave_astronaut.jpg",
   "FONT": "Hack Nerd Font:Bold:15.0",
   "FONT_2": "Hack Nerd Font:Bold:14.0",

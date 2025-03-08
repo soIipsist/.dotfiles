@@ -1,6 +1,9 @@
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
+if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+    GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
+fi
 
 source "$dotfiles_directory/.config/themes/theme.sh"
 PLUGIN_DIR="$dotfiles_directory/.config/sketchybar/plugins"
@@ -66,7 +69,7 @@ sketchybar --add item reload left \
     icon.font="$FONT" \
     label.color=$COLOR_DEFAULT \
     label.highlight_color=$COLOR_BACKGROUND \
-    click_script="$PLUGIN_DIR/reload.sh"
+    click_script="$PLUGIN_DIR/theme_click.sh"
 
 # copy from clipboard button
 sketchybar --add item clipboard left \
