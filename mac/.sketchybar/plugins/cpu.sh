@@ -27,7 +27,7 @@ case $PROC in
     ;;
 esac
 
-bottombar --set cpu icon=$ICON \
+sketchybar --set cpu icon=$ICON \
     icon.color=$COLOR \
     background.color=$BCOLOR \
     label=" $PROC% " \

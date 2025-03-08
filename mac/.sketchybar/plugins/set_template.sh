@@ -40,7 +40,7 @@ for template in $templates; do
     if [ "$bar_name" = "sketchybar" ]; then
         brew services restart sketchybar
     else
-        # replace 'sketchybar' with 'bar_name'
+        # replace 'sketchybar' keyword with 'bar_name'
         sed -i '' "s/sketchybar /$bar_name /g" "$sketchybarrc_path"
         "$bar_name" &
     fi
