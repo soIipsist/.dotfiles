@@ -27,6 +27,7 @@ for template in $templates; do
 
     if [ ! -f "$sketchybar_template_path" ]; then
         echo "Sketchybar template $sketchybar_template_path does not exist!"
+        COUNTER=$((COUNTER + 1))
         continue
     fi
 
