@@ -1,6 +1,7 @@
 if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
+
 if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
     GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
 fi
@@ -8,7 +9,16 @@ fi
 source "$dotfiles_directory/.config/themes/theme.sh"
 PLUGIN_DIR="$dotfiles_directory/.config/sketchybar/plugins"
 
-sketchybar --bar position=top color=0x00000000 height=40 margin=0 y_offset=3 padding_left=8 padding_right=8 sticky=on topmost=window label.font="$FONT"
+sketchybar --bar position=top \
+    color=0x00000000 \
+    height=40 \
+    margin=0 \
+    y_offset=3 \
+    padding_left=8 \
+    padding_right=8 \
+    sticky=on \
+    topmost=window
+
 sketchybar --default padding_left=8 padding_right=4 \
     background.border_color=$COLOR_DEFAULT \
     background.border_width=2 \
@@ -28,18 +38,26 @@ sketchybar --add event window_change \
     --add event title_change \
     --add event aerospace_workspace_change
 
-sketchybar --add item appicon left --set appicon script="$PLUGIN_DIR/appicon.sh" \ background.border_width=0 background.height=24 icon=$ICON_APPLE click_script="./bin/menus -s 0" --subscribe appicon mouse.clicked window_focus front_app_switched space_change title_change
+sketchybar --add item appicon left \
+    --set appicon script="$PLUGIN_DIR/appicon.sh" \
+    background.border_width=0 \
+    background.height=24 \
+    icon=$ICON_APPLE \
+    click_script="./bin/menus -s 0" \
+    --subscribe appicon mouse.clicked window_focus front_app_switched space_change title_change
 
-# active workspace
 sketchybar --add item active_workspace left \
-    --set active_workspace label.max_chars=30 \
-    padding_left=2 \
+    --set active_workspace padding_left=2 \
     padding_right=8 \
     label.font="$FONT_2" \
     icon.font="$FONT_2" \
     label.align=center
 
-sketchybar --add item seperator.r1 left --set seperator.r1 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
+sketchybar --add item seperator.r1 left \
+    --set seperator.r1 padding_left=4 padding_right=4 \
+    background.drawing=off \
+    icon.drawing=off \
+    label.drawing=off
 
 COLORS_SPACE=($COLOR_RED_BRIGHT $COLOR_GREEN_BRIGHT $COLOR_YELLOW_BRIGHT $COLOR_BLUE_BRIGHT $COLOR_MAGENTA_BRIGHT $COLOR_CYAN_BRIGHT $COLOR_WHITE_BRIGHT)
 
@@ -60,12 +78,16 @@ for sid in $(aerospace list-workspaces --all); do
         script="$PLUGIN_DIR/aerospace.sh $sid"
 done
 
-sketchybar --add item seperator.r2 left --set seperator.r1 padding_left=4 padding_right=4 background.drawing=off icon.drawing=off label.drawing=off
+sketchybar --add item seperator.r2 left \
+    --set seperator.r1 padding_left=4 padding_right=4 \
+    background.drawing=off \
+    icon.drawing=off \
+    label.drawing=off
+
 sketchybar --add bracket apple appicon active_workspace '/space\..*/' \
     --set apple background.color=$COLOR_BACKGROUND \
     background.border_color=$COLOR_DEFAULT
 
-# reload button
 sketchybar --add item reload left \
     --set reload icon="$ICON_RELOAD" \
     icon.width=30 \
@@ -77,7 +99,6 @@ sketchybar --add item reload left \
     label.highlight_color=$COLOR_BACKGROUND \
     click_script="$PLUGIN_DIR/theme_click.sh"
 
-# copy from clipboard button
 sketchybar --add item clipboard left \
     --set clipboard icon="$ICON_CLIPBOARD" \
     icon.font="$FONT" \
@@ -90,8 +111,6 @@ sketchybar --add item clipboard left \
     label.color=$COLOR_DEFAULT \
     label.highlight_color=$COLOR_BACKGROUND \
     click_script="$PLUGIN_DIR/clipboard.sh"
-
-# color theme menu
 
 THEME_FILES=()
 for file in "$HOME/.config/themes"/*.json; do
@@ -110,7 +129,8 @@ fi
 sketchybar --add item themes.logo left \
     --set themes.logo icon=$ICON_COLOR_MENU \
     background.color=$COLOR_BACKGROUND \
-    width=100 \
+    background.border_color=0x00000000 \
+    width=0 \
     icon.width=15 \
     label.align=center \
     label.font="$FONT_2" \
@@ -130,16 +150,15 @@ for FILE in "${THEME_FILES[@]}"; do
         --set themes.$FILE icon=$ICON_COLOR_MENU \
         label="$THEME_NAME" \
         background.color=$COLOR_BACKGROUND \
+        background.border_width=0 \
         click_script="$PLUGIN_DIR/theme_click.sh $THEME $PLUGIN_DIR"
 done
 
-# icon_buttons
 sketchybar --add bracket icon_buttons reload clipboard '/themes\..*/' \
     --set icon_buttons \
     background.color=$COLOR_BACKGROUND \
     background.border_color=$COLOR_DEFAULT
 
-# centre
 sketchybar --add item centre right \
     --set centre \
     icon.color=$COLOR_DEFAULT \
@@ -151,7 +170,9 @@ sketchybar --add item centre right \
     background.corner_radius=6 \
     background.height=24
 
-# wifi
+sketchybar --add item vpn right
+sketchybar --add bracket conn vpn
+
 sketchybar --add item wifi right \
     --set wifi \
     script="$PLUGIN_DIR/wifi.sh" \
@@ -163,7 +184,6 @@ sketchybar --add item wifi right \
     background.border_width=0 \
     --subscribe wifi wifi_change
 
-# volume
 sketchybar --add item volume right \
     --set volume \
     script="$PLUGIN_DIR/volume.sh" \
@@ -173,7 +193,6 @@ sketchybar --add item volume right \
     background.height=24 \
     --subscribe volume volume_change
 
-# battery
 sketchybar --add item battery right \
     --set battery \
     script="$PLUGIN_DIR/battery.sh" \
@@ -184,7 +203,13 @@ sketchybar --add item battery right \
     background.height=24 \
     --subscribe battery system_woke power_source_change
 
-# bracket
+# cpu
+sketchybar --add item cpu right \
+    --set cpu update_freq=2 \
+    background.color=$COLOR_BACKGROUND \
+    icon="$ICON_CPU_1" \
+    script="$PLUGIN_DIR/cpu.sh"
+
 sketchybar --add bracket right_bracket battery cpu volume wifi centre \
     --set right_bracket \
     background.color=$COLOR_BACKGROUND \

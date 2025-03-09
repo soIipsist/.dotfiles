@@ -20,11 +20,12 @@ if [[ $VPN != "" ]]; then
     COLOR=$COLOR_CYAN_BRIGHT
     ICON=$ICON_VPN
     LABEL=$LABEL
-    sketchybar --add item vpn right --set vpn label="Secured" padding_left=8 padding_right=2 background.border_width=0 background.height=24 \
+    sketchybar --set vpn label="Secured" padding_left=8 padding_right=2 background.border_width=0 background.height=24 \
         --add bracket conn vpn status --set conn background.color=$COLOR_BACKGROUND background.border_color=$COLOR_DEFAULT \
         --set vpn conn drawing=on
 else
-    sketchybar --set vpn conn drawing=off
+    sketchybar --set vpn drawing=off
+
     if [[ $HOTSPOT != "" ]]; then
         COLOR=$COLOR_GREEN_BRIGHT
         ICON=$ICON_HOTSPOT
@@ -44,4 +45,4 @@ else
     fi
 fi
 
-sketchybar --set wifi background.color=$COLOR_BACKGROUND icon=$ICON label="$LABEL"
+sketchybar --set $NAME background.color=$COLOR icon=$ICON label="$LABEL"
