@@ -38,7 +38,7 @@
 
   "VSCODE_FONT_FAMILY": "Menlo, Monaco, 'Courier New', monospace",
   "VSCODE_FONT_LIGATURES": true,
-  "VSCODE_FONT_SIZE": 12,
+  "VSCODE_FONT_SIZE": 15,
   "VSCODE_ACTIVITY_BAR_BORDER": "default",
   "VSCODE_BADGE_BACKGROUND": "default",
   "VSCODE_EDITOR_FOREGROUND": "default",

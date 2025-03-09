@@ -1,4 +1,4 @@
 {
-  "dotfiles": [".vscode", ".python-config"],
+  "dotfiles": [".vscode"],
   "install_homebrew": true
 }

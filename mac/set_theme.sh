@@ -106,7 +106,7 @@ if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
 fi
 
 # set vscode theme
-source_vscode_settings_path="$GIT_DOTFILES_DIRECTORY/.vscode/vscode_settings.json"
+source_vscode_settings_path="$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/vscode_settings.json"
 destination_vscode_settings_path="$HOME/Library/Application Support/Code/User/settings.json"
 envsubst <"$source_vscode_settings_path" >"$destination_vscode_settings_path"
 
