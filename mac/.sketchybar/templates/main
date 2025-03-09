@@ -8,9 +8,9 @@ fi
 source "$dotfiles_directory/.config/themes/theme.sh"
 PLUGIN_DIR="$dotfiles_directory/.config/sketchybar/plugins"
 
-sketchybar --bar height=37 \
+sketchybar --bar position=top \
+    height=37 \
     blur_radius=30 \
-    position=top \
     sticky=off \
     padding_left=$PADDING_LEFT \
     padding_right=$PADDING_RIGHT \
