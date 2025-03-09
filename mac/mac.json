@@ -1,5 +1,4 @@
 {
-  "dotfiles": [".themes", ".sketchybar"],
-  "theme": "main",
+  "dotfiles": [".vscode", ".python-config"],
   "install_homebrew": true
 }

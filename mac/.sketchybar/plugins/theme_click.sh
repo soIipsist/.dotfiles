@@ -11,10 +11,5 @@ pkill leftbar
 pkill rightbar
 source "$GIT_DOTFILES_DIRECTORY/mac/set_theme.sh" "$1"
 
-brew services stop borders
-
-launchctl setenv BORDER_ACTIVE_COLOR "$BORDER_ACTIVE_COLOR"
-launchctl setenv BORDER_WIDTH "$BORDER_WIDTH"
-env | grep BORDER_ >>/tmp/debug.txt
-
-brew services restart borders
+launchctl stop homebrew.mxcl.borders
+launchctl start homebrew.mxcl.borders

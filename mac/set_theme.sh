@@ -86,6 +86,11 @@ if [ -z "$dotfiles_directory" ]; then
 fi
 
 THEME="$1"
+
+if [ -z "$THEME" ]; then
+  exit 0
+fi
+
 set_template_path="$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
 theme_path="$dotfiles_directory/.config/themes/$THEME.json"
 
@@ -99,6 +104,11 @@ set_autosuggest_color
 if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
   source "$set_template_path" "$SKETCHYBAR_TEMPLATE"
 fi
+
+# set vscode theme
+source_vscode_settings_path="$GIT_DOTFILES_DIRECTORY/.vscode/vscode_settings.json"
+destination_vscode_settings_path="$HOME/Library/Application Support/Code/User/settings.json"
+envsubst <"$source_vscode_settings_path" >"$destination_vscode_settings_path"
 
 echo "Theme was changed to $THEME."
 echo "WALLPAPER_PATH: $WALLPAPER_PATH."
