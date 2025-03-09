@@ -2,11 +2,6 @@ if [ -z "$dotfiles_directory" ]; then
     dotfiles_directory="$HOME"
 fi
 
-# kill all processes
-pkill bottombar
-pkill leftbar
-pkill rightbar
-
 templates="$1"
 COUNTER=0
 

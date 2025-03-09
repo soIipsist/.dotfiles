@@ -1,34 +1,5 @@
-# change theme on click
-if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
-  GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
-fi
-
-if [ -z "$dotfiles_directory" ]; then
-  dotfiles_directory="$HOME"
-fi
-
-echo "Clicked theme: $1" >>/tmp/debug.txt
-THEME="$1"
-
-# Check if the theme is passed correctly
-if [ -z "$THEME" ]; then
-  echo "Error: No theme passed." >>/tmp/debug.txt
-  exit 1
-fi
-
-if [ ! -f "$GIT_DOTFILES_DIRECTORY/os.sh" ]; then
-  echo "Error: os.sh not found" >/tmp/debug.txt
-  exit 1
-fi
-source "$GIT_DOTFILES_DIRECTORY/os.sh"
-
-if [ ! -f "$GIT_DOTFILES_DIRECTORY/wallpaper.sh" ]; then
-  echo "Error: wallpaper.sh not found" >/tmp/debug.txt
-  exit 1
-fi
-
 # Define your functions
-set_autosuggest_color() {
+function set_autosuggest_color() {
   if [ -z "$ITERM2_AUTOSUGGEST_COLOR" ]; then
     return 0
   fi
@@ -44,7 +15,7 @@ set_autosuggest_color() {
   fi
 }
 
-export_theme() {
+function export_theme() {
   theme_path="$1"
   icons_path="$(dirname $theme_path)/icons.json"
 
@@ -76,35 +47,37 @@ export_theme() {
   source "$theme_colors_path"
 }
 
-set_sketchybar_template() {
-  set_template_path="$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
-
-  if [ ! -f "$set_template_path" ]; then
-    echo "sketchybar: set_template.sh does not exist" >>/tmp/debug.txt
-    return 0
-  fi
-
-  echo "SKETCHYBAR_TEMPLATE: $SKETCHYBAR_TEMPLATE" >>/tmp/debug.txt
-
-  if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
-    source "$set_template_path" "$SKETCHYBAR_TEMPLATE"
-  fi
-  echo "sketchybar_template $SKETCHYBAR_TEMPLATE" >>/tmp/debug.txt
-}
-
-theme_path="$dotfiles_directory/.config/themes/$THEME.json"
-
-if [ ! -f "$theme_path" ]; then
-  echo "Theme file does not exist: $theme_path" >>/tmp/debug.txt
-  exit 1
+# change theme on click
+if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+  GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
 fi
 
-export_theme "$theme_path"
+if [ -z "$dotfiles_directory" ]; then
+  dotfiles_directory="$HOME"
+fi
 
-WALLPAPER_PATH=$(replace_root "$WALLPAPER_PATH" "$GIT_DOTFILES_DIRECTORY")
-set_wallpaper_mac "$WALLPAPER_PATH"
-set_autosuggest_color
-set_sketchybar_template
+THEME="$1"
+echo "theme: $THEME" >>/tmp/debug.txt
 
-source "$dotfiles_directory/.config/themes/theme.sh"
-echo "Theme was changed to $THEME." >>/tmp/debug.txt
+set_template_path="$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
+theme_path="$dotfiles_directory/.config/themes/$THEME.json"
+
+source "$GIT_DOTFILES_DIRECTORY/wallpaper.sh"
+source "$GIT_DOTFILES_DIRECTORY/os.sh"
+
+echo "THEME: $THEME" >>/tmp/debug.txt
+
+# export_theme "$theme_path"
+
+# WALLPAPER_PATH=$(replace_root "$WALLPAPER_PATH" "$GIT_DOTFILES_DIRECTORY")
+# set_wallpaper_mac "$WALLPAPER_PATH"
+# set_autosuggest_color
+
+# if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
+#   source "$set_template_path" "$SKETCHYBAR_TEMPLATE"
+# fi
+
+# # source colors
+# source "$dotfiles_directory/.config/themes/theme.sh"
+# echo "Theme was changed to $THEME." >>/tmp/debug.txt
+# echo "WALLPAPER_PATH: $WALLPAPER_PATH."

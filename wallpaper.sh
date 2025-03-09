@@ -46,10 +46,7 @@ set_wallpaper_mac() {
         return
     fi
 
-    os=$(get_os)
+    osascript prefs.scpt $wallpaper_path
+    echo "Set wallpaper to: $wallpaper_path"
 
-    if [ $os == 'mac' ]; then
-        osascript prefs.scpt $wallpaper_path
-        echo "Set wallpaper to: $wallpaper_path"
-    fi
 }

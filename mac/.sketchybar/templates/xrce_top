@@ -97,7 +97,7 @@ sketchybar --add item reload left \
     icon.font="$FONT" \
     label.color=$COLOR_DEFAULT \
     label.highlight_color=$COLOR_BACKGROUND \
-    click_script="$PLUGIN_DIR/theme_click.sh"
+    click_script="$PLUGIN_DIR/reload.sh"
 
 sketchybar --add item clipboard left \
     --set clipboard icon="$ICON_CLIPBOARD" \
@@ -151,7 +151,7 @@ for FILE in "${THEME_FILES[@]}"; do
         label="$THEME_NAME" \
         background.color=$COLOR_BACKGROUND \
         background.border_width=0 \
-        click_script="$PLUGIN_DIR/theme_click.sh $THEME $PLUGIN_DIR"
+        click_script="$PLUGIN_DIR/theme_click.sh $THEME"
 done
 
 sketchybar --add bracket icon_buttons reload clipboard '/themes\..*/' \

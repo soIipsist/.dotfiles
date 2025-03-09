@@ -1,6 +1,6 @@
 {
   "THEME_NAME": "JUST TO SUFFER",
-  "SKETCHYBAR_TEMPLATE": ["xrce_bottom"],
+  "SKETCHYBAR_TEMPLATE": ["xrce_top", "xrce_bottom"],
   "WALLPAPER_PATH": "/Users/p/repos/soIipsist/.dotfiles/wallpapers/diane.jpg",
   "FONT": "Nerd Font:Regular:16.0",
   "FONT_2": "Hack Nerd Font:Bold:14.0",
