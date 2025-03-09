@@ -28,6 +28,10 @@
   "COLOR_CYAN_BRIGHT": "0xe089dceb",
   "COLOR_WHITE_BRIGHT": "0xe0cdd6f4",
 
+  "BORDER_WIDTH": 7.0,
+  "BORDER_ACTIVE_COLOR": "0xe0f9e2af",
+  "BORDER_INACTIVE_COLOR": "0xff414550",
+
   "VSCODE_FONT_FAMILY": "Menlo, Monaco, 'Courier New', monospace",
   "VSCODE_FONT_LIGATURES": true,
   "VSCODE_FONT_SIZE": 12,

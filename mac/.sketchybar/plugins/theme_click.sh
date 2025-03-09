@@ -5,6 +5,16 @@ if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
     GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
 fi
 
-echo "THEME CLICKED $1" >>/tmp/debug.txt
+# kill processes before restarting
+pkill bottombar
+pkill leftbar
+pkill rightbar
 source "$GIT_DOTFILES_DIRECTORY/mac/set_theme.sh" "$1"
-# source "$GIT_DOTFILES_DIRECTORY/mac/.sketchybar/reload.sh"
+
+brew services stop borders
+
+launchctl setenv BORDER_ACTIVE_COLOR "$BORDER_ACTIVE_COLOR"
+launchctl setenv BORDER_WIDTH "$BORDER_WIDTH"
+env | grep BORDER_ >>/tmp/debug.txt
+
+brew services restart borders

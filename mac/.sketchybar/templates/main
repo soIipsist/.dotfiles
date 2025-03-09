@@ -119,7 +119,7 @@ for FILE in "${THEME_FILES[@]}"; do
         --set themes.$FILE icon=$ICON_COLOR_MENU \
         label="$THEME_NAME" \
         background.color=$COLOR_BACKGROUND \
-        click_script="$PLUGIN_DIR/theme_click.sh $THEME"
+        click_script="source $PLUGIN_DIR/theme_click.sh $THEME"
 done
 
 # active workspace

@@ -49,6 +49,8 @@ install_zoxide() {
 
     curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
 
+    shell_path=$(get_default_shell_path)
+
     if ! grep -q 'eval "$(zoxide init bash)"' "$shell_path"; then
         echo 'eval "$(zoxide init bash)"' >>"$shell_path"
     fi

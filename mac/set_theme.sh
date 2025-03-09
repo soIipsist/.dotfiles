@@ -21,6 +21,8 @@ function export_theme() {
 
   theme_colors_path="$dotfiles_directory/.config/themes/theme.sh"
 
+  SELECTED_THEME="$(basename $theme_path .json)"
+
   if [ ! -f "$theme_colors_path" ]; then
     touch "$theme_colors_path"
   fi
@@ -44,7 +46,9 @@ function export_theme() {
     "export \(.key)=\(.value)"
   end' "$icons_path" >>"$theme_colors_path"
 
+  echo "export SELECTED_THEME=$SELECTED_THEME" >>"$theme_colors_path"
   source "$theme_colors_path"
+
 }
 
 function replace_root() {
@@ -93,9 +97,8 @@ set_wallpaper "$WALLPAPER_PATH"
 set_autosuggest_color
 
 if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
-  echo "SKETCHYBAR TEMPLATE SET: $SKETCHYBAR_TEMPLATE" >>/tmp/debug.txt
   source "$set_template_path" "$SKETCHYBAR_TEMPLATE"
 fi
 
-echo "Theme was changed to $THEME." >>/tmp/debug.txt
+echo "Theme was changed to $THEME."
 echo "WALLPAPER_PATH: $WALLPAPER_PATH."

@@ -151,7 +151,7 @@ for FILE in "${THEME_FILES[@]}"; do
         label="$THEME_NAME" \
         background.color=$COLOR_BACKGROUND \
         background.border_width=0 \
-        click_script="$PLUGIN_DIR/theme_click.sh $THEME"
+        click_script="source $PLUGIN_DIR/theme_click.sh $THEME"
 done
 
 sketchybar --add bracket icon_buttons reload clipboard '/themes\..*/' \
