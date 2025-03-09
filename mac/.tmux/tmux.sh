@@ -1,9 +1,8 @@
-set_tmux_theme() {
-    tmux_config_path="$GIT_DOTFILES_DIRECTORY/mac/.tmux/.tmux.conf"
-    tmux_destination_path="$HOME/.tmux/.tmux.conf"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+source_tmux_conf="$SCRIPT_DIR/tmux/.tmux.conf"
+destination_tmux_conf="$dotfiles_directory/.tmux.conf"
 
-    if [ -f "$tmux_config_path" ]; then
-        envsubst <"$tmux_config_path" >"$tmux_destination_path"
-    fi
-
-}
+# replace environment variables and copy
+themes_path="$dotfiles_directory/.config/themes/theme.sh"
+source "$themes_path"
+envsubst <"$source_tmux_conf" >"$destination_tmux_conf"

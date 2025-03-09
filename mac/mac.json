@@ -1,4 +1,5 @@
 {
-  "dotfiles": [".vscode"],
+  "dotfiles": [".themes", ".tmux"],
+  "theme": "main",
   "install_homebrew": true
 }

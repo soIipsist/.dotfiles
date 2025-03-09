@@ -110,5 +110,10 @@ source_vscode_settings_path="$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/vscode_s
 destination_vscode_settings_path="$HOME/Library/Application Support/Code/User/settings.json"
 envsubst <"$source_vscode_settings_path" >"$destination_vscode_settings_path"
 
+# set tmux theme
+source_tmux_conf="$GIT_DOTFILES_DIRECTORY/mac/.tmux/tmux/.tmux.conf"
+destination_tmux_conf="$dotfiles_directory/.tmux.conf"
+envsubst <"$source_tmux_conf" >"$destination_tmux_conf"
+
 echo "Theme was changed to $THEME."
 echo "WALLPAPER_PATH: $WALLPAPER_PATH."
