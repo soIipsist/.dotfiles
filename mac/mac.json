@@ -1,5 +1,4 @@
 {
-  "dotfiles": [".themes", ".tmux"],
-  "theme": "main",
+  "dotfiles": [".zsh", ".tmux"],
   "install_homebrew": true
 }
