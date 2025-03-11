@@ -1,4 +1,4 @@
 {
-  "dotfiles": [".zsh", ".tmux"],
+  "dotfiles": [".vscode"],
   "install_homebrew": true
 }

@@ -74,7 +74,6 @@
   ],
 
   "workbench.colorCustomizations": {
-    "[Default Dark Modern]": {
     "activityBar.border": "$VSCODE_ACTIVITY_BAR_BORDER",
     "badge.background": "$VSCODE_BADGE_BACKGROUND",
     "editor.foreground": "$VSCODE_EDITOR_FOREGROUND",
@@ -87,10 +86,14 @@
     "sideBarSectionHeader.foreground": "$VSCODE_SIDEBAR_SECTION_HEADER_FOREGROUND",
     "statusBar.foreground": "$VSCODE_STATUSBAR_FOREGROUND",
     "statusBar.background": "$VSCODE_STATUSBAR_BACKGROUND",
-    "list.activeBackground": "$VSCODE_LIST_ACTIVE_BACKGROUND",
-    "list.inactiveSelectionBackground": "$VSCODE_LIST_INACTIVE_SELECTION_BACKGROUND"
-  }
+    "list.activeSelectionBackground": "$VSCODE_LIST_ACTIVE_SELECTION_BACKGROUND",
+    "list.inactiveSelectionBackground": "$VSCODE_LIST_INACTIVE_SELECTION_BACKGROUND",
+    "[Default Dark Modern]": {
+    
+  },
+  "[Tokyo Night Gogh]": {}
+
 },
-  "workbench.colorTheme": "Default Dark Modern"
+  "workbench.colorTheme": "$VSCODE_COLOR_THEME"
   
 }

@@ -110,6 +110,15 @@ source_vscode_settings_path="$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/vscode_s
 destination_vscode_settings_path="$HOME/Library/Application Support/Code/User/settings.json"
 envsubst <"$source_vscode_settings_path" >"$destination_vscode_settings_path"
 
+if [ -n "$VSCODE_COLOR_THEME" ]; then
+  jq --arg theme "$VSCODE_COLOR_THEME" '
+        ."workbench.colorCustomizations" |= 
+        { ($theme): with_entries(select(.key | startswith("[") | not)) }
+        + with_entries(select(.key | startswith("[") ))' "$destination_vscode_settings_path" >temp.json && mv temp.json "$destination_vscode_settings_path"
+fi
+# remove all empty keys
+jq 'del(.. | select(. == ""))' "$destination_vscode_settings_path" >temp.json && mv temp.json "$destination_vscode_settings_path"
+
 # set tmux theme
 source_tmux_conf="$GIT_DOTFILES_DIRECTORY/mac/.tmux/tmux/.tmux.conf"
 destination_tmux_conf="$dotfiles_directory/.tmux.conf"
