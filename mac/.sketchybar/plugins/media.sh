@@ -1,29 +1,38 @@
 #!/bin/bash
 
-echo "$INFO" >/tmp/debug.txt
-
 STATE="$(echo "$INFO" | jq -r '.state')"
 MEDIA="$(echo "$INFO" | jq -r '.title + " - " + .artist')"
 APPLICATION="$(echo "$INFO" | jq -r '.app')"
 
 if [ "$STATE" = "playing" ]; then
-    sketchybar --set media label="$MEDIA"
+    sketchybar --set media label="$MEDIA" icon="􀊖"
+
 elif [ "$STATE" = "paused" ]; then
-    sketchybar --set media label="$MEDIA"
+    sketchybar --set media label="$MEDIA" icon="􀊖"
 fi
 
-# check if music is open
-# APP_STATE="$(pgrep -x Music)"
+# check if Music app is open
+APP_MUSIC_STATE="$(pgrep -x Music)"
 
-# echo "$APP_STATE" >/tmp/debug.txt
-# PLAYER_STATE=$(osascript -e "tell application \"Music\" to set playerState to (get player state) as text")
-# if [[ $PLAYER_STATE == "stopped" ]]; then
-#     sketchybar --set music drawing=off
-#     exit 0
-# fi
+MUSIC_PLAYER_STATE=$(osascript -e "tell application \"Music\" to set playerState to (get player state) as text")
 
-# title=$(osascript -e 'tell application "Music" to get name of current track')
-# artist=$(osascript -e 'tell application "Music" to get artist of current track')
+echo "$MUSIC_PLAYER_STATE" >/tmp/debug.txt
+
+if [[ $MUSIC_PLAYER_STATE == "stopped" ]]; then
+    sketchybar --set music drawing=off
+
+elif [[ $MUSIC_PLAYER_STATE == "playing" ]]; then
+    title=$(osascript -e 'tell application "Music" to get name of current track')
+    artist=$(osascript -e 'tell application "Music" to get artist of current track')
+
+    MEDIA="$title"
+
+    if [[ -n "$artist" ]]; then
+        MEDIA="$MEDIA - $artist"
+    fi
+
+    sketchybar --set media label="$MEDIA" icon="􀊖"
+fi
 
 # store current application as an environment variable
 if [ -n "$APPLICATION" ]; then
