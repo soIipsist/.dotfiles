@@ -38,9 +38,9 @@ sketchybar --default \
 
 # -- Left Side Items --
 # aerospace spaces
+MUSIC_EVENT="com.apple.Music.playerInfo"
 sketchybar --add event aerospace_workspace_change
-# sketchybar --add event title_change
-# sketchybar --add event theme_change
+sketchybar --add event music_change "$MUSIC_EVENT"
 
 for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item space.$sid left \
@@ -145,7 +145,7 @@ sketchybar --add item media e \
     background.drawing=off \
     script="$PLUGIN_DIR/media.sh" \
     click_script="$PLUGIN_DIR/media_click.sh" \
-    --subscribe media media_change
+    --subscribe media media_change music_change
 
 # calendar
 sketchybar --add item calendar right \

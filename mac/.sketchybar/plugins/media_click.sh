@@ -1,17 +1,10 @@
-#!/bin/zsh
+#!/bin/bash
+APPLICATION=$(tail -n 1 /tmp/sketchybar_app.txt)
+# echo "app: $APPLICATION" >/tmp/debug.txt
 
-MEDIA_REGEX="Spotify|Music|VLC|QuickTime|IINA|YouTube"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# echo "MEDIA INFO: $INFO" >>/tmp/debug.txt
-
-CURRENT_MEDIA_APP=$(
-    aerospace list-windows --workspace focused --format '%{app-name}' |
-        grep -Ei "$MEDIA_REGEX" |
-        head -n 1
-)
-
-if [[ -z "$CURRENT_MEDIA_APP" ]]; then
-    CURRENT_MEDIA_APP="No media"
-fi
-
-sketchybar --set media label="$CURRENT_MEDIA_APP"
+case "$APPLICATION" in
+Google*) osascript $SCRIPT_DIR/chrome.scpt ;;
+*) ;;
+esac
