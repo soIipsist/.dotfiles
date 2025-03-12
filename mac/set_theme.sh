@@ -18,10 +18,9 @@ function set_autosuggest_color() {
 function export_theme() {
   theme_path="$1"
   icons_path="$(dirname $theme_path)/icons.json"
-
   theme_colors_path="$dotfiles_directory/.config/themes/theme.sh"
 
-  SELECTED_THEME="$(basename $theme_path .json)"
+  SELECTED_THEME="$theme_path"
 
   if [ ! -f "$theme_colors_path" ]; then
     touch "$theme_colors_path"
@@ -102,6 +101,7 @@ set_wallpaper "$WALLPAPER_PATH"
 set_autosuggest_color
 
 if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
+  # sketchybar --trigger
   source "$set_template_path" "$SKETCHYBAR_TEMPLATE"
 fi
 

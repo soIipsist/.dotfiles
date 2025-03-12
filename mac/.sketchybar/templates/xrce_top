@@ -120,11 +120,10 @@ for file in "$HOME/.config/themes"/*.json; do
     THEME_FILES+=("$file")
 done
 
-SELECTED_THEME_NAME=$(jq -r ".THEME_NAME" "${THEME_FILES[0]}")
-
-if [ -z "$SELECTED_THEME_NAME" ]; then
-    SELECTED_THEME_NAME="${THEME_FILES[0]}"
+if [ -z "$SELECTED_THEME" ]; then
+    SELECTED_THEME="${THEME_FILES[0]}"
 fi
+SELECTED_THEME_NAME=$(jq -r ".THEME_NAME" "$SELECTED_THEME")
 
 sketchybar --add item themes.logo left \
     --set themes.logo icon=$ICON_COLOR_MENU \

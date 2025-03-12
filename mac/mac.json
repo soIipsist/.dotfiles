@@ -1,4 +1,4 @@
 {
-  "dotfiles": [".vscode"],
+  "dotfiles": [".themes", ".sketchybar"],
   "install_homebrew": true
 }

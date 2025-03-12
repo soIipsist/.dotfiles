@@ -2,6 +2,8 @@
 
 MEDIA_REGEX="Spotify|Music|VLC|QuickTime|IINA|YouTube"
 
+# echo "MEDIA INFO: $INFO" >>/tmp/debug.txt
+
 CURRENT_MEDIA_APP=$(
     aerospace list-windows --workspace focused --format '%{app-name}' |
         grep -Ei "$MEDIA_REGEX" |
