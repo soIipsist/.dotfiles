@@ -2,6 +2,12 @@
   "editor.fontFamily": "$VSCODE_FONT_FAMILY",
   "editor.fontSize": $VSCODE_FONT_SIZE,
   "editor.fontLigatures": $VSCODE_FONT_LIGATURES,
+  "editor.minimap.enabled": true,
+  "editor.cursorSmoothCaretAnimation": "$VSCODE_CURSOR_SMOOTH_CARET_ANIMATION",
+  "editor.cursorBlinking": "$VSCODE_CURSOR_BLINKING",
+  "breadcrumbs.enabled": $VSCODE_BREADCRUMBS_ENABLED,
+  "workbench.sideBar.location": "$VSCODE_SIDEBAR_LOCATION",
+  "workbench.activityBar.location": "$VSCODE_ACTIVITY_BAR_LOCATION",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "explorer.fileNesting.patterns": {
     "*.ts": "${capture}.js",
@@ -95,5 +101,5 @@
 
 },
   "workbench.colorTheme": "$VSCODE_COLOR_THEME"
-  
+
 }
