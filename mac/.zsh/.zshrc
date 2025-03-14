@@ -118,3 +118,10 @@ bindkey -s ^f "tmux-sessionizer\n"  # Ctrl + F
 
 # zsh suggestions
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff"
+
+# tmux aliases
+alias t='tmux attach || tmux new-session'
+alias ta='tmux attach -t'
+alias tn='tmux new-session'
+alias tl='tmux list-sessions'
+alias tk='tmux kill-server'
