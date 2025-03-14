@@ -18,6 +18,18 @@ function cap() { tee /tmp/capture.out; }
 
 function ret() { cat /tmp/capture.out; }
 
+function sesh-sessions() {
+    {
+        exec </dev/tty
+        exec <&1
+        local session
+        session=$(sesh list -t -c | fzf --height 40% --reverse --border-label ' sesh ' --border --prompt '⚡  ')
+        zle reset-prompt >/dev/null 2>&1 || true
+        [[ -z "$session" ]] && return
+        sesh connect $session
+    }
+}
+
 # PATH variable
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
@@ -110,7 +122,9 @@ bindkey '^[u' up-case-word    # Alt + U
 zle -N repeat-last-command
 zle -N copy-line-to-keyboard
 zle -N copy-last-command-output
+zle -N sesh-sessions
 
+bindkey '^a' sesh-sessions          # Ctrl + A
 bindkey '^Xr' repeat-last-command   # Ctrl + X followed by R
 bindkey '^Xc' copy-line-to-keyboard # Ctrl + X followed by C
 bindkey -s '^Xo' "cpout\n"          # Ctrl + X followed by O

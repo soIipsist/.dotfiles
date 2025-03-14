@@ -1,4 +1,4 @@
 {
-  "dotfiles": [".zsh"],
+  "dotfiles": [".zsh", ".tmux"],
   "install_homebrew": true
 }
