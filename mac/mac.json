@@ -1,5 +1,4 @@
 {
-  "dotfiles": [".themes"],
-  "theme": "xrce",
+  "dotfiles": [".themes", ".sketchybar"],
   "install_homebrew": true
 }
