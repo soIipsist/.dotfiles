@@ -2,6 +2,7 @@ plugins=(
     zsh-autosuggestions
 )
 source $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source "$HOME/.config/themes/theme.sh"
 
 function repeat-last-command() {
@@ -36,8 +37,18 @@ export TERM=xterm-256color
 # tmux
 export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins/"
 
-# zoxide
-eval "$(zoxide init zsh)"
+# enable zsh's autocompletion system
+autoload -U compinit
+compinit
+
+# initialize zoxide
+if which zoxide &>/dev/null; then
+    source <(zoxide init zsh)
+fi
+
+# zsh completion settings
+zstyle ':completion:*' rehash true
+zstyle ':completion:*' menu select=2
 
 # YTDLP options
 export YTDLP_PATH="$HOME/ytdlp/yt-dlp_macos"
