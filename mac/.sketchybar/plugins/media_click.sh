@@ -1,16 +1,14 @@
 #!/bin/bash
+
+source "$HOME/.config/themes/theme.sh"
+
 APPLICATION=$(tail -n 1 /tmp/sketchybar_app.txt)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# echo "app: $APPLICATION" >/tmp/debug.txt
-if [ -z "$MUSIC_OPTION" ]; then
-    MUSIC_OPTION="ACTIVE_TAB"
-fi
-
 case "$MUSIC_OPTION" in
-MUSIC*) chrome_script="$SCRIPT_DIR/chrome.scpt" ;;
-ACTIVE*) chrome_script="$SCRIPT_DIR/chrome.scpt" ;;
-*) chrome_script="$SCRIPT_DIR/chrome.scpt" ;;
+FIRST*) chrome_script="$SCRIPT_DIR/chrome_first.scpt" ;;
+ACTIVE*) chrome_script="$SCRIPT_DIR/chrome_active.scpt" ;;
+*) chrome_script="$SCRIPT_DIR/chrome_music.scpt" ;;
 esac
 
 case "$APPLICATION" in
