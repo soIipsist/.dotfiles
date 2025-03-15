@@ -52,7 +52,7 @@ function Install-Dotfiles {
     param(
         [array]$Dotfiles = "all",
 
-        [array] $ExcludedScripts = @("WSLRestart.ps1")
+        [array] $ExcludedScripts = @("WSLRestart.ps1"),
 
         [string] $DotfilesDirectory = "$null"
     )
@@ -61,7 +61,7 @@ function Install-Dotfiles {
     if (-not $DotfilesDirectory){
         $DotfilesDirectory=[System.Environment]::GetFolderPath('UserProfile')
     }
-    
+
     Write-Host "Executing dotfile scripts..." -ForegroundColor Yellow
     foreach ($Directory in $DotfileDirectories) {
 
@@ -93,9 +93,16 @@ function Move-Dotfiles {
         $Dotfiles,
 
         [string]
-        $DestinationDirectory = [System.Environment]::GetFolderPath('UserProfile')
+        $DestinationDirectory = $null,
+
+        [string]
+        $DotfilesDirectory = [System.Environment]::GetFolderPath('UserProfile')
     )
     
+    if (-not $DestinationDirectory){
+        $DestinationDirectory = $DotfilesDirectory
+    }
+
     if ( -not (Test-Path -Path $DestinationDirectory)) {
         Write-Host "Destination path '$DestinationDirectory' does not exist."
         
@@ -107,8 +114,6 @@ function Move-Dotfiles {
 
     }
 
-
-
     foreach ($Dotfile in $Dotfiles) {
         if ($Dotfile.GetType().Name -eq "FileInfo") {
             $Dotfile = $Dotfile.FullName
@@ -118,8 +123,6 @@ function Move-Dotfiles {
             Copy-Item -Path $Dotfile -Destination $DestinationDirectory
             Write-Host "Copied $Dotfile to $DestinationDirectory" -ForegroundColor DarkBlue
         }
-    }
-
-    
+    }    
 
 }

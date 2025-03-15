@@ -21,4 +21,18 @@ if ($args.Count -gt 0){
     $Dotfiles = $args
 }
 
-Install-Dotfiles $Dotfiles
+$WindowsDataPath = Join-Path -Path $ParentDirectory -ChildPath "windows.json"
+$WindowsData = Get-Content -Path $WindowsDataPath -Raw | ConvertFrom-Json
+$WindowsData = Get-Default-Values-From-Json -WindowsData $WindowsData -DotfilesDirectory $ParentDirectory
+
+# windows settings
+$global:PCName = $WindowsData.pc_name
+
+# system env
+$global:UserProfilePath = [System.Environment]::GetFolderPath('UserProfile')
+$global:StartMenuPath = "$UserProfilePath\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
+$global:ProgramFilesPath = [System.Environment]::GetFolderPath('ProgramFiles')
+$global:ProgramFilesX86Path = [System.Environment]::GetFolderPath('ProgramFilesX86')
+
+
+Write-Host $PCName
