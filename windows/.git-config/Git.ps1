@@ -33,5 +33,4 @@ $Dotfiles = Get-Dotfiles $PSScriptRoot
 Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
 refreshenv;
 GitConfig -GitUserEmail $GitUserEmail -GitUserName $GitUserName
-Move-Dotfiles -Dotfiles $Dotfiles
 Write-Host "Git was successfully configured." -ForegroundColor Green;

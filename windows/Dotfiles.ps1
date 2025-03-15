@@ -53,24 +53,35 @@ function Install-Dotfiles {
         [array]$Dotfiles = "all",
 
         [array] $ExcludedScripts = @("WSLRestart.ps1")
+
+        [string] $DotfilesDirectory = "$null"
     )
     $DotfileDirectories = Get-Dotfile-Directories -Dotfiles $Dotfiles
 
+    if (-not $DotfilesDirectory){
+        $DotfilesDirectory=[System.Environment]::GetFolderPath('UserProfile')
+    }
+    
     Write-Host "Executing dotfile scripts..." -ForegroundColor Yellow
     foreach ($Directory in $DotfileDirectories) {
 
+        # execute dotfile scripts first
         $Scripts = Get-Dotfile-Scripts $Directory
     
         foreach ($Script in $Scripts) {
             $ScriptName = $Script.FullName
 
             if ($Script.Name -in $ExcludedScripts) {
-                Write-Host $Script.Name 
+                Write-Host "Script was excluded: '$ScriptName'"
             }
             else {
                 Invoke-Expression "& $ScriptName"
             }
         }
+        
+        $Dotfiles = Get-Dotfiles $Directory
+        Move-Dotfiles -Dotfiles $Dotfiles -DestinationDirectory $DestinationDirectory
+       
     }
 
 

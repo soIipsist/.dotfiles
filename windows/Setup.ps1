@@ -1,5 +1,4 @@
 # Include files
- 
 
 $ParentDirectory = $PSScriptRoot
 $HelpersPath = Join-Path -Path $ParentDirectory -ChildPath "Helpers.ps1"
@@ -21,8 +20,6 @@ $PackagesPath = Join-Path -Path $ParentDirectory -ChildPath "Packages.ps1"
 if ($args.Count -gt 0){
     $Dotfiles = $args
 }
-Write-Host $Dotfiles
-
 
 # Set-PC-Name -PCName $PCName
 # Set-Product-Key -ProductKey $ProductKey
@@ -52,7 +49,7 @@ Write-Host $Dotfiles
 # Install-Packages -Packages $PipPackages -PackageProvider "pip" -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $WindowsPackages -PackageProvider "windows" -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $WSLPackages -PackageProvider "wsl" -UninstallPackages $UninstallPackages
-# Install-Dotfiles $Dotfiles
+Install-Dotfiles $Dotfiles
 
 # Set-Windows-Shortcuts -Shortcuts $Shortcuts
 # Remove-Desktop-Shortcuts -RemoveDesktopShortcuts $RemoveDesktopShortcuts

@@ -6,7 +6,7 @@ os=$(get_os)
 echo "Running on $os..."
 
 if [[ "$os" == "windows" ]]; then
-    script_path="$os/Setup.ps1"
+    script_path="$os/Test.ps1"
     dotfiles=("$@")
 
     

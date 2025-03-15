@@ -13,5 +13,4 @@ $DestinationDirectory = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8w
 
 
 Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
-Move-Dotfiles -Dotfiles $Dotfiles -DestinationDirectory $DestinationDirectory
 Write-Host "Windows Terminal was successfully configured." -ForegroundColor Green;

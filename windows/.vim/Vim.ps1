@@ -35,3 +35,4 @@ Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
 refreshenv;
 Install-VimPlug
 VimConfig
+$DestinationDirectory=""
