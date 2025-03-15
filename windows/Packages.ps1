@@ -9,7 +9,7 @@ function Install-Packages {
         [array] 
         $Params = @(),
 
-        $UninstallPackages
+        $UninstallPackages = $null
 
     )
 

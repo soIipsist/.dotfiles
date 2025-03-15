@@ -34,3 +34,4 @@ Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
 refreshenv;
 GitConfig -GitUserEmail $GitUserEmail -GitUserName $GitUserName
 Write-Host "Git was successfully configured." -ForegroundColor Green;
+$DestinationDirectory="$env:USERPROFILE\temp"
