@@ -56,7 +56,13 @@ function Replace-Root {
 
     # Ensure the value starts with '/' before replacing
     if ($Value -match "^/") {
-        return "$RootPath$Value"
+        $RootPath =  Join-Path -Path $RootPath -ChildPath "$Value"
+        return "$RootPath"
+    }
+
+    if ($Value -match "^\\") {
+        $RootPath =  Join-Path -Path $RootPath -ChildPath "$Value"
+        return "$RootPath"
     }
 
     return $Value

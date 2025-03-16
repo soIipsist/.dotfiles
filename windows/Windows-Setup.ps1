@@ -268,9 +268,13 @@ function Set-Wallpaper {
         [string] $WallpaperPath
     )
 
-    if (!$WallpaperPath -or !(Test-Path -Path $WallpaperPath)) {
-        Write-Host "Path does not exist." -ForegroundColor Red
-        return;
+    if (-not $WallpaperPath){
+        return 
+    }
+
+    if (-not (Test-Path -Path $WallpaperPath)) {
+        Write-Host "Wallpaper path $WallpaperPath does not exist." -ForegroundColor Red
+        return
     }
 
     Set-ItemProperty -Path "HKCU:Control Panel\Desktop" -Name WallPaper -Value $WallpaperPath
@@ -283,9 +287,13 @@ function Set-Lockscreen {
     param(
         [string] $LockscreenPath
     )
+    
+    if (-not $LockscreenPath){
+        return 
+    }
 
-    if (!$LockscreenPath -or !(Test-Path -Path $LockscreenPath)) {
-        Write-Host "Path does not exist." -ForegroundColor Red
+    if (-not (Test-Path -Path $LockscreenPath)) {
+        Write-Host "Lockscreen path $LockscreenPath does not exist." -ForegroundColor Red
         return;
     }
 
@@ -301,8 +309,7 @@ function Set-Lockscreen {
     reg.exe add $RegPath /f
     New-ItemProperty -Path "Registry::$RegPath" -Name $RegName -Value $LockscreenPath -PropertyType String -Force
     
-
-    Write-Host "Successfully set wallpaper to $LockscreenPath." -ForegroundColor Green
+    Write-Host "Successfully set lockscreen to $LockscreenPath." -ForegroundColor Green
 }
 
 [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing") 

@@ -99,7 +99,7 @@ Set-Product-Key -ProductKey $ProductKey
 # Set-Show-File-Extensions -ShowFileExtensions $ShowFileExtensions
 # Set-Classic-ContextMenu -ClassicContextMenu $ClassicContextMenu
 # Enable-Microsoft-Office -ActivateOffice $ActivateOffice
-# Set-Wallpaper -WallpaperPath $WallpaperPath
+Set-Wallpaper -WallpaperPath $WallpaperPath
 # Set-Lockscreen -LockscreenPath $LockscreenPath
 # Install-Fonts $FontsDirectory
 # Set-Power-Configuration -DiskTimeoutAC $DiskTimeoutAC -DiskTimeoutDC $DiskTimeoutDC -HibernateTimeoutAC $HibernateTimeoutAC -HibernateTimeoutDC $HibernateTimeoutDC -StandbyTimeoutAC $StandbyTimeoutAC -StandbyTimeoutDC $StandbyTimeoutDC -MonitorTimeoutAC $MonitorTimeoutAC -MonitorTimeoutDC $MonitorTimeoutDC -LockscreenTimeoutAC $LockscreenTimeoutAC -LockscreenTimeoutDC $LockscreenTimeoutDC
