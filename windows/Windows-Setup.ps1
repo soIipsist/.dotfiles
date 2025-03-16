@@ -3,7 +3,7 @@ function Set-PC-Name {
         [string]$PCName
     )
 
-    if (!$PCName) {
+    if (-not $PCName) {
         return
     }
     
@@ -479,4 +479,19 @@ function Reboot {
         Restart-Computer;
     }
 
+}
+
+
+function Set-Windows-Timezone {
+    param (
+        [string] $Timezone = $null
+    )
+
+    if (-not $Timezone){
+        return
+    }
+
+    Write-Host "Setting timezone to $Timezone."
+    Set-TimeZone $Timezone
+    Get-TimeZone
 }

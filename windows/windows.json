@@ -1,4 +1,3 @@
 {
-  "pc_name": "$ENV_VAR",
   "dotfiles": [".git-config", ".bash"]
 }

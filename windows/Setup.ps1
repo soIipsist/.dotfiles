@@ -91,8 +91,8 @@ if ($args.Count -gt 0){
     $Dotfiles = $args
 }
 
-# Set-PC-Name -PCName $PCName
-# Set-Product-Key -ProductKey $ProductKey
+Set-PC-Name -PCName $PCName
+Set-Product-Key -ProductKey $ProductKey
 # Set-Windows-Features -Enable $true -Features $EnabledFeatures
 # Set-Windows-Features -Enable $false -Features $DisabledFeatures
 # Set-FileExplorer-StartFolder -FileExplorerStartFolder $FileExplorerStartFolder
@@ -105,9 +105,7 @@ if ($args.Count -gt 0){
 # Set-Power-Configuration -DiskTimeoutAC $DiskTimeoutAC -DiskTimeoutDC $DiskTimeoutDC -HibernateTimeoutAC $HibernateTimeoutAC -HibernateTimeoutDC $HibernateTimeoutDC -StandbyTimeoutAC $StandbyTimeoutAC -StandbyTimeoutDC $StandbyTimeoutDC -MonitorTimeoutAC $MonitorTimeoutAC -MonitorTimeoutDC $MonitorTimeoutDC -LockscreenTimeoutAC $LockscreenTimeoutAC -LockscreenTimeoutDC $LockscreenTimeoutDC
 # Set-Regional-Format -FirstDayOfWeek $FirstDayOfWeek -ShortDate $ShortDate -LongDate $LongDate -ShortTime $ShortTime -TimeFormat $TimeFormat
 
-# if ($Timezone) {
-#     Set-TimeZone $Timezone
-# }
+Set-Windows-Timezone $Timezone
 
 # Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
 
