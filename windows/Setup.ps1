@@ -100,7 +100,7 @@ Set-Product-Key -ProductKey $ProductKey
 # Set-Classic-ContextMenu -ClassicContextMenu $ClassicContextMenu
 # Enable-Microsoft-Office -ActivateOffice $ActivateOffice
 Set-Wallpaper -WallpaperPath $WallpaperPath
-# Set-Lockscreen -LockscreenPath $LockscreenPath
+Set-Lockscreen -LockscreenPath $LockscreenPath
 # Install-Fonts $FontsDirectory
 # Set-Power-Configuration -DiskTimeoutAC $DiskTimeoutAC -DiskTimeoutDC $DiskTimeoutDC -HibernateTimeoutAC $HibernateTimeoutAC -HibernateTimeoutDC $HibernateTimeoutDC -StandbyTimeoutAC $StandbyTimeoutAC -StandbyTimeoutDC $StandbyTimeoutDC -MonitorTimeoutAC $MonitorTimeoutAC -MonitorTimeoutDC $MonitorTimeoutDC -LockscreenTimeoutAC $LockscreenTimeoutAC -LockscreenTimeoutDC $LockscreenTimeoutDC
 # Set-Regional-Format -FirstDayOfWeek $FirstDayOfWeek -ShortDate $ShortDate -LongDate $LongDate -ShortTime $ShortTime -TimeFormat $TimeFormat

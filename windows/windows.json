@@ -1,4 +1,5 @@
 {
   "dotfiles": [".git-config", ".bash"],
-  "wallpaper_path": "C:\\Users\\p\\Desktop\\repos\\.dotfiles\\wallpapers\\diane.jpg"
+  "wallpaper_path": "C:\\Users\\p\\Desktop\\repos\\.dotfiles\\wallpapers\\diane.jpg",
+  "lockscreen_path": "/wallpapers/diane.jpg"
 }
