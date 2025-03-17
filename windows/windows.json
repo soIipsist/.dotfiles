@@ -1,4 +1,13 @@
 {
   "dotfiles": [".git-config", ".bash"],
-  "package_providers": "all"
+  "chocolatey_packages": ["7zip", "winrar"],
+  "scoop_packages": ["main/adb", "aircrack-ng"],
+  "pip_packages": [],
+  "winget_packages": [
+    "Microsoft.PowerToys",
+    "Microsoft.WindowsTerminal",
+    "Microsoft.VisualStudioCode"
+  ],
+  "wsl_packages": ["tmux"],
+  "windows_packages": []
 }

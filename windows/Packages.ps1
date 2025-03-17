@@ -69,7 +69,13 @@ function Install-Packages {
         }
     
         if ($Command) {
-            Invoke-Expression $Command
+            try {
+                Invoke-Expression $Command
+            }
+            catch {
+                Write-Host "Error installing $Package." -ForegroundColor Red
+            }
+            
         }
     
     }

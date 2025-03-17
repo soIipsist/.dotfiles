@@ -106,13 +106,12 @@ Write-Host $WindowsData
 # Set-Regional-Format -FirstDayOfWeek $FirstDayOfWeek -ShortDate $ShortDate -LongDate $LongDate -ShortTime $ShortTime -TimeFormat $TimeFormat
 # Install-PackageProviders -PackageProviders $PackageProviders
 
-# Install-Packages -Packages $PackageData -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $ChocolateyPackages -PackageProvider "choco" -UninstallPackages $UninstallPackages
-# Install-Packages -Packages $ScoopPackages -PackageProvider "scoop" -UninstallPackages $UninstallPackages
+Install-Packages -Packages $ScoopPackages -PackageProvider "scoop" -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $WingetPackages -PackageProvider "winget" -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $PipPackages -PackageProvider "pip" -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $WindowsPackages -PackageProvider "windows" -UninstallPackages $UninstallPackages
-# Install-Packages -Packages $WSLPackages -PackageProvider "wsl" -UninstallPackages $UninstallPackages
+Install-Packages -Packages $WSLPackages -PackageProvider "wsl" -UninstallPackages $UninstallPackages
 # Install-Dotfiles $Dotfiles
 # Set-Windows-Shortcuts -Shortcuts $Shortcuts
 # Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables

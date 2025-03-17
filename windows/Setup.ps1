@@ -110,12 +110,11 @@ Set-Windows-Timezone $Timezone
 # Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
 
 # Install-PackageProviders -PackageProviders $PackageProviders
-# Install-Packages -Packages $PackageData -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $ChocolateyPackages -PackageProvider "choco" -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $ScoopPackages -PackageProvider "scoop" -UninstallPackages $UninstallPackages
+# Install-Packages -Packages $WindowsPackages -PackageProvider "windows" -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $WingetPackages -PackageProvider "winget" -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $PipPackages -PackageProvider "pip" -UninstallPackages $UninstallPackages
-# Install-Packages -Packages $WindowsPackages -PackageProvider "windows" -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $WSLPackages -PackageProvider "wsl" -UninstallPackages $UninstallPackages
 # Install-Dotfiles $Dotfiles
 
