@@ -1,4 +1,3 @@
 {
-  "dotfiles": [".git-config", ".bash"],
-  "disk_timeout_ac": "0"
+  "dotfiles": [".git-config", ".bash"]
 }

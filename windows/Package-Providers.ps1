@@ -37,31 +37,63 @@ function  Install-Chocolatey {
 }
 
 function Install-Scoop {
-
-    if (-not(Get-Command scoop -ErrorAction SilentlyContinue)) {
-        
-        Write-Host "Installing Scoop as package provider:" -ForegroundColor Green
-        Invoke-Expression "& {$(Invoke-RestMethod get.scoop.sh)} -RunAsAdmin"
-    }
-
-
+    # Check if Git is installed
     if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
-        $GitPath = Join-Path -Path $PSScriptRoot -ChildPath "/.git-config/Git.ps1"
-        Invoke-Expression "& $GitPath"
+        Write-Host "git was not found on your system, please install and try again." -ForegroundColor Red
+        return
     }
-    # add more buckets here
-    scoop bucket add main
-    scoop bucket add extras
-    scoop bucket add versions
-    scoop bucket add nirsoft
-    scoop bucket add sysinternals
-    scoop bucket add php
-    scoop bucket add nerd-fonts
-    scoop bucket add nonportable
-    scoop bucket add java
-    scoop bucket add games
+    
+    # Check if Scoop is already installed
+    if (-not(Get-Command scoop -ErrorAction SilentlyContinue)) {
+        Write-Host "Scoop is not installed. Installing Scoop in non-elevated PowerShell..." -ForegroundColor Green
+        try {
+            # Start a new non-elevated PowerShell process to install Scoop
+            $script = {
+                # Install Scoop in the current user profile (non-elevated)
+                Invoke-Expression $(Invoke-RestMethod 'https://get.scoop.sh')
+                Write-Host "Scoop installation command was issued successfully." -ForegroundColor Green
+                 
+                $buckets = @('main', 'extras', 'versions', 'nirsoft', 'sysinternals', 'php', 'nerd-fonts', 'nonportable', 'java', 'games')
 
-    Write-Host "Scoop was successfully installed." -ForegroundColor Yellow
+                foreach ($bucket in $buckets) {
+                    if (-not (scoop bucket list | Select-String -Pattern $bucket)) {
+                        Write-Host "Adding $bucket bucket..." -ForegroundColor Green
+                        scoop bucket add $bucket
+                    } else {
+                        Write-Host "$bucket bucket is already added." -ForegroundColor Green
+                    }
+                }
+            }
+
+            # Convert the script block to a string to be passed as an argument
+            $scriptString = $script.ToString()
+
+            $apppath = "powershell.exe"
+            $taskname = "Launch Scoop Installation"
+
+            # Check if the task already exists and delete it to avoid duplication
+            if (Get-ScheduledTask -TaskName $taskname -ErrorAction SilentlyContinue) {
+                Unregister-ScheduledTask -TaskName $taskname -Confirm:$false
+            }
+
+            # Create the scheduled task action with the script to execute
+            $action = New-ScheduledTaskAction -Execute $apppath -Argument "-NoProfile -NoExit -ExecutionPolicy Bypass -Command $scriptString"
+            $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date)
+            Register-ScheduledTask -Action $action -Trigger $trigger -TaskName $taskname | Out-Null
+            Start-ScheduledTask -TaskName $taskname
+            Start-Sleep -s 1
+            Unregister-ScheduledTask -TaskName $taskname -Confirm:$false
+            Install-Scoop-Buckets
+
+        } catch {
+            Write-Host "An error occurred while installing Scoop. Ensure you have permission to install software." -ForegroundColor Red
+            return
+        }
+    } else {
+        Write-Host "Scoop is already installed." -ForegroundColor Green
+    }
+
+    Write-Host "Scoop and buckets were successfully installed and configured." -ForegroundColor Green
 }
 
 
