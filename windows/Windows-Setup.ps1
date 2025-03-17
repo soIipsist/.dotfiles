@@ -159,8 +159,8 @@ function Set-FileExplorer-StartFolder {
         $FileExplorerStartFolder
     )
 
-    if (!$FileExplorerStartFolder) {
-        return;
+    if (-not $FileExplorerStartFolder) {
+        return
     }
     Write-Host "Start folder of Windows File Explorer value: $FileExplorerStartFolder" -ForegroundColor Green;
 
@@ -241,7 +241,7 @@ function Enable-Microsoft-Office {
         $ActivateOffice = $false
     )
 
-    if (!$ActivateOffice) {
+    if (-not $ActivateOffice) {
         return;
     }
 
@@ -319,7 +319,7 @@ function Install-Fonts {
         [string] $FontsDirectory
     )
     
-    if (!$FontsDirectory) {
+    if (-not $FontsDirectory) {
         return
     }
 
