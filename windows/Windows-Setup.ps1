@@ -323,13 +323,15 @@ function Install-Fonts {
         return
     }
 
+    if (-not (Test-Path $FontsDirectory)){
+        Write-Host "Fonts directory $FontsDirectory does not exist." -ForegroundColor Red
+        return 
+    }
+
     $Fonts = (New-Object -ComObject Shell.Application).Namespace(0x14)
     $FontCollection = New-Object System.Drawing.Text.PrivateFontCollection
     $InstalledFonts = (New-Object System.Drawing.Text.InstalledFontCollection).Families
-
-
     $FontFiles = Get-All-Files-In-Paths $FontsDirectory -Filter "*.ttf"
-    
     
     foreach ($File in $FontFiles) {
         $FileName = $File.FullName
@@ -339,92 +341,89 @@ function Install-Fonts {
         if ($FontFamily -notin $InstalledFonts) {
             Write-Host "Installing $FontFamily..." -ForegroundColor Green   
             Get-ChildItem $FileName | ForEach-Object { $fonts.CopyHere($_.fullname) }
+        }else{
+            Write-Host "$FontFamily already installed" -ForegroundColor Green
         }
         
     }
-    
 
 }
 
 function Set-Power-Configuration {
     param(       
-        $DiskTimeoutAC = 0,
-
-    
-        $DiskTimeoutDC = 0,
-
-        
-        $HibernateTimeoutAC = 0,
-        
-    
-        $HibernateTimeoutDC = 0,
-
-    
-        $StandbyTimeoutAC = 0,
-
-    
-        $StandbyTimeoutDC = 0,
-
-        
-        $MonitorTimeoutAC = 0,
-
-        
-        $MonitorTimeoutDC = 0,
-
-        
-        $LockscreenTimeoutAC = 0,
-
-    
-        $LockscreenTimeoutDC = 0
-        
+        $DiskTimeoutAC ,
+        $DiskTimeoutDC ,
+        $HibernateTimeoutAC ,
+        $HibernateTimeoutDC ,
+        $StandbyTimeoutAC ,
+        $StandbyTimeoutDC ,
+        $MonitorTimeoutAC ,
+        $MonitorTimeoutDC ,
+        $LockscreenTimeoutAC ,
+        $LockscreenTimeoutDC 
     )
-
-    $variables = @(
-        "DiskTimeoutAC",
-        "DiskTimeoutDC",
-        "HibernateTimeoutAC",
-        "HibernateTimeoutDC",
-        "StandbyTimeoutAC",
-        "StandbyTimeoutDC",
-        "MonitorTimeoutAC",
-        "MonitorTimeoutDC",
-        "LockscreenTimeoutAC",
-        "LockscreenTimeoutDC"
-    )
-
-    foreach ($var in $variables) {
-        if ($null -eq (Get-Variable -Name $var -ValueOnly)) {
-            Set-Variable -Name $var -Value 0
-        }
-    }
-
 
     # AC: Alternating Current (Wall socket).
     # DC: Direct Current (Battery).
 
     # Set turn off disk timeout (in minutes / 0: never)
-    powercfg -change "disk-timeout-ac" $DiskTimeoutAC;
-    powercfg -change "disk-timeout-dc" $DiskTimeoutDC;
+    if ($DiskTimeoutAC){
+        powercfg -change "disk-timeout-ac" $DiskTimeoutAC;
+        Write-Host "DiskTimeoutAC was set to $DiskTimeoutAC." -ForegroundColor Green;
+    }
+    
+    if ($DiskTimeoutDC){
+        powercfg -change "disk-timeout-dc" $DiskTimeoutDC;
+        Write-Host "DiskTimeoutDC was set to $DiskTimeoutDC." -ForegroundColor Green;
+    }
 
     # Set hibernate timeout (in minutes / 0: never)
-    powercfg -change "hibernate-timeout-ac" $HibernateTimeoutAC;
-    powercfg -change "hibernate-timeout-dc" $HibernateTimeoutDC;
+    if ($HibernateTimeoutAC){
+        powercfg -change "hibernate-timeout-ac" $HibernateTimeoutAC;
+        Write-Host "HibernateTimeoutAC was set to $HibernateTimeoutAC." -ForegroundColor Green;
+    }
 
+    if ($HibernateTimeoutDC){
+        powercfg -change "hibernate-timeout-dc" $HibernateTimeoutDC;
+        Write-Host "HibernateTimeoutDC was set to $HibernateTimeoutDC." -ForegroundColor Green;
+    }
+    
     # Set sleep timeout (in minutes / 0: never)
-    powercfg -change "standby-timeout-ac" $StandbyTimeoutAC;
-    powercfg -change "standby-timeout-dc" $StandbyTimeoutDC;
+    if ($StandbyTimeoutAC){
+        powercfg -change "standby-timeout-ac" $StandbyTimeoutAC;
+        Write-Host "StandbyTimeoutAC was set to $StandbyTimeoutAC." -ForegroundColor Green;
+    }
 
+    if ($StandbyTimeoutDC){
+        powercfg -change "standby-timeout-dc" $StandbyTimeoutDC;
+        Write-Host "StandbyTimeoutDC was set to $StandbyTimeoutDC." -ForegroundColor Green;
+    }
+    
     # Set turn off screen timeout (in minutes / 0: never)
-    powercfg -change "monitor-timeout-ac" $MonitorTimeoutAC;
-    powercfg -change "monitor-timeout-dc" $MonitorTimeoutDC;
+    if ($MonitorTimeoutAC){
+        powercfg -change "monitor-timeout-ac" $MonitorTimeoutAC;
+        Write-Host "MonitorTimeoutAC was set to $MonitorTimeoutAC." -ForegroundColor Green;
+    }
 
+    if ($MonitorTimeoutDC){
+        powercfg -change "monitor-timeout-dc" $MonitorTimeoutDC;
+        Write-Host "MonitorTimeoutDC was set to $MonitorTimeoutDC." -ForegroundColor Green;
+    }
+   
     # Set turn off screen timeout on lock screen (in seconds / 0: never)
-    powercfg /SETACVALUEINDEX SCHEME_CURRENT SUB_VIDEO VIDEOCONLOCK $LockscreenTimeoutAC;
-    powercfg /SETDCVALUEINDEX SCHEME_CURRENT SUB_VIDEO VIDEOCONLOCK $LockscreenTimeoutDC;
+    if ($LockscreenTimeoutAC){
+        powercfg /SETACVALUEINDEX SCHEME_CURRENT SUB_VIDEO VIDEOCONLOCK $LockscreenTimeoutAC;
+        Write-Host "LockscreenTimeoutAC was set to $LockscreenTimeoutAC." -ForegroundColor Green;
+    }
+    
+    if ($LockscreenTimeoutDC){
+        powercfg /SETDCVALUEINDEX SCHEME_CURRENT SUB_VIDEO VIDEOCONLOCK $LockscreenTimeoutDC;
+        Write-Host "LockscreenTimeoutDC was set to $LockscreenTimeoutDC." -ForegroundColor Green;
+    }
+    
     powercfg /SETACTIVE SCHEME_CURRENT;
-
-    Write-Host "Power plan successfully updated." -ForegroundColor Green;
 }
+
 
 
 function Set-Regional-Format {
@@ -459,12 +458,10 @@ function Set-Regional-Format {
 
         if (-not($null -eq $Var)) {
             $RegValue = $RegistryValues[$i]
-            Write-Host "Successfully set registry value '$RegValue' to '$Var'"
+            Write-Host "Successfully set registry value '$RegValue' to '$Var'" -ForegroundColor Green
             Set-ItemProperty -Path $RegPath -Name $RegValue -Value $Var;
-        }         
+        }
     }
-
-    Write-Host "Regional format successfully updated." -ForegroundColor Green;
 }
 
 function Reboot {

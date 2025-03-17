@@ -1,4 +1,4 @@
 {
   "dotfiles": [".git-config", ".bash"],
-  "wallpaper_path": "/wallpapers/diane.jpg"
+  "disk_timeout_ac": "0"
 }
