@@ -1,13 +1,16 @@
 {
   "dotfiles": [".git-config", ".bash"],
-  "chocolatey_packages": ["7zip", "winrar"],
-  "scoop_packages": ["main/adb", "aircrack-ng"],
-  "pip_packages": [],
-  "winget_packages": [
-    "Microsoft.PowerToys",
-    "Microsoft.WindowsTerminal",
-    "Microsoft.VisualStudioCode"
-  ],
-  "wsl_packages": ["tmux"],
-  "windows_packages": []
+  "chocolatey_packages": ["sqlitebrowser"],
+  "shortcuts": [
+    {
+      "description": "Launch SQLite",
+      "hotkey": "Ctrl+SHIFT+S",
+      "target_path": "C:/Program Files/DB Browser for SQLite/DB Browser for SQLite.exe"
+    },
+    {
+      "description": "Launch Word",
+      "hotkey": "Ctrl+SHIFT+W",
+      "target_path": "C:/Program Files/Microsoft Office/root/Office16/WINWORD.EXE"
+    }
+  ]
 }

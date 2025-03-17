@@ -86,24 +86,31 @@ function Set-Windows-Shortcuts {
         $Hotkey = $shortcut.hotkey
         $Description = $shortcut.description
 
-        if (!$TargetPath -or -not (Test-Path -Path $TargetPath)) {
-            Write-Host "Invalid target path."
-            return
+        try{
+            
+            if (!$TargetPath -or -not (Test-Path -Path $TargetPath)) {
+                Write-Host "Invalid target path."
+                return
+            }
+
+            $ApplicationName = $TargetPath -replace '.*/([^/]+)\.exe$', '$1'
+            $ShortcutPath = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\$ApplicationName.lnk"
+            
+            if (!$Description) {
+                $Description = "Launch $ApplicationName"
+            }
+            
+            $CreatedShortcut = $shell.CreateShortCut($ShortcutPath)
+            $CreatedShortcut.Description = $Description
+            $CreatedShortcut.TargetPath = $TargetPath
+            $CreatedShortcut.HotKey = $Hotkey
+            $CreatedShortcut.Save()
+            Write-Host "$Hotkey was set for $TargetPath." -ForegroundColor Green
         }
-
-        $ApplicationName = $TargetPath -replace '.*/([^/]+)\.exe$', '$1'
-        $ShortcutPath = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\$ApplicationName.lnk"
-        
-        if (!$Description) {
-            $Description = "Launch $ApplicationName"
-        }
-
-        $CreatedShortcut = $shell.CreateShortCut($ShortcutPath)
-        $CreatedShortcut.Description = $Description
-        $CreatedShortcut.TargetPath = $TargetPath
-        $CreatedShortcut.HotKey = $Hotkey
-        $CreatedShortcut.Save()
-
+        catch {
+            Write-Host "Could not set shortcut key $Hotkey to $TargetPath." -ForegroundColor Red
+        } 
+     
     }
     
 }
@@ -221,7 +228,7 @@ function Remove-Desktop-Shortcuts {
         $RemoveDesktopShortcuts = $false
     )
      
-    if (!$RemoveDesktopShortcuts) {
+    if (-not $RemoveDesktopShortcuts) {
         return
     }
     
