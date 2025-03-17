@@ -104,8 +104,8 @@ Write-Host $WindowsData
 # Install-Fonts $FontsDirectory
 # Set-Power-Configuration -DiskTimeoutAC $DiskTimeoutAC -DiskTimeoutDC $DiskTimeoutDC -HibernateTimeoutAC $HibernateTimeoutAC -HibernateTimeoutDC $HibernateTimeoutDC -StandbyTimeoutAC $StandbyTimeoutAC -StandbyTimeoutDC $StandbyTimeoutDC -MonitorTimeoutAC $MonitorTimeoutAC -MonitorTimeoutDC $MonitorTimeoutDC -LockscreenTimeoutAC $LockscreenTimeoutAC -LockscreenTimeoutDC $LockscreenTimeoutDC
 # Set-Regional-Format -FirstDayOfWeek $FirstDayOfWeek -ShortDate $ShortDate -LongDate $LongDate -ShortTime $ShortTime -TimeFormat $TimeFormat
-# Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
 # Install-PackageProviders -PackageProviders $PackageProviders
+
 # Install-Packages -Packages $PackageData -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $ChocolateyPackages -PackageProvider "choco" -UninstallPackages $UninstallPackages
 # Install-Packages -Packages $ScoopPackages -PackageProvider "scoop" -UninstallPackages $UninstallPackages
@@ -115,7 +115,6 @@ Write-Host $WindowsData
 # Install-Packages -Packages $WSLPackages -PackageProvider "wsl" -UninstallPackages $UninstallPackages
 # Install-Dotfiles $Dotfiles
 # Set-Windows-Shortcuts -Shortcuts $Shortcuts
+# Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
 # Remove-Desktop-Shortcuts -RemoveDesktopShortcuts $RemoveDesktopShortcuts
 # Reboot -Reboot $Reboot -RebootTime $RebootTime
-
-Install-Scoop

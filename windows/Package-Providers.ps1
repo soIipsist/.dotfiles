@@ -90,7 +90,7 @@ function Install-Scoop {
             return
         }
     } else {
-        Write-Host "Scoop is already installed." -ForegroundColor Green
+        Write-Host "Scoop is already installed." -ForegroundColor Yellow
     }
 
     Write-Host "Scoop and buckets were successfully installed and configured." -ForegroundColor Green
@@ -109,6 +109,7 @@ function Install-Provider {
         "winget" { Install-Winget }
         "scoop" { Install-Scoop }
         "nuget" { Install-Nuget }
+        "" {}
         Default { "Invalid package provider name: $PackageProviderName" }
     }
 
@@ -118,14 +119,11 @@ function Install-PackageProviders {
     param(
         $PackageProviders = @()
     )
-    if ($null -eq $PackageProviders) {
-        $PackageProviders = 'all'
-    }
 
     if ($PackageProviders -eq 'all') {
         $PackageProviders = @('chocolatey', 'winget', 'scoop', 'nuget') 
     }
-    Write-Host "$PackageProviders"
+
     foreach ($Provider in $PackageProviders) {
         Install-Provider -PackageProviderName $Provider
     }
