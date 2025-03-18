@@ -1,16 +1,14 @@
 
-. "../windows/Dotfiles.ps1"
-
 $Dotfiles = Get-Dotfiles $PSScriptRoot
 
 $WindowsTerminalPackage = [PSCustomObject]@{
-    Name   = 'microsoft-windows-terminal'
+    Name   = 'Microsoft.WindowsTerminal'
     Params = @()
 }
 
 $Packages = @($WindowsTerminalPackage)
-$DestinationDirectory = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
+$global:DestinationDirectory = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
 
 
-Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
+Install-Packages -Packages $Packages -PackageProvider "winget" -UninstallPackages $UninstallPackages
 Write-Host "Windows Terminal was successfully configured." -ForegroundColor Green;

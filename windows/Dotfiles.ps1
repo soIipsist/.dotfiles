@@ -124,7 +124,7 @@ function Move-Dotfiles {
             $fileName = [System.IO.Path]::GetFileName($Dotfile)
             $destinationPath = Join-Path -Path $DestinationDirectory -ChildPath $fileName
 
-            Copy-Item -Path $Dotfile -Destination $destinationPath
+            Copy-Item -Path $Dotfile -Destination $destinationPath -Force
             Write-Host "Copied $Dotfile to $destinationPath" -ForegroundColor DarkBlue
         }
     }
