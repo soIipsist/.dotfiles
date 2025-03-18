@@ -1,13 +1,14 @@
 # Include files
 
-$ParentDirectory = $PSScriptRoot
-$HelpersPath = Join-Path -Path $ParentDirectory -ChildPath "Helpers.ps1"
-$RegistryPath = Join-Path -Path $ParentDirectory -ChildPath "Registry.ps1"
-$DotfilesPath = Join-Path -Path $ParentDirectory -ChildPath "Dotfiles.ps1"
-$VariablesPath = Join-Path -Path $ParentDirectory -ChildPath "Variables.ps1"
-$SetupPath = Join-Path -Path $ParentDirectory -ChildPath "Windows-Setup.ps1"
-$ProvidersPath = Join-Path -Path $ParentDirectory -ChildPath "Package-Providers.ps1"
-$PackagesPath = Join-Path -Path $ParentDirectory -ChildPath "Packages.ps1"
+$ScriptRootDirectory = $PSScriptRoot
+$ParentDirectory = Split-Path -Path $PSScriptRoot -Parent
+$HelpersPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Helpers.ps1"
+$RegistryPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Registry.ps1"
+$DotfilesPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Dotfiles.ps1"
+$VariablesPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Variables.ps1"
+$SetupPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Windows-Setup.ps1"
+$ProvidersPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Package-Providers.ps1"
+$PackagesPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Packages.ps1"
 
 . $HelpersPath
 . $RegistryPath
@@ -16,15 +17,12 @@ $PackagesPath = Join-Path -Path $ParentDirectory -ChildPath "Packages.ps1"
 . $SetupPath
 . $ProvidersPath
 . $PackagesPath
- 
 
-$ParentDirectory = $PSScriptRoot
-$DotfilesDirectory = Split-Path -Path $PSScriptRoot -Parent
-$WindowsDataPath = Join-Path -Path $ParentDirectory -ChildPath "windows.json"
+$WindowsDataPath = Join-Path -Path $ScriptRootDirectory -ChildPath "windows.json"
 # $WindowsDataPath = "..\windows\windows_example.json"
 
 $WindowsData = Get-Content -Path $WindowsDataPath -Raw | ConvertFrom-Json
-$WindowsData = Get-Default-Values-From-Json -WindowsData $WindowsData -DotfilesDirectory $ParentDirectory
+$WindowsData = Get-Default-Values-From-Json -WindowsData $WindowsData -DotfilesDirectory $ScriptRootDirectory
 
 # windows settings
 $global:PCName = $WindowsData.pc_name
@@ -38,12 +36,14 @@ $global:ShowFileExtensions = $WindowsData.show_file_extensions
 $global:ClassicContextMenu = $WindowsData.classic_context_menu
 $global:RemoveDesktopShortcuts = $WindowsData.remove_desktop_shortcuts
 $global:ActivateOffice = $WindowsData.activate_office
-$global:FontsDirectory = Replace-Root -Value $WindowsData.fonts_directory -RootPath $DotfilesDirectory
-$global:WallpaperPath = Replace-Root -Value $WindowsData.wallpaper_path -RootPath $DotfilesDirectory
-$global:LockscreenPath = Replace-Root -Value $WindowsData.lockscreen_path -RootPath $DotfilesDirectory
+$global:FontsDirectory = Replace-Root -Value $WindowsData.fonts_directory -RootPath $ParentDirectory
+$global:WallpaperPath = Replace-Root -Value $WindowsData.wallpaper_path -RootPath $ParentDirectory
+$global:LockscreenPath = Replace-Root -Value $WindowsData.lockscreen_path -RootPath $ParentDirectory
 
 # packages, dotfiles
+$global:ExcludedScripts = $WindowsData.excluded_scripts
 $global:Dotfiles = $WindowsData.dotfiles
+$global:DotfilesDirectory = $WindowsData.dotfiles_directory
 $global:ChocolateyPackages = $WindowsData.chocolatey_packages
 $global:WingetPackages = $WindowsData.winget_packages
 $global:WSLPackages = $WindowsData.wsl_packages
@@ -117,8 +117,8 @@ Install-Packages -Packages $PipPackages -PackageProvider "pip" -UninstallPackage
 Install-Packages -Packages $WindowsPackages -PackageProvider "windows" -UninstallPackages $UninstallPackages
 Install-Packages -Packages $WSLPackages -PackageProvider "wsl" -UninstallPackages $UninstallPackages
 
-# Install-Dotfiles $Dotfiles
+Install-Dotfiles -Dotfiles $Dotfiles -ExcludedScripts $ExcludedScripts -DotfilesDirectory $DotfilesDirectory
 Set-Windows-Shortcuts -Shortcuts $Shortcuts
 Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
 Remove-Desktop-Shortcuts -RemoveDesktopShortcuts $RemoveDesktopShortcuts
-# Reboot -Reboot $Reboot -RebootTime $RebootTime
+Reboot -Reboot $Reboot -RebootTime $RebootTime

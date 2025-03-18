@@ -61,6 +61,8 @@ These are the valid parameters that can be specified in the `windows.json` file:
 - **`git_username`**: Global Git username.
 - **`git_email`**: Global Git email.
 - **`dotfiles`**: List of dotfile directory names in the `windows` subdirectory (default: all).
+- **`dotfiles_directory`**: Default dotfiles directory (default: `$HOME`).
+- **`excluded_scripts`**: The scripts specified will not be executed.
 - **`package_providers`**: List of package providers to install (default: all).
 - **`chocolatey_packages`**: List of `Chocolatey` packages to install.
 - **`winget_packages`**: List of `winget` packages to install.

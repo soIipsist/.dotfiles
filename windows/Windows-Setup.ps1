@@ -64,7 +64,6 @@ function Set-Environment-Variables {
                     }
                 }
 
-
                 Write-Host "Setting $key : $pathString" -ForegroundColor Green
                 
                 try {
@@ -74,6 +73,7 @@ function Set-Environment-Variables {
                 catch {
                     Write-Host "Error setting environment variable!" -ForegroundColor Red
                 }
+                
             }else{
                 Write-Host "Invalid format for path string: $pathString."
             }

@@ -50,12 +50,17 @@ function Get-Dotfiles {
 
 function Install-Dotfiles {
     param(
-        [array]$Dotfiles = "all",
+        [array]$Dotfiles = @(),
 
         [array] $ExcludedScripts = @("WSLRestart.ps1"),
 
         [string] $DotfilesDirectory = "$null"
     )
+
+    if (-not ($Dotfiles)){
+        return
+    }
+
     $DotfileDirectories = Get-Dotfile-Directories -Dotfiles $Dotfiles
 
     if (-not $DotfilesDirectory){
