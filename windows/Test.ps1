@@ -27,6 +27,10 @@ $global:ExcludedScripts = $WindowsData.excluded_scripts
 $global:Dotfiles = $WindowsData.dotfiles
 $global:DotfilesDirectory = $WindowsData.dotfiles_directory
 
+# git
+$global:GitUserName = $WindowsData.git_username
+$global:GitUserEmail = $WindowsData.git_email
+
 # system env
 $global:UserProfilePath = [System.Environment]::GetFolderPath('UserProfile')
 $global:StartMenuPath = "$UserProfilePath\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
@@ -37,9 +41,8 @@ if ($args.Count -gt 0){
     $Dotfiles = $args
 }
 
-Write-Host $WindowsData
-$DotfileDirectories = Get-Dotfile-Directories -Dotfiles $Dotfiles
 
+Write-Host $Dotfiles
 # Write-Host "Dotfile dirs" $DotfileDirectories -ForegroundColor Green 
 
 # foreach ($Directory in $DotfileDirectories){

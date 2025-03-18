@@ -49,24 +49,27 @@ function Install-Dotfiles {
 
         [array] $ExcludedScripts = @("WSLRestart.ps1"),
 
-        [string] $DotfilesDirectory = "$null"
+        [string] $DotfilesDirectory = [System.Environment]::GetFolderPath('UserProfile')
     )
 
     if (-not ($Dotfiles)){
         return
     }
 
-    $DotfileDirectories = Get-Dotfile-Directories -Dotfiles $Dotfiles
-
     if (-not $DotfilesDirectory){
         $DotfilesDirectory=[System.Environment]::GetFolderPath('UserProfile')
     }
 
+    $DotfileDirectories = Get-Dotfile-Directories -Dotfiles $Dotfiles
+    $global:DestinationDirectory = $DotfilesDirectory
+
     foreach ($Directory in $DotfileDirectories) {
 
-        # execute dotfile scripts first
+        # reset destination directory
+        $global:DestinationDirectory = $DotfilesDirectory
         $Scripts = Get-Dotfile-Scripts $Directory
-    
+
+        # execute dotfile scripts
         foreach ($Script in $Scripts) {
             $ScriptName = $Script.FullName
 
@@ -79,10 +82,9 @@ function Install-Dotfiles {
             }
         }
 
-        
         $Dotfiles = Get-Dotfiles $Directory
-        Move-Dotfiles -Dotfiles $Dotfiles -DestinationDirectory $DestinationDirectory -DotfilesDirectory $DotfilesDirectory
-        $DestinationDirectory = $null
+        Move-Dotfiles -Dotfiles $Dotfiles -DestinationDirectory  $global:DestinationDirectory # if dest is null or empty, it doesn't move the files
+        $global:DestinationDirectory = $null
     }
 
 }
@@ -93,18 +95,12 @@ function Move-Dotfiles {
         $Dotfiles,
 
         [string]
-        $DestinationDirectory = $null,
-
-        [string]
-        $DotfilesDirectory = [System.Environment]::GetFolderPath('UserProfile')
+        $DestinationDirectory
+ 
     )
-    
-    if (-not $DestinationDirectory){
-        $DestinationDirectory = $DotfilesDirectory
-        # Check if destination directory exists
-        if ( -not (Test-Path -Path $DestinationDirectory)){
-            New-Item -Path $DestinationDirectory -ItemType "directory"
-        }
+
+    if ($DestinationDirectory -eq "$null"){
+        return
     }
 
     if ( -not (Test-Path -Path $DestinationDirectory)) {
@@ -115,6 +111,7 @@ function Move-Dotfiles {
         if ($response -ne 'y') {
             return
         }
+        New-Item -Path $DestinationDirectory -ItemType "directory"
     }
 
     foreach ($Dotfile in $Dotfiles) {

@@ -1,6 +1,3 @@
-
-. "../windows/Dotfiles.ps1"
-
 function GitConfig {
     param(
         [string] $GitUserEmail,
@@ -26,12 +23,15 @@ $GitPackage = [PSCustomObject]@{
     params = @("/NoAutoCrlf", "/WindowsTerminal", "/NoShellIntegration", "/SChannel")
 }
 
-$Packages = @($GitPackage, "github-desktop", "gh")
+$Packages = @($GitPackage, "gh")
 
 $Dotfiles = Get-Dotfiles $PSScriptRoot
 
 Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
 refreshenv;
+
+Move-Dotfiles -Dotfiles $Dotfiles -DestinationDirectory $global:DestinationDirectory
 GitConfig -GitUserEmail $GitUserEmail -GitUserName $GitUserName
 Write-Host "Git was successfully configured." -ForegroundColor Green;
-$DestinationDirectory="$env:USERPROFILE\temp"
+
+$global:DestinationDirectory="" # don't move dotfiles again

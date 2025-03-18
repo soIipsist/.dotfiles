@@ -1,3 +1,5 @@
 {
-  "dotfiles": [".bash", ".git-config"]
+  "dotfiles": [".bash", ".git-config"],
+  "git_username": "$GIT_USERNAME",
+  "git_email": "$GIT_EMAIL"
 }
