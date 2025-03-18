@@ -44,20 +44,29 @@ function Set-Environment-Variables {
     # Enable delayed expansion in the script
     $env:EnableDelayedExpansion = $true
 
-    Write-Host "Setting environment variables..." - -ForegroundColor Yellow
+    Write-Host "Setting environment variables..." -ForegroundColor Yellow
     
     if ($EnvironmentVariables -and $EnvironmentVariables.Count -gt 0) {
         
         foreach ($key in $EnvironmentVariables.Keys) {
-            $values = $EnvironmentVariables[$key]
-            
-            $values
-            if ($values -and $values.Count -gt 0) {
-                $pathString = $values -join ';'
+            $pathString = $EnvironmentVariables[$key]
 
-                Write-Output "Setting $key : $pathString"
+            if ($pathString -and $pathString.Count -gt 0 -and $pathString -is [string]) {
+                $match = [regex]::Matches($pathString, "%$key%")
+                
+               if ($match.Count -gt 0) {
+                    $existingValue = [System.Environment]::GetEnvironmentVariable($key, [System.EnvironmentVariableTarget]::Machine)
+                    
+                    
+                    if ($existingValue) {
+                        Write-Host "EXISTING VALUE: $($match.Value)" -ForegroundColor Green
+                        $pathString = $pathString.Replace($match.Value, $existingValue)                    
+                    }
+                }
 
-                # Set the environment variable
+
+                Write-Host "Setting $key : $pathString" -ForegroundColor Green
+                
                 try {
                     [System.Environment]::SetEnvironmentVariable($key, $pathString, [System.EnvironmentVariableTarget]::Machine)
     
@@ -65,6 +74,8 @@ function Set-Environment-Variables {
                 catch {
                     Write-Host "Error setting environment variable!" -ForegroundColor Red
                 }
+            }else{
+                Write-Host "Invalid format for path string: $pathString."
             }
         }
     }

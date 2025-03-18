@@ -93,6 +93,8 @@ if ($args.Count -gt 0){
 }
 
 Write-Host $WindowsData
+Set-PC-Name -PCName $PCName
+Set-Product-Key -ProductKey $ProductKey
 Set-Windows-Features -Enable $true -Features $EnabledFeatures
 Set-Windows-Features -Enable $false -Features $DisabledFeatures
 Set-Wallpaper -WallpaperPath $WallpaperPath
@@ -102,18 +104,21 @@ Set-Show-File-Extensions -ShowFileExtensions $ShowFileExtensions
 Set-Classic-ContextMenu -ClassicContextMenu $ClassicContextMenu
 Enable-Microsoft-Office -ActivateOffice $ActivateOffice
 Install-Fonts $FontsDirectory
+
+Set-Windows-Timezone $Timezone
 Set-Power-Configuration -DiskTimeoutAC $DiskTimeoutAC -DiskTimeoutDC $DiskTimeoutDC -HibernateTimeoutAC $HibernateTimeoutAC -HibernateTimeoutDC $HibernateTimeoutDC -StandbyTimeoutAC $StandbyTimeoutAC -StandbyTimeoutDC $StandbyTimeoutDC -MonitorTimeoutAC $MonitorTimeoutAC -MonitorTimeoutDC $MonitorTimeoutDC -LockscreenTimeoutAC $LockscreenTimeoutAC -LockscreenTimeoutDC $LockscreenTimeoutDC
 Set-Regional-Format -FirstDayOfWeek $FirstDayOfWeek -ShortDate $ShortDate -LongDate $LongDate -ShortTime $ShortTime -TimeFormat $TimeFormat
-Install-PackageProviders -PackageProviders $PackageProviders
 
+Install-PackageProviders -PackageProviders $PackageProviders
 Install-Packages -Packages $ChocolateyPackages -PackageProvider "choco" -UninstallPackages $UninstallPackages
 Install-Packages -Packages $ScoopPackages -PackageProvider "scoop" -UninstallPackages $UninstallPackages
 Install-Packages -Packages $WingetPackages -PackageProvider "winget" -UninstallPackages $UninstallPackages
 Install-Packages -Packages $PipPackages -PackageProvider "pip" -UninstallPackages $UninstallPackages
 Install-Packages -Packages $WindowsPackages -PackageProvider "windows" -UninstallPackages $UninstallPackages
 Install-Packages -Packages $WSLPackages -PackageProvider "wsl" -UninstallPackages $UninstallPackages
+
 # Install-Dotfiles $Dotfiles
 Set-Windows-Shortcuts -Shortcuts $Shortcuts
-# Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
+Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
 Remove-Desktop-Shortcuts -RemoveDesktopShortcuts $RemoveDesktopShortcuts
 # Reboot -Reboot $Reboot -RebootTime $RebootTime
