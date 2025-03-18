@@ -1,5 +1,3 @@
 {
-  "dotfiles": [".bash"],
-  "wallpaper_path": "/wallpapers/synthwave_astronaut.jpg",
-  "dotfiles_directory": "C:\\Users\\p\\Desktop\\temp"
+  "dotfiles": [".bash", ".git-config"]
 }

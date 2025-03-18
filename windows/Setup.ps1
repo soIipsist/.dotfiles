@@ -1,5 +1,4 @@
 # Include files
-
 $ScriptRootDirectory = $PSScriptRoot
 $ParentDirectory = Split-Path -Path $PSScriptRoot -Parent
 $HelpersPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Helpers.ps1"
@@ -41,6 +40,7 @@ $global:WallpaperPath = Replace-Root -Value $WindowsData.wallpaper_path -RootPat
 $global:LockscreenPath = Replace-Root -Value $WindowsData.lockscreen_path -RootPath $ParentDirectory
 
 # packages, dotfiles
+$global:ExcludedScripts = $WindowsData.excluded_scripts
 $global:Dotfiles = $WindowsData.dotfiles
 $global:DotfilesDirectory = $WindowsData.dotfiles_directory
 $global:ChocolateyPackages = $WindowsData.chocolatey_packages
@@ -116,7 +116,7 @@ Install-Packages -Packages $PipPackages -PackageProvider "pip" -UninstallPackage
 Install-Packages -Packages $WindowsPackages -PackageProvider "windows" -UninstallPackages $UninstallPackages
 Install-Packages -Packages $WSLPackages -PackageProvider "wsl" -UninstallPackages $UninstallPackages
 
-Install-Dotfiles -Dotfiles $Dotfiles -ExcludedScripts
+Install-Dotfiles -Dotfiles $Dotfiles -ExcludedScripts $ExcludedScripts -DotfilesDirectory $DotfilesDirectory
 Set-Windows-Shortcuts -Shortcuts $Shortcuts
 Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
 Remove-Desktop-Shortcuts -RemoveDesktopShortcuts $RemoveDesktopShortcuts

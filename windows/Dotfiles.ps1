@@ -1,17 +1,11 @@
 
 function Get-Dotfile-Directories {
     param(
-        [array]$Dotfiles = "all"
+        [array]$Dotfiles = @()
     )
 
-    if ($null -eq $Dotfiles) {
-        $Dotfiles = "all"
-    }
-
-    $LocationPath = Join-Path -Path (Split-Path -Path (Get-Location)) -ChildPath "\windows"
-    $FolderPaths = Get-All-Files-In-Paths $LocationPath -Filter ".*" -Directory $true -File $false
+    $FolderPaths = Get-All-Files-In-Paths $PSScriptRoot -Filter ".*" -Directory $true -File $false
     $DotfileFolderPaths = @()
-    
     
     if ($Dotfiles -eq 'all') {
         $DotfileFolderPaths = $FolderPaths | ForEach-Object { $_.FullName }
@@ -21,6 +15,7 @@ function Get-Dotfile-Directories {
             if ($Path.Name -in $Dotfiles) {
                 $DotfileFolderPaths += $Path.FullName
             }
+             
         }
     }
 
@@ -67,7 +62,6 @@ function Install-Dotfiles {
         $DotfilesDirectory=[System.Environment]::GetFolderPath('UserProfile')
     }
 
-    Write-Host "Executing dotfile scripts..." -ForegroundColor Yellow
     foreach ($Directory in $DotfileDirectories) {
 
         # execute dotfile scripts first
@@ -80,15 +74,16 @@ function Install-Dotfiles {
                 Write-Host "Script was excluded: '$ScriptName'"
             }
             else {
+                Write-Host "Executing $ScriptName..." -ForegroundColor Yellow
                 Invoke-Expression "& $ScriptName"
             }
         }
+
         
         $Dotfiles = Get-Dotfiles $Directory
-        Move-Dotfiles -Dotfiles $Dotfiles -DestinationDirectory $DestinationDirectory
-       
+        Move-Dotfiles -Dotfiles $Dotfiles -DestinationDirectory $DestinationDirectory -DotfilesDirectory $DotfilesDirectory
+        $DestinationDirectory = $null
     }
-
 
 }
 
@@ -106,6 +101,10 @@ function Move-Dotfiles {
     
     if (-not $DestinationDirectory){
         $DestinationDirectory = $DotfilesDirectory
+        # Check if destination directory exists
+        if ( -not (Test-Path -Path $DestinationDirectory)){
+            New-Item -Path $DestinationDirectory -ItemType "directory"
+        }
     }
 
     if ( -not (Test-Path -Path $DestinationDirectory)) {
@@ -116,18 +115,20 @@ function Move-Dotfiles {
         if ($response -ne 'y') {
             return
         }
-
     }
 
     foreach ($Dotfile in $Dotfiles) {
         if ($Dotfile.GetType().Name -eq "FileInfo") {
             $Dotfile = $Dotfile.FullName
-        } 
+        }
 
         if (Test-Path -Path $Dotfile) {
-            Copy-Item -Path $Dotfile -Destination $DestinationDirectory
-            Write-Host "Copied $Dotfile to $DestinationDirectory" -ForegroundColor DarkBlue
-        }
-    }    
+            # Get just the file name (without path)
+            $fileName = [System.IO.Path]::GetFileName($Dotfile)
+            $destinationPath = Join-Path -Path $DestinationDirectory -ChildPath $fileName
 
+            Copy-Item -Path $Dotfile -Destination $destinationPath
+            Write-Host "Copied $Dotfile to $destinationPath" -ForegroundColor DarkBlue
+        }
+    }
 }
