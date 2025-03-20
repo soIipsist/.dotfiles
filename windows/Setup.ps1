@@ -120,4 +120,7 @@ Install-Dotfiles -Dotfiles $Dotfiles -ExcludedScripts $ExcludedScripts -Dotfiles
 Set-Windows-Shortcuts -Shortcuts $Shortcuts
 Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
 Remove-Desktop-Shortcuts -RemoveDesktopShortcuts $RemoveDesktopShortcuts
+
+Write-Host "Setup was completed successfully." -ForegroundColor Green
 Reboot -Reboot $Reboot -RebootTime $RebootTime
+

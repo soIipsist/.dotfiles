@@ -30,12 +30,29 @@ function WSLConfig {
 
 }
 
-
-
 WSLConfig
+refreshenv;
 
-$TaskName = "WSLConfigOnRestart"
-$ScriptPath = Join-Path -Path $PSScriptRoot -ChildPath "WSLRestart.ps1"
-Set-ScheduledTask -TaskName $TaskName -ScriptPath $ScriptPath -DelayInSeconds 10
+Start-Sleep -Seconds 5
+# Check if WSL is installed and show a confirmation message
+$wslStatus = wsl --list --verbose
+$WSLPackages = @("curl", "neofetch", "git", "vim", "zsh", "make", "g++", "gcc")
+Install-Packages -Packages $WSLPackages -PackageProvider "wsl"
 
+
+wsl git config --global init.defaultBranch "main";
+if ($GitUserName) {
+    Write-Host "Successfully set git username to $GitUserName"
+    wsl git config --global user.name $GitUserName;
+}
+if ($GitUserEmail) {
+    Write-Host "Successfully set git email to $GitUserEmail"
+    wsl git config --global user.email $GitUserEmail;
+}
+wsl git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-manager-core.exe";
+wsl git config --list;
+
+# Update ubuntu
+wsl sudo apt --yes update;
+wsl sudo apt --yes upgrade;
 Write-Host "WSL was successfully configured." -ForegroundColor Green;

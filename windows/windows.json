@@ -1,5 +1,6 @@
 {
-  "dotfiles": [".windows-terminal"],
+  "dotfiles": [".bash", ".windows-terminal", ".git-config", ".VirtualBox"],
   "git_username": "$GIT_USERNAME",
-  "git_email": "$GIT_EMAIL"
+  "git_email": "$GIT_EMAIL",
+  "dotfiles_directory": "C:/Users/p/Desktop/f"
 }

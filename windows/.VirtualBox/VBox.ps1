@@ -1,6 +1,4 @@
 
-. "../windows/Dotfiles.ps1"
-
 function Remove-VBox-VM {
     param(
         [string]
