@@ -14,24 +14,25 @@ fi
 # check if Music app is open
 APP_MUSIC_STATE="$(pgrep -x Music)"
 
-MUSIC_PLAYER_STATE=$(osascript -e "tell application \"Music\" to set playerState to (get player state) as text")
+# if it's open, check the music player state and update
+if [ -n "$APP_MUSIC_STATE" ]; then
+    MUSIC_PLAYER_STATE=$(osascript -e "tell application \"Music\" to set playerState to (get player state) as text")
 
-echo "$MUSIC_PLAYER_STATE" >/tmp/debug.txt
+    if [[ $MUSIC_PLAYER_STATE == "stopped" ]]; then
+        sketchybar --set music drawing=off
 
-if [[ $MUSIC_PLAYER_STATE == "stopped" ]]; then
-    sketchybar --set music drawing=off
+    elif [[ $MUSIC_PLAYER_STATE == "playing" ]]; then
+        title=$(osascript -e 'tell application "Music" to get name of current track')
+        artist=$(osascript -e 'tell application "Music" to get artist of current track')
 
-elif [[ $MUSIC_PLAYER_STATE == "playing" ]]; then
-    title=$(osascript -e 'tell application "Music" to get name of current track')
-    artist=$(osascript -e 'tell application "Music" to get artist of current track')
+        MEDIA="$title"
 
-    MEDIA="$title"
+        if [[ -n "$artist" ]]; then
+            MEDIA="$MEDIA - $artist"
+        fi
 
-    if [[ -n "$artist" ]]; then
-        MEDIA="$MEDIA - $artist"
+        sketchybar --set media label="$MEDIA" icon="􀊖"
     fi
-
-    sketchybar --set media label="$MEDIA" icon="􀊖"
 fi
 
 # store current application as an environment variable

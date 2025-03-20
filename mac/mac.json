@@ -1,4 +1,4 @@
 {
-  "dotfiles": [".zsh", ".tmux"],
+  "dotfiles": [".sketchybar"],
   "install_homebrew": true
 }
