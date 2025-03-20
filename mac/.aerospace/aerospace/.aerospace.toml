@@ -59,12 +59,12 @@ key-mapping.preset = 'qwerty'
 
 
 [gaps]
-inner.horizontal = 10
-inner.vertical =   10
-outer.left =       10
-outer.bottom =     10
-outer.top =        10
-outer.right =      10
+inner.horizontal = $AEROSPACE_GAP_INNER_HORIZONTAL
+inner.vertical =   $AEROSPACE_GAP_INNER_VERTICAL
+outer.left =       $AEROSPACE_GAP_OUTER_LEFT
+outer.bottom =     $AEROSPACE_GAP_OUTER_BOTTOM
+outer.top =        $AEROSPACE_GAP_OUTER_TOP
+outer.right =      $AEROSPACE_GAP_OUTER_RIGHT
 
 
 
