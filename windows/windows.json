@@ -1,6 +1,7 @@
 {
-  "dotfiles": [".bash", ".windows-terminal", ".git-config", ".VirtualBox"],
+  "dotfiles": [".wsl"],
   "git_username": "$GIT_USERNAME",
   "git_email": "$GIT_EMAIL",
-  "dotfiles_directory": "C:/Users/p/Desktop/f"
+  "dotfiles_directory": "C:/Users/p/Desktop/f",
+  "uninstall_packages": true
 }
