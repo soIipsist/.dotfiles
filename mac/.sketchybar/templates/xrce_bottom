@@ -22,7 +22,7 @@ sketchybar --bar position=bottom \
     sticky=on \
     topmost=window
 
-sketchybar --default padding_left=8 padding_right=5 \
+sketchybar --default padding_left=8 padding_right=8 \
     background.border_color=$COLOR_DEFAULT \
     background.border_width=2 \
     background.height=40 \
@@ -71,12 +71,10 @@ sketchybar --add item notif right \
     --set notif icon.color=$COLOR_DEFAULT \
     background.color=$COLOR_BACKGROUND \
     icon=$ICON_NOTIF \
-    padding_left=6 padding_right=4 \
-    icon.padding_left=8 icon.padding_right=0 \
+    icon.padding_left=12 icon.padding_right=0 \
     background.border_width=0 \
     background.corner_radius=6 \
-    background.height=24 \
-    click_script="osascript -e 'tell application \"System Events\" to click menu bar item 1 of menu bar 1 of application process \"ControlCenter\"'"
+    background.height=24
 
 sketchybar --add bracket control notif \
     --set control background.color=$COLOR_BACKGROUND \

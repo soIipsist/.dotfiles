@@ -14,12 +14,12 @@ sketchybar --bar position=top \
     height=40 \
     margin=0 \
     y_offset=3 \
-    padding_left=8 \
-    padding_right=8 \
+    padding_left=10 \
+    padding_right=10 \
     sticky=on \
     topmost=window
 
-sketchybar --default padding_left=8 padding_right=4 \
+sketchybar --default padding_left=8 padding_right=0 \
     background.border_color=$COLOR_DEFAULT \
     background.border_width=2 \
     background.height=40 \
@@ -61,12 +61,21 @@ sketchybar --add item seperator.r1 left \
 
 COLORS_SPACE=($COLOR_RED_BRIGHT $COLOR_GREEN_BRIGHT $COLOR_YELLOW_BRIGHT $COLOR_BLUE_BRIGHT $COLOR_MAGENTA_BRIGHT $COLOR_CYAN_BRIGHT $COLOR_WHITE_BRIGHT)
 
-for sid in $(aerospace list-workspaces --all); do
+workspaces=$(aerospace list-workspaces --all) # get all workspaces
+last_workspace=$(echo "$workspaces" | tail -n 1)
+
+for sid in $workspaces; do
+    SPACE_CORNER_RADIUS=5
+
+    if [ "$sid" = "$last_workspace" ]; then # last index of workspace
+        SPACE_CORNER_RADIUS=12
+    fi
+
     sketchybar --add item space.$sid left \
         --subscribe space.$sid aerospace_workspace_change \
         --set space.$sid background.color=$COLOR_SECONDARY \
         background.drawing=on \
-        background.corner_radius=5 \
+        background.corner_radius=$SPACE_CORNER_RADIUS \
         width=30 \
         label="$sid" \
         label.align=center \
@@ -138,6 +147,7 @@ sketchybar --add item themes.logo left \
     icon.align=center \
     label="$SELECTED_THEME_NAME" \
     label.padding_left=15 \
+    label.padding_right=15 \
     click_script="sketchybar -m --set \$NAME popup.drawing=toggle" \
     popup.background.color="$COLOR_BACKGROUND"
 
@@ -205,6 +215,7 @@ sketchybar --add item battery right \
 # cpu
 sketchybar --add item cpu right \
     --set cpu update_freq=2 \
+    padding_left=0 \
     background.color=$COLOR_BACKGROUND \
     icon="$ICON_CPU_1" \
     script="$PLUGIN_DIR/cpu.sh"
