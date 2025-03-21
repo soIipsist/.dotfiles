@@ -107,7 +107,7 @@ fi
 
 # set vscode theme
 source_vscode_settings_path="$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/vscode_settings.json"
-destination_vscode_settings_path="$HOME/Library/Application Support/Code/User/settings.json"
+destination_vscode_settings_path="$dotfiles_directory/Library/Application Support/Code/User/settings.json"
 envsubst <"$source_vscode_settings_path" >"$destination_vscode_settings_path"
 
 if [ -n "$VSCODE_COLOR_THEME" ]; then
@@ -123,6 +123,11 @@ jq 'del(.. | select(. == ""))' "$destination_vscode_settings_path" >temp.json &&
 source_tmux_conf="$GIT_DOTFILES_DIRECTORY/mac/.tmux/tmux/.tmux.conf"
 destination_tmux_conf="$dotfiles_directory/.tmux.conf"
 envsubst <"$source_tmux_conf" >"$destination_tmux_conf"
+
+# set aerospace settings
+VARS=$(env | awk -F= '/^AEROSPACE_/ {print "$" $1}' | tr '\n' ' ')
+envsubst "$VARS" <"$GIT_DOTFILES_DIRECTORY/mac/.aerospace/aerospace/.aerospace.toml" >"$dotfiles_directory/.aerospace.toml"
+aerospace reload-config
 
 echo "Theme was changed to $THEME."
 echo "WALLPAPER_PATH: $WALLPAPER_PATH."
