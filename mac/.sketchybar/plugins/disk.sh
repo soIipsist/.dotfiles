@@ -9,5 +9,5 @@ COLOR=$COLOR_BACKGROUND
 sketchybar --set disk icon="􀤂" \
 	icon.color=$COLOR \
 	background.color=$BCOLOR \
-	label=" $DISK " \
+	label="$DISK " \
 	label.color=$COLOR

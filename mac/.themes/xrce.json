@@ -1,9 +1,9 @@
 {
-  "THEME_NAME": "xrce",
+  "THEME_NAME": "Diane",
   "SKETCHYBAR_TEMPLATE": ["xrce_top", "xrce_bottom"],
   "WALLPAPER_PATH": "/Users/p/repos/soIipsist/.dotfiles/wallpapers/diane.jpg",
-  "FONT": "Nerd Font:Regular:16.0",
-  "FONT_2": "Hack Nerd Font:Bold:14.0",
+  "FONT": "FiraCode Nerd Font:Regular:16.0",
+  "FONT_2": "FiraCode Nerd Font:Bold:14.0",
   "COLOR_BACKGROUND": "0xe01d2021",
   "COLOR_FOREGROUND": "0xe0fbf1c7",
   "COLOR_DEFAULT": "0xffdddddd",
@@ -29,7 +29,7 @@
   "COLOR_WHITE_BRIGHT": "0xe0cdd6f4",
 
   "BORDER_WIDTH": 7.0,
-  "BORDER_ACTIVE_COLOR": "0xe0f9e2af",
+  "BORDER_ACTIVE_COLOR": "0xff000000",
   "BORDER_INACTIVE_COLOR": "0xff414550",
 
   "VSCODE_FONT_FAMILY": "Menlo, Monaco, 'Courier New', monospace",

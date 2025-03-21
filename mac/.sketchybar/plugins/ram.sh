@@ -35,5 +35,5 @@ esac
 sketchybar --set ram icon=$ICON \
 	icon.color=$COLOR \
 	background.color=$BCOLOR \
-	label=" $MEMORY% " \
+	label="$MEMORY% " \
 	label.color=$COLOR

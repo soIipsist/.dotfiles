@@ -9,13 +9,16 @@ fi
 source "$dotfiles_directory/.config/themes/theme.sh"
 PLUGIN_DIR="$dotfiles_directory/.config/sketchybar/plugins"
 
+MUSIC_EVENT="com.apple.Music.playerInfo"
+sketchybar --add event music_change "$MUSIC_EVENT"
+
 sketchybar --bar position=bottom \
     color=0x00000000 \
     height=40 \
     margin=0 \
     y_offset=3 \
-    padding_left=8 \
-    padding_right=8 \
+    padding_left=10 \
+    padding_right=10 \
     sticky=on \
     topmost=window
 
@@ -30,8 +33,8 @@ sketchybar --default padding_left=8 padding_right=5 \
     icon.font="Nerd Font:Regular:16.0" \
     label.color=$COLOR_DEFAULT \
     label.highlight_color=$COLOR_BACKGROUND \
-    label.padding_left=2 \
-    label.padding_right=6 \
+    label.padding_left=10 \
+    label.padding_right=10 \
     label.font="$FONT"
 
 sketchybar --add event window_change \
@@ -45,10 +48,18 @@ sketchybar --add item seperator.media left \
     label.drawing=off
 
 sketchybar --add item media left \
-    --set media script="$PLUGIN_DIR/media.sh" \
-    background.color=$COLOR_BACKGROUND \
-    updates=on \
-    --subscribe media media_change
+    --set media label.max_chars=30 \
+    label.align=center \
+    icon.align=center \
+    label.font="$FONT_2" \
+    scroll_texts=on \
+    icon.color=$COLOR_DEFAULT \
+    label.color=$COLOR_DEFAULT \
+    background.drawing=off \
+    background.color="$COLOR_BACKGROUND" \
+    script="$PLUGIN_DIR/media.sh" \
+    click_script="$PLUGIN_DIR/media_click.sh" \
+    --subscribe media media_change music_change
 
 sketchybar --add item seperator.r2 left \
     --set seperator.r2 padding_left=4 padding_right=4 \
@@ -88,7 +99,7 @@ sketchybar --add item time right \
     icon=$ICON_CLOCK
 
 sketchybar --add item calendar right \
-    --set calendar script="$PLUGIN_DIR/calendar.sh" \
+    --set calendar script="$PLUGIN_DIR/calendar_min.sh" \
     update_freq=60 \
     padding_left=8 \
     padding_right=2 \
@@ -227,9 +238,10 @@ sketchybar --add item seperator.r6 right \
 #     background.border_width=0 \
 #     background.height=24
 
-# sketchybar --add bracket updates pip brew npm gem \
-#     --set updates background.color=$COLOR_BACKGROUND \
-#     background.border_color=$COLOR_DEFAULT
+sketchybar --add bracket media_bracket \
+    --set media_bracket background.color=$COLOR_BACKGROUND \
+    background.border_color=$COLOR_DEFAULT \
+    padding_left=24 padding_right=24
 
 sketchybar --add item seperator.r7 right \
     --set seperator.r7 padding_left=4 padding_right=4 \
