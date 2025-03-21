@@ -2,7 +2,7 @@ plugins=(
     zsh-autosuggestions
 )
 source $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source "$HOME/.config/themes/theme.sh"
 
 function repeat-last-command() {

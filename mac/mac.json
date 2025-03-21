@@ -1,4 +1,4 @@
 {
-  "dotfiles": [".aerospace"],
+  "dotfiles": [".themes", ".sketchybar"],
   "install_homebrew": true
 }

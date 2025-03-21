@@ -23,4 +23,4 @@ case $PORT in
 	;;
 esac
 
-sketchybar --set port icon.color=$COLOR background.color=$BCOLOR label="opened: $PORT " label.color=$COLOR
+sketchybar --set portcount icon.color=$COLOR background.color=$BCOLOR label="opened: $PORT " label.color=$COLOR
