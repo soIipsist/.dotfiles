@@ -27,8 +27,8 @@
   "files.associations": {
     "*.tmux.conf": "plaintext",
     "main": "shellscript",
-    "xrce_top": "shellscript",
-    "xrce_bottom": "shellscript"
+    "diane_top": "shellscript",
+    "diane_bottom": "shellscript"
   },
   "[plaintext]": {
     "editor.formatOnSave": false

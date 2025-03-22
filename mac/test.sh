@@ -5,7 +5,7 @@ source "../git.sh"
 source "../json.sh"
 
 SKETCHYBAR_TEMPLATE=$(get_json_value "SKETCHYBAR_TEMPLATE" "$GIT_DOTFILES_DIRECTORY/mac/.themes/main.json")
-THEME="xrce"
+THEME="diane"
 
 # source "./.sketchybar/sketchybar.sh" "${SKETCHYBAR_TEMPLATE[@]}"
 # echo $SKETCHYBAR_TEMPLATE
