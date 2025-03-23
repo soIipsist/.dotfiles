@@ -1,5 +1,6 @@
 {
+  "dotfiles": [".themes", ".sketchybar"],
   "pip_packages": ["yt-dlp", "requests"],
-  "venv_path": "$HOME/re",
-  "set_venv_path": false
+  "venv_path": "$HOME/venv",
+  "set_venv_path": true
 }
