@@ -84,12 +84,16 @@ function ytdlp_mp4() {
         return
     fi
 
-    if [ -z "$VENV_PATH" ]; then
+    if [ -n "$VENV_PATH" ]; then
         source $VENV_PATH/bin/activate
     fi
 
     python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py -f video -v mp4 "$@"
-    deactivate
+
+    # Deactivate the virtual environment properly
+    if [ -n "$VIRTUAL_ENV" ]; then
+        deactivate
+    fi
 }
 
 function ytdlp_mp3() {
@@ -99,12 +103,15 @@ function ytdlp_mp3() {
         return
     fi
 
-    if [ -z "$VENV_PATH" ]; then
+    if [ -n "$VENV_PATH" ]; then
         source $VENV_PATH/bin/activate
     fi
 
     python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py -f audio -a mp3 "$@"
-    deactivate
+    # Deactivate the virtual environment properly
+    if [ -n "$VIRTUAL_ENV" ]; then
+        deactivate
+    fi
 }
 
 # VSCode variables
@@ -167,3 +174,5 @@ alias ta='tmux attach -t'
 alias tn='tmux new-session'
 alias tl='tmux list-sessions'
 alias tk='tmux kill-server'
+
+VENV_PATH="$HOME/venv"
