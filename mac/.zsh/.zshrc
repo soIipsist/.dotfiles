@@ -166,7 +166,7 @@ bindkey -s '^Xo' "cpout\n"          # Ctrl + X followed by O
 bindkey -s ^f "tmux-sessionizer\n"  # Ctrl + F
 
 # zsh suggestions
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff"
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff"
 
 # tmux aliases
 alias t='tmux attach || tmux new-session'
@@ -175,4 +175,4 @@ alias tn='tmux new-session'
 alias tl='tmux list-sessions'
 alias tk='tmux kill-server'
 
-VENV_PATH="$HOME/venv"
+export VENV_PATH="$HOME/venv"

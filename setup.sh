@@ -9,14 +9,12 @@ if [[ "$os" == "windows" ]]; then
     script_path="$os/Setup.ps1"
     dotfiles=("$@")
 
-    
     if [ ${#dotfiles[@]} -gt 0 ]; then
         powershell.exe -Command "Start-Process powershell.exe -ArgumentList '-NoProfile', '-NoExit','-ExecutionPolicy Bypass', '-File', '$script_path', '${dotfiles[@]}' -Verb runAs"
     else
         powershell.exe -Command "Start-Process powershell.exe -ArgumentList '-NoProfile', '-NoExit','-ExecutionPolicy Bypass', '-File', '$script_path' -Verb runAs"
     fi
 
-  
 else
     cd "$os" || {
         echo "Error: Directory '$os' not found"

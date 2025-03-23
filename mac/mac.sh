@@ -38,7 +38,7 @@ dotfiles=$(get_json_value "dotfiles" "" "${dotfile_args[@]}")        # dotfiles 
 dotfiles_directory=$(get_json_value "dotfiles_directory" "" "$HOME") # will be $HOME by default
 scripts=$(get_json_value "scripts")
 excluded_scripts=$(get_json_value "excluded_scripts")
-venv_path=$(get_json_value "venv_path")
+venv_path=$(get_json_value "venv_path" "" "$VENV_PATH")
 pip_packages=$(get_json_value "pip_packages")
 git_repos=$(get_json_value "git_repos")
 git_home=$(get_json_value "git_home")
@@ -54,6 +54,8 @@ brew_cask_packages=$(get_json_value "brew_cask_packages")
 if [ -n "$dotfile_args" ]; then
     dotfiles="${dotfile_args[@]}"
 fi
+
+echo "ZSH: $ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE"
 
 install_homebrew "$install_homebrew_flag"
 install_from_brewfile "$brewfile_path"

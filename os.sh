@@ -101,6 +101,7 @@ install_pip_packages() {
   shift 1
   pip_packages="$@"
 
+  echo "1: $1"
   if [ -z "$pip_packages" ]; then
     return
   fi
@@ -127,8 +128,22 @@ install_pip_packages() {
   pip3 freeze >"$parent_path/requirements.txt"
 }
 
+set_shell_variable() {
+  var_name="$1"
+  new_value="$2"
+  shell_path="$3"
+
+  # check if variable already exists
+  if grep -q "^\(export \)\?$var_name=" "$zshrc_path"; then
+    sed -i '' "s|^\(export \)\?$var_name=.*|\1$var_name=\"$new_value\"|" "$zshrc_path"
+  else
+    echo "export $var_name=\"$new_value\"" >>"$zshrc_path"
+  fi
+
+}
+
 set_venv_path() {
-  venv_path="$1"
+  local venv_path="$1"
 
   if [ -z "$2" ] || [ "$2" == false ]; then
     return
@@ -143,16 +158,10 @@ set_venv_path() {
 
   # append to default shell
   shell_path=$(get_default_shell_path)
-
   var_name="VENV_PATH"
   new_value="$venv_path"
 
-  if grep -q "^$var_name=" "$shell_path"; then
-    sed -i '' "s|^$var_name=.*|$var_name=\"$new_value\"|" "$shell_path"
-  else
-    echo "$var_name=\"$new_value\"" >>"$shell_path"
-  fi
-
+  set_shell_variable "$var_name" "$new_value" "$shell_path"
   echo "Created venv path: $venv_path."
 }
 

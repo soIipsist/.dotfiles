@@ -7,11 +7,12 @@ function set_autosuggest_color() {
   var_name="ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE"
   new_value="fg=$ITERM2_AUTOSUGGEST_COLOR"
 
-  if grep -q "^$var_name=" "$zshrc_path"; then
-    sed -i '' "s|^$var_name=.*|$var_name=\"$new_value\"|" "$zshrc_path"
+  if grep -q "^\(export \)\?$var_name=" "$zshrc_path"; then
+    sed -i '' "s|^\(export \)\?$var_name=.*|\1$var_name=\"$new_value\"|" "$zshrc_path"
   else
-    echo "$var_name=\"$new_value\"" >>"$zshrc_path"
+    echo "export $var_name=\"$new_value\"" >>"$zshrc_path"
   fi
+
 }
 
 function export_theme() {
