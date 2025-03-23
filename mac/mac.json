@@ -1,7 +1,5 @@
 {
-  "dotfiles": [".themes", ".sketchybar"],
-  "install_homebrew": true,
   "pip_packages": ["yt-dlp", "requests"],
-  "venv_path": "$HOME/venv",
-  "set_venv_path": true
+  "venv_path": "$HOME/re",
+  "set_venv_path": false
 }

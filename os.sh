@@ -105,22 +105,32 @@ install_pip_packages() {
     return
   fi
 
+  if [ -z "$venv_path" ]; then
+    venv_path="$VENV_PATH"
+  else
+    venv_path=$(bash -c "echo $venv_path")
+  fi
+
+  echo "VENV PATH: $venv_path"
+
   # check if venv exists
   if [ -d "$venv_path" ]; then
     source $venv_path/bin/activate
+    echo "Activated venv."
   fi
 
   for package in $pip_packages; do
-    pip install $package
+    pip3 install $package
   done
 
-  pip freeze >requirements.txt
+  parent_path=$(dirname "$venv_path")
+  pip3 freeze >"$parent_path/requirements.txt"
 }
 
 set_venv_path() {
   venv_path="$1"
 
-  if [ -z "$1" ] || [ "$1" == false ]; then
+  if [ -z "$2" ] || [ "$2" == false ]; then
     return
   fi
 
@@ -142,6 +152,8 @@ set_venv_path() {
   else
     echo "$var_name=\"$new_value\"" >>"$shell_path"
   fi
+
+  echo "Created venv path: $venv_path."
 }
 
 install_brew_packages() {
