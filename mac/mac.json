@@ -2,5 +2,5 @@
   "dotfiles": [".themes", ".sketchybar"],
   "install_homebrew": true,
   "pip_packages": [],
-  "venv_path": ""
+  "venv_path": "$HOME/red"
 }

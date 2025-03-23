@@ -103,13 +103,10 @@ install_pip_packages() {
     return
   fi
 
-  # create venv if it doesn't exist
-  cd $HOME
-  if [ ! -d "$HOME/venv" ]; then
-    python -m venv venv
+  # check if venv exists
+  if [ -z "$venv_path" ]; then
+    source $venv_path/bin/activate
   fi
-
-  source venv/bin/activate
 
   for package in $pip_packages; do
     pip install $package
@@ -118,15 +115,14 @@ install_pip_packages() {
 }
 
 set_venv_path() {
-  venv_path=$1
+  venv_path="$1"
 
   if [ -z "$venv_path" ]; then
     return
   fi
 
-  python3 -m venv "$venv_path"
-
-  # escape venv path
+  actual_venv_path=$(bash -c "echo $venv_path")
+  python3 -m venv "$actual_venv_path"
 
   # append to default shell
   shell_path=$(get_default_shell_path)
