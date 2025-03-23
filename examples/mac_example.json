@@ -8,6 +8,7 @@
     "yt-dlp",
     "git+https://github.com/soIipsist/adb-wrapper@main"
   ],
+  "venv_path": "",
   "git_home": "/Users/p",
   "git_repos": [],
   "git_username": "soIipsist",

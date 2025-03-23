@@ -117,6 +117,30 @@ install_pip_packages() {
 
 }
 
+set_venv_path() {
+  venv_path=$1
+
+  if [ -z "$venv_path" ]; then
+    return
+  fi
+
+  python3 -m venv "$venv_path"
+
+  # escape venv path
+
+  # append to default shell
+  shell_path=$(get_default_shell_path)
+
+  var_name="VENV_PATH"
+  new_value="$venv_path"
+
+  if grep -q "^$var_name=" "$shell_path"; then
+    sed -i '' "s|^$var_name=.*|$var_name=\"$new_value\"|" "$shell_path"
+  else
+    echo "$var_name=\"$new_value\"" >>"$shell_path"
+  fi
+}
+
 install_brew_packages() {
   [ -z "$1$2" ] && return
 

@@ -1,5 +1,6 @@
 {
-  "dotfiles": [".zsh"],
+  "dotfiles": [".themes", ".sketchybar"],
   "install_homebrew": true,
-  "pip_packages": []
+  "pip_packages": [],
+  "venv_path": ""
 }
