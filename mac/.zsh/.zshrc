@@ -35,6 +35,10 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 export PATH="$HOME/platform-tools/:$PATH"
 
+# useful paths
+export GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
+export GIT_HOME="$HOME/repos/soIipsist"
+
 # history
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE="2000"
@@ -71,11 +75,37 @@ export YTDLP_VIDEO_EXT="mp4"
 export YTDLP_VIDEO_SOUND_EXT="m4a"
 export YTDLP_FORMAT="audio"
 export YTDLP_EXTRACT_INFO="1"
+export YTDLP_SOURCE_ACTIVATE="1"
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 
-# useful paths
-export GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
-export GIT_HOME="$HOME/repos/soIipsist"
+function ytdlp_mp4() {
+
+    if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+        echo "Could not find GIT_DOTFILES_DIRECTORY."
+        return
+    fi
+
+    if [ "$YTDLP_SOURCE_ACTIVATE" -eq "1" ]; then
+        source $HOME/venv/bin/activate
+    fi
+
+    python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py -f video -v mp4 "$@"
+    deactivate
+}
+
+function ytdlp_mp3() {
+
+    if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+        echo "Could not find GIT_DOTFILES_DIRECTORY."
+        return
+    fi
+
+    if [ "$YTDLP_SOURCE_ACTIVATE" -eq "1" ]; then
+        source $HOME/venv/bin/activate
+    fi
+    python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py -f audio -a mp3 "$@"
+    deactivate
+}
 
 # VSCode variables
 export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/vscode-workspaces/.workspaces"
@@ -85,8 +115,6 @@ export OLLAMA_MODEL="deepseek-r1:14b"
 # aliases
 alias python="python3"
 alias ytdlp="python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py"
-alias ytdlp_mp3="python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py -f audio -a mp3"
-alias ytdlp_mp4="python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py -f video -v mp4"
 alias yabais="yabai --start-service"
 alias yabaik="yabai --stop-service"
 alias yabair="yabai --restart-service"

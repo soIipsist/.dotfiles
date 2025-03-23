@@ -1,4 +1,3 @@
-# Define your functions
 function set_autosuggest_color() {
   if [ -z "$ITERM2_AUTOSUGGEST_COLOR" ]; then
     return 0
