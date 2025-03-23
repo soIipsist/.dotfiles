@@ -75,7 +75,6 @@ export YTDLP_VIDEO_EXT="mp4"
 export YTDLP_VIDEO_SOUND_EXT="m4a"
 export YTDLP_FORMAT="audio"
 export YTDLP_EXTRACT_INFO="1"
-export YTDLP_SOURCE_ACTIVATE="1"
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 
 function ytdlp_mp4() {
@@ -85,8 +84,8 @@ function ytdlp_mp4() {
         return
     fi
 
-    if [ "$YTDLP_SOURCE_ACTIVATE" -eq "1" ]; then
-        source $HOME/venv/bin/activate
+    if [ -z "$VENV_PATH" ]; then
+        source $VENV_PATH/bin/activate
     fi
 
     python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py -f video -v mp4 "$@"
@@ -100,9 +99,10 @@ function ytdlp_mp3() {
         return
     fi
 
-    if [ "$YTDLP_SOURCE_ACTIVATE" -eq "1" ]; then
-        source $HOME/venv/bin/activate
+    if [ -z "$VENV_PATH" ]; then
+        source $VENV_PATH/bin/activate
     fi
+
     python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py -f audio -a mp3 "$@"
     deactivate
 }

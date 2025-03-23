@@ -97,14 +97,16 @@ set_hostname() {
 }
 
 install_pip_packages() {
-  pip_packages=$1
+  venv_path="$1"
+  shift 1
+  pip_packages="$@"
 
   if [ -z "$pip_packages" ]; then
     return
   fi
 
   # check if venv exists
-  if [ -z "$venv_path" ]; then
+  if [ -d "$venv_path" ]; then
     source $venv_path/bin/activate
   fi
 
@@ -112,10 +114,15 @@ install_pip_packages() {
     pip install $package
   done
 
+  pip freeze >requirements.txt
 }
 
 set_venv_path() {
   venv_path="$1"
+
+  if [ -z "$1" ] || [ "$1" == false ]; then
+    return
+  fi
 
   if [ -z "$venv_path" ]; then
     return

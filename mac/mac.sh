@@ -47,6 +47,7 @@ brewfile_path=$(get_json_value "brewfile_path")
 theme=$(get_json_value "theme") # main color preset used my default
 wallpaper_path=$(replace_root "$(get_json_value "wallpaper_path")" "$GIT_DOTFILES_DIRECTORY")
 install_homebrew_flag=$(get_json_value "install_homebrew")
+set_venv_path_flag=$(get_json_value "set_venv_path")
 brew_packages=$(get_json_value "brew_packages")
 brew_cask_packages=$(get_json_value "brew_cask_packages")
 
@@ -59,8 +60,8 @@ install_from_brewfile "$brewfile_path"
 install_brew_packages "$brew_packages" "$brew_cask_packages"
 set_hostname "$hostname"
 set_default_shell "$default_shell"
-install_pip_packages "${pip_packages[@]}"
-
+set_venv_path "$venv_path" "$set_venv_path_flag"
+install_pip_packages "$venv_path" "${pip_packages[@]}"
 install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home"

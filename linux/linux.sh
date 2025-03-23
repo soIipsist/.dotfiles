@@ -82,7 +82,8 @@ install_homebrew "$install_homebrew_flag"
 install_zoxide "$install_zoxide_flag"
 set_hostname "$hostname"
 install_brew_packages "$brew_packages" "$brew_cask_packages"
-
+set_venv_path "$venv_path" "$set_venv_path_flag"
+install_pip_packages "$venv_path" "${pip_packages[@]}"
 apt_packages_array=($apt_packages)
 sudo apt install --yes --no-install-recommends "${apt_packages_array[@]}"
 
