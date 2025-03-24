@@ -40,6 +40,8 @@ function export_theme() {
   end' "$icons_path" >>"$theme_colors_path"
 
   echo "export SELECTED_THEME=$SELECTED_THEME" >>"$theme_colors_path"
+  echo "export dotfiles_directory=$dotfiles_directory" >>"$theme_colors_path"
+
   source "$theme_colors_path"
 
 }
