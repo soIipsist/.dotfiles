@@ -134,10 +134,11 @@ set_shell_variable() {
   shell_path="$3"
 
   # check if variable already exists
-  if grep -q "^\(export \)\?$var_name=" "$zshrc_path"; then
-    sed -i '' "s|^\(export \)\?$var_name=.*|\1$var_name=\"$new_value\"|" "$zshrc_path"
+  if grep -q "^\(export \)\?$var_name=" "$shell_path"; then
+    echo "STARTS $new_value $shell_path"
+    grep "^\(export \)\?$var_name=" test.sh | sed -i '' -E "s/($var_name)=\"[^\"]*\"/\1=\"$new_value\"/g" "$shell_path"
   else
-    echo "export $var_name=\"$new_value\"" >>"$zshrc_path"
+    echo "export $var_name=\"$new_value\"" >>"$shell_path"
   fi
 
 }
