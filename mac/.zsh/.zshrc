@@ -76,6 +76,7 @@ export YTDLP_VIDEO_SOUND_EXT="m4a"
 export YTDLP_FORMAT="audio"
 export YTDLP_EXTRACT_INFO="1"
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
+export VENV_PATH="$HOME/venv"
 
 function ytdlp_mp4() {
 
@@ -174,5 +175,3 @@ alias ta='tmux attach -t'
 alias tn='tmux new-session'
 alias tl='tmux list-sessions'
 alias tk='tmux kill-server'
-
-export VENV_PATH="$HOME/venv"

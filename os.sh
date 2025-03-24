@@ -101,7 +101,6 @@ install_pip_packages() {
   shift 1
   pip_packages="$@"
 
-  echo "1: $1"
   if [ -z "$pip_packages" ]; then
     return
   fi
@@ -135,8 +134,11 @@ set_shell_variable() {
 
   # check if variable already exists
   if grep -q "^\(export \)\?$var_name=" "$shell_path"; then
-    echo "STARTS $new_value $shell_path"
-    grep "^\(export \)\?$var_name=" test.sh | sed -i '' -E "s/($var_name)=\"[^\"]*\"/\1=\"$new_value\"/g" "$shell_path"
+    new_value_escaped=$(echo "$new_value" | sed 's/\$/\\\$/g')
+    grep "^\(export \)\?$var_name=" test.sh | sed -i '' -E "s|($var_name)=.*|\1=\"$new_value\"|" "$shell_path"
+
+    # grep "^\(export \)\?$var_name=" test.sh | sed -i '' -E "s/($var_name)=.*/\1=\"$new_value\"/" "$shell_path"
+    # # grep "^\(export \)\?$var_name=" test.sh | sed -i '' -E "s/($var_name)=.*/\1=\"$new_value\"/g" "$shell_path"
   else
     echo "export $var_name=\"$new_value\"" >>"$shell_path"
   fi
@@ -160,7 +162,7 @@ set_venv_path() {
   # append to default shell
   shell_path=$(get_default_shell_path)
   var_name="VENV_PATH"
-  new_value="$venv_path"
+  new_value="$actual_venv_path"
 
   set_shell_variable "$var_name" "$new_value" "$shell_path"
   echo "Created venv path: $venv_path."

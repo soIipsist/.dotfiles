@@ -55,18 +55,16 @@ if [ -n "$dotfile_args" ]; then
     dotfiles="${dotfile_args[@]}"
 fi
 
-echo "ZSH: $ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE"
-
 install_homebrew "$install_homebrew_flag"
 install_from_brewfile "$brewfile_path"
 install_brew_packages "$brew_packages" "$brew_cask_packages"
 set_hostname "$hostname"
 set_default_shell "$default_shell"
-set_venv_path "$venv_path" "$set_venv_path_flag"
-install_pip_packages "$venv_path" "${pip_packages[@]}"
 install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home"
 set_wallpaper "$wallpaper_path"
+set_venv_path "$venv_path" "$set_venv_path_flag"
+install_pip_packages "$venv_path" "${pip_packages[@]}"
 
 source "../mac/set_theme.sh" "$theme"

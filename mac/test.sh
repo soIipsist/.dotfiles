@@ -11,7 +11,7 @@ pip_packages=$(get_json_value "pip_packages")
 # set_venv_path "$venv_path" "$set_venv_flag"
 # install_pip_packages "$venv_path" "${pip_packages[@]}"
 
-var_name="SOMEVAR"
+var_name="V2"
 new_value="B"
 # shell_path=$(get_default_shell_path)
 shell_path="$HOME/test.sh"

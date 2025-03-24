@@ -1,3 +1,5 @@
 {
-  "pip_packages": ["yt-dlp", "requests"]
+  "dotfiles": [".zsh"],
+  "pip_packages": ["yt-dlp", "requests", "numpy"],
+  "set_venv_path": true
 }
