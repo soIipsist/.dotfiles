@@ -12,6 +12,5 @@ done
 
 themes_path="$dotfiles_directory/.config/themes/theme.sh"
 source "$themes_path"
-
 source "$SCRIPT_DIR/vscode/vscode_settings.sh"
 set_vscode_settings

@@ -1,14 +1,3 @@
-function set_autosuggest_color() {
-  if [ -z "$ITERM2_AUTOSUGGEST_COLOR" ]; then
-    return 0
-  fi
-
-  shell_path="$dotfiles_directory/.zshrc"
-  var_name="ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE"
-  new_value="fg=$ITERM2_AUTOSUGGEST_COLOR"
-  set_shell_variable "$var_name" "$new_value" "$shell_path"
-}
-
 function export_theme() {
   theme_path="$1"
   icons_path="$(dirname $theme_path)/icons.json"
@@ -44,18 +33,6 @@ function export_theme() {
 
   source "$theme_colors_path"
 
-}
-
-function replace_root() {
-  local value="$1"
-  local root_path="$2"
-
-  # If value starts with '/' and value doesn't start with root path
-  if [[ $value == /* && $value != $root_path* ]]; then
-    echo "$root_path/${value:1}"
-  else
-    echo "$value"
-  fi
 }
 
 function set_wallpaper() {
@@ -94,18 +71,15 @@ if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
 fi
 
 # set vscode theme
-source_vscode_settings_path="$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/vscode_settings.json"
-destination_vscode_settings_path="$dotfiles_directory/Library/Application Support/Code/User/settings.json"
-envsubst <"$source_vscode_settings_path" >"$destination_vscode_settings_path"
 
-if [ -n "$VSCODE_COLOR_THEME" ]; then
-  jq --arg theme "$VSCODE_COLOR_THEME" '
-        ."workbench.colorCustomizations" |= 
-        { ($theme): with_entries(select(.key | startswith("[") | not)) }
-        + with_entries(select(.key | startswith("[") ))' "$destination_vscode_settings_path" >temp.json && mv temp.json "$destination_vscode_settings_path"
+if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+  echo "GIT DOTFILES DIRECTORY was not defined."
+  return
 fi
-# remove all empty keys
-jq 'del(.. | select(. == ""))' "$destination_vscode_settings_path" >temp.json && mv temp.json "$destination_vscode_settings_path"
+
+source "$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/vscode_settings.sh"
+source "$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/vscode_settings.sh"
+set_vscode_settings
 
 # set tmux theme
 source_tmux_conf="$GIT_DOTFILES_DIRECTORY/mac/.tmux/tmux/.tmux.conf"
