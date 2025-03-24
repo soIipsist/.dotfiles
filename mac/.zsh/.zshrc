@@ -2,7 +2,6 @@ plugins=(
     zsh-autosuggestions
 )
 source $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-# source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source "$HOME/.config/themes/theme.sh"
 
 function repeat-last-command() {
@@ -36,7 +35,6 @@ export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 export PATH="$HOME/platform-tools/:$PATH"
 
 # useful paths
-export GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
 export GIT_HOME="$HOME/repos/soIipsist"
 
 # history

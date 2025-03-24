@@ -27,14 +27,6 @@ install_from_brewfile() {
     brew bundle --file $brewfile_path
 }
 
-# change theme on click
-if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    export GIT_DOTFILES_DIRECTORY=$(dirname "$SCRIPT_DIR")
-
-    echo "Set dotfiles directory to: $GIT_DOTFILES_DIRECTORY."
-fi
-
 dotfile_args=("$@")
 
 git_username=$(get_json_value "git_username")

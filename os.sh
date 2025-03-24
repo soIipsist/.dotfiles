@@ -135,10 +135,7 @@ set_shell_variable() {
   # check if variable already exists
   if grep -q "^\(export \)\?$var_name=" "$shell_path"; then
     new_value_escaped=$(echo "$new_value" | sed 's/\$/\\\$/g')
-    grep "^\(export \)\?$var_name=" test.sh | sed -i '' -E "s|($var_name)=.*|\1=\"$new_value\"|" "$shell_path"
-
-    # grep "^\(export \)\?$var_name=" test.sh | sed -i '' -E "s/($var_name)=.*/\1=\"$new_value\"/" "$shell_path"
-    # # grep "^\(export \)\?$var_name=" test.sh | sed -i '' -E "s/($var_name)=.*/\1=\"$new_value\"/g" "$shell_path"
+    grep "^\(export \)\?$var_name=" "$shell_path" | sed -i '' -E "s|($var_name)=.*|\1=\"$new_value\"|" "$shell_path"
   else
     echo "export $var_name=\"$new_value\"" >>"$shell_path"
   fi
@@ -186,27 +183,5 @@ replace_root() {
     echo "$root_path/${value:1}"
   else
     echo "$value"
-  fi
-}
-
-echo_line_to_file() {
-  local line="$1"
-  local file_path="$2"
-  local line_number="$3"
-
-  if [ ! -f $file_path ]; then
-    echo "File $file_path does not exist"
-    return
-  fi
-
-  # If line_number is empty, append to the bottom
-  if [[ -z "$line_number" ]]; then
-    echo "$line" >>"$file_path"
-  else
-    # Insert line at specific line_number
-    current_line=$(sed -n "${line_number}p" "$file_path")
-    sed -i "" "${line_number}i\\
-$line
-" "$file_path"
   fi
 }
