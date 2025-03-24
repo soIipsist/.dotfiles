@@ -1,7 +1,3 @@
-if [ -z "$dotfiles_directory" ]; then
-    dotfiles_directory="$HOME"
-fi
-
 # copy plugins to /sketchybar/plugins
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 

@@ -3,16 +3,10 @@ function set_autosuggest_color() {
     return 0
   fi
 
-  zshrc_path="$dotfiles_directory/.zshrc"
+  shell_path="$dotfiles_directory/.zshrc"
   var_name="ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE"
   new_value="fg=$ITERM2_AUTOSUGGEST_COLOR"
-
-  if grep -q "^\(export \)\?$var_name=" "$zshrc_path"; then
-    sed -i '' "s|^\(export \)\?$var_name=.*|\1$var_name=\"$new_value\"|" "$zshrc_path"
-  else
-    echo "export $var_name=\"$new_value\"" >>"$zshrc_path"
-  fi
-
+  set_shell_variable "$var_name" "$new_value" "$shell_path"
 }
 
 function export_theme() {
@@ -76,14 +70,6 @@ function set_wallpaper() {
 }
 
 # change theme on click
-if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
-  GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
-fi
-
-if [ -z "$dotfiles_directory" ]; then
-  dotfiles_directory="$HOME"
-fi
-
 THEME="$1"
 
 if [ -z "$THEME" ]; then

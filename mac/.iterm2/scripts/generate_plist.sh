@@ -21,17 +21,10 @@ hex_to_rgb() {
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT_DIR="$(dirname $SCRIPT_DIR)" # move outside of scripts
 
-if [ -z "$dotfiles_directory" ]; then
-    dotfiles_directory="$HOME"
-fi
-
 MAIN_PLIST="$SCRIPT_DIR/com.googlecode.iterm2.plist"
 COLORS_PLIST="$SCRIPT_DIR/main.itermcolors"
 
 # source colors
-if [ -z "$dotfiles_directory" ]; then
-    dotfiles_directory="$HOME"
-fi
 source "$dotfiles_directory/.config/themes/theme.sh"
 
 # echo "NAME: $ITERM2_PROFILE_NAME

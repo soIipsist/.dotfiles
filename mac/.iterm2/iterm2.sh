@@ -1,7 +1,3 @@
-if [ -z "$dotfiles_directory" ]; then
-    dotfiles_directory="$HOME"
-fi
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 source "$SCRIPT_DIR/scripts/generate_plist.sh" # generate plist in colors directory

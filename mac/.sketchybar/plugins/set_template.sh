@@ -1,13 +1,5 @@
-if [ -z "$dotfiles_directory" ]; then
-    dotfiles_directory="$HOME"
-fi
-
 templates="$1"
 COUNTER=0
-
-if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
-    GIT_DOTFILES_DIRECTORY="$HOME/repos/soIipsist/.dotfiles"
-fi
 
 SKETCHYBAR_DIR="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar"
 sketchybar_config_folders=(sketchybar "bottombar" "leftbar" "rightbar")
