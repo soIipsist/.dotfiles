@@ -1,9 +1,4 @@
-source "$dotfiles_directory/.config/themes/theme.sh"
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Get all environment variables starting with "AEROSPACE_"
-VARS=$(env | awk -F= '/^AEROSPACE_/ {print "$" $1}' | tr '\n' ' ')
-
-# Use envsubst with only those variables
-envsubst "$VARS" <"$SCRIPT_DIR/aerospace/.aerospace.toml" >"$dotfiles_directory/.aerospace.toml"
+source "$dotfiles_directory/.config/themes/theme.sh"
+source "$SCRIPT_DIR/aerospace/set_aerospace_env.sh"

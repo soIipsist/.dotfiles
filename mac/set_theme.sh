@@ -35,19 +35,6 @@ function export_theme() {
 
 }
 
-function set_wallpaper() {
-
-  wallpaper_path="$1"
-
-  if [ -z "$wallpaper_path" ]; then
-    return
-  fi
-
-  osascript $GIT_DOTFILES_DIRECTORY/mac/wallpaper.scpt $wallpaper_path
-  echo "Set wallpaper to: $wallpaper_path"
-
-}
-
 # change theme on click
 THEME="$1"
 
@@ -58,7 +45,6 @@ fi
 set_template_path="$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
 theme_path="$dotfiles_directory/.config/themes/$THEME.json"
 
-# source theme
 export_theme "$theme_path"
 
 WALLPAPER_PATH=$(replace_root "$WALLPAPER_PATH" "$GIT_DOTFILES_DIRECTORY")
@@ -70,8 +56,6 @@ if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
   source "$set_template_path" "$SKETCHYBAR_TEMPLATE"
 fi
 
-# set vscode theme
-
 if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
   echo "GIT DOTFILES DIRECTORY was not defined."
   return
@@ -80,11 +64,6 @@ fi
 source "$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/vscode_settings.sh"
 source "$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/vscode_settings.sh"
 set_vscode_settings
-
-# set tmux theme
-source_tmux_conf="$GIT_DOTFILES_DIRECTORY/mac/.tmux/tmux/.tmux.conf"
-destination_tmux_conf="$dotfiles_directory/.tmux.conf"
-envsubst <"$source_tmux_conf" >"$destination_tmux_conf"
 
 # set aerospace settings
 VARS=$(env | awk -F= '/^AEROSPACE_/ {print "$" $1}' | tr '\n' ' ')
