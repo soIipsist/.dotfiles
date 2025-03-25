@@ -23,11 +23,12 @@ for bar_name in "${sketchybar_names[@]}"; do
         cp -f "$file" "$dest_plugin"
 
         # replace 'sketchybar' keyword with 'bar_name'
-
         if [[ "$bar_name" != "sketchybar" ]]; then
             sed -i '' "s/sketchybar /$bar_name /g" "$dest_plugin"
         fi
 
+        # replace $dotfiles_directory with actual value
+        sed -i '' "s/\$dotfiles_directory/$dotfiles_directory/g" "$dest_plugin"
         chmod +x "$dest_plugin"
     done
 

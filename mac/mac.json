@@ -1,3 +1,4 @@
 {
-  "dotfiles": [".vscode"]
+  "dotfiles": [".sketchybar"],
+  "theme": "diane"
 }

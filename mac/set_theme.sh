@@ -35,35 +35,34 @@ function export_theme() {
 
 }
 
-if [ -z "$dotfiles_directory" ]; then
-  dotfiles_directory="$HOME"
-fi
+function set_theme() {
 
-source "$dotfiles_directory/.config/themes/set_aerospace_env.sh"
-source "$dotfiles_directory/.config/themes/set_vscode_settings.sh"
-source "$dotfiles_directory/.config/themes/set_iterm2.sh"
-source "$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
+  if [ -z "$dotfiles_directory" ]; then
+    dotfiles_directory="$HOME"
+  fi
 
-# change theme on click
-THEME="$1"
+  THEME="$1"
 
-if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
-  echo "GIT DOTFILES DIRECTORY was not defined."
-  return
-fi
+  if [ -z "$THEME" ]; then
+    exit 0
+  fi
 
-if [ -z "$THEME" ]; then
-  exit 0
-fi
+  source "$GIT_DOTFILES_DIRECTORY/mac/wallpaper.sh"
+  source "$GIT_DOTFILES_DIRECTORY/mac/.aerospace/aerospace/set_aerospace.sh"
+  source "$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/set_vscode_settings.sh"
+  source "$GIT_DOTFILES_DIRECTORY/mac/.iterm2/iterm2/set_iterm2.sh"
+  source "$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
 
-# get theme.json path
-theme_path="$dotfiles_directory/.config/themes/$THEME.json"
-export_theme "$theme_path"
-set_wallpaper "$WALLPAPER_PATH"
-set_autosuggest_color
-set_sketchybar_template "$set_template_path" "$SKETCHYBAR_TEMPLATE"
-set_vscode_settings
-aerospace reload-config
+  # get theme.json path
+  theme_path="$dotfiles_directory/.config/themes/$THEME.json"
+  export_theme "$theme_path"
+  set_wallpaper "$WALLPAPER_PATH"
+  set_autosuggest_color
+  set_sketchybar_template "$SKETCHYBAR_TEMPLATE"
+  set_vscode_settings
+  set_aerospace_env
+  aerospace reload-config
 
-echo "Theme was changed to $THEME."
-echo "WALLPAPER_PATH: $WALLPAPER_PATH."
+  echo "Theme was changed to $THEME."
+  echo "WALLPAPER_PATH: $WALLPAPER_PATH."
+}

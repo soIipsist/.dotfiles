@@ -18,8 +18,3 @@ settings_path="$SCRIPT_DIR/vscode/vscode_settings.json"
 source "$themes_path"
 source "$settings_path"
 set_vscode_settings
-
-cp -f "$set_settings_path" "$themes_dir"
-chmod +x "$dotfiles_directory/.config/themes/set_vscode_settings.sh"
-
-cp -f "$settings_path" "$themes_dir"

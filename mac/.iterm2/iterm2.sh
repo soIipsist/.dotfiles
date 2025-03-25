@@ -12,5 +12,3 @@ defaults write com.googlecode.iterm2.plist SUEnableAutomaticChecks -bool true
 destination_directory="$SCRIPT_DIR"
 
 # diff <(sed 's/;$/,/; s/ = /=/' iterm.txt) <(sed 's/;$/,/; s/ = /=/' iterm2.txt)
-cp -f "$SCRIPT_DIR/iterm2/set_iterm2.sh" "$dotfiles_directory/.config/themes"
-chmod +x "$dotfiles_directory/.config/themes/set_iterm2.sh"

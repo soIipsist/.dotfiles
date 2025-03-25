@@ -3,19 +3,8 @@ source "../json.sh"
 source "../os.sh"
 source "../dotfiles.sh"
 source "../git.sh"
-
-set_wallpaper() {
-
-    wallpaper_path="$1"
-
-    if [ -z "$wallpaper_path" ]; then
-        return
-    fi
-
-    osascript wallpaper.scpt $wallpaper_path
-    echo "Set wallpaper to: $wallpaper_path"
-
-}
+source "wallpaper.sh"
+source "set_theme.sh"
 
 install_from_brewfile() {
     brewfile_path="$1"
@@ -66,5 +55,4 @@ clone_git_repos "${git_repos[@]}" "$git_home"
 set_wallpaper "$wallpaper_path"
 set_venv_path "$venv_path" "$set_venv_path_flag"
 install_pip_packages "$venv_path" "${pip_packages[@]}"
-
-source "../mac/set_theme.sh" "$theme"
+set_theme "$theme"
