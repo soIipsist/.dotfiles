@@ -83,7 +83,7 @@ function Install-Dotfiles {
         }
 
         $Dotfiles = Get-Dotfiles $Directory
-        Move-Dotfiles -Dotfiles $Dotfiles -DestinationDirectory  $global:DestinationDirectory # if dest is null or empty, it doesn't move the files
+        Move-Dotfiles -Dotfiles $Dotfiles -DestinationDirectory  $global:DestinationDirectory # if dest is null, it doesn't move the files
         $global:DestinationDirectory = $null
     }
 

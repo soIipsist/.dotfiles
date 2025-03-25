@@ -30,38 +30,36 @@ Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
 if ($UninstallPackages){
    wsl --unregister Ubuntu
    wsl --uninstall
+   return
 }else{
-    wsl --install -d ubuntu;
+    # wsl --install -d ubuntu;
 }
 
 refreshenv;
 Start-Sleep -Seconds 5
 
-# update ubuntu
-wsl sudo apt --yes update;
-wsl sudo apt --yes upgrade;
+# # update ubuntu
+# wsl sudo apt --yes update;
+# wsl sudo apt --yes upgrade;
 
-$WSLPackages = @("curl", "neofetch", "git", "vim", "zsh", "make", "g++", "gcc")
-Install-Packages -Packages $WSLPackages -PackageProvider "wsl"
+# $WSLPackages = @("curl", "neofetch", "git", "vim", "zsh", "make", "g++", "gcc")
+# Install-Packages -Packages $WSLPackages -PackageProvider "wsl"
 
-# config git
+# # config git
+# wsl git config --global init.defaultBranch "main";
 
-if (!$UninstallPackages){
-    wsl git config --global init.defaultBranch "main";
+# if ($GitUserName) {
+#     Write-Host "Successfully set git username to $GitUserName" -ForegroundColor Green
+#     wsl git config --global user.name $GitUserName; 
+# }
+# if ($GitUserEmail) {
+#     Write-Host "Successfully set git email to $GitUserEmail" -ForegroundColor Green
+#     wsl git config --global user.email $GitUserEmail;
+# }
 
-    if ($GitUserName) {
-        Write-Host "Successfully set git username to $GitUserName" -ForegroundColor Green
-        wsl git config --global user.name $GitUserName; 
-    }
-    if ($GitUserEmail) {
-        Write-Host "Successfully set git email to $GitUserEmail" -ForegroundColor Green
-        wsl git config --global user.email $GitUserEmail;
-    }
+# wsl git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-manager-core.exe";
+# wsl git config --list;
 
-    wsl git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-manager-core.exe";
-    wsl git config --list;
-}
-
-$DestinationDirectory=""
+$global:DestinationDirectory="$null"
 
 Write-Host "WSL was successfully configured." -ForegroundColor Green;
