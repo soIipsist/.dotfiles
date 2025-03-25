@@ -35,39 +35,34 @@ function export_theme() {
 
 }
 
+if [ -z "$dotfiles_directory" ]; then
+  dotfiles_directory="$HOME"
+fi
+
+source "$dotfiles_directory/.config/themes/set_aerospace_env.sh"
+source "$dotfiles_directory/.config/themes/set_vscode_settings.sh"
+source "$dotfiles_directory/.config/themes/set_iterm2.sh"
+source "$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
+
 # change theme on click
 THEME="$1"
-
-if [ -z "$THEME" ]; then
-  exit 0
-fi
-
-set_template_path="$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
-theme_path="$dotfiles_directory/.config/themes/$THEME.json"
-
-export_theme "$theme_path"
-
-WALLPAPER_PATH=$(replace_root "$WALLPAPER_PATH" "$GIT_DOTFILES_DIRECTORY")
-set_wallpaper "$WALLPAPER_PATH"
-set_autosuggest_color
-
-if [ -n "$SKETCHYBAR_TEMPLATE" ]; then
-  # sketchybar --trigger
-  source "$set_template_path" "$SKETCHYBAR_TEMPLATE"
-fi
 
 if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
   echo "GIT DOTFILES DIRECTORY was not defined."
   return
 fi
 
-source "$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/vscode_settings.sh"
-source "$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/vscode_settings.sh"
-set_vscode_settings
+if [ -z "$THEME" ]; then
+  exit 0
+fi
 
-# set aerospace settings
-VARS=$(env | awk -F= '/^AEROSPACE_/ {print "$" $1}' | tr '\n' ' ')
-envsubst "$VARS" <"$GIT_DOTFILES_DIRECTORY/mac/.aerospace/aerospace/.aerospace.toml" >"$dotfiles_directory/.aerospace.toml"
+# get theme.json path
+theme_path="$dotfiles_directory/.config/themes/$THEME.json"
+export_theme "$theme_path"
+set_wallpaper "$WALLPAPER_PATH"
+set_autosuggest_color
+set_sketchybar_template "$set_template_path" "$SKETCHYBAR_TEMPLATE"
+set_vscode_settings
 aerospace reload-config
 
 echo "Theme was changed to $THEME."

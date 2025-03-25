@@ -10,7 +10,16 @@ for extension in $extensions; do
     code --install-extension "$extension" --force >&2
 done
 
-themes_path="$dotfiles_directory/.config/themes/theme.sh"
+themes_dir="$dotfiles_directory/.config/themes"
+themes_path="$themes_dir/theme.sh"
+set_settings_path="$SCRIPT_DIR/vscode/set_vscode_settings.sh"
+settings_path="$SCRIPT_DIR/vscode/vscode_settings.json"
+
 source "$themes_path"
-source "$SCRIPT_DIR/vscode/vscode_settings.sh"
+source "$settings_path"
 set_vscode_settings
+
+cp -f "$set_settings_path" "$themes_dir"
+chmod +x "$dotfiles_directory/.config/themes/set_vscode_settings.sh"
+
+cp -f "$settings_path" "$themes_dir"
