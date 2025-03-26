@@ -110,8 +110,9 @@
   "TMUX_STATUS_LEFT_2": "fg=black",
   "TMUX_STATUS_LEFT_3": "fg=green,bright",
   "TMUX_STATUS_LEFT_4": "default",
-  "TMUX_STATUS_RIGHT_1": "",
-  "TMUX_STATUS_RIGHT_2": "",
-  "TMUX_STATUS_RIGHT_3": "",
+  "TMUX_STATUS_RIGHT_1": "fg=green,bg=default,bright",
+  "TMUX_STATUS_RIGHT_2": "fg=white,bg=default",
+  "TMUX_STATUS_RIGHT_3": "default",
+  "TMUX_STATUS_RIGHT_4": "fg=blue",
   "MUSIC_OPTION": "MUSIC"
 }
