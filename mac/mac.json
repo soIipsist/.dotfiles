@@ -1,4 +1,3 @@
 {
-  "dotfiles": [".sketchybar"],
-  "theme": "event_horizon"
+  "dotfiles": [".tmux"]
 }

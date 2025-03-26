@@ -53,6 +53,7 @@ function set_theme() {
   source "$GIT_DOTFILES_DIRECTORY/mac/.aerospace/aerospace/set_aerospace.sh"
   source "$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/set_vscode_settings.sh"
   source "$GIT_DOTFILES_DIRECTORY/mac/.iterm2/iterm2/set_iterm2.sh"
+  source "$GIT_DOTFILES_DIRECTORY/mac/.tmux/tmux/set_tmux_env.sh"
   source "$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
 
   # get theme.json path
@@ -75,6 +76,9 @@ function set_theme() {
   # set aerospace
   set_aerospace_env
   aerospace reload-config
+
+  # set tmux
+  set_tmux_env
 
   echo "Theme was changed to $THEME."
   echo "DOTFILES $dotfiles_directory $GIT_DOTFILES_DIRECTORY"

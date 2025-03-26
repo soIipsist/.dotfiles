@@ -16,5 +16,5 @@ set_settings_path="$SCRIPT_DIR/vscode/set_vscode_settings.sh"
 settings_path="$SCRIPT_DIR/vscode/vscode_settings.json"
 
 source "$themes_path"
-source "$settings_path"
+source "$set_settings_path"
 set_vscode_settings
