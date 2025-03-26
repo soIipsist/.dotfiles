@@ -2,6 +2,10 @@ function set_sketchybar_template() {
     templates="$1"
     COUNTER=0
 
+    pkill bottombar
+    pkill rightbar
+    pkill leftbar
+
     SKETCHYBAR_DIR="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar"
     sketchybar_config_folders=(sketchybar "bottombar" "leftbar" "rightbar")
     positions=(top bottom left right)
@@ -28,11 +32,7 @@ function set_sketchybar_template() {
         echo "Copied $sketchybar_template_path to $sketchybarrc_path."
 
         # replace dotfiles_directory
-        if [ -n "$dotfiles_directory" ]; then
-            escaped_dotfiles_directory=$(printf '%s\n' "$dotfiles_directory" | sed 's/[\/&]/\\&/g')
-            echo "$escaped_dotfiles_directory"
-            grep "\$dotfiles_directory" "$sketchybarrc_path" | sed -i '' -E "s|\$dotfiles_directory|$dotfiles_directory|g" "$sketchybarrc_path"
-        fi
+        envsubst '${dotfiles_directory},${GIT_DOTFILES_DIRECTORY}' <"$sketchybarrc_path" >"$sketchybarrc_path.tmp" && mv "$sketchybarrc_path.tmp" "$sketchybarrc_path"
 
         # set bar position
         sed -i '' "/^sketchybar --bar/ s/position=[^ ]*/position=$position/" "$sketchybarrc_path"

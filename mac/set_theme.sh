@@ -47,6 +47,7 @@ function set_theme() {
     exit 0
   fi
 
+  source "$GIT_DOTFILES_DIRECTORY/os.sh"
   source "$GIT_DOTFILES_DIRECTORY/mac/wallpaper.sh"
   source "$GIT_DOTFILES_DIRECTORY/mac/.aerospace/aerospace/set_aerospace.sh"
   source "$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/set_vscode_settings.sh"
@@ -56,10 +57,21 @@ function set_theme() {
   # get theme.json path
   theme_path="$dotfiles_directory/.config/themes/$THEME.json"
   export_theme "$theme_path"
+
+  # set wallpaper
+  WALLPAPER_PATH=$(replace_root "$WALLPAPER_PATH" "$GIT_DOTFILES_DIRECTORY")
   set_wallpaper "$WALLPAPER_PATH"
+
+  # set iterm2
   set_autosuggest_color
+
+  # set sketchybar
   set_sketchybar_template "$SKETCHYBAR_TEMPLATE"
+
+  # set vscode
   set_vscode_settings
+
+  # set aerospace
   set_aerospace_env
   aerospace reload-config
 

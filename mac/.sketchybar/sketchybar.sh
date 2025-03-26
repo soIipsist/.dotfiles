@@ -1,6 +1,5 @@
 # copy plugins to /sketchybar/plugins
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-
 source_plugins_directory="$SCRIPT_DIR/plugins"
 
 sketchybar_names=("sketchybar" "bottombar" "leftbar" "rightbar")
