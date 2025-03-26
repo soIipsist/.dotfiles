@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source "$HOME/.config/themes/theme.sh"
+source "$dotfiles_directory/.config/themes/theme.sh"
 
 DISK=$(df -lh | grep /dev/disk3s5 | awk '{print $5}')
 BCOLOR=$COLOR_DEFAULT

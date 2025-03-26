@@ -38,7 +38,7 @@ function export_theme() {
 function set_theme() {
 
   if [ -z "$dotfiles_directory" ]; then
-    dotfiles_directory="$HOME"
+    export dotfiles_directory="$HOME"
   fi
 
   THEME="$1"

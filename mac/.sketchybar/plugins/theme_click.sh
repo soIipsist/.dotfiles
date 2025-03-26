@@ -1,5 +1,5 @@
 # kill processes before restarting
-source "$dotfiles_directory/.config/themes/set_theme.sh"
+source "$GIT_DOTFILES_DIRECTORY/mac/set_theme.sh"
 pkill bottombar
 pkill leftbar
 pkill rightbar

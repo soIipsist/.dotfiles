@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$HOME/.config/themes/theme.sh"
+source "$dotfiles_directory/.config/themes/theme.sh"
 
 APPLICATION=$(tail -n 1 /tmp/sketchybar_app.txt)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

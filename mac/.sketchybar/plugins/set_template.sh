@@ -15,7 +15,6 @@ function set_sketchybar_template() {
         position="${positions[$COUNTER]}"
 
         mkdir -p "$sketchybar_config_folder"
-
         echo $'\n'"Setting $bar_name template: $template."
 
         if [ ! -f "$sketchybar_template_path" ]; then
@@ -25,7 +24,15 @@ function set_sketchybar_template() {
         fi
 
         cp -f "$sketchybar_template_path" "$sketchybarrc_path"
+
         echo "Copied $sketchybar_template_path to $sketchybarrc_path."
+
+        # replace dotfiles_directory
+        if [ -n "$dotfiles_directory" ]; then
+            escaped_dotfiles_directory=$(printf '%s\n' "$dotfiles_directory" | sed 's/[\/&]/\\&/g')
+            echo "$escaped_dotfiles_directory"
+            grep "\$dotfiles_directory" "$sketchybarrc_path" | sed -i '' -E "s|\$dotfiles_directory|$dotfiles_directory|g" "$sketchybarrc_path"
+        fi
 
         # set bar position
         sed -i '' "/^sketchybar --bar/ s/position=[^ ]*/position=$position/" "$sketchybarrc_path"

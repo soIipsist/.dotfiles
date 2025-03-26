@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source "$HOME/.config/themes/theme.sh"
+source "$dotfiles_directory/.config/themes/theme.sh"
 
 LABEL=$(aerospace list-windows --focused --format %{app-name})
 

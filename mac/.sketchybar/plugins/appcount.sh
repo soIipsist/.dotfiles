@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source "$HOME/.config/themes/theme.sh"
+source "$dotfiles_directory/.config/themes/theme.sh"
 
 PROCESS=$(lsappinfo | grep "pid" | wc -l | awk '{print $1}')
 

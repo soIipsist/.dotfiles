@@ -28,7 +28,8 @@ for bar_name in "${sketchybar_names[@]}"; do
         fi
 
         # replace $dotfiles_directory with actual value
-        sed -i '' "s/\$dotfiles_directory/$dotfiles_directory/g" "$dest_plugin"
+        escaped_dotfiles_directory=$(echo $dotfiles_directory | sed 's_/_\\/_g')
+        sed -i '' "s/\$dotfiles_directory/$escaped_dotfiles_directory/g" "$dest_plugin"
         chmod +x "$dest_plugin"
     done
 
