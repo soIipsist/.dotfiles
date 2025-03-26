@@ -28,11 +28,12 @@ function set_sketchybar_template() {
         fi
 
         cp -f "$sketchybar_template_path" "$sketchybarrc_path"
-
-        echo "Copied $sketchybar_template_path to $sketchybarrc_path."
+        echo "Copied $sketchybar_template_path to $sketchybarrc_path. $dotfiles_directory"
 
         # replace dotfiles_directory
-        envsubst '${dotfiles_directory},${GIT_DOTFILES_DIRECTORY}' <"$sketchybarrc_path" >"$sketchybarrc_path.tmp" && mv "$sketchybarrc_path.tmp" "$sketchybarrc_path"
+        if [ -n "$dotfiles_directory" ]; then
+            envsubst '${dotfiles_directory}' <"$sketchybarrc_path" >"$sketchybarrc_path.tmp" && mv "$sketchybarrc_path.tmp" "$sketchybarrc_path"
+        fi
 
         # set bar position
         sed -i '' "/^sketchybar --bar/ s/position=[^ ]*/position=$position/" "$sketchybarrc_path"

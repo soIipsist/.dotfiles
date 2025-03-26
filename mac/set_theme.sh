@@ -30,6 +30,7 @@ function export_theme() {
 
   echo "export SELECTED_THEME=$SELECTED_THEME" >>"$theme_colors_path"
   echo "export dotfiles_directory=$dotfiles_directory" >>"$theme_colors_path"
+  echo "export GIT_DOTFILES_DIRECTORY=$GIT_DOTFILES_DIRECTORY" >>"$theme_colors_path"
 
   source "$theme_colors_path"
 
@@ -44,7 +45,7 @@ function set_theme() {
   THEME="$1"
 
   if [ -z "$THEME" ]; then
-    exit 0
+    return
   fi
 
   source "$GIT_DOTFILES_DIRECTORY/os.sh"
@@ -76,5 +77,5 @@ function set_theme() {
   aerospace reload-config
 
   echo "Theme was changed to $THEME."
-  echo "WALLPAPER_PATH: $WALLPAPER_PATH."
+  echo "DOTFILES $dotfiles_directory $GIT_DOTFILES_DIRECTORY"
 }
