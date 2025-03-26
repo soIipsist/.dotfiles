@@ -2,6 +2,5 @@
   "dotfiles": [".wsl"],
   "git_username": "$GIT_USERNAME",
   "git_email": "$GIT_EMAIL",
-  "dotfiles_directory": "C:/Users/p/Desktop/f",
-  "uninstall_packages": true
+  "uninstall_packages": false
 }

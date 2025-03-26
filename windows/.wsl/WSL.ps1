@@ -11,6 +11,7 @@ $WindowsSetupDirectory = Join-Path -Path $ParentDirectory -ChildPath "Windows-Se
 . $VarsDirectory
 . $WindowsSetupDirectory
 
+# Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
 
 $WSL2Package = [PSCustomObject]@{
     Name   = 'wsl2'
@@ -28,6 +29,7 @@ Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
 
 if ($UninstallPackages){
    wsl --unregister Ubuntu
+   wsl --uninstall
 }else{
     wsl --install -d ubuntu;
 }
@@ -48,16 +50,16 @@ if (!$UninstallPackages){
     wsl git config --global init.defaultBranch "main";
 
     if ($GitUserName) {
-        Write-Host "Successfully set git username to $GitUserName"
-        wsl git config --global user.name $GitUserName;
+        Write-Host "Successfully set git username to $GitUserName" -ForegroundColor Green
+        wsl git config --global user.name $GitUserName; 
     }
     if ($GitUserEmail) {
-        Write-Host "Successfully set git email to $GitUserEmail"
+        Write-Host "Successfully set git email to $GitUserEmail" -ForegroundColor Green
         wsl git config --global user.email $GitUserEmail;
     }
 
-    # wsl git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-manager-core.exe";
-    # wsl git config --list;
+    wsl git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-manager-core.exe";
+    wsl git config --list;
 }
 
 $DestinationDirectory=""

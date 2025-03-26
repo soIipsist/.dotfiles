@@ -17,7 +17,10 @@
       "target_path": "C:/Program Files/Microsoft Office/root/Office16/WINWORD.EXE"
     }
   ],
-  "enabled_features": ["Containers-DisposableClientVM"],
+  "enabled_features": [
+    "Containers-DisposableClientVM",
+    "Microsoft-Windows-Subsystem-Linux"
+  ],
   "disabled_features": [
     "WindowsMediaPlayer",
     "Internet-Explorer-Optional-amd64"

@@ -1,5 +1,3 @@
-. "../windows/Dotfiles.ps1"
-
 function Install-Extensions {
 
     $extensionsFilePath = Join-Path -Path $PSScriptRoot -ChildPath "extensions.json"
