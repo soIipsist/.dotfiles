@@ -53,5 +53,5 @@ Write-Host $Dotfiles
 #     Write-Host "Dotfiles" $Dotfiles -ForegroundColor Green
 # }
 
-Install-Dotfiles -Dotfiles $Dotfiles -ExcludedScripts $ExcludedScripts -DotfilesDirectory $DotfilesDirectory
+# Install-Dotfiles -Dotfiles $Dotfiles -ExcludedScripts $ExcludedScripts -DotfilesDirectory $DotfilesDirectory
  
