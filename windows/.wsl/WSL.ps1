@@ -18,7 +18,6 @@ $WSL2Package = [PSCustomObject]@{
     Params = @("/Version:2", "/Retry:true")
 }
 
- 
 # $WSLUbuntuPackage = [PSCustomObject]@{
 #     Name   = "wsl-ubuntu-2004"
 #     Params = @("/InstallRoot:true", "--execution-timeout", "3600")
@@ -31,6 +30,7 @@ Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
 if ($UninstallPackages){
    wsl --unregister Ubuntu
    wsl --uninstall
+   $global:DestinationDirectory="$null"
    return
 }else{
     wsl --install -d ubuntu;
