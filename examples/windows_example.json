@@ -55,7 +55,7 @@
   "uninstall_packages": false,
   "reboot": true,
   "reboot_time": 0,
-  "chocolatey_packages": ["7zip", "winrar", "sqlitebrowser"],
+  "chocolatey_packages": ["7zip", "winrar", "sqlitebrowser", "fzf"],
   "scoop_packages": ["main/adb", "aircrack-ng"],
   "pip_packages": [],
   "winget_packages": [

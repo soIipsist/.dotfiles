@@ -11,13 +11,14 @@ $WindowsSetupDirectory = Join-Path -Path $ParentDirectory -ChildPath "Windows-Se
 . $VarsDirectory
 . $WindowsSetupDirectory
 
-# Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
 
 $WSL2Package = [PSCustomObject]@{
     Name   = 'wsl2'
     Params = @("/Version:2", "/Retry:true")
 }
 
+ 
 # $WSLUbuntuPackage = [PSCustomObject]@{
 #     Name   = "wsl-ubuntu-2004"
 #     Params = @("/InstallRoot:true", "--execution-timeout", "3600")
@@ -25,7 +26,7 @@ $WSL2Package = [PSCustomObject]@{
 
 # install wsl packages
 $Packages = @($WSL2Package)
-Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
+# Install-Packages -Packages $Packages -UninstallPackages $UninstallPackages
 
 if ($UninstallPackages){
    wsl --unregister Ubuntu
@@ -35,14 +36,14 @@ if ($UninstallPackages){
     # wsl --install -d ubuntu;
 }
 
-refreshenv;
-Start-Sleep -Seconds 5
+# refreshenv;
+# Start-Sleep -Seconds 5
 
 # # update ubuntu
 # wsl sudo apt --yes update;
 # wsl sudo apt --yes upgrade;
 
-# $WSLPackages = @("curl", "neofetch", "git", "vim", "zsh", "make", "g++", "gcc")
+$WSLPackages = @("curl", "neofetch", "git", "vim", "zsh", "make", "g++", "gcc", "build-essential", "procps", "file")
 # Install-Packages -Packages $WSLPackages -PackageProvider "wsl"
 
 # # config git
@@ -60,6 +61,16 @@ Start-Sleep -Seconds 5
 # wsl git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-manager-core.exe";
 # wsl git config --list;
 
-$global:DestinationDirectory="$null"
+$user = wsl whoami
+wsl git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
+# install homebrew
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh" -OutFile "$env:TEMP\install.sh"
+$wslPath = "$env:TEMP\install.sh"
+
+wsl /bin/bash -c "bash /mnt/c/Users/p/AppData/Local/Temp/install.sh"
+wsl /bin/bash -c "echo 'export BREW_HOME="/home/linuxbrew/.linuxbrew/bin"' >> /home/p/.bashrc"
+wsl /bin/bash -c "echo 'export PATH='$PATH:$BREW_HOME'" >> /home/p/.bashrc"
+
+$global:DestinationDirectory="\\wsl$\Ubuntu\home\$user"
 Write-Host "WSL was successfully configured." -ForegroundColor Green;
