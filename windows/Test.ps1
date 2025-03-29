@@ -42,7 +42,8 @@ if ($args.Count -gt 0){
 }
 
 
-Write-Host $Dotfiles
+Remove-Windows-Watermark
+
 # Write-Host "Dotfile dirs" $DotfileDirectories -ForegroundColor Green 
 
 # foreach ($Directory in $DotfileDirectories){

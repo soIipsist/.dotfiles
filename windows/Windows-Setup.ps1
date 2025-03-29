@@ -517,3 +517,22 @@ function Set-Windows-Timezone {
     Set-TimeZone $Timezone
     Get-TimeZone
 }
+
+function Remove-Windows-Watermark{
+    param(
+        $RemoveWindowsWatermark = $false
+    )
+
+    if (-not $RemoveWindowsWatermark){
+        return
+    }
+    Set-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\svsvc" -Name Start -Value 4 -Force;
+    Set-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" -Name VLActivationInterval -Value 0x0000a8c0 -Force;
+    Set-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" -Name NoActivationUX -Value 0x00000001 -Force;
+
+    Write-Host "Setting HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\svsvc\Start value to 4." -ForegroundColor Yellow
+    Write-Host "Setting HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\VLActivationInterval value to 0x0000a8c0." -ForegroundColor Yellow
+    Write-Host "Setting HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\svsvc\NoActivationUX value to 0x00000001." -ForegroundColor Yellow
+
+    Write-Host "Sucessfully removed windows watermark. Restart your machine to see changes." -ForegroundColor Green
+}   
