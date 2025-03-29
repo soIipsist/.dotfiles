@@ -385,56 +385,56 @@ function Set-Power-Configuration {
     # DC: Direct Current (Battery).
 
     # Set turn off disk timeout (in minutes / 0: never)
-    if ($DiskTimeoutAC -ne $null){
+    if ($null -ne $DiskTimeoutAC){
         powercfg -change "disk-timeout-ac" $DiskTimeoutAC;
         Write-Host "DiskTimeoutAC was set to $DiskTimeoutAC." -ForegroundColor Green;
     }
     
-    if ($DiskTimeoutDC -ne $null){
+    if ($null -ne $DiskTimeoutDC){
         powercfg -change "disk-timeout-dc" $DiskTimeoutDC;
         Write-Host "DiskTimeoutDC was set to $DiskTimeoutDC." -ForegroundColor Green;
     }
 
     # Set hibernate timeout (in minutes / 0: never)
-    if ($HibernateTimeoutAC -ne $null){
+    if ($null -ne $HibernateTimeoutAC){
         powercfg -change "hibernate-timeout-ac" $HibernateTimeoutAC;
         Write-Host "HibernateTimeoutAC was set to $HibernateTimeoutAC." -ForegroundColor Green;
     }
 
-    if ($HibernateTimeoutDC -ne $null){
+    if ($null -ne $HibernateTimeoutDC){
         powercfg -change "hibernate-timeout-dc" $HibernateTimeoutDC;
         Write-Host "HibernateTimeoutDC was set to $HibernateTimeoutDC." -ForegroundColor Green;
     }
     
     # Set sleep timeout (in minutes / 0: never)
-    if ($StandbyTimeoutAC -ne $null){
+    if ($null -ne $StandbyTimeoutAC){
         powercfg -change "standby-timeout-ac" $StandbyTimeoutAC;
         Write-Host "StandbyTimeoutAC was set to $StandbyTimeoutAC." -ForegroundColor Green;
     }
 
-    if ($StandbyTimeoutDC -ne $null){
+    if ($null -ne $StandbyTimeoutDC){
         powercfg -change "standby-timeout-dc" $StandbyTimeoutDC;
         Write-Host "StandbyTimeoutDC was set to $StandbyTimeoutDC." -ForegroundColor Green;
     }
     
     # Set turn off screen timeout (in minutes / 0: never)
-    if ($MonitorTimeoutAC -ne $null){
+    if ($null -ne $MonitorTimeoutAC){
         powercfg -change "monitor-timeout-ac" $MonitorTimeoutAC;
         Write-Host "MonitorTimeoutAC was set to $MonitorTimeoutAC." -ForegroundColor Green;
     }
 
-    if ($MonitorTimeoutDC -ne $null){
+    if ($null -ne $MonitorTimeoutDC){
         powercfg -change "monitor-timeout-dc" $MonitorTimeoutDC;
         Write-Host "MonitorTimeoutDC was set to $MonitorTimeoutDC." -ForegroundColor Green;
     }
    
     # Set turn off screen timeout on lock screen (in seconds / 0: never)
-    if ($LockscreenTimeoutAC -ne $null){
+    if ($null -ne $LockscreenTimeoutAC){
         powercfg /SETACVALUEINDEX SCHEME_CURRENT SUB_VIDEO VIDEOCONLOCK $LockscreenTimeoutAC;
         Write-Host "LockscreenTimeoutAC was set to $LockscreenTimeoutAC." -ForegroundColor Green;
     }
     
-    if ($LockscreenTimeoutDC -ne $null){
+    if ($null -ne $LockscreenTimeoutDC){
         powercfg /SETDCVALUEINDEX SCHEME_CURRENT SUB_VIDEO VIDEOCONLOCK $LockscreenTimeoutDC;
         Write-Host "LockscreenTimeoutDC was set to $LockscreenTimeoutDC." -ForegroundColor Green;
     }
@@ -529,10 +529,15 @@ function Remove-Windows-Watermark{
     Set-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\svsvc" -Name Start -Value 4 -Force;
     Set-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" -Name VLActivationInterval -Value 0x0000a8c0 -Force;
     Set-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" -Name NoActivationUX -Value 0x00000001 -Force;
+    Set-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Activation" -Name ActivationInterval -Value 0x00000000 -Force;
+    Set-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Activation" -Name Manual -Value 0x00000001 -Force;
+    Set-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Activation" -Name NotificationDisabled -Value 0x00000001 -Force;
 
     Write-Host "Setting HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\svsvc\Start value to 4." -ForegroundColor Yellow
     Write-Host "Setting HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\VLActivationInterval value to 0x0000a8c0." -ForegroundColor Yellow
     Write-Host "Setting HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\svsvc\NoActivationUX value to 0x00000001." -ForegroundColor Yellow
-
+    Write-Host "Setting HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Activation\ActivationInterval value to 0x00000000." -ForegroundColor Yellow
+    Write-Host "Setting HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Activation\Manual value to 0x00000001." -ForegroundColor Yellow
+    Write-Host "Setting HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Activation\NotificationDisabled value to 0x00000001." -ForegroundColor Yellow
     Write-Host "Sucessfully removed windows watermark. Restart your machine to see changes." -ForegroundColor Green
 }   
