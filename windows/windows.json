@@ -2,5 +2,6 @@
   "dotfiles": [".vim"],
   "git_username": "$GIT_USERNAME",
   "git_email": "$GIT_EMAIL",
+  "remove_windows_watermark": true,
   "uninstall_packages": false
 }

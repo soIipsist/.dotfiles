@@ -37,12 +37,13 @@ $global:StartMenuPath = "$UserProfilePath\AppData\Roaming\Microsoft\Windows\Star
 $global:ProgramFilesPath = [System.Environment]::GetFolderPath('ProgramFiles')
 $global:ProgramFilesX86Path = [System.Environment]::GetFolderPath('ProgramFilesX86')
 
+$global:RemoveWindowsWatermark = $WindowsData.remove_windows_watermark
+
 if ($args.Count -gt 0){
     $Dotfiles = $args
 }
 
-
-Remove-Windows-Watermark
+Remove-Windows-Watermark -RemoveWindowsWatermark $RemoveWindowsWatermark
 
 # Write-Host "Dotfile dirs" $DotfileDirectories -ForegroundColor Green 
 

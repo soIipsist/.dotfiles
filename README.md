@@ -38,6 +38,7 @@ These are the valid parameters that can be specified in the `windows.json` file:
 - **`show_file_extensions`**: Whether file extensions are visible (default: `true`).
 - **`classic_context_menu`**: Enable/disable classic context menu (default: `true`).
 - **`remove_desktop_shortcuts`**: Remove desktop shortcuts (default: `false`).
+- **`remove_windows_watermark`**: Removes windows activation watermark (default: `false`).
 - **`activate_office`**: Activate Microsoft Office 365 using KMS client key (default: `false`).
 - **`fonts_directory`**: Directory containing font files to install.
 - **`wallpaper_path`**: Default wallpaper image path.

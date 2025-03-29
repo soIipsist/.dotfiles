@@ -29,6 +29,7 @@
   "show_file_extensions": true,
   "classic_context_menu": true,
   "remove_desktop_shortcuts": true,
+  "remove_windows_watermark": true,
   "disk_timeout_ac": 0,
   "disk_timeout_dc": 0,
   "hibernate_timeout_ac": 0,

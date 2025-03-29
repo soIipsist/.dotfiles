@@ -34,6 +34,7 @@ $global:FileExplorerStartFolder = $WindowsData.file_explorer_start_folder
 $global:ShowFileExtensions = $WindowsData.show_file_extensions
 $global:ClassicContextMenu = $WindowsData.classic_context_menu
 $global:RemoveDesktopShortcuts = $WindowsData.remove_desktop_shortcuts
+$global:RemoveWindowsWatermark = $WindowsData.remove_windows_watermark
 $global:ActivateOffice = $WindowsData.activate_office
 $global:FontsDirectory = Replace-Root -Value $WindowsData.fonts_directory -RootPath $ParentDirectory
 $global:WallpaperPath = Replace-Root -Value $WindowsData.wallpaper_path -RootPath $ParentDirectory
@@ -120,6 +121,7 @@ Install-Dotfiles -Dotfiles $Dotfiles -ExcludedScripts $ExcludedScripts -Dotfiles
 Set-Windows-Shortcuts -Shortcuts $Shortcuts
 Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
 Remove-Desktop-Shortcuts -RemoveDesktopShortcuts $RemoveDesktopShortcuts
+Remove-Windows-Watermark -RemoveWindowsWatermark $RemoveWindowsWatermark
 
 Write-Host "Setup was completed successfully." -ForegroundColor Green
 Reboot -Reboot $Reboot -RebootTime $RebootTime
