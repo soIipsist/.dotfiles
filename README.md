@@ -43,7 +43,7 @@ These are the valid parameters that can be specified in the `windows.json` file:
 - **`fonts_directory`**: Directory containing font files to install.
 - **`wallpaper_path`**: Default wallpaper image path.
 - **`lockscreen_path`**: Default lock screen image path.
-- **`disk_timeout_ac`**: AC disk timeout (default: `0`). ***Warning: all timeouts must be in string format.***
+- **`disk_timeout_ac`**: AC disk timeout (default: `0`).
 - **`disk_timeout_dc`**: DC disk timeout (default: `0`).
 - **`hibernate_timeout_ac`**: AC hibernate timeout (default: `0`).
 - **`hibernate_timeout_dc`**: DC hibernate timeout (default: `0`).

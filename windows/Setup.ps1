@@ -56,15 +56,15 @@ $global:PackageProviders = $WindowsData.package_providers
 
 # power configuration
 $global:DiskTimeoutAC = $WindowsData.disk_timeout_ac
-$global:DiskTimeoutAC = $WindowsData.disk_timeout_ac
+$global:DiskTimeoutDC = $WindowsData.disk_timeout_dc
 $global:HibernateTimeoutAC = $WindowsData.hibernate_timeout_ac
-$global:HibernateTimeoutDC = $WindowsData.hibernate_timeout_ac
+$global:HibernateTimeoutDC = $WindowsData.hibernate_timeout_dc
 $global:MonitorTimeoutAC = $WindowsData.monitor_timeout_ac
 $global:MonitorTimeoutDC = $WindowsData.monitor_timeout_dc
 $global:StandbyTimeoutAC = $WindowsData.standby_timeout_ac
 $global:StandbyTimeoutDC = $WindowsData.standby_timeout_dc
 $global:LockscreenTimeoutAC = $WindowsData.lockscreen_timeout_ac
-$global:LockscreenTimeoutDC = $WindowsData.lockscreen_timeout_ac
+$global:LockscreenTimeoutDC = $WindowsData.lockscreen_timeout_dc
 
 # regional format
 $global:FirstDayOfWeek = $WindowsData.first_day_of_week
