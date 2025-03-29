@@ -1,17 +1,8 @@
 function Install-VimPlug {
-    
+    Write-Host "Installing Vim Plug..." -ForegroundColor Yellow
     Invoke-WebRequest -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
-        New-Item $HOME/vimfiles/autoload/plug.vim -Force
+    ni $HOME/vimfiles/autoload/plug.vim -Force
 }
-
-function VimConfig {
-    # move vim plug file to vim autoload
-    New-Item -Path "~\.vim"
-    Copy-Item -Path ~/vimfiles -Destination ~\.vim -Recurse
-
-    vim +PlugInstall +qall;
-}   
-
 
 $VimPackage = [PSCustomObject]@{
     Name   = 'vim'
@@ -28,4 +19,4 @@ if ($UninstallPackages){
 }
 
 Install-VimPlug
-VimConfig
+vim +PlugInstall +qall;

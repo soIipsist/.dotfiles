@@ -1,5 +1,5 @@
 {
-  "dotfiles": [".git-config"],
+  "dotfiles": [".vim"],
   "git_username": "$GIT_USERNAME",
   "git_email": "$GIT_EMAIL",
   "uninstall_packages": false

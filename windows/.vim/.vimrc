@@ -2,8 +2,10 @@
 "" Vim-Plug core
 "*****************************************************************************
 
+set runtimepath+=~/vimfiles
+
 "" Required:
-call plug#begin()
+call plug#begin('~/vimfiles/plugged')
 
 "*****************************************************************************
 "" Plug install packages
