@@ -43,16 +43,16 @@ These are the valid parameters that can be specified in the `windows.json` file:
 - **`fonts_directory`**: Directory containing font files to install.
 - **`wallpaper_path`**: Default wallpaper image path.
 - **`lockscreen_path`**: Default lock screen image path.
-- **`disk_timeout_ac`**: AC disk timeout (default: `0`).
-- **`disk_timeout_dc`**: DC disk timeout (default: `0`).
-- **`hibernate_timeout_ac`**: AC hibernate timeout (default: `0`).
-- **`hibernate_timeout_dc`**: DC hibernate timeout (default: `0`).
-- **`standby_timeout_ac`**: AC standby timeout (default: `0`).
-- **`standby_timeout_dc`**: DC standby timeout (default: `0`).
-- **`monitor_timeout_ac`**: AC monitor timeout (default: `0`).
-- **`monitor_timeout_dc`**: DC monitor timeout (default: `0`).
-- **`lockscreen_timeout_ac`**: AC lockscreen timeout (default: `0`).
-- **`lockscreen_timeout_dc`**: DC lockscreen timeout (default: `0`).
+- **`disk_timeout_ac`**: AC disk timeout.
+- **`disk_timeout_dc`**: DC disk timeout.
+- **`hibernate_timeout_ac`**: AC hibernate timeout.
+- **`hibernate_timeout_dc`**: DC hibernate timeout.
+- **`standby_timeout_ac`**: AC standby timeout.
+- **`standby_timeout_dc`**: DC standby timeout.
+- **`monitor_timeout_ac`**: AC monitor timeout.
+- **`monitor_timeout_dc`**: DC monitor timeout.
+- **`lockscreen_timeout_ac`**: AC lockscreen timeout.
+- **`lockscreen_timeout_dc`**: DC lockscreen timeout.
 - **`first_day_of_week`**: Sets the first day of the week (default: `0` = Monday).
 - **`short_date`**: Short date format (default: `dd/MM/yyyy`).
 - **`long_date`**: Long date format (default: `dddd, d MMMM, yyyy`).
