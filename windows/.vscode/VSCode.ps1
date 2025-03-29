@@ -11,10 +11,6 @@ function Install-Extensions {
     }
 }
 
-
-$Dotfiles = Get-Dotfiles $PSScriptRoot | Where-Object { $_.Name -ne "extensions.json" }
-
-Write-Host $Dotfiles
 $VSCodePackage = [PSCustomObject]@{
     Name   = 'vscode'
     Params = @("/NoDesktopIcon", "/NoQuicklaunchIcon", "/NoContextMenuFiles", "/NoContextMenuFolders")

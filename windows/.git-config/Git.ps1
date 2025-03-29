@@ -34,4 +34,4 @@ Move-Dotfiles -Dotfiles $Dotfiles -DestinationDirectory $global:DestinationDirec
 GitConfig -GitUserEmail $GitUserEmail -GitUserName $GitUserName
 Write-Host "Git was successfully configured." -ForegroundColor Green;
 
-$global:DestinationDirectory="" # don't move dotfiles again
+$global:DestinationDirectory="$null" # don't move dotfiles again

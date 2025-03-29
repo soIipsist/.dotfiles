@@ -1,6 +1,4 @@
 
-$Dotfiles = Get-Dotfiles $PSScriptRoot
-
 $WindowsTerminalPackage = [PSCustomObject]@{
     Name   = 'Microsoft.WindowsTerminal'
     Params = @()
