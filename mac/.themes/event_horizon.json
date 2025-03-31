@@ -1,9 +1,9 @@
 {
   "THEME_NAME": "Event Horizon",
-  "SKETCHYBAR_TEMPLATE": ["main"],
+  "SKETCHYBAR_TEMPLATE": ["event_horizon_top"],
   "WALLPAPER_PATH": "/wallpapers/synthwave_astronaut.jpg",
   "FONT": "Hack Nerd Font:Bold:15.0",
-  "FONT_2": "Hack Nerd Font:Bold:14.0",
+  "FONT_2": "Hack Nerd Font:Bold:13.0",
   "COLOR_DEFAULT": "0xffffffff",
   "COLOR_BACKGROUND": "0xff140C42",
   "COLOR_SECONDARY": "0xff2b1c84",
@@ -28,7 +28,7 @@
   "COLOR_CYAN_BRIGHT": "0xe089dceb",
   "COLOR_WHITE_BRIGHT": "0xe0cdd6f4",
 
-  "HEIGHT": 37,
+  "HEIGHT": 40,
   "PADDING_LEFT": 10,
   "PADDING_RIGHT": 10,
 
@@ -116,7 +116,7 @@
   "AEROSPACE_GAP_INNER_VERTICAL": 20,
   "AEROSPACE_GAP_OUTER_LEFT": 10,
   "AEROSPACE_GAP_OUTER_BOTTOM": 20,
-  "AEROSPACE_GAP_OUTER_TOP": 15,
+  "AEROSPACE_GAP_OUTER_TOP": 13,
   "AEROSPACE_GAP_OUTER_RIGHT": 10,
 
   "MUSIC_OPTION": "MUSIC"

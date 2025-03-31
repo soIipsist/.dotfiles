@@ -2,7 +2,7 @@ source "$dotfiles_directory/.config/themes/theme.sh"
 PLUGIN_DIR="$dotfiles_directory/.config/sketchybar/plugins"
 
 sketchybar --bar position=top \
-    height=37 \
+    height=$HEIGHT \
     blur_radius=30 \
     sticky=off \
     padding_left=$PADDING_LEFT \
@@ -96,8 +96,8 @@ sketchybar --add item themes.logo left \
     width=100 \
     icon.width=15 \
     label.align=center \
-    label.font="$FONT_2" \
-    icon.font="$FONT_2" \
+    label.font="$FONT" \
+    icon.font="$FONT" \
     icon.font.size=17 \
     icon.align=center \
     label="$SELECTED_THEME_NAME" \

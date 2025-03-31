@@ -11,3 +11,7 @@ function set_autosuggest_color() {
 
     set_shell_variable "$var_name" "$new_value" "$shell_path"
 }
+
+function set_iterm2_theme() {
+
+}

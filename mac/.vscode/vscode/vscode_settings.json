@@ -26,7 +26,7 @@
   "editor.formatOnSave": true,
   "files.associations": {
     "*.tmux.conf": "plaintext",
-    "main": "shellscript",
+    "event_horizon_top": "shellscript",
     "diane_top": "shellscript",
     "diane_bottom": "shellscript"
   },
