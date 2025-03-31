@@ -1,10 +1,27 @@
 {
-    "hostname": "pc",
-    "apt_packages": [],
-    "pip_packages": [],
-    "dotfiles": [],
-    "wallpaper_path": "",
-    "lockscreen_path": "",
-    "git_username": "",
-    "git_email": ""
+  "hostname": "pc",
+  "apt_packages": [
+    "neofetch",
+    "htop",
+    "curl",
+    "tmux",
+    "vim",
+    "zsh",
+    "screen",
+    "cron",
+    "rsync",
+    "build-essential",
+    "openssh-server",
+    "unattended-upgrades",
+    "bash-completion",
+    "procps",
+    "file",
+    "git"
+  ],
+  "pip_packages": [],
+  "dotfiles": [],
+  "wallpaper_path": "",
+  "lockscreen_path": "",
+  "git_username": "",
+  "git_email": ""
 }

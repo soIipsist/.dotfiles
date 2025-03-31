@@ -1,24 +1,4 @@
 {
   "hostname": "solipsist",
-  "apt_packages": [
-    "neofetch",
-    "htop",
-    "curl",
-    "tmux",
-    "vim",
-    "zsh",
-    "screen",
-    "cron",
-    "rsync",
-    "build-essential",
-    "openssh-server",
-    "unattended-upgrades",
-    "bash-completion",
-    "procps",
-    "file",
-    "git"
-  ],
-  "pip_packages": [],
-  "brew_packages": ["fzf"],
-  "install_homebrew": true
+  "dotfiles": [".bash"]
 }
