@@ -55,7 +55,7 @@ install_homebrew() {
 set_default_shell() {
   default_shell="$1"
 
-  if [ -z $default_shell ]; then
+  if [ -z "$default_shell" ]; then
     return
   fi
 
@@ -66,33 +66,35 @@ set_default_shell() {
 }
 
 set_hostname() {
-  hostname="$1"
+  local hostname="$1"
 
   if [ -z "$hostname" ]; then
     return
   fi
 
+  local os=$(get_os)
   echo "Setting hostname to: $hostname"
 
-  if [ $os == 'mac' ]; then
-    sudo -s scutil --set HostName $hostname
+  if [ "$os" == "mac" ]; then
+    sudo scutil --set HostName "$hostname"
 
     # set localhost name
-    if [ ! -z $local_hostname ]; then
+    if [ ! -z "$local_hostname" ]; then
       sudo -s scutil --set LocalHostName $local_hostname
     fi
 
     # set computer name
-    if [ ! -z $computer_name ]; then
+    if [ ! -z "$computer_name" ]; then
       sudo -s scutil --set ComputerName $computer_name
     fi
 
     dscacheutil -flushcache
 
-  elif [ $os == 'linux' ]; then
-    sudo hostnamectl set-hostname $hostname
+  elif [ "$os" == "linux" ]; then
+    sudo hostnamectl set-hostname "$hostname"
   else
-    return
+    echo "Unsupported OS: $os"
+    return 1
   fi
 }
 
