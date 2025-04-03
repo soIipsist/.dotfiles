@@ -55,8 +55,8 @@ async def set_theme(profile: iterm2.Profile):
                     color_tuple[0], color_tuple[1], color_tuple[2], 255
                 )
 
-            await func(iterm_value)
-    # await profile.async_set_background_color(iterm2.Color(0, 0, 0, 255))
+            # await func(iterm_value)
+    await profile.async_set_background_color(iterm2.Color(0, 0, 0, 255))
 
 
 async def main(connection):
