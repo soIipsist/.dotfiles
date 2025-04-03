@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
-import sys
 import iterm2
 import os
 
 
 async def hex_to_rgb(hex_color: str):
-    if not hex_color.startswith("#"):
-        return hex_color
     hex_color = hex_color.lstrip("#")
     return tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
 
@@ -48,17 +45,24 @@ async def set_theme(profile: iterm2.Profile):
         # check if environment variable exists
         iterm_value = os.environ.get(key, None)
 
+        if key == "ITERM2_BACKGROUND":
+            print("BG", iterm_value)
+        # print(iterm_value)
         if iterm_value:
-            color_tuple = await hex_to_rgb(iterm_value)
-            iterm2_color = iterm2.Color(
-                color_tuple[0], color_tuple[1], color_tuple[2], 255
-            )
-            func(iterm2_color)
+            if iterm_value.startswith("#"):
+                color_tuple = await hex_to_rgb(iterm_value)
+                iterm_value = iterm2.Color(
+                    color_tuple[0], color_tuple[1], color_tuple[2], 255
+                )
+
+            await func(iterm_value)
+    # await profile.async_set_background_color(iterm2.Color(0, 0, 0, 255))
 
 
 async def main(connection):
     app = await iterm2.async_get_app(connection)
     session = app.current_window.current_tab.current_session
+
     profile = await session.async_get_profile()
     await set_theme(profile)
 
