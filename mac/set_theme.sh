@@ -66,7 +66,7 @@ function set_theme() {
 
   # set iterm2
   set_autosuggest_color
-  python3 "$GIT_DOTFILES_DIRECTORY/mac/.iterm2/iterm2/set_theme.py"
+  set_iterm2_theme
 
   # set sketchybar
   set_sketchybar_template "$SKETCHYBAR_TEMPLATE"

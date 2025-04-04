@@ -11,3 +11,8 @@ function set_autosuggest_color() {
 
     set_shell_variable "$var_name" "$new_value" "$shell_path"
 }
+
+function set_iterm2_theme() {
+    SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+    python3 "$SCRIPT_DIR/set_theme.py" >/tmp/debug.txt 2>&1
+}
