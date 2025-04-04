@@ -13,6 +13,9 @@ function set_autosuggest_color() {
 }
 
 function set_iterm2_theme() {
+    if [ -n "$1" ]; then
+        source "$1/venv/bin/activate"
+    fi
     SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
     python3 "$SCRIPT_DIR/set_theme.py" >/tmp/debug.txt 2>&1
 }

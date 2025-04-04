@@ -66,7 +66,7 @@ function set_theme() {
 
   # set iterm2
   set_autosuggest_color
-  set_iterm2_theme
+  set_iterm2_theme "$GIT_DOTFILES_DIRECTORY"
 
   # set sketchybar
   set_sketchybar_template "$SKETCHYBAR_TEMPLATE"
