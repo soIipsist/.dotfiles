@@ -32,6 +32,8 @@ else
         LABEL=$HOTSPOT
     elif [[ $WIFI != "" ]]; then
         COLOR=$COLOR_BLUE_BRIGHT
+        LABEL_COLOR=$COLOR_BACKGROUND
+        ICON_COLOR=$COLOR_BACKGROUND
         ICON=$ICON_WIFI
         LABEL=$WIFI
     elif [[ $IP_ADDRESS != "" ]]; then
@@ -45,4 +47,12 @@ else
     fi
 fi
 
-sketchybar --set $NAME background.color=$COLOR icon=$ICON label="$LABEL"
+if [ -z "$LABEL_COLOR" ]; then
+    LABEL_COLOR=$COLOR_DEFAULT
+fi
+
+if [ -z "$ICON_COLOR" ]; then
+    ICON_COLOR=$COLOR_DEFAULT
+fi
+
+sketchybar --set $NAME background.color=$COLOR label.color=$LABEL_COLOR icon=$ICON icon.color=$ICON_COLOR label="$LABEL"

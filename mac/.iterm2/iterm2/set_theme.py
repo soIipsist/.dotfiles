@@ -52,13 +52,12 @@ async def set_theme(profile: iterm2.Profile):
         "ITERM2_TAB_COLOR": profile.async_set_tab_color,
     }
 
+    profile.async_set_use_tab_color(True)
+
     for key, func in iterm2_vars.items():
         # check if environment variable exists
         env_vars = get_env_vars()
         iterm_value = env_vars.get(key, None)
-
-        if key == "ITERM2_BACKGROUND":
-            print("BG", iterm_value)
 
         # print(iterm_value)
         if iterm_value:
@@ -69,7 +68,8 @@ async def set_theme(profile: iterm2.Profile):
                 )
 
             await func(iterm_value)
-    # await profile.async_set_background_color(iterm2.Color(0, 0, 0, 255))
+
+    # await profile.async_set_tab_color(iterm2.Color(0, 0, 255, 255))
 
 
 async def main(connection):
