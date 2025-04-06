@@ -31,35 +31,47 @@ def read_json_file(json_file, errors=None):
 
 def get_options(
     format: str,
-    video_extension=None,
-    audio_extension=None,
-    video_sound_extension=None,
+    prefix: str = None,
+    video_extension="mp4",
+    audio_extension="mp3",
+    video_sound_extension="m4a",
+    output_directory=None,
+    metadata_file="",
 ):
-    # check if options exist as environment variables
-    options_file = f"{parent_directory}/metadata/{format}_options.json"
-    options = {}
 
-    if os.path.exists(options_file):
-        options = read_json_file(options_file)
+    if os.path.exists(metadata_file):  # read from metadata file, if it exists
+        options = read_json_file(metadata_file)
+        return options
 
-    audio_extension = audio_extension or "mp3"
-    video_extension = video_extension or "mp4"
-    video_sound_extension = video_sound_extension or "m4a"
-
-    if format == "video":
+    if format == "video":  # default video options
+        options = {
+            "format": "bestvideo+bestaudio",
+            "progress": True,
+            "postprocessors": [
+                {"already_have_subtitle": False, "key": "FFmpegEmbedSubtitle"}
+            ],
+            "writesubtitles": True,
+            "writeautomaticsub": True,
+            "subtitleslangs": ["en"],
+            "outtmpl": "%(title)s.%(ext)s",
+        }
         options["format"] = (
             f"bestvideo[ext={video_extension}]+bestaudio[ext={video_sound_extension}]/{video_extension}"
         )
     elif format == "audio":
-        options["format"] = "bestaudio/best"
-        options["postprocessors"] = [
-            {
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": audio_extension,
-            }
-        ]
-    else:
-        raise ValueError("Invalid format_type. Choose 'video' or 'audio'.")
+        options = {
+            "format": "bestaudio/best",
+            "outtmpl": "%(title)s.%(ext)s",
+            "postprocessors": [
+                {"key": "FFmpegExtractAudio", "preferredcodec": audio_extension}
+            ],
+            "ignoreerrors": True,
+        }
+
+    options["outtmpl"] = get_outtmpl(format, prefix, output_directory)
+
+    if output_directory:
+        outtmpl = f"{output_directory}/{outtmpl}"
     return options
 
 
@@ -109,7 +121,12 @@ def download(urls: list, options: dict, extract_info: bool):
             print(f"Finished processing URL: {url}")
 
 
-def get_outtmpl(format: str, output_directory: str = None):
+def get_outtmpl(format: str, prefix: str = None, output_directory: str = None):
+
+    outtmpl = f"%(title)s.%(ext)s"
+
+    if prefix:
+        outtmpl = f"{prefix} - {outtmpl}"
 
     if not output_directory:
         if format == "audio":
@@ -118,7 +135,7 @@ def get_outtmpl(format: str, output_directory: str = None):
         elif format == "video":
             output_directory = os.environ.get("YTDLP_VIDEO_DIRECTORY")
 
-    return output_directory
+    return outtmpl
 
 
 if __name__ == "__main__":
@@ -131,7 +148,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-f",
         "--format",
-        default=os.environ.get("YTDLP_FORMAT", "video"),
+        default=os.environ.get("YTDLP_FORMAT") or "video",
         choices=["video", "audio"],
     )
     parser.add_argument("-o", "--output_directory", type=str, default=None)
@@ -155,6 +172,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-v", "--video_extension", default=os.environ.get("YTDLP_VIDEO_EXT")
     )
+    parser.add_argument("-m", "--metadata_file", default=None)
 
     args = vars(parser.parse_args())
 
@@ -168,23 +186,20 @@ if __name__ == "__main__":
     audio_extension = args.get("audio_extension", extension)
     video_extension = args.get("video_extension", extension)
     video_sound_extension = args.get("video_sound_extension")
-    options = get_options(format)
 
-    outtmpl = f"%(title)s.%(ext)s"
-
-    if prefix:
-        outtmpl = f"{prefix} - {outtmpl}"
-
-    output_directory = get_outtmpl(format, output_directory)
-
-    if output_directory:
-        outtmpl = f"{output_directory}/{outtmpl}"
-
-    options["outtmpl"] = outtmpl
+    print(args)
+    options = get_options(
+        format,
+        prefix,
+        video_extension,
+        audio_extension,
+        video_sound_extension,
+        output_directory,
+    )
 
     pp.pprint(options)
     urls = get_urls(urls, remove_list)
-    download(urls, options, extract_info)
+    # download(urls, options, extract_info)
 
 
 # download playlist
