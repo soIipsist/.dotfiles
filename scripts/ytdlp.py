@@ -38,9 +38,9 @@ def get_options(
     output_directory=None,
     metadata_file="",
 ):
-
     if os.path.exists(metadata_file):  # read from metadata file, if it exists
         options = read_json_file(metadata_file)
+        print("METADATA")
         return options
 
     if format == "video":  # default video options
@@ -81,7 +81,6 @@ def extract_video_info_and_download(
 
     if extract_info:
         info = ytdl.extract_info(url, download=False)
-
         entries = info["entries"] if "entries" in info else info
 
         print(
@@ -135,6 +134,9 @@ def get_outtmpl(format: str, prefix: str = None, output_directory: str = None):
         elif format == "video":
             output_directory = os.environ.get("YTDLP_VIDEO_DIRECTORY")
 
+    if output_directory:
+        outtmpl = f"{output_directory}/{outtmpl}"
+
     return outtmpl
 
 
@@ -164,13 +166,15 @@ if __name__ == "__main__":
     )
     parser.add_argument("-e", "--extension", default=None)
     parser.add_argument(
-        "-a", "--audio_extension", default=os.environ.get("YTDLP_AUDIO_EXT")
+        "-a", "--audio_extension", default=os.environ.get("YTDLP_AUDIO_EXT") or "mp3"
     )
     parser.add_argument(
-        "-s", "--video_sound_extension", default=os.environ.get("YTDLP_VIDEO_SOUND_EXT")
+        "-s",
+        "--video_sound_extension",
+        default=os.environ.get("YTDLP_VIDEO_SOUND_EXT") or "m4a",
     )
     parser.add_argument(
-        "-v", "--video_extension", default=os.environ.get("YTDLP_VIDEO_EXT")
+        "-v", "--video_extension", default=os.environ.get("YTDLP_VIDEO_EXT") or "mp4"
     )
     parser.add_argument("-m", "--metadata_file", default=None)
 
@@ -186,8 +190,8 @@ if __name__ == "__main__":
     audio_extension = args.get("audio_extension", extension)
     video_extension = args.get("video_extension", extension)
     video_sound_extension = args.get("video_sound_extension")
+    metadata_file = args.get("metadata_file")
 
-    print(args)
     options = get_options(
         format,
         prefix,
@@ -195,6 +199,7 @@ if __name__ == "__main__":
         audio_extension,
         video_sound_extension,
         output_directory,
+        metadata_file,
     )
 
     pp.pprint(options)
