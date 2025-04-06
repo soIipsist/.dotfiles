@@ -49,17 +49,16 @@ async def set_theme(profile: iterm2.Profile):
         "ITERM2_CURSOR_COLOR": profile.async_set_cursor_color,
         "ITERM2_CURSOR_TEXT_COLOR": profile.async_set_cursor_text_color,
         "ITERM2_CURSOR_GUIDE_COLOR": profile.async_set_cursor_guide_color,
+        "ITERM2_USE_TAB_COLOR": profile.async_set_use_tab_color,
         "ITERM2_TAB_COLOR": profile.async_set_tab_color,
+        "ITERM2_USE_SEPARATE_COLORS": profile.async_set_use_separate_colors_for_light_and_dark_mode,
     }
-
-    profile.async_set_use_tab_color(True)
 
     for key, func in iterm2_vars.items():
         # check if environment variable exists
         env_vars = get_env_vars()
         iterm_value = env_vars.get(key, None)
 
-        # print(iterm_value)
         if iterm_value:
             if iterm_value.startswith("#"):
                 color_tuple = await hex_to_rgb(iterm_value)
@@ -68,8 +67,6 @@ async def set_theme(profile: iterm2.Profile):
                 )
 
             await func(iterm_value)
-
-    # await profile.async_set_tab_color(iterm2.Color(0, 0, 255, 255))
 
 
 async def main(connection):
