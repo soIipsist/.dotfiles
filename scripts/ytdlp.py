@@ -40,7 +40,6 @@ def get_options(
 ):
     if os.path.exists(metadata_file):  # read from metadata file, if it exists
         options = read_json_file(metadata_file)
-        print("METADATA")
         return options
 
     if format == "video":  # default video options
@@ -125,7 +124,7 @@ def get_outtmpl(format: str, prefix: str = None, output_directory: str = None):
     outtmpl = f"%(title)s.%(ext)s"
 
     if prefix:
-        outtmpl = f"{prefix} - {outtmpl}"
+        outtmpl = f"{prefix}{outtmpl}"
 
     if not output_directory:
         if format == "audio":
@@ -166,17 +165,17 @@ if __name__ == "__main__":
     )
     parser.add_argument("-e", "--extension", default=None)
     parser.add_argument(
-        "-a", "--audio_extension", default=os.environ.get("YTDLP_AUDIO_EXT") or "mp3"
+        "-a", "--audio_extension", default=os.environ.get("YTDLP_AUDIO_EXT")
     )
     parser.add_argument(
         "-s",
         "--video_sound_extension",
-        default=os.environ.get("YTDLP_VIDEO_SOUND_EXT") or "m4a",
+        default=os.environ.get("YTDLP_VIDEO_SOUND_EXT"),
     )
     parser.add_argument(
-        "-v", "--video_extension", default=os.environ.get("YTDLP_VIDEO_EXT") or "mp4"
+        "-v", "--video_extension", default=os.environ.get("YTDLP_VIDEO_EXT")
     )
-    parser.add_argument("-m", "--metadata_file", default=None)
+    parser.add_argument("-m", "--metadata_file", default="")
 
     args = vars(parser.parse_args())
 
@@ -187,10 +186,10 @@ if __name__ == "__main__":
     output_directory = args.get("output_directory")
     prefix = args.get("prefix")
     extension = args.get("extension")
-    audio_extension = args.get("audio_extension", extension)
-    video_extension = args.get("video_extension", extension)
+    audio_extension = args.get("audio_extension")
+    video_extension = args.get("video_extension")
     video_sound_extension = args.get("video_sound_extension")
-    metadata_file = args.get("metadata_file")
+    metadata_file = args.get("metadata_file", "")
 
     options = get_options(
         format,
@@ -204,11 +203,11 @@ if __name__ == "__main__":
 
     pp.pprint(options)
     urls = get_urls(urls, remove_list)
+    print(extract_info)
     # download(urls, options, extract_info)
 
+# tests
 
-# download playlist
-# python ytdlp.py "https://music.youtube.com/watch?v=owZyZrWppGg&list=PLcSQ3bJVgbvb43FGbe7c550xI7gZ9NmBW" -f audio
-
-# download video with mp4 format
-# python ytdlp.py -e mp4 -i 1
+# playlist:  "https://music.youtube.com/watch?v=owZyZrWppGg&list=PLcSQ3bJVgbvb43FGbe7c550xI7gZ9NmBW"
+# video url: "https://music.youtube.com/watch?v=owZyZrWppGg&list=PLcSQ3bJVgbvb43FGbe7c550xI7gZ9NmBW"
+#
