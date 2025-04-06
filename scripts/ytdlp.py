@@ -9,6 +9,17 @@ parent_directory = os.path.dirname(os.path.abspath(__file__))
 pp = PrettyPrinter(indent=2)
 
 
+def get_urls(urls: list, remove_list: bool):
+    if remove_list:
+        urls = [url.split("&list")[0] if "&list" in url else url for url in urls]
+
+    return urls
+
+
+def str_to_bool(string: str):
+    return string in ["1", "true", True]
+
+
 def read_json_file(json_file, errors=None):
     try:
         with open(json_file, "r", errors=errors) as file:
@@ -18,31 +29,64 @@ def read_json_file(json_file, errors=None):
         print(e)
 
 
-def get_options(format: str):
-
+def get_options(
+    format: str,
+    video_extension=None,
+    audio_extension=None,
+    video_sound_extension=None,
+):
     # check if options exist as environment variables
     options_file = f"{parent_directory}/metadata/{format}_options.json"
-
     options = {}
 
     if os.path.exists(options_file):
         options = read_json_file(options_file)
 
+    audio_extension = audio_extension or "mp3"
+    video_extension = video_extension or "mp4"
+    video_sound_extension = video_sound_extension or "m4a"
+
+    if format == "video":
+        options["format"] = (
+            f"bestvideo[ext={video_extension}]+bestaudio[ext={video_sound_extension}]/{video_extension}"
+        )
+    elif format == "audio":
+        options["format"] = "bestaudio/best"
+        options["postprocessors"] = [
+            {
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": audio_extension,
+            }
+        ]
+    else:
+        raise ValueError("Invalid format_type. Choose 'video' or 'audio'.")
     return options
 
 
-def process_video_entry(entry, ytdl: yt_dlp.YoutubeDL, options):
-    """
-    Check for filename duplicates.
-    """
-    print("PROCESSING FILE...")
-    original_filename = ytdl.prepare_filename(entry)
-    final_extension = options.get("postprocessors", [{}])[0].get("preferredcodec")
-    final_filename = (
-        f"{os.path.splitext(original_filename)[0]}.{final_extension}"
-        if final_extension
-        else original_filename
-    )
+def extract_video_info(ytdl, url: str, extract_info: bool = True):
+
+    if extract_info:
+        info = ytdl.extract_info(url, download=False)
+
+        # Check if it's a playlist
+        if "entries" in info:
+            print(
+                f"Processing playlist: {info.get('title', 'Untitled Playlist')} ({len(info['entries'])} videos)"
+            )
+            for entry in info["entries"]:
+                if not entry:
+                    print("Skipping unavailable video.")
+                    continue
+
+            original_filename = ytdl.prepare_filename(entry)
+            final_extension = options.get("postprocessors", [{}])[0].get(
+                "preferredcodec"
+            )
+            final_filename = (
+                f"{os.path.splitext(original_filename)[0]}.{final_extension}"
+                if final_extension
+                else original_filename
+            )
 
     print("Filename:", final_filename)
 
@@ -56,28 +100,13 @@ def process_video_entry(entry, ytdl: yt_dlp.YoutubeDL, options):
     print("Status code: ", status_code)
 
 
-def download(urls: list, options: dict, extract_info: bool):
+def download(urls: list, options: dict):
     for url in urls:
         try:
             with yt_dlp.YoutubeDL(options) as ytdl:
-                if extract_info:
-                    # Extract video/playlist information
-                    info = ytdl.extract_info(url, download=False)
+                # Extract video/playlist information
+                extract_video_info(ytdl, url)
 
-                    # Check if it's a playlist
-                    if "entries" in info:
-                        print(
-                            f"Processing playlist: {info.get('title', 'Untitled Playlist')} ({len(info['entries'])} videos)"
-                        )
-                        for entry in info["entries"]:
-                            if not entry:
-                                print("Skipping unavailable video.")
-                                continue
-                            process_video_entry(entry, ytdl, options)
-                    else:
-                        process_video_entry(info, ytdl, options)
-                else:
-                    ytdl.download(url)
         except yt_dlp.utils.DownloadError as e:
             print(f"Download error for {url}: {e}")
         except SystemExit as e:
@@ -86,17 +115,6 @@ def download(urls: list, options: dict, extract_info: bool):
             print(f"An unexpected error occurred with {url}: {e}")
         finally:
             print(f"Finished processing URL: {url}")
-
-
-def get_urls(urls: list, remove_list: bool):
-    if remove_list:
-        urls = [url.split("&list")[0] if "&list" in url else url for url in urls]
-
-    return urls
-
-
-def str_to_bool(string: str):
-    return string in ["1", "true", True]
 
 
 def get_output_directory(format: str, output_directory: str = None):
@@ -118,24 +136,6 @@ def configure_options(
     video_sound_extension=None,
 ):
     options = {}
-    audio_extension = audio_extension or "mp3"
-    video_extension = video_extension or "mp4"
-    video_sound_extension = video_sound_extension or "m4a"
-
-    if format_type == "video":
-        options["format"] = (
-            f"bestvideo[ext={video_extension}]+bestaudio[ext={video_sound_extension}]/{video_extension}"
-        )
-    elif format_type == "audio":
-        options["format"] = "bestaudio/best"
-        options["postprocessors"] = [
-            {
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": audio_extension,
-            }
-        ]
-    else:
-        raise ValueError("Invalid format_type. Choose 'video' or 'audio'.")
 
     return options
 
@@ -199,10 +199,6 @@ if __name__ == "__main__":
 
     if extension or audio_extension or video_extension:
         options: dict
-        new_opts = configure_options(
-            format, video_extension, audio_extension, video_sound_extension
-        )
-        options.update(new_opts)
 
     if prefix:
         outtmpl = f"{prefix} - {outtmpl}"
@@ -216,7 +212,7 @@ if __name__ == "__main__":
 
     pp.pprint(options)
     urls = get_urls(urls, remove_list)
-    download(urls, options, extract_info)
+    download(urls, options)
 
 
 # download playlist
