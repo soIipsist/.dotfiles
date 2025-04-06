@@ -63,49 +63,41 @@ def get_options(
     return options
 
 
-def extract_video_info(ytdl, url: str, extract_info: bool = True):
+def extract_video_info_and_download(
+    ytdl: yt_dlp.YoutubeDL, url: str, extract_info: bool
+):
 
     if extract_info:
         info = ytdl.extract_info(url, download=False)
 
-        # Check if it's a playlist
-        if "entries" in info:
-            print(
-                f"Processing playlist: {info.get('title', 'Untitled Playlist')} ({len(info['entries'])} videos)"
-            )
-            for entry in info["entries"]:
-                if not entry:
-                    print("Skipping unavailable video.")
-                    continue
+        entries = info["entries"] if "entries" in info else info
 
-            original_filename = ytdl.prepare_filename(entry)
-            final_extension = options.get("postprocessors", [{}])[0].get(
-                "preferredcodec"
-            )
-            final_filename = (
-                f"{os.path.splitext(original_filename)[0]}.{final_extension}"
-                if final_extension
-                else original_filename
-            )
+        print(
+            f"Processing playlist: {info.get('title', 'Untitled Playlist')} ({len(info['entries'])} videos)"
+        )
 
-    print("Filename:", final_filename)
+        for entry in entries:
+            if not entry:
+                print("Skipping unavailable video.")
+                continue
 
-    # Check if the file already exists
-    if os.path.exists(final_filename):
-        print(f"File already exists, skipping: {final_filename}")
-        return
+            filename = ytdl.prepare_filename(entry, outtmpl=f"%(title)s.%(ext)s")
 
-    # Download the file
-    status_code = ytdl.download(entry["webpage_url"])
-    print("Status code: ", status_code)
+            if os.path.exists(filename):
+                print(f"File already exists, skipping: {filename}")
+
+            status_code = ytdl.download(entry["webpage_url"])
+            print("Status code: ", status_code)
+
+    else:
+        ytdl.download(url)
 
 
-def download(urls: list, options: dict):
+def download(urls: list, options: dict, extract_info: bool):
     for url in urls:
         try:
             with yt_dlp.YoutubeDL(options) as ytdl:
-                # Extract video/playlist information
-                extract_video_info(ytdl, url)
+                extract_video_info_and_download(ytdl, url, extract_info)
 
         except yt_dlp.utils.DownloadError as e:
             print(f"Download error for {url}: {e}")
@@ -117,7 +109,7 @@ def download(urls: list, options: dict):
             print(f"Finished processing URL: {url}")
 
 
-def get_output_directory(format: str, output_directory: str = None):
+def get_outtmpl(format: str, output_directory: str = None):
 
     if not output_directory:
         if format == "audio":
@@ -127,17 +119,6 @@ def get_output_directory(format: str, output_directory: str = None):
             output_directory = os.environ.get("YTDLP_VIDEO_DIRECTORY")
 
     return output_directory
-
-
-def configure_options(
-    format_type="video",
-    video_extension=None,
-    audio_extension=None,
-    video_sound_extension=None,
-):
-    options = {}
-
-    return options
 
 
 if __name__ == "__main__":
@@ -184,26 +165,17 @@ if __name__ == "__main__":
     output_directory = args.get("output_directory")
     prefix = args.get("prefix")
     extension = args.get("extension")
-    audio_extension = args.get("audio_extension")
-    video_extension = args.get("video_extension")
+    audio_extension = args.get("audio_extension", extension)
+    video_extension = args.get("video_extension", extension)
     video_sound_extension = args.get("video_sound_extension")
     options = get_options(format)
 
     outtmpl = f"%(title)s.%(ext)s"
 
-    if format == "audio":
-        audio_extension = extension if extension else audio_extension
-
-    if format == "video":
-        video_extension = extension if extension else video_extension
-
-    if extension or audio_extension or video_extension:
-        options: dict
-
     if prefix:
         outtmpl = f"{prefix} - {outtmpl}"
 
-    output_directory = get_output_directory(format, output_directory)
+    output_directory = get_outtmpl(format, output_directory)
 
     if output_directory:
         outtmpl = f"{output_directory}/{outtmpl}"
@@ -212,7 +184,7 @@ if __name__ == "__main__":
 
     pp.pprint(options)
     urls = get_urls(urls, remove_list)
-    download(urls, options)
+    download(urls, options, extract_info)
 
 
 # download playlist
