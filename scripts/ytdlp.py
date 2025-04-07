@@ -5,6 +5,7 @@ import json
 from pprint import PrettyPrinter
 
 bool_choices = [0, 1, "true", "false", True, False, None]
+valid_formats = ["audio", "video"]
 parent_directory = os.path.dirname(os.path.abspath(__file__))
 pp = PrettyPrinter(indent=2)
 
@@ -38,6 +39,11 @@ def get_options(
     output_directory=None,
     metadata_file="",
 ):
+    format = format.lower()
+
+    if format not in valid_formats:
+        format = "video"
+
     if os.path.exists(metadata_file):  # read from metadata file, if it exists
         options = read_json_file(metadata_file)
         return options
@@ -80,11 +86,12 @@ def extract_video_info_and_download(
 
     if extract_info:
         info = ytdl.extract_info(url, download=False)
-        entries = info["entries"] if "entries" in info else info
+        entries = info["entries"] if "entries" in info else [info]
 
-        print(
-            f"Processing playlist: {info.get('title', 'Untitled Playlist')} ({len(info['entries'])} videos)"
-        )
+        if len(entries) > 1:
+            print(
+                f"Processing playlist: {info.get('title', 'Untitled Playlist')} ({len(info['entries'])} videos)"
+            )
 
         for entry in entries:
             if not entry:
@@ -203,11 +210,16 @@ if __name__ == "__main__":
 
     pp.pprint(options)
     urls = get_urls(urls, remove_list)
-    print(extract_info)
-    # download(urls, options, extract_info)
+    download(urls, options, extract_info)
 
-# tests
+# playlist tests
+# python ytdlp.py "https://youtube.com/playlist?list=OLAK5uy_nTBnmorryZikTJrjY0Lj1lHG_DWy4IPvk" -f audio
+# python ytdlp.py "https://music.youtube.com/watch?v=owZyZrWppGg&list=PLcSQ3bJVgbvb43FGbe7c550xI7gZ9NmBW"
 
-# playlist:  "https://music.youtube.com/watch?v=owZyZrWppGg&list=PLcSQ3bJVgbvb43FGbe7c550xI7gZ9NmBW"
-# video url: "https://music.youtube.com/watch?v=owZyZrWppGg&list=PLcSQ3bJVgbvb43FGbe7c550xI7gZ9NmBW"
-#
+# video only tests
+# python ytdlp.py "https://www.youtube.com/watch?v=RlXjyYlM4xo"
+# python ytdlp.py "https://www.youtube.com/watch?v=RlXjyYlM4xo" "https://music.youtube.com/watch?v=n3WmS_Yj0jU&si=gC3_A3MrL0RYhooO"
+
+# audio only tests
+# python ytdlp.py "https://www.youtube.com/watch?v=RlXjyYlM4xo" "https://music.youtube.com/watch?v=n3WmS_Yj0jU&si=gC3_A3MrL0RYhooO" -f audio
+# python ytdlp.py "https://www.youtube.com/watch?v=RlXjyYlM4xo" -f audio
