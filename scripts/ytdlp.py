@@ -3,6 +3,7 @@ import argparse
 import os
 import json
 from pprint import PrettyPrinter
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 
 bool_choices = [0, 1, "true", "false", True, False, None]
 valid_formats = ["audio", "video"]
@@ -10,11 +11,22 @@ parent_directory = os.path.dirname(os.path.abspath(__file__))
 pp = PrettyPrinter(indent=2)
 
 
-def get_urls(urls: list, remove_list: bool):
-    if remove_list:
-        urls = [url.split("&list")[0] if "&list" in url else url for url in urls]
+def get_urls(urls: list, removed_args: list = None):
+    if not removed_args:
+        return urls
 
-    return urls
+    remove_set = set(removed_args)
+    return [
+        urlunparse(
+            parsed._replace(
+                query=urlencode(
+                    [(k, v) for k, v in parse_qsl(parsed.query) if k not in remove_set]
+                )
+            )
+        )
+        for url in urls
+        if (parsed := urlparse(url))
+    ]
 
 
 def str_to_bool(string: str):
@@ -150,9 +162,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("urls", nargs="+", type=str)
-    parser.add_argument(
-        "-r", "--remove_list", default=True, type=str_to_bool, choices=bool_choices
-    )
+    parser.add_argument("-r", "--removed_args", default=["list"], nargs="?")
     parser.add_argument(
         "-f",
         "--format",
@@ -187,7 +197,7 @@ if __name__ == "__main__":
     args = vars(parser.parse_args())
 
     urls = args.get("urls")
-    remove_list = args.get("remove_list")
+    removed_args = args.get("removed_args")
     format = args.get("format")
     extract_info = args.get("extract_info")
     output_directory = args.get("output_directory")
@@ -209,7 +219,9 @@ if __name__ == "__main__":
     )
 
     pp.pprint(options)
-    urls = get_urls(urls, remove_list)
+    urls = get_urls(urls, removed_args)
+
+    # print(urls)
     download(urls, options, extract_info)
 
 # playlist tests
@@ -222,4 +234,4 @@ if __name__ == "__main__":
 
 # audio only tests
 # python ytdlp.py "https://www.youtube.com/watch?v=RlXjyYlM4xo" "https://music.youtube.com/watch?v=n3WmS_Yj0jU&si=gC3_A3MrL0RYhooO" -f audio
-# python ytdlp.py "https://www.youtube.com/watch?v=RlXjyYlM4xo" -f audio
+# python ytdlp.py "https://www.youtube.com/watch?v=RlXjyYlM4xo" -f audio -i 0
