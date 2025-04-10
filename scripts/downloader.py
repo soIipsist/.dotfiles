@@ -22,16 +22,70 @@ class DownloadStatus(str, Enum):
 
 
 class Download:
-    downloader = Downloader.YTDLP
-    status = DownloadStatus.STARTED
-    format = None
+    _downloader = Downloader.YTDLP
+    _download_status = DownloadStatus.STARTED
+    _format = None
+    _start_date = str(datetime.datetime.now())
+    _link: str = None
+    _link_str: str = None
 
-    link: str = None
+    def __init__(self, link_str: str):
+        self.link_str = link_str
 
-    def __init__(
-        self, link: str, downloader=Downloader.YTDLP, status=DownloadStatus.STARTED
-    ):
-        pass
+    @property
+    def link(self):
+        return self._link
+
+    @link.setter
+    def link(self, link: str):
+        self._link = link
+
+    @property
+    def link_str(self):
+        return self._link_str
+
+    @link_str.setter
+    def link_str(self, link_str: str):
+        self.parse_link(link_str)
+
+    @property
+    def downloader(self):
+        return self._downloader
+
+    @downloader.setter
+    def downloader(self, downloader: Downloader):
+        self._downloader = downloader
+
+    def parse_link(self, link_str: str):
+        self._link_str = link_str
+        link_str = link_str.split(" ")  # split link_str into spaces
+
+        self.link = link_str[0]
+        self.downloader = link_str[1] if len(link_str) > 1 else Downloader.YTDLP.value
+        self.download_status = DownloadStatus.STARTED.value
+        self.start_date = str(datetime.datetime.now())
+
+    def start_download(self, db: sqlite3.Connection):
+        print(
+            self.link, str(self.download_status), str(self.downloader), self.start_date
+        )
+
+        if self.downloader == Downloader.YTDLP:
+            pass
+
+        execute_query(
+            db,
+            f"""INSERT INTO downloads (link, downloader, download_status, start_date) VALUES (?,?,?,?) """,
+            (self.link, self.downloader, self.download_status, self.start_date),
+        )
+
+    def stop_download(self, db: sqlite3.Connection):
+        self.download_status = DownloadStatus.INTERRUPTED
+        execute_query(
+            db,
+            f"""UPDATE downloads SET download_status = ? WHERE link = ?""",
+            (self.download_status, self.link),
+        )
 
 
 def get_format_from_path(path: str):
@@ -66,26 +120,6 @@ def execute_query(conn: sqlite3.Connection, query: str, params: list = None):
     return results
 
 
-def download_link(db: sqlite3.Connection, link: str):
-    link = link.split(" ")  # split link into spaces
-
-    link_str = link[0]
-    downloader = link[1] if len(link) > 1 else Downloader.YTDLP.value
-    download_status = DownloadStatus.STARTED.value
-    start_date = str(datetime.datetime.now())
-
-    if downloader == Downloader.YTDLP.value:
-        format = get_format_from_path(link_str)
-        print(format)
-        # options = get_options()
-        # download()
-    execute_query(
-        db,
-        f"""INSERT INTO downloads (link, downloader, download_status, start_date) VALUES (?,?,?,?) """,
-        (link_str, downloader, download_status, start_date),
-    )
-
-
 try:
     db = sqlite3.connect(database_path)
 except sqlite3.Error as e:
@@ -108,8 +142,8 @@ links = []
 # check if text file was modified
 with open(links_file_path, "r") as file:
     for line in file:
-        link = line.strip()
-        if not link:
+        link_str = line.strip()
+        if not link_str:
             continue
-
-        # download_link(db, link)
+        download = Download(link_str)
+        download.start_download(db)
