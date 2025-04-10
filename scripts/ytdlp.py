@@ -122,7 +122,7 @@ def extract_video_info_and_download(
         ytdl.download(url)
 
 
-def download(urls: list, options: dict, extract_info: bool):
+def download(urls: list, options: dict = None, extract_info: bool = True):
     for url in urls:
         try:
             with yt_dlp.YoutubeDL(options) as ytdl:
@@ -220,7 +220,6 @@ if __name__ == "__main__":
 
     pp.pprint(options)
     urls = get_urls(urls, removed_args)
-
     # print(urls)
     download(urls, options, extract_info)
 
