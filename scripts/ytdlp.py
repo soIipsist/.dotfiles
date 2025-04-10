@@ -114,7 +114,11 @@ def extract_video_info(ytdl: yt_dlp.YoutubeDL, url: str, extract_info: bool):
 
 
 def download(urls: list, options: dict = None, extract_info: bool = True):
+    all_entries = []  # list of dictionaries containing info for each url
+    error_entries = []
+
     for url in urls:
+        entries = []
         try:
             with yt_dlp.YoutubeDL(options) as ytdl:
                 info = extract_video_info(ytdl, url, extract_info)
@@ -127,7 +131,10 @@ def download(urls: list, options: dict = None, extract_info: bool = True):
 
                 for entry in entries:
                     entry_url = entry.get("webpage_url")
-                    ytdl.download(entry_url)
+                    status_code = ytdl.download(entry_url)
+
+                    if status_code == 1:
+                        error_entries.append(entry)
 
         except yt_dlp.utils.DownloadError as e:
             print(f"Download error for {url}: {e}")
@@ -136,7 +143,10 @@ def download(urls: list, options: dict = None, extract_info: bool = True):
         except Exception as e:
             print(f"An unexpected error occurred with {url}: {e}")
         finally:
+            all_entries.extend(entries)
             print(f"Finished processing URL: {url}")
+
+    return all_entries, error_entries
 
 
 def get_outtmpl(format: str, prefix: str = None, output_directory: str = None):
@@ -221,8 +231,7 @@ if __name__ == "__main__":
 
     pp.pprint(options)
     urls = get_urls(urls, removed_args)
-    # print(urls)
-    download(urls, options, extract_info)
+    all_entries, error_entries = download(urls, options, extract_info)
 
 # playlist tests
 # python ytdlp.py "https://youtube.com/playlist?list=OLAK5uy_nTBnmorryZikTJrjY0Lj1lHG_DWy4IPvk" -f audio

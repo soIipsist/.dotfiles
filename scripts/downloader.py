@@ -77,7 +77,8 @@ class Download:
         )
 
         if self.downloader == Downloader.YTDLP:
-            download()
+            pass
+            # download()
 
     def stop_download(self, db: sqlite3.Connection):
         self.download_status = DownloadStatus.INTERRUPTED
