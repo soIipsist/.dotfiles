@@ -92,41 +92,42 @@ def get_options(
     return options
 
 
-def extract_video_info_and_download(
-    ytdl: yt_dlp.YoutubeDL, url: str, extract_info: bool
-):
+def extract_video_info(ytdl: yt_dlp.YoutubeDL, url: str, extract_info: bool):
+
+    entries = [{"webpage_url": url}]
+    info = {"entries": entries}
 
     if extract_info:
         info = ytdl.extract_info(url, download=False)
         entries = info["entries"] if "entries" in info else [info]
 
-        if len(entries) > 1:
-            print(
-                f"Processing playlist: {info.get('title', 'Untitled Playlist')} ({len(info['entries'])} videos)"
-            )
-
-        for entry in entries:
+        cleaned_entries = []
+        for idx, entry in enumerate(entries):
             if not entry:
-                print("Skipping unavailable video.")
+                print(f"Skipping unavailable video at index {idx}.")
                 continue
+            cleaned_entries.append(entry)
 
-            filename = ytdl.prepare_filename(entry, outtmpl=f"%(title)s.%(ext)s")
+        info["entries"] = cleaned_entries
 
-            if os.path.exists(filename):
-                print(f"File already exists, skipping: {filename}")
-
-            status_code = ytdl.download(entry["webpage_url"])
-            print("Status code: ", status_code)
-
-    else:
-        ytdl.download(url)
+    return info
 
 
 def download(urls: list, options: dict = None, extract_info: bool = True):
     for url in urls:
         try:
             with yt_dlp.YoutubeDL(options) as ytdl:
-                extract_video_info_and_download(ytdl, url, extract_info)
+                info = extract_video_info(ytdl, url, extract_info)
+                entries = info.get("entries", [{"webpage_url": url}])
+
+                if len(entries) > 1:
+                    print(
+                        f"Processing playlist: {info.get('title', 'Untitled Playlist')} ({len(info['entries'])} videos)"
+                    )
+
+                for entry in entries:
+                    entry_url = entry.get("webpage_url")
+                    ytdl.download(entry_url)
 
         except yt_dlp.utils.DownloadError as e:
             print(f"Download error for {url}: {e}")
@@ -162,7 +163,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("urls", nargs="+", type=str)
-    parser.add_argument("-r", "--removed_args", default=["list"], nargs="?")
+    parser.add_argument("-r", "--removed_args", default=[], nargs="?")
     parser.add_argument(
         "-f",
         "--format",

@@ -70,14 +70,14 @@ class Download:
             self.link, str(self.download_status), str(self.downloader), self.start_date
         )
 
-        if self.downloader == Downloader.YTDLP:
-            pass
-
         execute_query(
             db,
             f"""INSERT INTO downloads (link, downloader, download_status, start_date) VALUES (?,?,?,?) """,
             (self.link, self.downloader, self.download_status, self.start_date),
         )
+
+        if self.downloader == Downloader.YTDLP:
+            download()
 
     def stop_download(self, db: sqlite3.Connection):
         self.download_status = DownloadStatus.INTERRUPTED
