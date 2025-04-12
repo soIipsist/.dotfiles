@@ -27,6 +27,7 @@ dotfiles=$(get_json_value "dotfiles" "" "${dotfile_args[@]}")        # dotfiles 
 dotfiles_directory=$(get_json_value "dotfiles_directory" "" "$HOME") # will be $HOME by default
 scripts=$(get_json_value "scripts")
 excluded_scripts=$(get_json_value "excluded_scripts")
+scripts_directory=$(get_json_value "scripts_directory")
 venv_path=$(get_json_value "venv_path" "" "$VENV_PATH")
 pip_packages=$(get_json_value "pip_packages")
 git_repos=$(get_json_value "git_repos")
@@ -44,12 +45,16 @@ if [ -n "$dotfile_args" ]; then
     dotfiles="${dotfile_args[@]}"
 fi
 
+SCRIPT_DIR="$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
+dotfiles_scripts_dir="$SCRIPT_DIR/scripts"
+
 install_homebrew "$install_homebrew_flag"
 install_from_brewfile "$brewfile_path"
 install_brew_packages "$brew_packages" "$brew_cask_packages"
 set_hostname "$hostname"
 set_default_shell "$default_shell"
 install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
+copy_scripts "$dotfiles_scripts_dir" "$scripts_directory"
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home"
 set_wallpaper "$wallpaper_path"

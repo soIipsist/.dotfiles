@@ -26,7 +26,7 @@ get_default_shell_path() {
 
 install_homebrew() {
 
-  if [ -z "$1" ] || [ "$1" == false ]; then
+  if [ -z "$1" ] || [ "$1" = false ]; then
     return
   fi
   shell_path=$(get_default_shell_path)

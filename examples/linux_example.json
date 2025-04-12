@@ -23,5 +23,6 @@
   "wallpaper_path": "",
   "lockscreen_path": "",
   "git_username": "",
-  "git_email": ""
+  "git_email": "",
+  "scripts_directory": "/Users/p/Desktop/scripts"
 }

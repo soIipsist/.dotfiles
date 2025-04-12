@@ -43,7 +43,7 @@ set_lockscreen_and_wallpaper() {
 }
 
 install_zoxide() {
-    if [ -z "$1" ] || [ "$1" == false ]; then
+    if [ -z "$1" ] || [ "$1" = false ]; then
         return
     fi
 
@@ -78,6 +78,9 @@ install_zoxide_flag=$(get_json_value "install_zoxide")
 brew_packages=$(get_json_value "brew_packages")
 brew_cask_packages=$(get_json_value "brew_cask_packages")
 
+SCRIPT_DIR="$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
+dotfiles_scripts_dir="$SCRIPT_DIR/scripts"
+
 install_homebrew "$install_homebrew_flag"
 install_zoxide "$install_zoxide_flag"
 set_hostname "$hostname"
@@ -88,6 +91,7 @@ apt_packages_array=($apt_packages)
 sudo apt install --yes --no-install-recommends "${apt_packages_array[@]}"
 
 install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
+copy_scripts "$dotfiles_scripts_dir" "$scripts_directory"
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home"
 set_lockscreen_and_wallpaper "$wallpaper_path" "$lockscreen_path"

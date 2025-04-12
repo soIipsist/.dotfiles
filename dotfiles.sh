@@ -75,3 +75,24 @@ install_dotfiles() {
 
   dotfiles_directory="$original_dest"
 }
+
+copy_scripts() {
+  dotfile_scripts_dir="$1"
+  scripts_directory="$2"
+
+  if [ -z "$scripts_directory" ]; then
+    return
+  fi
+
+  scripts=$(find "$dotfile_scripts_dir" -maxdepth 1 -type f ! -name "*.ps1" 2>/dev/null)
+
+  if [ ! -d "$scripts_directory" ]; then
+    mkdir -p "$scripts_directory"
+    echo "Created directory: $scripts_directory"
+  fi
+
+  for script in $scripts; do
+    cp -f "$script" "$scripts_directory"
+    echo "Copied $script to $scripts_directory."
+  done
+}

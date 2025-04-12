@@ -14,5 +14,6 @@
   "git_username": "soIipsist",
   "git_email": "",
   "default_shell": "zsh",
-  "wallpaper_path": "/Users/p/Desktop/test/wallpaper.jpg"
+  "wallpaper_path": "/Users/p/Desktop/test/wallpaper.jpg",
+  "scripts_directory": "/Users/p/Desktop/scripts"
 }
