@@ -7,16 +7,13 @@ source "../json.sh"
 # venv_path=$(get_json_value "venv_path")
 # set_venv_flag=$(get_json_value "set_venv_path")
 # pip_packages=$(get_json_value "pip_packages")
-scripts_directory=$(get_json_value "scripts_directory")
-SCRIPT_DIR="$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
-dotfiles_scripts_dir="$SCRIPT_DIR/scripts"
 
 # set_venv_path "$venv_path" "$set_venv_flag"
 # install_pip_packages "$venv_path" "${pip_packages[@]}"
 
+# SET SHELL VARIABLE TEST
 # var_name="V2"
 # new_value="B"
 # shell_path=$(get_default_shell_path)
 # shell_path="$HOME/test.sh"
 # set_shell_variable "$var_name" "$new_value" "$shell_path"
-copy_scripts "$dotfiles_scripts_dir" "$scripts_directory"

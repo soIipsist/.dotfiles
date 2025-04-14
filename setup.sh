@@ -16,12 +16,13 @@ if [[ "$os" == "windows" ]]; then
     fi
 
 else
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
     cd "$os" || {
         echo "Error: Directory '$os' not found"
         exit 1
     }
+
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
     if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
         # set default GIT_DOTFILES_DIRECTORY directory
