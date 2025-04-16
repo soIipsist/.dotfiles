@@ -7,6 +7,56 @@ get_default_json_file() {
   echo $json_file
 }
 
+get_env_variable() {
+  ENV_FILE=".env"
+  value="$1"
+
+  # if value doesn't start with '$' then it's not an environment variable
+
+  if [[ ! "$value" =~ ^\$.* ]]; then
+    return 0
+  fi
+
+  value="${value#\$}"
+
+  if [ -f "$ENV_FILE" ]; then
+
+    env_value=$(grep -E "^$value=" "$ENV_FILE" | cut -d '=' -f2-)
+
+    if [[ "$env_value" == *","* ]]; then # check if variable is an array
+      IFS=',' read -r -a env_array <<<"$env_value"
+      echo "${env_array[@]}"
+    else
+      echo "$env_value"
+    fi
+  fi
+}
+
+extract_from_env() {
+  value="$1"
+
+  vars=$(echo "$value" | grep -o '\$\w\+' | sort -u)
+
+  # Build list of variables that actually exist in the environment
+  sub_vars=""
+  for var in $vars; do
+    env_variable=$(get_env_variable "$var")
+
+    var_name="${var:1}"
+    if [ -n "$env_variable" ]; then
+      export "$var_name=$env_variable"
+    fi
+
+    # check if var_name is empty
+    if [ -n "${!var_name}" ]; then
+      value=$(echo "$value" | envsubst "$var")
+    fi
+
+  done
+
+  echo "$value"
+}
+
 get_json_value() {
 
   key="$1"
@@ -32,39 +82,13 @@ get_json_value() {
     value=$(jq -r .$key[] "$json_file")
   fi
 
-  # get environment variable, if it exists
-  env_value=$(get_env_variable "$value")
+  env_value=$(extract_from_env "$value")
 
-  if [ ! -z "$env_value" ]; then
+  if [ -n "$env_value" ]; then
     value="$env_value"
   fi
 
   echo "$value"
-}
-
-get_env_variable() {
-  ENV_FILE=".env"
-  value="$1"
-
-  # if value doesn't start with '$' then it's not an environment variable
-
-  if [[ ! "$value" =~ ^\$.* ]]; then
-    return 0
-  fi
-
-  value="${value#\$}"
-
-  if [ -f "$ENV_FILE" ]; then
-
-    env_value=$(grep -E "^$value=" "$ENV_FILE" | cut -d '=' -f2-)
-
-    if [[ "$env_value" == *","* ]]; then # check if variable is an array
-      IFS=',' read -r -a env_array <<<"$env_value"
-      echo "${env_array[@]}"
-    else
-      echo "$env_value"
-    fi
-  fi
 }
 
 set_json_value() {
