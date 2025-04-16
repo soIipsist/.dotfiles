@@ -57,6 +57,7 @@ install_zoxide() {
 
     sudo mv ~/.local/bin/zoxide /usr/local/bin/
 }
+
 dotfile_args=("$@")
 
 hostname=$(get_json_value "hostname")
@@ -81,6 +82,10 @@ brew_cask_packages=$(get_json_value "brew_cask_packages")
 SCRIPT_DIR="$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
 dotfiles_scripts_dir="$SCRIPT_DIR/scripts"
 
+if [ -n "$dotfile_args" ]; then
+    dotfiles="${dotfile_args[@]}"
+fi
+
 install_homebrew "$install_homebrew_flag"
 install_zoxide "$install_zoxide_flag"
 set_hostname "$hostname"
@@ -95,3 +100,4 @@ copy_scripts "$dotfiles_scripts_dir" "$scripts_directory"
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home"
 set_lockscreen_and_wallpaper "$wallpaper_path" "$lockscreen_path"
+set_default_git_dotfiles_directory "$SCRIPT_DIR"

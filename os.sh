@@ -144,6 +144,15 @@ set_shell_variable() {
 
 }
 
+get_shell_variable() {
+  var_name="$1"
+  shell_path="$2"
+
+  value=$(grep -q "export $var_name='/opt/homebrew/bin' "$shell_path"")
+
+  echo "$value"
+}
+
 set_venv_path() {
   local venv_path="$1"
 
@@ -185,5 +194,20 @@ replace_root() {
     echo "$root_path/${value:1}"
   else
     echo "$value"
+  fi
+}
+
+set_default_git_dotfiles_directory() {
+  # set default GIT_DOTFILES_DIRECTORY directory in shell
+  SCRIPT_DIR="$1"
+
+  if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+    GIT_DOTFILES_DIRECTORY="$SCRIPT_DIR"
+    var_name="GIT_DOTFILES_DIRECTORY"
+    new_value="$GIT_DOTFILES_DIRECTORY"
+    shell_path="$(get_default_shell_path)"
+
+    set_shell_variable "$var_name" "$new_value" "$shell_path"
+    echo "Set dotfiles directory to: $GIT_DOTFILES_DIRECTORY."
   fi
 }
