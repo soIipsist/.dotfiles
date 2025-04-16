@@ -148,8 +148,7 @@ get_shell_variable() {
   var_name="$1"
   shell_path="$2"
 
-  value=$(grep -q "export $var_name='/opt/homebrew/bin' "$shell_path"")
-
+  value=$(grep -E "^export $var_name=['\"][^'\"]*['\"]" "$shell_path" | sed -E "s/^export $var_name=['\"]([^'\"]*)['\"]/\1/")
   echo "$value"
 }
 
