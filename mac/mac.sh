@@ -46,6 +46,7 @@ if [ -n "$dotfile_args" ]; then
 fi
 
 SCRIPT_DIR="$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
+
 dotfiles_scripts_dir="$SCRIPT_DIR/scripts"
 
 install_homebrew "$install_homebrew_flag"
@@ -55,10 +56,10 @@ set_hostname "$hostname"
 set_default_shell "$default_shell"
 install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
 copy_scripts "$dotfiles_scripts_dir" "$scripts_directory"
+set_default_git_dotfiles_directory "$SCRIPT_DIR"
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home"
 set_wallpaper "$wallpaper_path"
 set_venv_path "$venv_path" "$set_venv_path_flag"
 install_pip_packages "$venv_path" "${pip_packages[@]}"
 set_theme "$theme"
-set_default_git_dotfiles_directory "$SCRIPT_DIR"

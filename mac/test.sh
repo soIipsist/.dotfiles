@@ -16,9 +16,9 @@ source "../json.sh"
 # install_pip_packages "$venv_path" "${pip_packages[@]}"
 
 # GET SHELL VARIABLE TEST
-shell_path=$(get_default_shell_path)
-ytdlp=$(get_shell_variable "SOMEVAR" "$shell_path")
-echo "$ytdlp"
+# shell_path=$(get_default_shell_path)
+# variable=$(get_shell_variable "SOMEVAR" "$shell_path")
+# echo "$variable"
 
 # SET SHELL VARIABLE TEST
 # var_name="V2"
@@ -26,3 +26,7 @@ echo "$ytdlp"
 # shell_path=$(get_default_shell_path)
 # shell_path="$HOME/test.sh"
 # set_shell_variable "$var_name" "$new_value" "$shell_path"
+
+# SET GIT_DOTFILES_DIRECTORY TEST
+SCRIPT_DIR="$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
+set_default_git_dotfiles_directory "$SCRIPT_DIR"

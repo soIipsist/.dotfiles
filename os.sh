@@ -199,14 +199,16 @@ replace_root() {
 set_default_git_dotfiles_directory() {
   # set default GIT_DOTFILES_DIRECTORY directory in shell
   SCRIPT_DIR="$1"
+  shell_path="$(get_default_shell_path)"
+  GIT_DOTFILES_DIRECTORY=$(get_shell_variable "GIT_DOTFILES_DIRECTORY" "$shell_path")
 
   if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
     GIT_DOTFILES_DIRECTORY="$SCRIPT_DIR"
     var_name="GIT_DOTFILES_DIRECTORY"
     new_value="$GIT_DOTFILES_DIRECTORY"
-    shell_path="$(get_default_shell_path)"
 
     set_shell_variable "$var_name" "$new_value" "$shell_path"
     echo "Set dotfiles directory to: $GIT_DOTFILES_DIRECTORY."
   fi
+  export GIT_DOTFILES_DIRECTORY="$GIT_DOTFILES_DIRECTORY"
 }
