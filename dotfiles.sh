@@ -95,4 +95,5 @@ copy_scripts() {
     cp -f "$script" "$scripts_directory"
     echo "Copied $script to $scripts_directory."
   done
+
 }

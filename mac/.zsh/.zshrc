@@ -1,6 +1,11 @@
 plugins=(
     zsh-autosuggestions
 )
+
+if [ -z "$dotfiles_directory" ]; then
+    export dotfiles_directory="$HOME"
+fi
+
 source $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source "$dotfiles_directory/.config/themes/theme.sh"
 
@@ -97,8 +102,13 @@ function ytdlp_mp4() {
 
 function ytdlp_mp3() {
 
-    if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
-        echo "Could not find GIT_DOTFILES_DIRECTORY."
+    if [ -z "$SCRIPTS_DIRECTORY" ]; then
+        SCRIPTS_DIRECTORY="$GIT_DOTFILES_DIRECTORY/scripts"
+    fi
+    SCRIPT_PATH="$SCRIPTS_DIRECTORY/ytdlp.py"
+
+    if [ ! -f "$SCRIPT_PATH" ]; then
+        echo "Could not find ytdlp.py."
         return
     fi
 
@@ -106,7 +116,8 @@ function ytdlp_mp3() {
         source $VENV_PATH/bin/activate
     fi
 
-    python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py -f audio -a mp3 "$@"
+    python3 $SCRIPT_PATH -f audio -a mp3 "$@"
+
     # Deactivate the virtual environment properly
     if [ -n "$VIRTUAL_ENV" ]; then
         deactivate

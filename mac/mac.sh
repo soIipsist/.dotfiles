@@ -56,7 +56,10 @@ set_hostname "$hostname"
 set_default_shell "$default_shell"
 install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
 copy_scripts "$dotfiles_scripts_dir" "$scripts_directory"
-set_default_git_dotfiles_directory "$SCRIPT_DIR"
+
+set_default_shell_variable "GIT_DOTFILES_DIRECTORY" "$SCRIPT_DIR"
+set_default_shell_variable "SCRIPTS_DIRECTORY "$scripts_directory"
+
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home"
 set_wallpaper "$wallpaper_path"

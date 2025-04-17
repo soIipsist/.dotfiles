@@ -96,7 +96,7 @@ apt_packages_array=($apt_packages)
 sudo apt install --yes --no-install-recommends "${apt_packages_array[@]}"
 install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
 copy_scripts "$dotfiles_scripts_dir" "$scripts_directory"
-set_default_git_dotfiles_directory "$SCRIPT_DIR"
+set_default_shell_variable "GIT_DOTFILES_DIRECTORY" "$SCRIPT_DIR"
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home"
 set_lockscreen_and_wallpaper "$wallpaper_path" "$lockscreen_path"

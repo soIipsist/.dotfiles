@@ -29,4 +29,5 @@ source "../json.sh"
 
 # SET GIT_DOTFILES_DIRECTORY TEST
 SCRIPT_DIR="$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
-set_default_git_dotfiles_directory "$SCRIPT_DIR"
+set_default_shell_variable "GIT_DOTFILES_DIRECTORY" "$SCRIPT_DIR"
+set_default_shell_variable "SCRIPTS_DIR" "$SCRIPT_DIR/scripts"

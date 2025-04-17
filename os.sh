@@ -134,6 +134,10 @@ set_shell_variable() {
   new_value="$2"
   shell_path="$3"
 
+  if [ -n "$shell_path" ]; then
+    shell_path=$(get_default_shell_path)
+  fi
+
   # check if variable already exists
   if grep -q "^\(export \)\?$var_name=" "$shell_path"; then
     new_value_escaped=$(echo "$new_value" | sed 's/\$/\\\$/g')
@@ -147,6 +151,10 @@ set_shell_variable() {
 get_shell_variable() {
   var_name="$1"
   shell_path="$2"
+
+  if [ -z "$shell_path" ]; then
+    shell_path=$(get_default_shell_path)
+  fi
 
   value=$(grep -E "^export $var_name=['\"][^'\"]*['\"]" "$shell_path" | sed -E "s/^export $var_name=['\"]([^'\"]*)['\"]/\1/")
   echo "$value"
@@ -196,19 +204,21 @@ replace_root() {
   fi
 }
 
-set_default_git_dotfiles_directory() {
-  # set default GIT_DOTFILES_DIRECTORY directory in shell
-  SCRIPT_DIR="$1"
-  shell_path="$(get_default_shell_path)"
-  GIT_DOTFILES_DIRECTORY=$(get_shell_variable "GIT_DOTFILES_DIRECTORY" "$shell_path")
+set_default_shell_variable() {
+  # sets default shell variable only if it doesn't already exist
+  var_name="$1"
+  new_value="$2"
+  shell_path="$3"
 
-  if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
-    GIT_DOTFILES_DIRECTORY="$SCRIPT_DIR"
-    var_name="GIT_DOTFILES_DIRECTORY"
-    new_value="$GIT_DOTFILES_DIRECTORY"
-
-    set_shell_variable "$var_name" "$new_value" "$shell_path"
-    echo "Set dotfiles directory to: $GIT_DOTFILES_DIRECTORY."
+  if [ -z "$shell_path" ]; then
+    shell_path=$(get_default_shell_path)
   fi
-  export GIT_DOTFILES_DIRECTORY="$GIT_DOTFILES_DIRECTORY"
+
+  existing_value=$(get_shell_variable "$var_name" "$shell_path")
+
+  if [ -z "$existing_value" ]; then
+    set_shell_variable "$var_name" "$new_value" "$shell_path"
+    echo "Set $var_name to: $new_value."
+  fi
+  export $var_name="$new_value"
 }

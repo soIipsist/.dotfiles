@@ -76,9 +76,8 @@ mnt_auto() {
 
 ytdlp_mp4() {
 
-    if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
-        echo "Could not find GIT_DOTFILES_DIRECTORY."
-        return
+    if [ -z "$SCRIPTS_DIRECTORY" ]; then
+        SCRIPTS_DIRECTORY="$HOME/scripts"
     fi
 
     if [ -n "$VENV_PATH" ]; then
@@ -90,7 +89,7 @@ ytdlp_mp4() {
         chmod a+rx "$YTDLP_PATH"
     fi
 
-    python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py -f video -v mp4 "$@"
+    python3 $SCRIPTS_DIRECTORY/ytdlp.py -f video -v mp4 "$@"
 
     # Deactivate the virtual environment properly
     if [ -n "$VIRTUAL_ENV" ]; then
