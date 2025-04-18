@@ -45,9 +45,8 @@ if [ -n "$dotfile_args" ]; then
     dotfiles="${dotfile_args[@]}"
 fi
 
-SCRIPT_DIR="$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
-
 dotfiles_scripts_dir="$SCRIPT_DIR/scripts"
+ORIGINAL_SCRIPT_DIR="$SCRIPT_DIR"
 
 install_homebrew "$install_homebrew_flag"
 install_from_brewfile "$brewfile_path"
@@ -57,8 +56,8 @@ set_default_shell "$default_shell"
 install_dotfiles "$dotfiles_directory" "$dotfiles" "$scripts" "$excluded_scripts"
 copy_scripts "$dotfiles_scripts_dir" "$scripts_directory"
 
-set_default_shell_variable "GIT_DOTFILES_DIRECTORY" "$SCRIPT_DIR"
-set_default_shell_variable "SCRIPTS_DIRECTORY "$scripts_directory"
+set_default_shell_variable "GIT_DOTFILES_DIRECTORY" "$ORIGINAL_SCRIPT_DIR"
+set_default_shell_variable "SCRIPTS_DIRECTORY" "$scripts_directory"
 
 git_config "$git_username" "$git_email"
 clone_git_repos "${git_repos[@]}" "$git_home"

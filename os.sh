@@ -134,10 +134,6 @@ set_shell_variable() {
   new_value="$2"
   shell_path="$3"
 
-  if [ -n "$shell_path" ]; then
-    shell_path=$(get_default_shell_path)
-  fi
-
   # check if variable already exists
   if grep -q "^\(export \)\?$var_name=" "$shell_path"; then
     new_value_escaped=$(echo "$new_value" | sed 's/\$/\\\$/g')
@@ -209,6 +205,10 @@ set_default_shell_variable() {
   var_name="$1"
   new_value="$2"
   shell_path="$3"
+
+  if [ -z "$new_value" ]; then
+    return
+  fi
 
   if [ -z "$shell_path" ]; then
     shell_path=$(get_default_shell_path)

@@ -1,3 +1,4 @@
 {
-  "some_var": "$USER/$SOME_VAR2"
+  "some_var": "$USER/$SOME_VAR2",
+  "scripts_directory": "$HOME/scripts"
 }
