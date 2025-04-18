@@ -19,6 +19,7 @@
     "git",
     "ffmpeg"
   ],
+  "pip_packages": ["yt-dlp"],
   "scripts_directory": "$HOME/scripts",
   "venv_path": "$HOME/venv"
 }

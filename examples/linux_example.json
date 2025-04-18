@@ -19,7 +19,7 @@
     "git",
     "ffmpeg"
   ],
-  "pip_packages": [],
+  "pip_packages": ["yt-dlp"],
   "dotfiles": [],
   "wallpaper_path": "",
   "lockscreen_path": "",
