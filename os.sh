@@ -165,7 +165,7 @@ set_venv_path() {
     return
   fi
 
-  python3 -m venv "$actual_venv_path"
+  python3 -m venv "$venv_path"
 
   # append to default shell
   var_name="VENV_PATH"
