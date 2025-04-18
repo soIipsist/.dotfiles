@@ -83,7 +83,6 @@ The following parameters are valid for the `linux.json` file:
 - **`pip_packages`**: List of `pip` packages to install.
 - **`brew_packages`**: List of `brew` packages to install.
 - **`venv_path`**: If set, a virtual environment is created automatically, and all pip packages are installed within it.
-- **`set_venv_path`**: Sets the defined `venv_path` as an environment variable. (default: `false`)
 - **`git_home`**: Default `git` home path.
 - **`git_repos`**: List of git repositories to clone.
 - **`git_email`**: Global Git email.
@@ -111,7 +110,6 @@ These parameters can be specified in the `mac.json` file:
 - **`brew_cask_packages`**: List of `brew` cask packages to install.
 - **`pip_packages`**: List of `pip` packages to install.
 - **`venv_path`**: If set, a virtual environment is created automatically, and all pip packages are installed within it.
-- **`set_venv_path`**: Sets the defined `venv_path` as an environment variable. (default: `false`)
 - **`git_home`**: Default `git` home path.
 - **`git_repos`**: List of git repositories to clone.
 - **`git_email`**: Global `git` email.

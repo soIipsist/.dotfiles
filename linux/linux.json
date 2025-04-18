@@ -1,4 +1,24 @@
 {
-  "hostname": "solipsist",
-  "dotfiles": [".bash"]
+  "dotfiles": [".bash"],
+  "apt_packages": [
+    "neofetch",
+    "htop",
+    "curl",
+    "tmux",
+    "vim",
+    "zsh",
+    "screen",
+    "cron",
+    "rsync",
+    "build-essential",
+    "openssh-server",
+    "unattended-upgrades",
+    "bash-completion",
+    "procps",
+    "file",
+    "git",
+    "ffmpeg"
+  ],
+  "scripts_directory": "$HOME/scripts",
+  "venv_path": ""
 }
