@@ -20,5 +20,5 @@
     "ffmpeg"
   ],
   "scripts_directory": "$HOME/scripts",
-  "venv_path": ""
+  "venv_path": "$HOME/venv"
 }

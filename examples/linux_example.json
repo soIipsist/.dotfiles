@@ -25,5 +25,6 @@
   "lockscreen_path": "",
   "git_username": "",
   "git_email": "",
-  "scripts_directory": "$HOME/scripts"
+  "scripts_directory": "$HOME/scripts",
+  "venv_path": "$HOME/venv"
 }

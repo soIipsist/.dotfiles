@@ -9,11 +9,10 @@ source "../json.sh"
 # echo $some_var
 
 # VENV PATH TEST
-# venv_path=$(get_json_value "venv_path")
-# set_venv_flag=$(get_json_value "set_venv_path")
-# pip_packages=$(get_json_value "pip_packages")
-# set_venv_path "$venv_path"
-# install_pip_packages "$venv_path" "${pip_packages[@]}"
+venv_path=$(get_json_value "venv_path")
+pip_packages=$(get_json_value "pip_packages")
+set_venv_path "$venv_path"
+install_pip_packages "$venv_path" "${pip_packages[@]}"
 
 # GET SHELL VARIABLE TEST
 # shell_path=$(get_default_shell_path)
@@ -28,6 +27,6 @@ source "../json.sh"
 # set_shell_variable "$var_name" "$new_value" "$shell_path"
 
 # SET GIT_DOTFILES_DIRECTORY TEST
-SCRIPT_DIR="$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
-set_default_shell_variable "GIT_DOTFILES_DIRECTORY" "$SCRIPT_DIR"
-set_default_shell_variable "SCRIPTS_DIR" "$SCRIPT_DIR/scripts"
+# SCRIPT_DIR="$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
+# set_default_shell_variable "GIT_DOTFILES_DIRECTORY" "$SCRIPT_DIR"
+# set_default_shell_variable "SCRIPTS_DIR" "$SCRIPT_DIR/scripts"

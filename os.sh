@@ -109,8 +109,6 @@ install_pip_packages() {
 
   if [ -z "$venv_path" ]; then
     venv_path="$VENV_PATH"
-  else
-    venv_path=$(bash -c "echo $venv_path")
   fi
 
   echo "VENV PATH: $venv_path"
@@ -133,6 +131,10 @@ set_shell_variable() {
   var_name="$1"
   new_value="$2"
   shell_path="$3"
+
+  if [ -z "$shell_path" ]; then
+    shell_path=$(get_default_shell_path)
+  fi
 
   # check if variable already exists
   if grep -q "^\(export \)\?$var_name=" "$shell_path"; then
@@ -157,25 +159,17 @@ get_shell_variable() {
 }
 
 set_venv_path() {
-  local venv_path="$1"
-
-  if [ -z "$2" ] || [ "$2" == false ]; then
-    return
-  fi
+  venv_path="$1"
 
   if [ -z "$venv_path" ]; then
     return
   fi
 
-  actual_venv_path=$(bash -c "echo $venv_path")
   python3 -m venv "$actual_venv_path"
 
   # append to default shell
-  shell_path=$(get_default_shell_path)
   var_name="VENV_PATH"
-  new_value="$actual_venv_path"
-
-  set_shell_variable "$var_name" "$new_value" "$shell_path"
+  set_shell_variable "$var_name" "$venv_path"
   echo "Created venv path: $venv_path."
 }
 

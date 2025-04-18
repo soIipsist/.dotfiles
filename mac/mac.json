@@ -1,4 +1,6 @@
 {
   "some_var": "$USER/$SOME_VAR2",
-  "scripts_directory": "$HOME/scripts"
+  "scripts_directory": "$HOME/scripts",
+  "venv_path": "$HOME/venv",
+  "pip_packages": ["yt-dlp"]
 }
