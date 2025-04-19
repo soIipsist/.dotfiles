@@ -66,6 +66,15 @@ fi
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' menu select=2
 
+# prompt
+autoload -Uz vcs_info
+precmd() {
+    vcs_info
+}
+zstyle ':vcs_info:git:*' formats '(%b)'
+
+export PROMPT="%F{green}%~%f %F{yellow}$vcs_info_msg_0_%f %# "
+
 # YTDLP options
 export YTDLP_PATH="$HOME/ytdlp/yt-dlp_macos"
 # export YTDLP_VIDEO_DIRECTORY="$HOME/Desktop/videos"
@@ -183,10 +192,3 @@ alias ta='tmux attach -t'
 alias tn='tmux new-session'
 alias tl='tmux list-sessions'
 alias tk='tmux kill-server'
-
-# prompt
-autoload -Uz vcs_info
-precmd() { vcs_info }
-zstyle ':vcs_info:git:*' formats '(%b)'
-
-PROMPT='%F{green}%~%f %F{yellow}${vcs_info_msg_0_}%f %# '
