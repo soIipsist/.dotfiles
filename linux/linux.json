@@ -17,7 +17,8 @@
     "procps",
     "file",
     "git",
-    "ffmpeg"
+    "ffmpeg",
+    "python3.12-venv"
   ],
   "pip_packages": ["yt-dlp"],
   "scripts_directory": "$HOME/scripts",
