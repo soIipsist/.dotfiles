@@ -36,6 +36,7 @@ function sesh-sessions() {
 # PATH variable
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/usr/local/ffmpeg/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
 
 # useful paths
 export GIT_HOME="$HOME/repos/soIipsist"
