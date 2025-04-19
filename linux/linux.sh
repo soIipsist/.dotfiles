@@ -66,6 +66,7 @@ dotfiles=$(get_json_value "dotfiles" "" "${dotfile_args[@]}")        # dotfiles 
 dotfiles_directory=$(get_json_value "dotfiles_directory" "" "$HOME") # will be $HOME by default
 scripts=$(get_json_value "scripts")
 excluded_scripts=$(get_json_value "excluded_scripts")
+scripts_directory=$(get_json_value "scripts_directory")
 pip_packages=$(get_json_value "pip_packages")
 venv_path=$(get_json_value "venv_path")
 git_username=$(get_json_value "git_username")
