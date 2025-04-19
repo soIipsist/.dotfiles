@@ -74,7 +74,7 @@ precmd() {
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' formats '(%b)'
 
-export PROMPT="%F{green}%~%f %F{yellow}${vcs_info_msg_0_}%f %# "
+export PROMPT='%(?.%F{green}●.%F{red}●%f) %F{211}%1~%f ${vcs_info_msg_0_} '
 
 # YTDLP options
 export YTDLP_PATH="$HOME/ytdlp/yt-dlp"
