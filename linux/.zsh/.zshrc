@@ -183,3 +183,10 @@ alias ta='tmux attach -t'
 alias tn='tmux new-session'
 alias tl='tmux list-sessions'
 alias tk='tmux kill-server'
+
+# prompt
+autoload -Uz vcs_info
+precmd() { vcs_info }
+zstyle ':vcs_info:git:*' formats '(%b)'
+
+PROMPT='%F{green}%~%f %F{yellow}${vcs_info_msg_0_}%f %# '
