@@ -163,7 +163,6 @@ alias adb_transfer="python3 $GIT_HOME/adb-wrapper/examples/transfer.py"
 alias adb_root="python3 $GIT_HOME/adb-wrapper/examples/root.py"
 alias vscode="python3 $GIT_HOME/vscode-workspaces/workspaces.py"
 alias cdf='cd "$(find . -type d | fzf)"'
-alias dots="(cd $GIT_DOTFILES_DIRECTORY/mac && bash mac.sh)"
 alias llm="ollama run $OLLAMA_MODEL"
 
 # key bindings

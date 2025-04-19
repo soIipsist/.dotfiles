@@ -73,10 +73,10 @@ precmd() {
 }
 zstyle ':vcs_info:git:*' formats '(%b)'
 
-export PROMPT="%F{green}%~%f %F{yellow}$vcs_info_msg_0_%f %# "
+export PROMPT="%F{green}%~%f %F{yellow}${vcs_info_msg_0_}%f %# "
 
 # YTDLP options
-export YTDLP_PATH="$HOME/ytdlp/yt-dlp_macos"
+export YTDLP_PATH="$HOME/ytdlp/yt-dlp"
 # export YTDLP_VIDEO_DIRECTORY="$HOME/Desktop/videos"
 # export YTDLP_AUDIO_DIRECTORY="$HOME/Desktop/music"
 export YTDLP_AUDIO_EXT="mp3"
@@ -153,7 +153,6 @@ ytdlp_mp4() {
 alias python="python3"
 alias ytdlp="python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py"
 alias cdf='cd "$(find . -type d | fzf)"'
-alias dots="(cd $GIT_DOTFILES_DIRECTORY/mac && bash mac.sh)"
 
 # key bindings
 bindkey '^[[1;2D' backward-word # Shift + Left Arrow
