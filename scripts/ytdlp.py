@@ -85,10 +85,9 @@ def get_options(
             "ignoreerrors": True,
         }
 
-    options["outtmpl"] = get_outtmpl(format, prefix, output_directory)
+    outtmpl = get_outtmpl(format, prefix, output_directory)
+    options["outtmpl"] = outtmpl
 
-    if output_directory:
-        outtmpl = f"{output_directory}/{outtmpl}"
     return options
 
 
