@@ -48,6 +48,7 @@ export HISTSIZE="2000"
 export SAVEHIST="2000"
 setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
+setopt PROMPT_SUBST
 
 # iterm2
 export CLICOLOR=1
