@@ -83,9 +83,8 @@ fi
 
 # YTDLP options
 export YTDLP_PATH="$HOME/ytdlp/yt-dlp"
-export YTDLP_AUDIO_EXT="mp3"
-export YTDLP_VIDEO_EXT="mp4"
-export YTDLP_VIDEO_SOUND_EXT="m4a"
+export YTDLP_AUDIO_CODEC="aac"
+export YTDLP_VIDEO_CODEC="libx264"
 export YTDLP_FORMAT="audio"
 export YTDLP_EXTRACT_INFO="1"
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"

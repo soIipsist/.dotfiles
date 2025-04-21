@@ -42,12 +42,45 @@ def read_json_file(json_file, errors=None):
         print(e)
 
 
+def get_outtmpl(format: str, prefix: str = None, output_directory: str = None):
+
+    outtmpl = f"%(title)s.%(ext)s"
+
+    if prefix:
+        outtmpl = f"{prefix}{outtmpl}"
+
+    if not output_directory:
+        if format == "audio":
+            output_directory = os.environ.get("YTDLP_AUDIO_DIRECTORY")
+
+        elif format == "video":
+            output_directory = os.environ.get("YTDLP_VIDEO_DIRECTORY")
+
+    if output_directory:
+        outtmpl = f"{output_directory}/{outtmpl}"
+
+    return outtmpl
+
+
+def get_postprocessor_args(audio_codec: str = None, video_codec: str = None):
+    postprocessor_args: list = []
+
+    if video_codec:
+        postprocessor_args.extend(["-c:v", "libx264"])
+
+    if audio_codec:
+        postprocessor_args.extend(["-c:a", "aac"])
+
+    return postprocessor_args
+
+
 def get_options(
     format: str,
+    custom_format: str = None,
     prefix: str = None,
-    video_extension="mp4",
-    audio_extension="mp3",
-    video_sound_extension="m4a",
+    extension: str = None,
+    video_codec=None,
+    audio_codec=None,
     output_directory=None,
     metadata_file="",
 ):
@@ -72,21 +105,32 @@ def get_options(
             "subtitleslangs": ["en"],
             "outtmpl": "%(title)s.%(ext)s",
         }
-        options["format"] = (
-            f"bestvideo[ext={video_extension}]+bestaudio[ext={video_sound_extension}]/{video_extension}"
-        )
+
+        if not extension:
+            extension = "mp4"
+
     elif format == "audio":
+        if not extension:
+            extension = "mp3"
+
         options = {
             "format": "bestaudio/best",
             "outtmpl": "%(title)s.%(ext)s",
             "postprocessors": [
-                {"key": "FFmpegExtractAudio", "preferredcodec": audio_extension}
+                {"key": "FFmpegExtractAudio", "preferredcodec": extension}
             ],
             "ignoreerrors": True,
         }
 
+    postprocessor_args = options.get("postprocessor_args", [])
     outtmpl = get_outtmpl(format, prefix, output_directory)
+
+    options["merge_output_format"] = extension
     options["outtmpl"] = outtmpl
+    options["postprocessor_args"] = postprocessor_args
+
+    if custom_format:
+        options["format"] = custom_format
 
     return options
 
@@ -148,26 +192,6 @@ def download(urls: list, options: dict = None, extract_info: bool = True):
     return all_entries, error_entries
 
 
-def get_outtmpl(format: str, prefix: str = None, output_directory: str = None):
-
-    outtmpl = f"%(title)s.%(ext)s"
-
-    if prefix:
-        outtmpl = f"{prefix}{outtmpl}"
-
-    if not output_directory:
-        if format == "audio":
-            output_directory = os.environ.get("YTDLP_AUDIO_DIRECTORY")
-
-        elif format == "video":
-            output_directory = os.environ.get("YTDLP_VIDEO_DIRECTORY")
-
-    if output_directory:
-        outtmpl = f"{output_directory}/{outtmpl}"
-
-    return outtmpl
-
-
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -176,7 +200,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-f",
         "--format",
-        default=os.environ.get("YTDLP_FORMAT") or "video",
+        default=os.environ.get("YTDLP_FORMAT", "video"),
         choices=["video", "audio"],
     )
     parser.add_argument("-o", "--output_directory", type=str, default=None)
@@ -191,16 +215,12 @@ if __name__ == "__main__":
         choices=bool_choices,
     )
     parser.add_argument("-e", "--extension", default=None)
+    parser.add_argument("-cf", "--custom_format", default=None)
     parser.add_argument(
-        "-a", "--audio_extension", default=os.environ.get("YTDLP_AUDIO_EXT")
+        "-a", "--audio_codec", default=os.environ.get("YTDLP_AUDIO_CODEC")
     )
     parser.add_argument(
-        "-s",
-        "--video_sound_extension",
-        default=os.environ.get("YTDLP_VIDEO_SOUND_EXT"),
-    )
-    parser.add_argument(
-        "-v", "--video_extension", default=os.environ.get("YTDLP_VIDEO_EXT")
+        "-v", "--video_codec", default=os.environ.get("YTDLP_VIDEO_CODEC")
     )
     parser.add_argument("-m", "--metadata_file", default="")
 
@@ -212,25 +232,26 @@ if __name__ == "__main__":
     extract_info = args.get("extract_info")
     output_directory = args.get("output_directory")
     prefix = args.get("prefix")
+    custom_format = args.get("custom_format")
     extension = args.get("extension")
-    audio_extension = args.get("audio_extension")
-    video_extension = args.get("video_extension")
-    video_sound_extension = args.get("video_sound_extension")
+    audio_codec = args.get("audio_codec")
+    video_codec = args.get("video_codec")
     metadata_file = args.get("metadata_file", "")
 
     options = get_options(
         format,
+        custom_format,
         prefix,
-        video_extension,
-        audio_extension,
-        video_sound_extension,
+        extension,
+        audio_codec,
+        video_codec,
         output_directory,
         metadata_file,
     )
 
     pp.pprint(options)
     urls = get_urls(urls, removed_args)
-    all_entries, error_entries = download(urls, options, extract_info)
+    # all_entries, error_entries = download(urls, options, extract_info)
 
 # playlist tests
 # python ytdlp.py "https://youtube.com/playlist?list=OLAK5uy_nTBnmorryZikTJrjY0Lj1lHG_DWy4IPvk" -f audio
