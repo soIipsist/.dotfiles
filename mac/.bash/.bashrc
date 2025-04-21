@@ -44,12 +44,12 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # YTDLP environment variables
-export YTDLP_PATH="$HOME/ytdlp/yt-dlp"
-export YTDLP_AUDIO_EXT="mp3"
-export YTDLP_VIDEO_EXT="mp4"
-export YTDLP_VIDEO_SOUND_EXT="m4a"
+export YTDLP_PATH="$HOME/ytdlp/yt-yt-dlp_macos"
+export YTDLP_AUDIO_CODEC="aac"
+export YTDLP_VIDEO_CODEC="libx264"
 export YTDLP_FORMAT="audio"
 export YTDLP_EXTRACT_INFO="1"
+export YTDLP_OPTIONS_PATH=""
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 export VENV_PATH="$HOME/venv"
 

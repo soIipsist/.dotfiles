@@ -78,6 +78,7 @@ export YTDLP_AUDIO_CODEC="aac"
 export YTDLP_VIDEO_CODEC="libx264"
 export YTDLP_FORMAT="audio"
 export YTDLP_EXTRACT_INFO="1"
+export YTDLP_OPTIONS_PATH=""
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 export VENV_PATH="$HOME/venv"
 

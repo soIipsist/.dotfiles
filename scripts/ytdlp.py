@@ -62,14 +62,14 @@ def get_outtmpl(format: str, prefix: str = None, output_directory: str = None):
     return outtmpl
 
 
-def get_postprocessor_args(audio_codec: str = None, video_codec: str = None):
+def get_postprocessor_args(video_codec: str = None, audio_codec: str = None):
     postprocessor_args: list = []
 
     if video_codec:
-        postprocessor_args.extend(["-c:v", "libx264"])
+        postprocessor_args.extend(["-c:v", video_codec])
 
     if audio_codec:
-        postprocessor_args.extend(["-c:a", "aac"])
+        postprocessor_args.extend(["-c:a", audio_codec])
 
     return postprocessor_args
 
@@ -122,7 +122,7 @@ def get_options(
             "ignoreerrors": True,
         }
 
-    postprocessor_args = options.get("postprocessor_args", [])
+    postprocessor_args = get_postprocessor_args(video_codec, audio_codec)
     outtmpl = get_outtmpl(format, prefix, output_directory)
 
     options["merge_output_format"] = extension
@@ -222,7 +222,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "-v", "--video_codec", default=os.environ.get("YTDLP_VIDEO_CODEC")
     )
-    parser.add_argument("-m", "--metadata_file", default="")
+    parser.add_argument(
+        "-m", "--metadata_file", default=os.environ.get("YTDLP_OPTIONS_PATH")
+    )
 
     args = vars(parser.parse_args())
 
@@ -243,8 +245,8 @@ if __name__ == "__main__":
         custom_format,
         prefix,
         extension,
-        audio_codec,
         video_codec,
+        audio_codec,
         output_directory,
         metadata_file,
     )
