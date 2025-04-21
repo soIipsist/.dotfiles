@@ -62,11 +62,13 @@ def get_outtmpl(format: str, prefix: str = None, output_directory: str = None):
     return outtmpl
 
 
-def get_postprocessor_args(video_codec: str = None, audio_codec: str = None):
+def get_postprocessor_args(
+    extension: str, video_codec: str = None, audio_codec: str = None
+):
     postprocessor_args: list = []
 
     if video_codec:
-        postprocessor_args.extend(["-c:v", video_codec])
+        postprocessor_args.extend(["-f", extension, "-c:v", video_codec])
 
     if audio_codec:
         postprocessor_args.extend(["-c:a", audio_codec])
@@ -82,15 +84,15 @@ def get_options(
     video_codec=None,
     audio_codec=None,
     output_directory=None,
-    metadata_file="",
+    options_path="",
 ):
     format = format.lower()
 
     if format not in valid_formats:
         format = "video"
 
-    if os.path.exists(metadata_file):  # read from metadata file, if it exists
-        options = read_json_file(metadata_file)
+    if os.path.exists(options_path):  # read from metadata file, if it exists
+        options = read_json_file(options_path)
         return options
 
     if format == "video":  # default video options
@@ -122,7 +124,7 @@ def get_options(
             "ignoreerrors": True,
         }
 
-    postprocessor_args = get_postprocessor_args(video_codec, audio_codec)
+    postprocessor_args = get_postprocessor_args(extension, video_codec, audio_codec)
     outtmpl = get_outtmpl(format, prefix, output_directory)
 
     options["merge_output_format"] = extension
@@ -203,7 +205,7 @@ if __name__ == "__main__":
         default=os.environ.get("YTDLP_FORMAT", "video"),
         choices=["video", "audio"],
     )
-    parser.add_argument("-o", "--output_directory", type=str, default=None)
+    parser.add_argument("-d", "--output_directory", type=str, default=None)
     parser.add_argument(
         "-p", "--prefix", default=os.environ.get("YTDLP_PREFIX"), type=str
     )
@@ -223,7 +225,7 @@ if __name__ == "__main__":
         "-v", "--video_codec", default=os.environ.get("YTDLP_VIDEO_CODEC")
     )
     parser.add_argument(
-        "-m", "--metadata_file", default=os.environ.get("YTDLP_OPTIONS_PATH")
+        "-o", "--options_path", default=os.environ.get("YTDLP_OPTIONS_PATH", "")
     )
 
     args = vars(parser.parse_args())
@@ -238,7 +240,7 @@ if __name__ == "__main__":
     extension = args.get("extension")
     audio_codec = args.get("audio_codec")
     video_codec = args.get("video_codec")
-    metadata_file = args.get("metadata_file", "")
+    options_path = args.get("options_path", "")
 
     options = get_options(
         format,
@@ -248,12 +250,12 @@ if __name__ == "__main__":
         video_codec,
         audio_codec,
         output_directory,
-        metadata_file,
+        options_path,
     )
 
     pp.pprint(options)
     urls = get_urls(urls, removed_args)
-    # all_entries, error_entries = download(urls, options, extract_info)
+    all_entries, error_entries = download(urls, options, extract_info)
 
 # playlist tests
 # python ytdlp.py "https://youtube.com/playlist?list=OLAK5uy_nTBnmorryZikTJrjY0Lj1lHG_DWy4IPvk" -f audio

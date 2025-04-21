@@ -5,9 +5,13 @@
     {
       "already_have_subtitle": false,
       "key": "FFmpegEmbedSubtitle"
+    },
+    {
+      "key": "FFmpegVideoConvertor",
+      "preferedformat": "mp4"
     }
   ],
-  "postprocessor_args": ["-c:v", "libx264", "-c:a", "aac"],
+  "postprocessor_args": ["-f", "mp4", "-c:v", "libx264", "-c:a", "aac"],
   "writesubtitles": true,
   "writeautomaticsub": true,
   "subtitleslangs": ["en"],
