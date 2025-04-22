@@ -27,7 +27,7 @@ ytdlp_mp3() {
         source $VENV_PATH/bin/activate
     fi
 
-    python3 $SCRIPT_PATH -f audio -a mp3 "$@"
+    python3 $SCRIPT_PATH -f audio "$@"
 
     # Deactivate the virtual environment properly
     if [ -n "$VIRTUAL_ENV" ]; then
@@ -58,7 +58,7 @@ ytdlp_mp4() {
         source $VENV_PATH/bin/activate
     fi
 
-    python3 $SCRIPT_PATH -f video -v mp4 "$@"
+    python3 $SCRIPT_PATH -f video "$@"
 
     # Deactivate the virtual environment properly
     if [ -n "$VIRTUAL_ENV" ]; then
