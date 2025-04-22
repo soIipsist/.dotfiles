@@ -78,7 +78,7 @@ def get_postprocessors(options: dict, format: str, extension: str):
     embed_subtitle = {"already_have_subtitle": False, "key": "FFmpegEmbedSubtitle"}
     extract_audio = {"key": "FFmpegExtractAudio", "preferredcodec": extension}
 
-    if format == "audio":
+    if format == "video":
         if embed_subtitle not in postprocessors:
             postprocessors.append(embed_subtitle)
     else:
@@ -267,7 +267,7 @@ if __name__ == "__main__":
 
     pp.pprint(options)
     urls = get_urls(urls, removed_args)
-    # all_entries, error_entries = download(urls, options, extract_info)
+    all_entries, error_entries = download(urls, options, extract_info)
 
 # playlist tests
 # python ytdlp.py "https://youtube.com/playlist?list=OLAK5uy_nTBnmorryZikTJrjY0Lj1lHG_DWy4IPvk" -f audio
