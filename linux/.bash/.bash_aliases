@@ -135,3 +135,12 @@ ytdlp_mp4() {
         deactivate
     fi
 }
+
+get_codec() {
+    if [ ! -f "$1" ]; then
+        echo "File not found: $1" >&2
+        return 1
+    fi
+    codec=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=nw=1:nk=1 "$1")
+    echo "$codec"
+}

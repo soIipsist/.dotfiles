@@ -34,6 +34,15 @@ function sesh-sessions() {
     }
 }
 
+function get_codec() {
+    if [ ! -f "$1" ]; then
+        echo "File not found: $1" >&2
+        return 1
+    fi
+    codec=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=nw=1:nk=1 "$1")
+    echo "$codec"
+}
+
 # PATH variable
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"

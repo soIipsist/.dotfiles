@@ -76,7 +76,7 @@ precmd() {
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' formats '(%b)'
 
-export PROMPT="%(?.%F{blue}●.%F{red}●%f) %F{211}%1~%f ${vcs_info_msg_0_} "
+export PROMPT="%(?.%F{211}●.%F{red}●%f) %F{211}%1~%f ${vcs_info_msg_0_} "
 
 # YTDLP options
 export YTDLP_PATH="$HOME/ytdlp/yt-dlp"
@@ -117,6 +117,15 @@ ytdlp_mp3() {
     if [ -n "$VIRTUAL_ENV" ]; then
         deactivate
     fi
+}
+
+get_codec() {
+    if [ ! -f "$1" ]; then
+        echo "File not found: $1" >&2
+        return 1
+    fi
+    codec=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=nw=1:nk=1 "$1")
+    echo "$codec"
 }
 
 ytdlp_mp4() {
