@@ -14,6 +14,10 @@ class Downloader(str, Enum):
     YTDLP = "ytdlp"
 
 
+class DownloaderType(str, Enum):
+    DOWNLOADER_1 = "downloader"
+
+
 class DownloadStatus(str, Enum):
     STARTED = "started"
     IN_PROGRESS = "in progress"

@@ -267,6 +267,7 @@ if __name__ == "__main__":
 
     pp.pprint(options)
     urls = get_urls(urls, removed_args)
+    print("urls", urls)
     all_entries, error_entries = download(urls, options, extract_info)
 
 # playlist tests
