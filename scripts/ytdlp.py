@@ -72,18 +72,29 @@ def get_format(format: str, custom_format: str = None):
     return "bestvideo+bestaudio"
 
 
-def get_postprocessor_args(
-    options: dict, extension: str, video_codec: str = None, audio_codec: str = None
-):
-    postprocessor_args: list = options.get("postprocessor_args", [])
+def get_postprocessors(options: dict, format: str, extension: str):
+    postprocessors: list = options.get("postprocessors", [])
 
-    if video_codec:
-        postprocessor_args.extend(["-f", extension, "-c:v", video_codec])
+    embed_subtitle = {"already_have_subtitle": False, "key": "FFmpegEmbedSubtitle"}
+    extract_audio = {"key": "FFmpegExtractAudio", "preferredcodec": extension}
 
-    if audio_codec:
-        postprocessor_args.extend(["-c:a", audio_codec])
+    if format == "audio":
+        if embed_subtitle not in postprocessors:
+            postprocessors.append(embed_subtitle)
+    else:
+        if extract_audio not in postprocessors:
+            postprocessors.append(extract_audio)
 
-    return postprocessor_args
+    return postprocessors
+
+
+def get_postprocessor_args(options: dict, postprocessor_args: list = []):
+    if not postprocessor_args:
+        postprocessor_args = []
+
+    options_postprocessor_args: list = options.get("postprocessor_args", [])
+    options_postprocessor_args.extend(postprocessor_args)
+    return options_postprocessor_args
 
 
 def get_options(
@@ -91,8 +102,7 @@ def get_options(
     custom_format: str = None,
     prefix: str = None,
     extension: str = None,
-    video_codec=None,
-    audio_codec=None,
+    postprocessor_args: list = None,
     output_directory=None,
     options_path="",
 ):
@@ -112,9 +122,6 @@ def get_options(
         options.update(
             {
                 "progress": True,
-                "postprocessors": [
-                    {"already_have_subtitle": False, "key": "FFmpegEmbedSubtitle"}
-                ],
                 "writesubtitles": True,
                 "writeautomaticsub": True,
                 "subtitleslangs": ["en"],
@@ -130,23 +137,20 @@ def get_options(
 
         options.update(
             {
-                "format": "bestaudio/best",
-                "postprocessors": [
-                    {"key": "FFmpegExtractAudio", "preferredcodec": extension}
-                ],
+                "progress": True,
                 "ignoreerrors": True,
             }
         )
 
     ytdlp_format = get_format(format, custom_format)
-    postprocessor_args = get_postprocessor_args(
-        options, extension, video_codec, audio_codec
-    )
+    postprocessors = get_postprocessors(options, format, extension)
+    options_postprocessor_args = get_postprocessor_args(options, postprocessor_args)
     outtmpl = get_outtmpl(format, prefix, output_directory)
 
     options["merge_output_format"] = extension
     options["outtmpl"] = outtmpl
-    options["postprocessor_args"] = postprocessor_args
+    options["postprocessors"] = postprocessors
+    options["postprocessor_args"] = options_postprocessor_args
     options["format"] = ytdlp_format
 
     return options
@@ -233,12 +237,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("-e", "--extension", default=None)
     parser.add_argument("-cf", "--custom_format", default=None)
-    parser.add_argument(
-        "-a", "--audio_codec", default=os.environ.get("YTDLP_AUDIO_CODEC")
-    )
-    parser.add_argument(
-        "-v", "--video_codec", default=os.environ.get("YTDLP_VIDEO_CODEC")
-    )
+    parser.add_argument("-ppa", "--postprocessor_args", default=None, nargs="+")
     parser.add_argument(
         "-o", "--options_path", default=os.environ.get("YTDLP_OPTIONS_PATH", "")
     )
@@ -253,8 +252,7 @@ if __name__ == "__main__":
     prefix = args.get("prefix")
     custom_format = args.get("custom_format")
     extension = args.get("extension")
-    audio_codec = args.get("audio_codec")
-    video_codec = args.get("video_codec")
+    postprocessor_args = args.get("postprocessor_args", [])
     options_path = args.get("options_path", "")
 
     options = get_options(
@@ -262,15 +260,14 @@ if __name__ == "__main__":
         custom_format,
         prefix,
         extension,
-        video_codec,
-        audio_codec,
+        postprocessor_args,
         output_directory,
         options_path,
     )
 
     pp.pprint(options)
     urls = get_urls(urls, removed_args)
-    # all_entries, error_entries = download(urls, options, extract_info)
+    all_entries, error_entries = download(urls, options, extract_info)
 
 # playlist tests
 # python ytdlp.py "https://youtube.com/playlist?list=OLAK5uy_nTBnmorryZikTJrjY0Lj1lHG_DWy4IPvk" -f audio

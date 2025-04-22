@@ -83,8 +83,6 @@ fi
 
 # YTDLP options
 export YTDLP_PATH="$HOME/ytdlp/yt-dlp"
-export YTDLP_AUDIO_CODEC="aac"
-export YTDLP_VIDEO_CODEC="libx264"
 export YTDLP_FORMAT="audio"
 export YTDLP_EXTRACT_INFO="1"
 export YTDLP_OPTIONS_PATH=""
