@@ -12,10 +12,10 @@ specific_format = None
 
 class Downloader(str, Enum):
     YTDLP = "ytdlp"
-
-
-class DownloaderType(str, Enum):
-    DOWNLOADER_1 = "downloader"
+    YTDLP_AUDIO_1 = "ytdlp_audio"
+    YTDLP_VIDEO_1 = "ytdlp_video"
+    YTDLP_VIDEO_2 = "ytdlp_video_2"
+    YTDLP_VIDEO_3 = "ytdlp_video_3"
 
 
 class DownloadStatus(str, Enum):
@@ -80,7 +80,7 @@ class Download:
             (self.link, self.downloader, self.download_status, self.start_date),
         )
 
-        if self.downloader == Downloader.YTDLP:
+        if self.downloader == Downloader.Y:
             pass
             # download()
 

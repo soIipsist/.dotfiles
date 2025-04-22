@@ -217,7 +217,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("urls", nargs="+", type=str)
-    parser.add_argument("-r", "--removed_args", default=[], nargs="?")
+    parser.add_argument("-r", "--removed_args", default=None, nargs="+")
     parser.add_argument(
         "-f",
         "--format",
@@ -267,7 +267,6 @@ if __name__ == "__main__":
 
     pp.pprint(options)
     urls = get_urls(urls, removed_args)
-    print("urls", urls)
     all_entries, error_entries = download(urls, options, extract_info)
 
 # playlist tests
