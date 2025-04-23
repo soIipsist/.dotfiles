@@ -2,6 +2,7 @@ import os
 import sqlite3
 import datetime
 from enum import Enum
+from typing import List
 from ytdlp import download as ytdlp_download, get_options
 import argparse
 
@@ -28,6 +29,8 @@ YTDLP_DOWNLOADERS = {
     Downloader.YTDLP_VIDEO_3: "video_options_4.json",
 }
 
+downloader_keys = [key.value for key in YTDLP_DOWNLOADERS.keys()]
+
 
 class DownloadStatus(str, Enum):
     STARTED = "started"
@@ -41,27 +44,28 @@ class Download:
     _download_status = DownloadStatus.STARTED
     _format = None
     _start_date = str(datetime.datetime.now())
-    _link: str = None
-    _link_str: str = None
+    _url: str = None
+    _download_str: str = None
 
-    def __init__(self, link_str: str):
-        self.link_str = link_str
-
-    @property
-    def link(self):
-        return self._link
-
-    @link.setter
-    def link(self, link: str):
-        self._link = link
+    def __init__(self, download_str: str, downloader: Downloader = None):
+        self.download_str = download_str
+        self.downloader = downloader
 
     @property
-    def link_str(self):
-        return self._link_str
+    def url(self):
+        return self._url
 
-    @link_str.setter
-    def link_str(self, link_str: str):
-        self.parse_link(link_str)
+    @url.setter
+    def url(self, url: str):
+        self._url = url
+
+    @property
+    def download_str(self):
+        return self._download_str
+
+    @download_str.setter
+    def download_str(self, download_str: str):
+        self.parse_url(download_str)
 
     @property
     def downloader(self):
@@ -71,24 +75,26 @@ class Download:
     def downloader(self, downloader: Downloader):
         self._downloader = downloader
 
-    def parse_link(self, link_str: str):
-        self._link_str = link_str
-        link_str = link_str.split(" ")  # split link_str into spaces
+    def parse_url(self, download_str: str):
+        self._download_str = download_str
+        download_str = download_str.split(" ")  # split download_str into spaces
 
-        self.link = link_str[0]
-        self.downloader = link_str[1] if len(link_str) > 1 else Downloader.YTDLP.value
+        self.url = download_str[0]
+        self.downloader = (
+            download_str[1] if len(download_str) > 1 else Downloader.YTDLP.value
+        )
         self.download_status = DownloadStatus.STARTED.value
         self.start_date = str(datetime.datetime.now())
 
     def start_download(self, db: sqlite3.Connection):
         print(
-            self.link, str(self.download_status), str(self.downloader), self.start_date
+            self.url, str(self.download_status), str(self.downloader), self.start_date
         )
 
         execute_query(
             db,
-            f"""INSERT INTO downloads (link, downloader, download_status, start_date) VALUES (?,?,?,?) """,
-            (self.link, self.downloader, self.download_status, self.start_date),
+            f"""INSERT INTO downloads (url, downloader, download_status, start_date) VALUES (?,?,?,?) """,
+            (self.url, self.downloader, self.download_status, self.start_date),
         )
 
         if self.downloader in YTDLP_DOWNLOADERS.keys():
@@ -99,12 +105,12 @@ class Download:
         self.download_status = DownloadStatus.INTERRUPTED
         execute_query(
             db,
-            f"""UPDATE downloads SET download_status = ? WHERE link = ?""",
-            (self.download_status, self.link),
+            f"""UPDATE downloads SET download_status = ? WHERE url = ?""",
+            (self.download_status, self.url),
         )
 
     def __repr__(self):
-        return f"{self.downloader}"
+        return f"{self.downloader}, {self.url}"
 
 
 def get_format_from_path(path: str):
@@ -139,7 +145,29 @@ def execute_query(conn: sqlite3.Connection, query: str, params: list = None):
     return results
 
 
-def main(url: str = None, download_type=Downloader.YTDLP, downloads_path: str = None):
+def get_downloads(
+    url: str, downloader_type: Downloader = Downloader.YTDLP, downloads_path: str = None
+) -> List[Download]:
+
+    downloads = []
+
+    if not downloads_path:
+        # check if text file was modified
+        with open(downloads_path, "r") as file:
+            for line in file:
+                download_str = line.strip()
+                if not download_str:
+                    continue
+                download = Download(download_str, downloader_type)
+                downloads.append(download)
+    else:
+        download = Download(url, downloader_type)
+        downloads.append(download)
+    return downloads
+
+
+def main(url: str = None, downloader_type=Downloader.YTDLP, downloads_path: str = None):
+    downloads = get_downloads(url, downloader_type, downloads_path)
     database_path = os.path.join(script_directory, "downloads.db")
 
     try:
@@ -151,7 +179,7 @@ def main(url: str = None, download_type=Downloader.YTDLP, downloads_path: str = 
     execute_query(
         db,
         """CREATE TABLE IF NOT EXISTS downloads (
-        link text PRIMARY KEY NOT NULL, 
+        url text PRIMARY KEY NOT NULL, 
         downloader text NOT NULL, 
         download_status text NOT NULL,
         start_date DATE, 
@@ -159,21 +187,21 @@ def main(url: str = None, download_type=Downloader.YTDLP, downloads_path: str = 
     );""",
     )
 
-    # check if text file was modified
-    with open(downloads_path, "r") as file:
-        for line in file:
-            link_str = line.strip()
-            if not link_str:
-                continue
-            download = Download(link_str)
-            download.start_download(db)
+    for download in downloads:
+        download: Download
+        print(download)
+        # download.start_download()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("url", type=str, default=None, nargs="?")
     parser.add_argument(
-        "-t", "--download_type", default=Downloader.YTDLP.value, type=str
+        "-t",
+        "--downloader_type",
+        default=Downloader.YTDLP.value,
+        type=str,
+        choices=downloader_keys,
     )
     parser.add_argument(
         "-d", "--downloads_path", default=os.environ.get("DOWNLOADS_PATH"), type=str
