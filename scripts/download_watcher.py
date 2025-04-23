@@ -13,21 +13,21 @@ def read_file(path):
         return f.readlines()
 
 
-def main(FILE_PATH: str = None):
-    if not os.path.exists(FILE_PATH) or not FILE_PATH:
-        print(f"{FILE_PATH} does not exist.")
+def main(file_path: str = None):
+    if not os.path.exists(file_path) or not file_path:
+        print(f"{file_path} does not exist.")
         return
 
-    last_mtime = get_mtime(FILE_PATH)
-    last_content = read_file(FILE_PATH)
+    last_mtime = get_mtime(file_path)
+    last_content = read_file(file_path)
 
     while True:
         time.sleep(1)
         try:
-            current_mtime = get_mtime(FILE_PATH)
+            current_mtime = get_mtime(file_path)
             if current_mtime != last_mtime:
-                current_content = read_file(FILE_PATH)
-                print(f"\n{FILE_PATH} changed at {time.ctime(current_mtime)}")
+                current_content = read_file(file_path)
+                print(f"\n{file_path} changed at {time.ctime(current_mtime)}")
                 diff = difflib.unified_diff(
                     last_content,
                     current_content,
@@ -35,12 +35,14 @@ def main(FILE_PATH: str = None):
                     tofile="after.txt",
                     lineterm="",
                 )
+
+                # run downloader.py with added lines as params
                 for line in diff:
                     print(line)
                 last_mtime = current_mtime
                 last_content = current_content
         except FileNotFoundError:
-            print(f"{FILE_PATH} was deleted!")
+            print(f"{file_path} was deleted!")
             break
 
 

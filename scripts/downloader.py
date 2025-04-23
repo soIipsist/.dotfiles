@@ -8,6 +8,7 @@ import argparse
 
 valid_formats = ["audio", "video"]
 specific_format = None
+script_directory = os.path.dirname(__file__)
 
 
 class Downloader(str, Enum):
@@ -138,12 +139,7 @@ def execute_query(conn: sqlite3.Connection, query: str, params: list = None):
     return results
 
 
-def download_all(downloads_path: str = None):
-    script_directory = os.path.dirname(__file__)
-
-    if not downloads_path:
-        downloads_path = os.path.join(script_directory, "downloads.txt")
-
+def main(url: str = None, download_type=Downloader.YTDLP, downloads_path: str = None):
     database_path = os.path.join(script_directory, "downloads.db")
 
     try:
@@ -175,7 +171,13 @@ def download_all(downloads_path: str = None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--downloads_path", type=str, default=None)
-    args = vars(parser.parse_args())
+    parser.add_argument("url", type=str, default=None, nargs="?")
+    parser.add_argument(
+        "-t", "--download_type", default=Downloader.YTDLP.value, type=str
+    )
+    parser.add_argument(
+        "-d", "--downloads_path", default=os.environ.get("DOWNLOADS_PATH"), type=str
+    )
 
-    download_all(**args)
+    args = vars(parser.parse_args())
+    main(**args)
