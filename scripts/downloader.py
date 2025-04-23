@@ -18,6 +18,7 @@ class Downloader(str, Enum):
     YTDLP_VIDEO_1 = "ytdlp_video"
     YTDLP_VIDEO_2 = "ytdlp_video_2"
     YTDLP_VIDEO_3 = "ytdlp_video_3"
+    YTDLP_VIDEO_4 = "ytdlp_video_4"
 
 
 # each downloader has a set of different options
@@ -27,8 +28,10 @@ YTDLP_DOWNLOADERS = {
     Downloader.YTDLP_VIDEO_1: "video_options.json",
     Downloader.YTDLP_VIDEO_2: "video_options_2.json",
     Downloader.YTDLP_VIDEO_3: "video_options_3.json",
-    Downloader.YTDLP_VIDEO_3: "video_options_4.json",
+    Downloader.YTDLP_VIDEO_4: "video_options_4.json",
 }
+
+YTDLP_DOWNLOADER_FORMATS = {}
 
 downloader_keys = [key.value for key in YTDLP_DOWNLOADERS.keys()]
 
@@ -41,7 +44,7 @@ class DownloadStatus(str, Enum):
 
 
 class Download:
-    _downloader = Downloader.YTDLP
+    _downloader = None
     _download_status = DownloadStatus.STARTED
     _start_date = str(datetime.datetime.now())
     _url: str = None
@@ -57,6 +60,10 @@ class Download:
         self.download_str = download_str
         self.downloader = downloader
         self.downloads_path = downloads_path
+
+    @property
+    def ytdlp_options_path(self):
+        return self._get_ytdlp_options_path()
 
     @property
     def downloads_path(self):
@@ -94,10 +101,13 @@ class Download:
         self._download_str = download_str
         download_str = download_str.split(" ")  # split download_str into spaces
 
+        # string can be of this format
+        # {some_url} -> stored in a music.txt, will use default audio downloader
+        # or
+        # {some_url} {downloader} -> stored in a downloads.txt, will use default video downloader
+
         self.url = download_str[0]
-        self.downloader = (
-            download_str[1] if len(download_str) > 1 else Downloader.YTDLP.value
-        )
+        self.downloader = download_str[1] if len(download_str) > 1 else Downloader.YTDLP
         self.download_status = DownloadStatus.STARTED.value
         self.start_date = str(datetime.datetime.now())
 
@@ -110,11 +120,12 @@ class Download:
         )
 
         if self.downloader in YTDLP_DOWNLOADERS.keys():
-            ytdlp_options_path = self._get_ytdlp_options_path()
-            ytdlp_format = self._get_ytdlp_format_from_path()
-            ytdlp_options = get_options(ytdlp_format, options_path=ytdlp_options_path)
+            ytdlp_format = self._get_ytdlp_format()
+            ytdlp_options = get_options(
+                ytdlp_format, options_path=self.ytdlp_options_path
+            )
 
-            print(ytdlp_format)
+            print(ytdlp_format, self.ytdlp_options_path)
             # ytdlp_download()
 
     def stop_download(self, db: sqlite3.Connection):
@@ -134,14 +145,35 @@ class Download:
 
         return options_path
 
-    def _get_ytdlp_format_from_path(self):
+    def _get_ytdlp_format(self):
+
         # choose different format based on path name
         if not self.downloads_path:
             return "video"
 
         path_name = os.path.basename(self.downloads_path).removesuffix(".txt")
         formats = {"music": "audio", "mp3": "audio", "videos": "video"}
-        return formats.get(path_name, "video")
+        format = formats.get(path_name)
+
+        if format:
+            print(format)
+            default_video_downloader = os.environ.get(
+                "VIDEO_DOWNLOADER", Downloader.YTDLP_VIDEO_1
+            )
+
+            default_audio_downloader = os.environ.get(
+                "YTDLP_DOWNLOADER", Downloader.YTDLP_AUDIO_1
+            )
+
+            # set downloader again, if format was found
+            self.downloader = (
+                default_video_downloader
+                if format == "video"
+                else default_audio_downloader
+            )
+        else:
+            pass
+        return format
 
     def __repr__(self):
         return f"{self.downloader}, {self.url}"
@@ -218,7 +250,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-t",
         "--downloader_type",
-        default=Downloader.YTDLP.value,
+        default=None,
         type=str,
         choices=downloader_keys,
     )
