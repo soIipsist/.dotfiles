@@ -20,6 +20,7 @@ class Downloader(str, Enum):
     YTDLP_VIDEO_3 = "ytdlp_video_3"
 
 
+# each downloader has a set of different options
 YTDLP_DOWNLOADERS = {
     Downloader.YTDLP: "video_options.json",
     Downloader.YTDLP_AUDIO_1: "audio_options.json",
@@ -42,10 +43,10 @@ class DownloadStatus(str, Enum):
 class Download:
     _downloader = Downloader.YTDLP
     _download_status = DownloadStatus.STARTED
-    _format = None
     _start_date = str(datetime.datetime.now())
     _url: str = None
     _download_str: str = None
+    _ytdlp_format = None
 
     def __init__(self, download_str: str, downloader: Downloader = None):
         self.download_str = download_str
@@ -87,9 +88,6 @@ class Download:
         self.start_date = str(datetime.datetime.now())
 
     def start_download(self, db: sqlite3.Connection):
-        print(
-            self.url, str(self.download_status), str(self.downloader), self.start_date
-        )
 
         execute_query(
             db,
@@ -98,7 +96,12 @@ class Download:
         )
 
         if self.downloader in YTDLP_DOWNLOADERS.keys():
-            pass
+            ytdlp_options_path = self._get_ytdlp_options_path()
+            ytdlp_options = get_options(
+                self._ytdlp_format, options_path=ytdlp_options_path
+            )
+
+            print(ytdlp_options)
             # ytdlp_download()
 
     def stop_download(self, db: sqlite3.Connection):
@@ -108,6 +111,15 @@ class Download:
             f"""UPDATE downloads SET download_status = ? WHERE url = ?""",
             (self.download_status, self.url),
         )
+
+    def _get_ytdlp_options_path(self):
+        options = YTDLP_DOWNLOADERS.get(self.downloader)
+        options_path = os.path.join(script_directory, options)
+
+        if not os.path.exists(options_path):
+            options_path = os.path.join(script_directory, "metadata", options)
+
+        return options_path
 
     def __repr__(self):
         return f"{self.downloader}, {self.url}"
@@ -190,7 +202,7 @@ def main(url: str = None, downloader_type=Downloader.YTDLP, downloads_path: str 
     for download in downloads:
         download: Download
         print(download)
-        # download.start_download()
+        download.start_download(db)
 
 
 if __name__ == "__main__":
