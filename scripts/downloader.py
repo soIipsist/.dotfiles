@@ -2,7 +2,7 @@ import os
 import sqlite3
 import datetime
 from enum import Enum
-from typing import List
+from typing import List, Optional
 from ytdlp import download as ytdlp_download, get_options
 import argparse
 
@@ -46,11 +46,25 @@ class Download:
     _start_date = str(datetime.datetime.now())
     _url: str = None
     _download_str: str = None
-    _ytdlp_format = None
+    _downloads_path: str = None
 
-    def __init__(self, download_str: str, downloader: Downloader = None):
+    def __init__(
+        self,
+        download_str: str,
+        downloader: Downloader = None,
+        downloads_path: Optional[str] = None,
+    ):
         self.download_str = download_str
         self.downloader = downloader
+        self.downloads_path = downloads_path
+
+    @property
+    def downloads_path(self):
+        return self._downloads_path
+
+    @downloads_path.setter
+    def downloads_path(self, downloads_path: str):
+        self._downloads_path = downloads_path
 
     @property
     def url(self):
@@ -97,11 +111,10 @@ class Download:
 
         if self.downloader in YTDLP_DOWNLOADERS.keys():
             ytdlp_options_path = self._get_ytdlp_options_path()
-            ytdlp_options = get_options(
-                self._ytdlp_format, options_path=ytdlp_options_path
-            )
+            ytdlp_format = self._get_ytdlp_format_from_path()
+            ytdlp_options = get_options(ytdlp_format, options_path=ytdlp_options_path)
 
-            print(ytdlp_options)
+            print(ytdlp_format)
             # ytdlp_download()
 
     def stop_download(self, db: sqlite3.Connection):
@@ -121,21 +134,17 @@ class Download:
 
         return options_path
 
+    def _get_ytdlp_format_from_path(self):
+        # choose different format based on path name
+        if not self.downloads_path:
+            return "video"
+
+        path_name = os.path.basename(self.downloads_path).removesuffix(".txt")
+        formats = {"music": "audio", "mp3": "audio", "videos": "video"}
+        return formats.get(path_name, "video")
+
     def __repr__(self):
         return f"{self.downloader}, {self.url}"
-
-
-def get_format_from_path(path: str):
-    # choose different format based on path name
-    path_name = os.path.basename(path).removesuffix(".txt")
-    audio_format_names = ["mp3", "music"]
-
-    if path_name in audio_format_names:
-        format = "audio"
-    else:
-        format = "video"
-
-    return format
 
 
 def execute_query(conn: sqlite3.Connection, query: str, params: list = None):
@@ -164,16 +173,15 @@ def get_downloads(
     downloads = []
 
     if not downloads_path:
-        # check if text file was modified
         with open(downloads_path, "r") as file:
             for line in file:
                 download_str = line.strip()
                 if not download_str:
                     continue
-                download = Download(download_str, downloader_type)
+                download = Download(download_str, downloader_type, downloads_path)
                 downloads.append(download)
     else:
-        download = Download(url, downloader_type)
+        download = Download(url, downloader_type, downloads_path)
         downloads.append(download)
     return downloads
 
@@ -201,7 +209,6 @@ def main(url: str = None, downloader_type=Downloader.YTDLP, downloads_path: str 
 
     for download in downloads:
         download: Download
-        print(download)
         download.start_download(db)
 
 
