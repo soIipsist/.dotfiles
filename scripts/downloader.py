@@ -2,10 +2,10 @@ import os
 import sqlite3
 import datetime
 from enum import Enum
-from ytdlp import download, get_options
+from ytdlp import download as ytdlp_download, get_options
+import argparse
 
-database_path = "downloads.db"
-links_file_path = "downloads.txt"
+
 valid_formats = ["audio", "video"]
 specific_format = None
 
@@ -16,6 +16,16 @@ class Downloader(str, Enum):
     YTDLP_VIDEO_1 = "ytdlp_video"
     YTDLP_VIDEO_2 = "ytdlp_video_2"
     YTDLP_VIDEO_3 = "ytdlp_video_3"
+
+
+YTDLP_DOWNLOADERS = {
+    Downloader.YTDLP: "video_options.json",
+    Downloader.YTDLP_AUDIO_1: "audio_options.json",
+    Downloader.YTDLP_VIDEO_1: "video_options.json",
+    Downloader.YTDLP_VIDEO_2: "video_options_2.json",
+    Downloader.YTDLP_VIDEO_3: "video_options_3.json",
+    Downloader.YTDLP_VIDEO_3: "video_options_4.json",
+}
 
 
 class DownloadStatus(str, Enum):
@@ -80,9 +90,9 @@ class Download:
             (self.link, self.downloader, self.download_status, self.start_date),
         )
 
-        if self.downloader == Downloader.Y:
+        if self.downloader in YTDLP_DOWNLOADERS.keys():
             pass
-            # download()
+            # ytdlp_download()
 
     def stop_download(self, db: sqlite3.Connection):
         self.download_status = DownloadStatus.INTERRUPTED
@@ -91,6 +101,9 @@ class Download:
             f"""UPDATE downloads SET download_status = ? WHERE link = ?""",
             (self.download_status, self.link),
         )
+
+    def __repr__(self):
+        return f"{self.downloader}"
 
 
 def get_format_from_path(path: str):
@@ -125,30 +138,44 @@ def execute_query(conn: sqlite3.Connection, query: str, params: list = None):
     return results
 
 
-try:
-    db = sqlite3.connect(database_path)
-except sqlite3.Error as e:
-    print("Error connecting to the database:", e)
-    print("Database path: ", database_path)
+def download_all(downloads_path: str = None):
+    script_directory = os.path.dirname(__file__)
+
+    if not downloads_path:
+        downloads_path = os.path.join(script_directory, "downloads.txt")
+
+    database_path = os.path.join(script_directory, "downloads.db")
+
+    try:
+        db = sqlite3.connect(database_path)
+    except sqlite3.Error as e:
+        print("Error connecting to the database:", e)
+        print("Database path: ", database_path)
+
+    execute_query(
+        db,
+        """CREATE TABLE IF NOT EXISTS downloads (
+        link text PRIMARY KEY NOT NULL, 
+        downloader text NOT NULL, 
+        download_status text NOT NULL,
+        start_date DATE, 
+        end_date DATE
+    );""",
+    )
+
+    # check if text file was modified
+    with open(downloads_path, "r") as file:
+        for line in file:
+            link_str = line.strip()
+            if not link_str:
+                continue
+            download = Download(link_str)
+            download.start_download(db)
 
 
-execute_query(
-    db,
-    """CREATE TABLE IF NOT EXISTS downloads (
-    link text PRIMARY KEY NOT NULL, 
-    downloader text NOT NULL, 
-    download_status text NOT NULL,
-    start_date DATE, 
-    end_date DATE
-);""",
-)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--downloads_path", type=str, default=None)
+    args = vars(parser.parse_args())
 
-links = []
-# check if text file was modified
-with open(links_file_path, "r") as file:
-    for line in file:
-        link_str = line.strip()
-        if not link_str:
-            continue
-        download = Download(link_str)
-        download.start_download(db)
+    download_all(**args)

@@ -89,6 +89,10 @@ export YTDLP_OPTIONS_PATH=""
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 export VENV_PATH="$HOME/venv"
 
+# downloader options
+export DEFAULT_DOWNLOADER="ytdlp"
+export DOWNLOADS_PATH="$HOME/videos/downloads.txt"
+
 ytdlp_mp3() {
 
     if [ -z "$SCRIPTS_DIRECTORY" ]; then
