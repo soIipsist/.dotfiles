@@ -190,6 +190,10 @@ class Download:
         )
 
     def start_download(self):
+
+        if self.output_directory:
+            os.makedirs(self.output_directory, exist_ok=True)
+
         self.start_ytldp_download()
         self.start_wget_download()
 
@@ -200,7 +204,14 @@ class Download:
         try:
             print("Downloading with wget...")
             self.start_download_query()
-            result = subprocess.run(["wget", self.url], capture_output=True, text=True)
+
+            cmd = (
+                ["wget", "-P", self.output_directory, self.url]
+                if self.output_directory
+                else ["wget", self.url]
+            )
+
+            result = subprocess.run(cmd, capture_output=True, text=True)
             print("STDOUT:", result.stdout)
             print("STDERR:", result.stderr)
 
@@ -228,7 +239,11 @@ class Download:
 
         download_stopped = False
         ytdlp_format = self._get_ytdlp_format()
-        ytdlp_options = get_options(ytdlp_format, options_path=self.ytdlp_options_path)
+        ytdlp_options = get_options(
+            ytdlp_format,
+            output_directory=self.output_directory,
+            options_path=self.ytdlp_options_path,
+        )
 
         try:
             self.start_download_query()
@@ -248,6 +263,8 @@ class Download:
 
         if download_stopped:
             self.set_download_status_query(DownloadStatus.INTERRUPTED)
+        else:
+            self.set_download_status_query(DownloadStatus.COMPLETED)
 
     def _get_ytdlp_options_path(self):
         options = YTDLP_DOWNLOADERS.get(self.downloader)
@@ -364,10 +381,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "-d",
         "--downloads_path",
-        default=os.environ.get("DOWNLOADS_PATH"),
+        default=os.environ.get("DOWNLOADER_PATH"),
         type=str,
     )
-    parser.add_argument("-o", "--output_directory", default=None, type=str)
+    parser.add_argument(
+        "-o",
+        "--output_directory",
+        default=os.environ.get("DOWNLOADER_OUTPUT_DIR"),
+        type=str,
+    )
 
     args = vars(parser.parse_args())
     main(**args)
