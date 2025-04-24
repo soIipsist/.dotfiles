@@ -5,7 +5,7 @@ from enum import Enum
 from typing import List, Optional
 from ytdlp import download as ytdlp_download, get_options
 import argparse
-
+import subprocess
 
 valid_formats = ["audio", "video"]
 specific_format = None
@@ -19,6 +19,7 @@ class Downloader(str, Enum):
     YTDLP_VIDEO_2 = "ytdlp_video_2"
     YTDLP_VIDEO_3 = "ytdlp_video_3"
     YTDLP_VIDEO_4 = "ytdlp_video_4"
+    WGET = "wget"
 
 
 # each downloader has a set of different options
@@ -31,9 +32,16 @@ YTDLP_DOWNLOADERS = {
     Downloader.YTDLP_VIDEO_4: "video_options_4.json",
 }
 
-YTDLP_DOWNLOADER_FORMATS = {}
+YTDLP_DOWNLOADER_FORMATS = {
+    Downloader.YTDLP: "video",
+    Downloader.YTDLP_AUDIO_1: "audio",
+    Downloader.YTDLP_VIDEO_1: "video",
+    Downloader.YTDLP_VIDEO_2: "video",
+    Downloader.YTDLP_VIDEO_3: "video",
+    Downloader.YTDLP_VIDEO_4: "video",
+}
 
-downloader_keys = [key.value for key in YTDLP_DOWNLOADERS.keys()]
+downloader_keys = [key.value for key in Downloader]
 
 
 class DownloadStatus(str, Enum):
@@ -44,7 +52,7 @@ class DownloadStatus(str, Enum):
 
 
 class Download:
-    _downloader = None
+    _downloader = Downloader.YTDLP
     _download_status = DownloadStatus.STARTED
     _start_date = str(datetime.datetime.now())
     _url: str = None
@@ -118,15 +126,28 @@ class Download:
             f"""INSERT INTO downloads (url, downloader, download_status, start_date) VALUES (?,?,?,?) """,
             (self.url, self.downloader, self.download_status, self.start_date),
         )
+        self.start_ytldp_download()
+        self.start_wget_download()
 
-        if self.downloader in YTDLP_DOWNLOADERS.keys():
-            ytdlp_format = self._get_ytdlp_format()
-            ytdlp_options = get_options(
-                ytdlp_format, options_path=self.ytdlp_options_path
-            )
+    def start_wget_download(self):
+        try:
+            print("Downloading with wget...")
+            result = subprocess.run(["wget", self.url], capture_output=True, text=True)
+            print("STDOUT:", result.stdout)
+            print("STDERR:", result.stderr)
 
-            print(ytdlp_format, self.ytdlp_options_path)
-            # ytdlp_download()
+        except Exception as e:
+            print(e)
+
+    def start_ytldp_download(self):
+        if not self.downloader in YTDLP_DOWNLOADERS.keys():
+            return
+
+        print("Downloading with ytdlp...")
+
+        ytdlp_format = self._get_ytdlp_format()
+        ytdlp_options = get_options(ytdlp_format, options_path=self.ytdlp_options_path)
+        ytdlp_download([self.url], ytdlp_options)
 
     def stop_download(self, db: sqlite3.Connection):
         self.download_status = DownloadStatus.INTERRUPTED
@@ -156,7 +177,6 @@ class Download:
         format = formats.get(path_name)
 
         if format:
-            print(format)
             default_video_downloader = os.environ.get(
                 "VIDEO_DOWNLOADER", Downloader.YTDLP_VIDEO_1
             )
@@ -172,7 +192,7 @@ class Download:
                 else default_audio_downloader
             )
         else:
-            pass
+            format = YTDLP_DOWNLOADER_FORMATS.get(self.downloader, "videos")
         return format
 
     def __repr__(self):
@@ -250,12 +270,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "-t",
         "--downloader_type",
-        default=None,
+        default=Downloader.YTDLP.value,
         type=str,
         choices=downloader_keys,
     )
     parser.add_argument(
-        "-d", "--downloads_path", default=os.environ.get("DOWNLOADS_PATH"), type=str
+        "-d",
+        "--downloads_path",
+        default=os.environ.get("DOWNLOADS_PATH", "downloads.txt"),
+        type=str,
     )
 
     args = vars(parser.parse_args())
