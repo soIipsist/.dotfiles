@@ -10,6 +10,30 @@ import subprocess
 valid_formats = ["audio", "video"]
 specific_format = None
 script_directory = os.path.dirname(__file__)
+database_path = os.path.join(script_directory, "downloads.db")
+
+
+def get_sqlite_connection(database_path: sqlite3.Connection):
+    db = None
+
+    try:
+        db = sqlite3.connect(database_path)
+    except sqlite3.Error as e:
+        print("Error connecting to the database:", e)
+        print("Database path: ", database_path)
+
+    execute_query(
+        db,
+        """CREATE TABLE IF NOT EXISTS downloads (
+        url text PRIMARY KEY NOT NULL, 
+        downloader text NOT NULL, 
+        download_status text NOT NULL,
+        start_date DATE, 
+        end_date DATE
+    );""",
+    )
+
+    return db
 
 
 class Downloader(str, Enum):
@@ -58,6 +82,7 @@ class Download:
     _url: str = None
     _download_str: str = None
     _downloads_path: str = None
+    _db: sqlite3.Connection = None
 
     def __init__(
         self,
@@ -68,6 +93,12 @@ class Download:
         self.download_str = download_str
         self.downloader = downloader
         self.downloads_path = downloads_path
+
+    @property
+    def db(self):
+        if not self._db:
+            self._db = get_sqlite_connection(database_path)
+        return self._db
 
     @property
     def ytdlp_options_path(self):
@@ -119,17 +150,28 @@ class Download:
         self.download_status = DownloadStatus.STARTED.value
         self.start_date = str(datetime.datetime.now())
 
-    def start_download(self, db: sqlite3.Connection):
-
+    def insert_download_query(self):
         execute_query(
-            db,
+            self.db,
             f"""INSERT INTO downloads (url, downloader, download_status, start_date) VALUES (?,?,?,?) """,
             (self.url, self.downloader, self.download_status, self.start_date),
         )
+
+    def stop_download_query(self, db: sqlite3.Connection):
+        self.download_status = DownloadStatus.INTERRUPTED
+        execute_query(
+            db,
+            f"""UPDATE downloads SET download_status = ? WHERE url = ?""",
+            (self.download_status, self.url),
+        )
+
+    def start_download(self):
         self.start_ytldp_download()
         self.start_wget_download()
 
     def start_wget_download(self):
+        if not self.downloader == Downloader.WGET:
+            return
         try:
             print("Downloading with wget...")
             result = subprocess.run(["wget", self.url], capture_output=True, text=True)
@@ -147,15 +189,11 @@ class Download:
 
         ytdlp_format = self._get_ytdlp_format()
         ytdlp_options = get_options(ytdlp_format, options_path=self.ytdlp_options_path)
-        ytdlp_download([self.url], ytdlp_options)
-
-    def stop_download(self, db: sqlite3.Connection):
-        self.download_status = DownloadStatus.INTERRUPTED
-        execute_query(
-            db,
-            f"""UPDATE downloads SET download_status = ? WHERE url = ?""",
-            (self.download_status, self.url),
-        )
+        try:
+            self.insert_download_query(self.db)
+            ytdlp_download([self.url], ytdlp_options)
+        except Exception as e:
+            print("EXCEPTION")
 
     def _get_ytdlp_options_path(self):
         options = YTDLP_DOWNLOADERS.get(self.downloader)
@@ -240,28 +278,10 @@ def get_downloads(
 
 def main(url: str = None, downloader_type=Downloader.YTDLP, downloads_path: str = None):
     downloads = get_downloads(url, downloader_type, downloads_path)
-    database_path = os.path.join(script_directory, "downloads.db")
-
-    try:
-        db = sqlite3.connect(database_path)
-    except sqlite3.Error as e:
-        print("Error connecting to the database:", e)
-        print("Database path: ", database_path)
-
-    execute_query(
-        db,
-        """CREATE TABLE IF NOT EXISTS downloads (
-        url text PRIMARY KEY NOT NULL, 
-        downloader text NOT NULL, 
-        download_status text NOT NULL,
-        start_date DATE, 
-        end_date DATE
-    );""",
-    )
 
     for download in downloads:
         download: Download
-        download.start_download(db)
+        download.start_download()
 
 
 if __name__ == "__main__":
