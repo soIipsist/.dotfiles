@@ -181,8 +181,8 @@ class Download:
             (self.url, self.downloader, self.download_status, self.start_date),
         )
 
-    def stop_download_query(self):
-        self.download_status = DownloadStatus.INTERRUPTED
+    def set_download_status_query(self, status: DownloadStatus):
+        self.download_status = status
         execute_query(
             self.db,
             f"""UPDATE downloads SET download_status = ? WHERE url = ?""",
@@ -194,7 +194,7 @@ class Download:
         self.start_wget_download()
 
     def start_wget_download(self):
-        stop_download = False
+        download_stopped = False
         if not self.downloader == Downloader.WGET:
             return
         try:
@@ -206,19 +206,18 @@ class Download:
 
         except KeyboardInterrupt:
             print("\nDownload interrupted by user.")
-            stop_download = True
+            download_stopped = True
 
         except subprocess.CalledProcessError as e:
             print(f"\nDownload failed: {e}")
-            stop_download = True
+            download_stopped = True
 
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
-            stop_download = True
+            download_stopped = True
 
-        if stop_download:
-            print("stop")
-            self.stop_download_query()
+        if download_stopped:
+            self.set_download_status_query(DownloadStatus.INTERRUPTED)
 
     def start_ytldp_download(self):
 
@@ -227,15 +226,28 @@ class Download:
 
         print("Downloading with ytdlp...")
 
+        download_stopped = False
         ytdlp_format = self._get_ytdlp_format()
         ytdlp_options = get_options(ytdlp_format, options_path=self.ytdlp_options_path)
+
         try:
             self.start_download_query()
             urls = get_ytdlp_urls([self.url], removed_args=None)
             ytdlp_download(urls, ytdlp_options)
+        except KeyboardInterrupt:
+            print("\nDownload interrupted by user.")
+            download_stopped = True
+
+        except subprocess.CalledProcessError as e:
+            print(f"\nDownload failed: {e}")
+            download_stopped = True
+
         except Exception as e:
-            print("EXCEPTION", e)
-            self.stop_download_query()
+            print(f"An unexpected error occurred: {e}")
+            download_stopped = True
+
+        if download_stopped:
+            self.set_download_status_query(DownloadStatus.INTERRUPTED)
 
     def _get_ytdlp_options_path(self):
         options = YTDLP_DOWNLOADERS.get(self.downloader)
