@@ -3,7 +3,7 @@ import sqlite3
 import datetime
 from enum import Enum
 from typing import List, Optional
-from ytdlp import download as ytdlp_download, get_options
+from ytdlp import download as ytdlp_download, get_options, get_urls as get_ytdlp_urls
 import argparse
 import subprocess
 
@@ -40,9 +40,6 @@ class Downloader(str, Enum):
     YTDLP = "ytdlp"
     YTDLP_AUDIO_1 = "ytdlp_audio"
     YTDLP_VIDEO_1 = "ytdlp_video"
-    YTDLP_VIDEO_2 = "ytdlp_video_2"
-    YTDLP_VIDEO_3 = "ytdlp_video_3"
-    YTDLP_VIDEO_4 = "ytdlp_video_4"
     WGET = "wget"
 
 
@@ -51,18 +48,12 @@ YTDLP_DOWNLOADERS = {
     Downloader.YTDLP: "video_options.json",
     Downloader.YTDLP_AUDIO_1: "audio_options.json",
     Downloader.YTDLP_VIDEO_1: "video_options.json",
-    Downloader.YTDLP_VIDEO_2: "video_options_2.json",
-    Downloader.YTDLP_VIDEO_3: "video_options_3.json",
-    Downloader.YTDLP_VIDEO_4: "video_options_4.json",
 }
 
 YTDLP_DOWNLOADER_FORMATS = {
     Downloader.YTDLP: "video",
     Downloader.YTDLP_AUDIO_1: "audio",
     Downloader.YTDLP_VIDEO_1: "video",
-    Downloader.YTDLP_VIDEO_2: "video",
-    Downloader.YTDLP_VIDEO_3: "video",
-    Downloader.YTDLP_VIDEO_4: "video",
 }
 
 downloader_keys = [key.value for key in Downloader]
@@ -90,9 +81,9 @@ class Download:
         downloader: Downloader = None,
         downloads_path: Optional[str] = None,
     ):
-        self.download_str = download_str
         self.downloader = downloader
         self.downloads_path = downloads_path
+        self.download_str = download_str
 
     @property
     def db(self):
@@ -138,6 +129,7 @@ class Download:
 
     def parse_url(self, download_str: str):
         self._download_str = download_str
+
         download_str = download_str.split(" ")  # split download_str into spaces
 
         # string can be of this format
@@ -146,42 +138,64 @@ class Download:
         # {some_url} {downloader} -> stored in a downloads.txt, will use default video downloader
 
         self.url = download_str[0]
-        self.downloader = download_str[1] if len(download_str) > 1 else Downloader.YTDLP
+
+        if not self.downloads_path:
+            return
+
+        self.downloader = (
+            download_str[1] if len(download_str) > 1 else Downloader.YTDLP.value
+        )
         self.download_status = DownloadStatus.STARTED.value
         self.start_date = str(datetime.datetime.now())
 
-    def insert_download_query(self):
+    def start_download_query(self):
+        print("START")
         execute_query(
             self.db,
             f"""INSERT INTO downloads (url, downloader, download_status, start_date) VALUES (?,?,?,?) """,
             (self.url, self.downloader, self.download_status, self.start_date),
         )
 
-    def stop_download_query(self, db: sqlite3.Connection):
+    def stop_download_query(self):
         self.download_status = DownloadStatus.INTERRUPTED
         execute_query(
-            db,
+            self.db,
             f"""UPDATE downloads SET download_status = ? WHERE url = ?""",
             (self.download_status, self.url),
         )
 
     def start_download(self):
-        self.start_ytldp_download()
-        self.start_wget_download()
+        pass
+        # self.start_ytldp_download()
+        # self.start_wget_download()
 
     def start_wget_download(self):
+        stop_download = False
         if not self.downloader == Downloader.WGET:
             return
         try:
             print("Downloading with wget...")
+            self.start_download_query()
             result = subprocess.run(["wget", self.url], capture_output=True, text=True)
             print("STDOUT:", result.stdout)
             print("STDERR:", result.stderr)
 
         except Exception as e:
             print(e)
+            stop_download = True
+        except KeyboardInterrupt:
+            print("\nDownload interrupted by user.")
+            stop_download = True
+        except subprocess.CalledProcessError as e:
+            print(f"\nDownload failed: {e}")
+            stop_download = True
+        if stop_download:
+            print("stop")
+            self.stop_download_query()
 
     def start_ytldp_download(self):
+        print("DOWNLOADER", self.downloader)
+
         if not self.downloader in YTDLP_DOWNLOADERS.keys():
             return
 
@@ -190,10 +204,12 @@ class Download:
         ytdlp_format = self._get_ytdlp_format()
         ytdlp_options = get_options(ytdlp_format, options_path=self.ytdlp_options_path)
         try:
-            self.insert_download_query(self.db)
-            ytdlp_download([self.url], ytdlp_options)
+            self.start_download_query()
+            urls = get_ytdlp_urls([self.url], removed_args=None)
+            ytdlp_download(urls, ytdlp_options)
         except Exception as e:
-            print("EXCEPTION")
+            print("EXCEPTION", e)
+            self.stop_download_query()
 
     def _get_ytdlp_options_path(self):
         options = YTDLP_DOWNLOADERS.get(self.downloader)
@@ -262,7 +278,10 @@ def get_downloads(
 
     downloads = []
 
-    if not downloads_path:
+    if not url and not downloads_path:
+        raise ValueError("Either url or downloads path must be defined.")
+
+    if not url:
         with open(downloads_path, "r") as file:
             for line in file:
                 download_str = line.strip()
@@ -271,6 +290,7 @@ def get_downloads(
                 download = Download(download_str, downloader_type, downloads_path)
                 downloads.append(download)
     else:
+        print(downloader_type)
         download = Download(url, downloader_type, downloads_path)
         downloads.append(download)
     return downloads

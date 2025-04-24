@@ -1,16 +1,18 @@
 {
-    "format": "bestvideo+bestaudio",
-    "progress": true,
-    "postprocessors": [
-        {
-            "already_have_subtitle": false,
-            "key": "FFmpegEmbedSubtitle"
-        }
-    ],
-    "writesubtitles": true,
-    "writeautomaticsub": true,
-    "subtitleslangs": [
-        "en"
-    ],
-    "outtmpl": "%(title)s.%(ext)s"
+  "format": "bestvideo+bestaudio/best",
+  "progress": true,
+  "postprocessors": [
+    {
+      "already_have_subtitle": false,
+      "key": "FFmpegEmbedSubtitle"
+    },
+    {
+      "key": "FFmpegVideoConvertor",
+      "preferedformat": "mp4"
+    }
+  ],
+  "writesubtitles": true,
+  "writeautomaticsub": true,
+  "subtitleslangs": ["en"],
+  "outtmpl": "%(title)s.%(ext)s"
 }
