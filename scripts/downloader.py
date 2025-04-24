@@ -61,7 +61,6 @@ downloader_keys = [key.value for key in Downloader]
 
 class DownloadStatus(str, Enum):
     STARTED = "started"
-    IN_PROGRESS = "in progress"
     COMPLETED = "completed"
     INTERRUPTED = "interrupted"
 
@@ -74,16 +73,43 @@ class Download:
     _download_str: str = None
     _downloads_path: str = None
     _db: sqlite3.Connection = None
+    _output_directory: str = None
 
     def __init__(
         self,
         download_str: str,
         downloader: Downloader = None,
         downloads_path: Optional[str] = None,
+        output_directory: Optional[str] = None,
     ):
         self.downloader = downloader
         self.downloads_path = downloads_path
+        self.output_directory = output_directory
         self.download_str = download_str
+
+    @property
+    def download_status(self):
+        return self._download_status
+
+    @download_status.setter
+    def download_status(self, download_status):
+        self._download_status = download_status
+
+    @property
+    def output_directory(self):
+        return self._output_directory
+
+    @output_directory.setter
+    def output_directory(self, output_directory):
+        self._output_directory = output_directory
+
+    @property
+    def start_date(self):
+        return self._start_date
+
+    @start_date.setter
+    def start_date(self, start_date):
+        self._start_date = start_date
 
     @property
     def db(self):
@@ -149,7 +175,6 @@ class Download:
         self.start_date = str(datetime.datetime.now())
 
     def start_download_query(self):
-        print("START")
         execute_query(
             self.db,
             f"""INSERT INTO downloads (url, downloader, download_status, start_date) VALUES (?,?,?,?) """,
@@ -165,9 +190,8 @@ class Download:
         )
 
     def start_download(self):
-        pass
-        # self.start_ytldp_download()
-        # self.start_wget_download()
+        self.start_ytldp_download()
+        self.start_wget_download()
 
     def start_wget_download(self):
         stop_download = False
@@ -180,21 +204,23 @@ class Download:
             print("STDOUT:", result.stdout)
             print("STDERR:", result.stderr)
 
-        except Exception as e:
-            print(e)
-            stop_download = True
         except KeyboardInterrupt:
             print("\nDownload interrupted by user.")
             stop_download = True
+
         except subprocess.CalledProcessError as e:
             print(f"\nDownload failed: {e}")
             stop_download = True
+
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            stop_download = True
+
         if stop_download:
             print("stop")
             self.stop_download_query()
 
     def start_ytldp_download(self):
-        print("DOWNLOADER", self.downloader)
 
         if not self.downloader in YTDLP_DOWNLOADERS.keys():
             return
@@ -273,7 +299,10 @@ def execute_query(conn: sqlite3.Connection, query: str, params: list = None):
 
 
 def get_downloads(
-    url: str, downloader_type: Downloader = Downloader.YTDLP, downloads_path: str = None
+    url: str,
+    downloader_type: Downloader = Downloader.YTDLP,
+    downloads_path: str = None,
+    output_directory: str = None,
 ) -> List[Download]:
 
     downloads = []
@@ -287,17 +316,23 @@ def get_downloads(
                 download_str = line.strip()
                 if not download_str:
                     continue
-                download = Download(download_str, downloader_type, downloads_path)
+                download = Download(
+                    download_str, downloader_type, downloads_path, output_directory
+                )
                 downloads.append(download)
     else:
-        print(downloader_type)
-        download = Download(url, downloader_type, downloads_path)
+        download = Download(url, downloader_type, downloads_path, output_directory)
         downloads.append(download)
     return downloads
 
 
-def main(url: str = None, downloader_type=Downloader.YTDLP, downloads_path: str = None):
-    downloads = get_downloads(url, downloader_type, downloads_path)
+def main(
+    url: str = None,
+    downloader_type=Downloader.YTDLP,
+    downloads_path: str = None,
+    output_directory: str = None,
+):
+    downloads = get_downloads(url, downloader_type, downloads_path, output_directory)
 
     for download in downloads:
         download: Download
@@ -317,9 +352,17 @@ if __name__ == "__main__":
     parser.add_argument(
         "-d",
         "--downloads_path",
-        default=os.environ.get("DOWNLOADS_PATH", "downloads.txt"),
+        default=os.environ.get("DOWNLOADS_PATH"),
         type=str,
     )
+    parser.add_argument("-o", "--output_directory", default=None, type=str)
 
     args = vars(parser.parse_args())
     main(**args)
+
+
+# tests
+
+# python downloader.py "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/640px-ChessSet.jpg" -t wget
+# python downloader.py "https://www.youtube.com/playlist?list=PLlqZM4covn1FcT5o-ieQJTWSlraCefqTw"
+# python downloader.py -t wget -d "downloads.txt"
