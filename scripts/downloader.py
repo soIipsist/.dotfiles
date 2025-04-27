@@ -66,7 +66,7 @@ class DownloadStatus(str, Enum):
 
 
 class Download:
-    _downloader = Downloader.YTDLP
+    _downloader = None
     _download_status = DownloadStatus.STARTED
     _start_date = str(datetime.datetime.now())
     _url: str = None
@@ -165,12 +165,13 @@ class Download:
 
         self.url = download_str[0]
 
+        if not self.downloader:
+            self.downloader = Downloader.YTDLP.value
+
         if not self.downloads_path:
             return
 
-        self.downloader = (
-            download_str[1] if len(download_str) > 1 else Downloader.YTDLP.value
-        )
+        self.downloader = download_str[1] if len(download_str) > 1 else self.downloader
         self.download_status = DownloadStatus.STARTED.value
         self.start_date = str(datetime.datetime.now())
 
@@ -374,7 +375,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-t",
         "--downloader_type",
-        default=Downloader.YTDLP.value,
+        default=None,
         type=str,
         choices=downloader_keys,
     )
