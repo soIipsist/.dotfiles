@@ -4,6 +4,7 @@ import datetime
 from enum import Enum
 from typing import List, Optional
 from ytdlp import download as ytdlp_download, get_options, get_urls as get_ytdlp_urls
+from wget import download as wget_download
 import argparse
 import subprocess
 
@@ -202,9 +203,11 @@ class Download:
         download_stopped = False
         if not self.downloader == Downloader.WGET:
             return
+
+        self.start_download_query()
+
         try:
             print("Downloading with wget...")
-            self.start_download_query()
 
             cmd = (
                 ["wget", "-P", self.output_directory, self.url]
