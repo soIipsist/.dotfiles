@@ -4,8 +4,8 @@ export YTDLP_FORMAT="audio"
 export YTDLP_EXTRACT_INFO="1"
 export YTDLP_OPTIONS_PATH=""
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
-# export YTDLP_VIDEO_DIRECTORY="$HOME/mnt/"
-# export YTDLP_AUDIO_DIRECTORY="$HOME/mnt/ssd/Music"
+export YTDLP_VIDEO_DIRECTORY="$HOME/Desktop/videos"
+export YTDLP_AUDIO_DIRECTORY="$HOME/Desktop/music"
 export VENV_PATH="$HOME/venv"
 
 ytdlp_mp3() {
