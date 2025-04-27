@@ -81,15 +81,14 @@ fi
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-# YTDLP options
-export YTDLP_PATH="$HOME/ytdlp/yt-dlp"
-export YTDLP_FORMAT="audio"
-export YTDLP_EXTRACT_INFO="1"
-export YTDLP_OPTIONS_PATH=""
-export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
-# export YTDLP_VIDEO_DIRECTORY="$HOME/mnt/"
-# export YTDLP_AUDIO_DIRECTORY="$HOME/mnt/ssd/Music"
-export VENV_PATH="$HOME/venv"
+# aliases
+if [ -f ~/.bash_ytdlp_aliases]; then
+    . ~/.bash_ytdlp_aliases
+fi
+
+if [ -f ~/.bash_download_aliases]; then
+    . ~/.bash_download_aliases
+fi
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases

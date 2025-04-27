@@ -51,6 +51,10 @@ export YTDLP_OPTIONS_PATH=""
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 export VENV_PATH="$HOME/venv"
 
+# downloader options
+export DOWNLOADS_PATH="$HOME/downloads/music.txt"
+export DOWNLOADS_OUTPUT_DIR="$HOME/downloads"
+
 # Load aliases if available
 [[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
 

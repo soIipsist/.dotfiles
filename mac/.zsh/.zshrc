@@ -79,81 +79,13 @@ fi
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' menu select=2
 
-# YTDLP options
-export YTDLP_PATH="$HOME/ytdlp/yt-dlp_macos"
-export YTDLP_VIDEO_DIRECTORY="$HOME/Desktop/videos"
-export YTDLP_AUDIO_DIRECTORY="$HOME/Desktop/music"
-export YTDLP_FORMAT="audio"
-export YTDLP_EXTRACT_INFO="1"
-export YTDLP_OPTIONS_PATH=""
-export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
-export VENV_PATH="$HOME/venv"
+if [ -f ~/.zsh_ytdlp_aliases]; then
+    . ~/.zsh_ytdlp_aliases
+fi
 
-# downloader options
-export DEFAULT_DOWNLOADER="ytdlp"
-export DOWNLOADS_PATH="$HOME/videos/downloads.txt"
-
-ytdlp_mp3() {
-
-    if [ -z "$SCRIPTS_DIRECTORY" ]; then
-        SCRIPTS_DIRECTORY="$GIT_DOTFILES_DIRECTORY/scripts"
-    fi
-    SCRIPT_PATH="$SCRIPTS_DIRECTORY/ytdlp.py"
-
-    if [ ! -f "$SCRIPT_PATH" ]; then
-        echo "Could not find ytdlp.py."
-        return
-    fi
-
-    if [ ! -e "$YTDLP_PATH" ]; then
-        echo "Cloning yt-dlp..."
-        mkdir -p "$(dirname "$YTDLP_PATH")"
-        curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o "$YTDLP_PATH"
-        chmod a+rx "$YTDLP_PATH"
-    fi
-
-    if [ -n "$VENV_PATH" ]; then
-        source $VENV_PATH/bin/activate
-    fi
-
-    python3 $SCRIPT_PATH -f audio "$@"
-
-    # Deactivate the virtual environment properly
-    if [ -n "$VIRTUAL_ENV" ]; then
-        deactivate
-    fi
-}
-
-ytdlp_mp4() {
-
-    if [ -z "$SCRIPTS_DIRECTORY" ]; then
-        SCRIPTS_DIRECTORY="$GIT_DOTFILES_DIRECTORY/scripts"
-    fi
-    SCRIPT_PATH="$SCRIPTS_DIRECTORY/ytdlp.py"
-
-    if [ ! -f "$SCRIPT_PATH" ]; then
-        echo "Could not find ytdlp.py."
-        return
-    fi
-
-    if [ ! -e "$YTDLP_PATH" ]; then
-        echo "Cloning yt-dlp..."
-        mkdir -p "$(dirname "$YTDLP_PATH")"
-        curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o "$YTDLP_PATH"
-        chmod a+rx "$YTDLP_PATH"
-    fi
-
-    if [ -n "$VENV_PATH" ]; then
-        source $VENV_PATH/bin/activate
-    fi
-
-    python3 $SCRIPT_PATH -f video "$@"
-
-    # Deactivate the virtual environment properly
-    if [ -n "$VIRTUAL_ENV" ]; then
-        deactivate
-    fi
-}
+if [ -f ~/.zsh_download_aliases]; then
+    . ~/.zsh_download_aliases
+fi
 
 # VSCode variables
 export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/vscode-workspaces/.workspaces"

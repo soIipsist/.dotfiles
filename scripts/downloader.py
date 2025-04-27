@@ -363,13 +363,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "-d",
         "--downloads_path",
-        default=os.environ.get("DOWNLOADER_PATH"),
+        default=os.environ.get("DOWNLOADS_PATH"),
         type=str,
     )
+
     parser.add_argument(
         "-o",
         "--output_directory",
-        default=os.environ.get("DOWNLOADER_OUTPUT_DIR"),
+        default=os.environ.get("DOWNLOADS_OUTPUT_DIR"),
         type=str,
     )
 
