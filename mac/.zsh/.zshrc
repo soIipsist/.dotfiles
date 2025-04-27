@@ -79,11 +79,11 @@ fi
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' menu select=2
 
-if [ -f ~/.zsh_ytdlp_aliases]; then
+if [ -f ~/.zsh_ytdlp_aliases ]; then
     . ~/.zsh_ytdlp_aliases
 fi
 
-if [ -f ~/.zsh_download_aliases]; then
+if [ -f ~/.zsh_download_aliases ]; then
     . ~/.zsh_download_aliases
 fi
 

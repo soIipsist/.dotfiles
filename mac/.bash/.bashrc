@@ -43,20 +43,18 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
-# YTDLP environment variables
-export YTDLP_PATH="$HOME/ytdlp/yt-yt-dlp_macos"
-export YTDLP_FORMAT="audio"
-export YTDLP_EXTRACT_INFO="1"
-export YTDLP_OPTIONS_PATH=""
-export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
-export VENV_PATH="$HOME/venv"
+# aliases
+if [ -f ~/.bash_ytdlp_aliases ]; then
+    . ~/.bash_ytdlp_aliases
+fi
 
-# downloader options
-export DOWNLOADS_PATH="$HOME/downloads/music.txt"
-export DOWNLOADS_OUTPUT_DIR="$HOME/downloads"
+if [ -f ~/.bash_download_aliases ]; then
+    . ~/.bash_download_aliases
+fi
 
-# Load aliases if available
-[[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
 
 # Bash completion (Homebrew location on macOS)
 if [ -f /opt/homebrew/etc/bash_completion ]; then

@@ -82,11 +82,11 @@ fi
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 # aliases
-if [ -f ~/.bash_ytdlp_aliases]; then
+if [ -f ~/.bash_ytdlp_aliases ]; then
     . ~/.bash_ytdlp_aliases
 fi
 
-if [ -f ~/.bash_download_aliases]; then
+if [ -f ~/.bash_download_aliases ]; then
     . ~/.bash_download_aliases
 fi
 

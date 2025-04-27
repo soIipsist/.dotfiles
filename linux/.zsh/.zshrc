@@ -84,11 +84,11 @@ alias python="python3"
 alias ytdlp="python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py"
 alias cdf='cd "$(find . -type d | fzf)"'
 
-if [ -f ~/.zsh_ytdlp_aliases]; then
+if [ -f ~/.zsh_ytdlp_aliases ]; then
     . ~/.zsh_ytdlp_aliases
 fi
 
-if [ -f ~/.zsh_download_aliases]; then
+if [ -f ~/.zsh_download_aliases ]; then
     . ~/.zsh_download_aliases
 fi
 
