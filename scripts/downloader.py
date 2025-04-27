@@ -200,39 +200,16 @@ class Download:
         self.start_wget_download()
 
     def start_wget_download(self):
-        download_stopped = False
         if not self.downloader == Downloader.WGET:
             return
 
         self.start_download_query()
+        status_code = wget_download(self.url, self.output_directory)
 
-        try:
-            print("Downloading with wget...")
-
-            cmd = (
-                ["wget", "-P", self.output_directory, self.url]
-                if self.output_directory
-                else ["wget", self.url]
-            )
-
-            result = subprocess.run(cmd, capture_output=True, text=True)
-            print("STDOUT:", result.stdout)
-            print("STDERR:", result.stderr)
-
-        except KeyboardInterrupt:
-            print("\nDownload interrupted by user.")
-            download_stopped = True
-
-        except subprocess.CalledProcessError as e:
-            print(f"\nDownload failed: {e}")
-            download_stopped = True
-
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-            download_stopped = True
-
-        if download_stopped:
+        if status_code == 1:
             self.set_download_status_query(DownloadStatus.INTERRUPTED)
+        else:
+            self.set_download_status_query(DownloadStatus.COMPLETED)
 
     def start_ytldp_download(self):
 
@@ -241,7 +218,7 @@ class Download:
 
         print("Downloading with ytdlp...")
 
-        download_stopped = False
+        status_code = 0
         ytdlp_format = self._get_ytdlp_format()
         ytdlp_options = get_options(
             ytdlp_format,
@@ -255,17 +232,17 @@ class Download:
             ytdlp_download(urls, ytdlp_options)
         except KeyboardInterrupt:
             print("\nDownload interrupted by user.")
-            download_stopped = True
+            status_code = 1
 
         except subprocess.CalledProcessError as e:
             print(f"\nDownload failed: {e}")
-            download_stopped = True
+            status_code = 1
 
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
-            download_stopped = True
+            status_code = 1
 
-        if download_stopped:
+        if status_code == 1:
             self.set_download_status_query(DownloadStatus.INTERRUPTED)
         else:
             self.set_download_status_query(DownloadStatus.COMPLETED)
