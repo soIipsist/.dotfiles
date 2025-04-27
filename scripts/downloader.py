@@ -26,11 +26,12 @@ def get_sqlite_connection(database_path: sqlite3.Connection):
     execute_query(
         db,
         """CREATE TABLE IF NOT EXISTS downloads (
-        url text PRIMARY KEY NOT NULL, 
+        url text NOT NULL, 
         downloader text NOT NULL, 
         download_status text NOT NULL,
         start_date DATE, 
-        end_date DATE
+        end_date DATE,
+        PRIMARY KEY (url, downloader)
     );""",
     )
 

@@ -1,3 +1,1 @@
-https://music.youtube.com/watch?v=jP3535Q8ZrM ytdlp_audio
-https://music.youtube.com/watch?v=jP3535Q8ZrM
-https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/640px-ChessSet.jpg wget
+https://music.youtube.com/watch?v=jP3535Q8ZrM wget
