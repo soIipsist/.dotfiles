@@ -379,6 +379,10 @@ if __name__ == "__main__":
 
 # tests
 
-# python downloader.py "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/640px-ChessSet.jpg" -t wget
-# python downloader.py "https://www.youtube.com/playlist?list=PLlqZM4covn1FcT5o-ieQJTWSlraCefqTw"
-# python downloader.py -t wget -d "downloads.txt"
+# 1) with downloads path (e.g downloads.txt)
+# python downloader.py "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/640px-ChessSet.jpg" -d "downloads.txt"
+# python downloader.py -d "downloads.txt" -o ~/temp
+
+# 2) with specific downloader type
+# python downloader.py -t ytdlp_audio -d "downloads.txt" (type should precede everything unless explicitly defined inside the .txt)
+# python downloader.py -t ytdlp_audio -d "downloads.txt" -o ~/temp
