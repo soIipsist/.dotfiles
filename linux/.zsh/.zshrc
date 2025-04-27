@@ -81,7 +81,6 @@ export PROMPT="%(?.%F{211}●.%F{red}●%f) %F{211}%1~%f ${vcs_info_msg_0_} "
 
 # aliases
 alias python="python3"
-alias ytdlp="python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py"
 alias cdf='cd "$(find . -type d | fzf)"'
 
 if [ -f ~/.zsh_ytdlp_aliases ]; then

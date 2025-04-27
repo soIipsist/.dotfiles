@@ -94,7 +94,6 @@ export OLLAMA_MODEL="deepseek-r1:14b"
 
 # aliases
 alias python="python3"
-alias ytdlp="python3 $GIT_DOTFILES_DIRECTORY/scripts/ytdlp.py"
 alias yabais="yabai --start-service"
 alias yabaik="yabai --stop-service"
 alias yabair="yabai --restart-service"
