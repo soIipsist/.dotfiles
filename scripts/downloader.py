@@ -30,7 +30,6 @@ def get_sqlite_connection(database_path: sqlite3.Connection):
         downloader text NOT NULL, 
         download_status text NOT NULL,
         start_date DATE, 
-        end_date DATE,
         PRIMARY KEY (url, downloader)
     );""",
     )
@@ -320,6 +319,20 @@ def get_downloads(
 
     if not url and not downloads_path:
         raise ValueError("Either url or downloads path must be defined.")
+
+    if not os.path.exists(downloads_path):
+        prompt = (
+            input(f"{downloads_path} does not exist. Create it? (y/N): ")
+            .strip()
+            .lower()
+        )
+        if prompt == "y":
+            # os.makedirs(os.path.dirname(downloads_path), exist_ok=True)
+            with open(downloads_path, "w") as f:
+                pass  # creates an empty file
+            print(f"Created file: {downloads_path}")
+        else:
+            print("File was not created.")
 
     if not url:
         with open(downloads_path, "r") as file:

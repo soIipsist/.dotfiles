@@ -1,6 +1,6 @@
 # downloader options
-export DOWNLOADS_PATH="$HOME/videos/downloads.txt"
-export DOWNLOADS_OUTPUT_DIR="$HOME/videos"
+export DOWNLOADS_PATH="$HOME/Desktop/videos/downloads.txt"
+export DOWNLOADS_OUTPUT_DIR="$HOME/Desktop/videos"
 
 download(){
     if [ -z "$SCRIPTS_DIRECTORY" ]; then
@@ -17,7 +17,7 @@ download(){
         source $VENV_PATH/bin/activate
     fi
 
-    python3 $SCRIPT_PATH
+    python3 $SCRIPT_PATH "$@"
 
     # Deactivate the virtual environment properly
     if [ -n "$VIRTUAL_ENV" ]; then

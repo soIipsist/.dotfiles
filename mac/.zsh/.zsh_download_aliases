@@ -17,7 +17,7 @@ download(){
         source $VENV_PATH/bin/activate
     fi
 
-    python3 $SCRIPT_PATH
+    python3 $SCRIPT_PATH "$@"
 
     # Deactivate the virtual environment properly
     if [ -n "$VIRTUAL_ENV" ]; then
