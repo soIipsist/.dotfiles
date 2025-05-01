@@ -64,7 +64,6 @@ def get_outtmpl(
     return outtmpl
 
 
-# test
 def get_format(options: dict, format: str, custom_format: str = None):
     existing_format = options.get("format")
 
