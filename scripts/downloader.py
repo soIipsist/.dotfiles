@@ -3,8 +3,10 @@ import sqlite3
 import datetime
 from enum import Enum
 from typing import List, Optional
+from sqlite_conn import execute_query, get_sqlite_connection
 from ytdlp import download as ytdlp_download, get_options, get_urls as get_ytdlp_urls
 from wget import download as wget_download
+
 import argparse
 import subprocess
 
@@ -12,29 +14,6 @@ valid_formats = ["audio", "video"]
 specific_format = None
 script_directory = os.path.dirname(__file__)
 database_path = os.path.join(script_directory, "downloads.db")
-
-
-def get_sqlite_connection(database_path: sqlite3.Connection):
-    db = None
-
-    try:
-        db = sqlite3.connect(database_path)
-    except sqlite3.Error as e:
-        print("Error connecting to the database:", e)
-        print("Database path: ", database_path)
-
-    execute_query(
-        db,
-        """CREATE TABLE IF NOT EXISTS downloads (
-        url text NOT NULL, 
-        downloader text NOT NULL, 
-        download_status text NOT NULL,
-        start_date DATE, 
-        PRIMARY KEY (url, downloader)
-    );""",
-    )
-
-    return db
 
 
 class Downloader(str, Enum):
@@ -287,25 +266,6 @@ class Download:
 
     def __repr__(self):
         return f"{self.downloader}, {self.url}"
-
-
-def execute_query(conn: sqlite3.Connection, query: str, params: list = None):
-    cursor = None
-    results = []
-
-    try:
-        cursor = conn.cursor()
-        if params:
-            cursor.execute(query, params)
-        else:
-            cursor.execute(query)
-        results = cursor.fetchall()
-        conn.commit()
-
-    except sqlite3.Error as e:
-        print("Error executing query:", e)
-
-    return results
 
 
 def get_downloads(
