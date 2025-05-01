@@ -13,21 +13,21 @@ def read_file(path):
         return f.readlines()
 
 
-def main(file_path: str = None):
-    if not os.path.exists(file_path) or not file_path:
-        print(f"{file_path} does not exist.")
+def main(downloads_path: str = None):
+    if not os.path.exists(downloads_path) or not downloads_path:
+        print(f"{downloads_path} does not exist.")
         return
 
-    last_mtime = get_mtime(file_path)
-    last_content = read_file(file_path)
+    last_mtime = get_mtime(downloads_path)
+    last_content = read_file(downloads_path)
 
     while True:
         time.sleep(1)
         try:
-            current_mtime = get_mtime(file_path)
+            current_mtime = get_mtime(downloads_path)
             if current_mtime != last_mtime:
-                current_content = read_file(file_path)
-                print(f"\n{file_path} changed at {time.ctime(current_mtime)}")
+                current_content = read_file(downloads_path)
+                print(f"\n{downloads_path} changed at {time.ctime(current_mtime)}")
                 diff = difflib.unified_diff(
                     last_content,
                     current_content,
@@ -42,7 +42,7 @@ def main(file_path: str = None):
                 last_mtime = current_mtime
                 last_content = current_content
         except FileNotFoundError:
-            print(f"{file_path} was deleted!")
+            print(f"{downloads_path} was deleted!")
             break
 
 

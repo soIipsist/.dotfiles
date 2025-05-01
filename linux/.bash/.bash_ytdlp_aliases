@@ -1,5 +1,6 @@
 # YTDLP options
 export YTDLP_PATH="$HOME/ytdlp/yt-dlp"
+alias ytdlp="$YTDLP_PATH"
 export YTDLP_FORMAT="audio"
 export YTDLP_EXTRACT_INFO="1"
 export YTDLP_OPTIONS_PATH="$HOME/scripts/video_options.json"
