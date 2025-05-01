@@ -2,7 +2,7 @@
 export DOWNLOADS_PATH="$HOME/Desktop/videos/downloads.txt"
 export DOWNLOADS_OUTPUT_DIR="$HOME/Desktop/videos"
 
-download(){
+download() {
     if [ -z "$SCRIPTS_DIRECTORY" ]; then
         SCRIPTS_DIRECTORY="$GIT_DOTFILES_DIRECTORY/scripts"
     fi
@@ -12,7 +12,7 @@ download(){
         echo "Could not find $SCRIPT_PATH."
         return
     fi
-    
+
     if [ -n "$VENV_PATH" ]; then
         source $VENV_PATH/bin/activate
     fi
