@@ -1,10 +1,34 @@
 #!/bin/bash
 
+download() {
+    if [ -z "$SCRIPTS_DIRECTORY" ]; then
+        SCRIPTS_DIRECTORY="$GIT_DOTFILES_DIRECTORY/scripts"
+    fi
+    SCRIPT_PATH="$SCRIPTS_DIRECTORY/downloader.py"
+
+    if [ ! -f "$SCRIPT_PATH" ]; then
+        echo "Could not find $SCRIPT_PATH."
+        return
+    fi
+
+    if [ -n "$VENV_PATH" ]; then
+        source $VENV_PATH/bin/activate
+    fi
+
+    python3 $SCRIPT_PATH "$@"
+
+    # Deactivate the virtual environment properly
+    if [ -n "$VIRTUAL_ENV" ]; then
+        deactivate
+    fi
+}
+
 if [ -z "$DOWNLOADS_PATH" ]; then
     DOWNLOADS_PATH="$HOME/downloads.txt"
 fi
 
 LOG_FILE="/var/log/download_watcher.log"
+STATE_FILE="/tmp/last_download_state.txt"
 
 # ensure files exist
 if [ ! -f "$DOWNLOADS_PATH" ]; then
@@ -14,7 +38,29 @@ fi
 touch "$LOG_FILE"
 chmod 644 "$LOG_FILE"
 
+# create initial state
+cp "$DOWNLOADS_PATH" "$STATE_FILE"
+
 while true; do
-    inotifywait -e modify "$WATCH_FILE"
-    echo "$(date): File changed - $WATCH_FILE" >>"$LOG_FILE"
+    inotifywait -e modify "$DOWNLOADS_PATH"
+
+    if [ ! -s "$DOWNLOADS_PATH" ]; then
+        echo "$(date): File was modified but is empty, skipping." >>"$LOG_FILE"
+        cp "$DOWNLOADS_PATH" "$STATE_FILE"
+        continue
+    fi
+
+    echo "$(date): File changed - $DOWNLOADS_PATH" >>"$LOG_FILE"
+
+    NEW_LINES=$(comm -13 <(sort "$STATE_FILE") <(sort "$DOWNLOADS_PATH"))
+
+    while IFS= read -r line; do
+        if [[ -n "$line" ]]; then
+            echo "$(date): Running download on: $line $DOWNLOADS_PATH" >>"$LOG_FILE"
+            download "$line"
+        fi
+    done <<<"$NEW_LINES"
+
+    # Update the stored state
+    cp "$DOWNLOADS_PATH" "$STATE_FILE"
 done
