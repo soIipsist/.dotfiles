@@ -2,7 +2,7 @@
 export YTDLP_PATH="$HOME/ytdlp/yt-dlp"
 export YTDLP_FORMAT="audio"
 export YTDLP_EXTRACT_INFO="1"
-export YTDLP_OPTIONS_PATH=""
+export YTDLP_OPTIONS_PATH="$HOME/scripts/video_options.json"
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 # export YTDLP_VIDEO_DIRECTORY="$HOME/mnt/"
 # export YTDLP_AUDIO_DIRECTORY="$HOME/mnt/ssd/Music"

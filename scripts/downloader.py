@@ -20,6 +20,7 @@ class Downloader(str, Enum):
     YTDLP = "ytdlp"
     YTDLP_AUDIO_1 = "ytdlp_audio"
     YTDLP_VIDEO_1 = "ytdlp_video"
+    YTDLP_VIDEO_2 = "ytdlp_video_2"
     WGET = "wget"
 
 
@@ -28,12 +29,14 @@ YTDLP_DOWNLOADERS = {
     Downloader.YTDLP: "video_options.json",
     Downloader.YTDLP_AUDIO_1: "audio_options.json",
     Downloader.YTDLP_VIDEO_1: "video_options.json",
+    Downloader.YTDLP_VIDEO_2: "video_options_2.json",
 }
 
 YTDLP_DOWNLOADER_FORMATS = {
     Downloader.YTDLP: "video",
     Downloader.YTDLP_AUDIO_1: "audio",
     Downloader.YTDLP_VIDEO_1: "video",
+    Downloader.YTDLP_VIDEO_2: "video",
 }
 
 downloader_keys = [key.value for key in Downloader]

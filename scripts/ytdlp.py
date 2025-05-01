@@ -42,9 +42,11 @@ def read_json_file(json_file, errors=None):
         print(e)
 
 
-def get_outtmpl(format: str, prefix: str = None, output_directory: str = None):
+def get_outtmpl(
+    options: dict, format: str, prefix: str = None, output_directory: str = None
+):
 
-    outtmpl = f"%(title)s.%(ext)s"
+    outtmpl = options.get("outtmpl", f"%(title)s.%(ext)s")
 
     if prefix:
         outtmpl = f"{prefix}{outtmpl}"
@@ -62,14 +64,16 @@ def get_outtmpl(format: str, prefix: str = None, output_directory: str = None):
     return outtmpl
 
 
-def get_format(format: str, custom_format: str = None):
+def get_format(options: dict, format: str, custom_format: str = None):
+    existing_format = options.get("format")
+
     if custom_format:
         return custom_format
 
     if format == "audio":
         return "bestaudio/best"
 
-    return "bestvideo+bestaudio"
+    return "bestvideo+bestaudio" if not existing_format else existing_format
 
 
 def get_postprocessors(options: dict, format: str, extension: str):
@@ -112,6 +116,7 @@ def get_options(
         format = "video"
 
     if os.path.exists(options_path):  # read from metadata file, if it exists
+        print(f"Using ytdlp options from path: {options_path}.")
         options = read_json_file(options_path)
     else:
         options = {}
@@ -142,10 +147,10 @@ def get_options(
             }
         )
 
-    ytdlp_format = get_format(format, custom_format)
+    ytdlp_format = get_format(options, format, custom_format)
     postprocessors = get_postprocessors(options, format, extension)
     options_postprocessor_args = get_postprocessor_args(options, postprocessor_args)
-    outtmpl = get_outtmpl(format, prefix, output_directory)
+    outtmpl = get_outtmpl(options, format, prefix, output_directory)
 
     options["merge_output_format"] = extension
     options["outtmpl"] = outtmpl
