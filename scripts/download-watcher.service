@@ -1,0 +1,14 @@
+[Unit]
+Description=Download watcher
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/download_watcher.sh
+Restart=always
+User=ubuntu
+StandardOutput=append:/var/log/download_watcher.log
+StandardError=append:/var/log/download_watcher.err
+Environment=DOWNLOADS_PATH=/home/ubuntu/important.txt
+
+[Install]
+WantedBy=multi-user.target
