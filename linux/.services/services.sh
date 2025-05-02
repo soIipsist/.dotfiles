@@ -25,5 +25,15 @@ for file in "$source_services_directory"/*.service; do
 done
 
 for file in "$source_services_directory"/*.conf; do
-    [[ -e "$file" ]] && copy "$file" "$dest_config_directory"
+    [[ -e "$file" ]] || continue
+
+    filename="$(basename "$file")"
+    temp_file="$(mktemp)"
+
+    envsubst <"$file" >"$temp_file"
+
+    sudo cp "$temp_file" "$dest_config_directory/$filename"
+    rm "$temp_file"
+
+    echo "Generated and copied $filename to $dest_config_directory."
 done
