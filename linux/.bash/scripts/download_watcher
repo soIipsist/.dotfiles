@@ -1,9 +1,6 @@
 #!/bin/bash
 
 download() {
-    if [ -z "$SCRIPTS_DIRECTORY" ]; then
-        SCRIPTS_DIRECTORY="$GIT_DOTFILES_DIRECTORY/scripts"
-    fi
     SCRIPT_PATH="$SCRIPTS_DIRECTORY/downloader.py"
 
     if [ ! -f "$SCRIPT_PATH" ]; then
