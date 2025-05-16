@@ -8,8 +8,12 @@ dest_config_directory="/etc/default/"
 copy() {
     file="$1"
     dest_directory="$2"
+    filename="$3"
 
-    filename="$(basename "$file")"
+    if [ -z "$file_name" ]; then
+        filename="$(basename "$file")"
+    fi
+
     sudo cp -f "$file" "$dest_directory/$filename"
 
     # chmod files
@@ -31,7 +35,7 @@ for file in "$source_services_directory"/*.conf; do
 
     envsubst <"$file" >"$temp_file"
 
-    copy "$temp_file" "$dest_config_directory/$filename"
+    copy "$temp_file" "$dest_config_directory" "$filename"
     rm "$temp_file"
 
     echo "Generated and copied $filename to $dest_config_directory."
