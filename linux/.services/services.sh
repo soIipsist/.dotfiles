@@ -10,7 +10,7 @@ copy() {
     dest_directory="$2"
     filename="$3"
 
-    if [ -z "$file_name" ]; then
+    if [ -z "$filename" ]; then
         filename="$(basename "$file")"
     fi
 
@@ -34,7 +34,6 @@ for file in "$source_services_directory"/*.conf; do
     temp_file="$(mktemp)"
 
     envsubst <"$file" >"$temp_file"
-
     copy "$temp_file" "$dest_config_directory" "$filename"
     rm "$temp_file"
 
