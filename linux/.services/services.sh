@@ -31,7 +31,7 @@ for file in "$source_services_directory"/*.conf; do
 
     envsubst <"$file" >"$temp_file"
 
-    sudo cp "$temp_file" "$dest_config_directory/$filename"
+    copy "$temp_file" "$dest_config_directory/$filename"
     rm "$temp_file"
 
     echo "Generated and copied $filename to $dest_config_directory."
