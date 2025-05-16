@@ -1,5 +1,8 @@
 #!/bin/bash
 
+LOG_FILE="/var/log/download_watcher.log"
+STATE_FILE="/tmp/last_download_state.txt"
+
 download() {
     SCRIPT_PATH="$SCRIPTS_DIRECTORY/downloader.py"
 
@@ -20,20 +23,20 @@ download() {
     fi
 }
 
-if [ -z "$DOWNLOADS_PATH" ]; then
-    DOWNLOADS_PATH="$HOME/downloads.txt"
-fi
+create_file() {
+    file_path="$1"
 
-LOG_FILE="/var/log/download_watcher.log"
-STATE_FILE="/tmp/last_download_state.txt"
+    if [ ! -f "$file_path" ]; then
+        touch "$file_path"
+        chmod 666 "$file_path"
+        sudo chown $(whoami):$(whoami) "$dest_directory/$filename"
+    fi
+}
 
 # ensure files exist
-if [ ! -f "$DOWNLOADS_PATH" ]; then
-    touch $DOWNLOADS_PATH
-fi
-
-touch "$LOG_FILE"
-chmod 644 "$LOG_FILE"
+create_file "$DOWNLOADS_PATH"
+create_file "$LOG_FILE"
+create_file "$STATE_FILE"
 
 # create initial state
 cp "$DOWNLOADS_PATH" "$STATE_FILE"

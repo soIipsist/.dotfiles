@@ -12,10 +12,9 @@ copy() {
     filename="$(basename "$file")"
     sudo cp -f "$file" "$dest_directory/$filename"
 
-    # Only chmod .service files (optional)
-    if [[ "$filename" == *.service ]]; then
-        sudo chmod 644 "$dest_directory/$filename"
-    fi
+    # chmod files
+    sudo chmod 666 "$dest_directory/$filename"
+    sudo chown $(whoami):$(whoami) "$dest_directory/$filename"
 
     echo "Copied $filename to $dest_directory."
 }
