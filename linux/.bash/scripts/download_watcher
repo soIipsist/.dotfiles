@@ -52,6 +52,7 @@ while true; do
 
     echo "$(date): File changed - $DOWNLOADS_PATH" >>"$LOG_FILE"
 
+    # changed lines in downloads.txt
     NEW_LINES=$(comm -13 <(sort "$STATE_FILE") <(sort "$DOWNLOADS_PATH"))
 
     while IFS= read -r line; do
@@ -61,6 +62,5 @@ while true; do
         fi
     done <<<"$NEW_LINES"
 
-    # Update the stored state
     cp "$DOWNLOADS_PATH" "$STATE_FILE"
 done
