@@ -1,7 +1,5 @@
 destination_directory="$dotfiles_directory"
 
-# git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source_scripts_directory="$SCRIPT_DIR/scripts"
 dest_scripts_directory="/usr/local/bin"

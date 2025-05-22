@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 LOG_FILE="/var/log/download_watcher.log"
 STATE_FILE="/tmp/last_download_state.txt"
