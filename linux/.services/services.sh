@@ -23,6 +23,23 @@ copy() {
 
 for file in "$source_services_directory"/*.service; do
     copy "$file" "$dest_services_directory"
+
+    service_name="$(basename "$file")"
+    service_base="${service_name%.service}"
+
+    log_dir="$HOME/logs"
+    log_file="$log_dir/${service_base}.log"
+    err_file="$log_dir/${service_base}.err"
+
+    # Create log directory if it doesn't exist
+    sudo mkdir -p "$log_dir"
+
+    # Recreate log files with correct ownership and permissions
+    sudo touch "$log_file" "$err_file"
+    sudo chown $(whoami):$(whoami) "$log_file" "$err_file"
+    sudo chmod 644 "$log_file" "$err_file"
+
+    echo "Created log files for $service_base in $log_dir."
 done
 
 for file in "$source_services_directory"/*.conf; do

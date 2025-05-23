@@ -40,7 +40,7 @@ create_file() {
 
     if [ ! -f "$file_path" ]; then
         touch "$file_path"
-        chmod 666 "$file_path"
+        chmod 644 "$file_path"
         chown $(whoami):$(whoami) "$file_path"
     fi
 }
