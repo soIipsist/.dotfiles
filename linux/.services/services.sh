@@ -17,9 +17,7 @@ copy() {
     sudo cp -f "$file" "$dest_directory/$filename"
 
     # chmod files
-    sudo chmod 666 "$dest_directory/$filename"
-    sudo chown $(whoami):$(whoami) "$dest_directory/$filename"
-
+    sudo chmod 644 "$dest_directory/$filename"
     echo "Copied $filename to $dest_directory."
 }
 
@@ -38,3 +36,6 @@ for file in "$source_services_directory"/*.conf; do
 
     echo "Generated and copied $filename to $dest_config_directory."
 done
+
+echo "Reloading systemd daemon..."
+sudo systemctl daemon-reload
