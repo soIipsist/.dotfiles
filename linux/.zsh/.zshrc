@@ -35,6 +35,7 @@ function sesh-sessions() {
 
 # PATH variable
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 export PATH="/usr/local/ffmpeg/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
 
@@ -77,7 +78,6 @@ zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' formats '(%b)'
 
 export PROMPT="%(?.%F{211}●.%F{red}●%f) %F{211}%1~%f ${vcs_info_msg_0_} "
-
 
 # aliases
 alias python="python3"
