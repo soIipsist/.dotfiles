@@ -1,6 +1,6 @@
 # YTDLP options
 export YTDLP_PATH="$HOME/ytdlp/yt-dlp_macos"
-alias ytdlp="$YTDLP_PATH"
+alias ytdlp="yt-dlp"
 export YTDLP_FORMAT="audio"
 export YTDLP_EXTRACT_INFO="1"
 export YTDLP_OPTIONS_PATH="$HOME/scripts/video_options.json"
