@@ -6,6 +6,7 @@ After=network.target
 ExecStart=/usr/local/bin/download_watcher
 Restart=always
 User=solipsist
+Group=solipsist
 StandardOutput=append:/home/solipsist/logs/download_watcher.log
 StandardError=append:/home/solipsist/logs/download_watcher.err
 EnvironmentFile=/etc/default/download_watcher.conf

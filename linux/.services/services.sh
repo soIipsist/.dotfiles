@@ -24,11 +24,10 @@ copy() {
 }
 
 for file in "$source_services_directory"/*.service; do
-    [[ -e "$file" ]] && copy "$file" "$dest_services_directory"
+    copy "$file" "$dest_services_directory"
 done
 
 for file in "$source_services_directory"/*.conf; do
-    [[ -e "$file" ]] || continue
 
     filename="$(basename "$file")"
     temp_file="$(mktemp)"
