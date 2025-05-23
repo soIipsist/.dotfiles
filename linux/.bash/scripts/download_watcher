@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOG_FILE="/var/log/download_watcher.log"
+LOG_FILE="/home/solipsist/logs/download_watcher.log"
 STATE_FILE="/tmp/last_download_state.txt"
 
 download() {
@@ -25,6 +25,7 @@ download() {
     # else
     #     tmux new-session -s downloads -n "dl" "python3 \"$SCRIPT_PATH\" \"$@\""
     # fi
+    python3 $SCRIPT_PATH "$@"
 
     # Deactivate the virtual environment properly
     if [ -n "$VIRTUAL_ENV" ]; then
