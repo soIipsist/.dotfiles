@@ -37,6 +37,8 @@ function sesh-sessions() {
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 export PATH="/usr/local/ffmpeg/bin:$PATH"
+export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+
 export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
 
 # useful paths
