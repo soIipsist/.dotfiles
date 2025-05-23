@@ -27,6 +27,8 @@ download() {
     # fi
     python3 $SCRIPT_PATH "$@"
 
+    echo "$(date): Completed download: $@" >>"$LOG_FILE"
+
     # Deactivate the virtual environment properly
     if [ -n "$VIRTUAL_ENV" ]; then
         deactivate
