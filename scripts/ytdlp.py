@@ -104,6 +104,7 @@ def get_postprocessor_args(options: dict, postprocessor_args: list = []):
 def get_options(
     format: str,
     custom_format: str = None,
+    update_options: bool = True,
     prefix: str = None,
     extension: str = None,
     postprocessor_args: list = None,
@@ -120,6 +121,9 @@ def get_options(
         options = read_json_file(options_path)
     else:
         options = {}
+
+    if not update_options:
+        return options
 
     options: dict
 
@@ -237,7 +241,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-i",
         "--extract_info",
-        default=os.environ.get("YTDLP_EXTRACT_INFO"),
+        default=os.environ.get("YTDLP_EXTRACT_INFO", 0),
         type=str_to_bool,
         choices=bool_choices,
     )
@@ -246,6 +250,12 @@ if __name__ == "__main__":
     parser.add_argument("-ppa", "--postprocessor_args", default=None, nargs="+")
     parser.add_argument(
         "-o", "--options_path", default=os.environ.get("YTDLP_OPTIONS_PATH", "")
+    )
+    parser.add_argument(
+        "-u",
+        "--update_options",
+        default=os.environ.get("YTDLP_UPDATE_OPTIONS", True),
+        choices=bool_choices,
     )
 
     args = vars(parser.parse_args())
@@ -260,10 +270,12 @@ if __name__ == "__main__":
     extension = args.get("extension")
     postprocessor_args = args.get("postprocessor_args", [])
     options_path = args.get("options_path", "")
+    update_options = args.get("update_options")
 
     options = get_options(
         format,
         custom_format,
+        update_options,
         prefix,
         extension,
         postprocessor_args,
