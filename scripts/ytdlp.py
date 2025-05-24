@@ -5,7 +5,7 @@ import json
 from pprint import PrettyPrinter
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 
-bool_choices = [0, 1, "true", "false", True, False, None]
+bool_choices = ["0", "1", 0, 1, "true", "false", True, False, None]
 valid_formats = ["audio", "video"]
 parent_directory = os.path.dirname(os.path.abspath(__file__))
 pp = PrettyPrinter(indent=2)
