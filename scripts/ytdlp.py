@@ -255,6 +255,7 @@ if __name__ == "__main__":
         "-u",
         "--update_options",
         default=os.environ.get("YTDLP_UPDATE_OPTIONS", True),
+        type=str_to_bool,
         choices=bool_choices,
     )
 
