@@ -25,7 +25,7 @@ download() {
     # else
     #     tmux new-session -s downloads -n "dl" "python3 \"$SCRIPT_PATH\" \"$@\""
     # fi
-    python3 $SCRIPT_PATH "$@"
+    python3 $SCRIPT_PATH "$@" >/dev/null 2>&1
 
     echo "$(date): Completed download: $@" >>"$LOG_FILE"
 
