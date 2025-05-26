@@ -27,7 +27,7 @@ for file in "$source_services_directory"/*.service; do
     service_name="$(basename "$file")"
     service_base="${service_name%.service}"
 
-    log_dir="$HOME/logs"
+    log_dir="/tmp/logs"
     log_file="$log_dir/${service_base}.log"
     err_file="$log_dir/${service_base}.err"
 
