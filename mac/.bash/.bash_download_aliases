@@ -1,5 +1,6 @@
 # downloader options
 export DOWNLOADS_PATH="$HOME/Desktop/videos/downloads.txt"
+export DOWNLOADS_DB_PATH="$HOME/scripts/downloads.db"
 export DOWNLOADS_OUTPUT_DIR="$HOME/Desktop/videos"
 
 download() {

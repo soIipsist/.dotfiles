@@ -13,7 +13,10 @@ import subprocess
 valid_formats = ["audio", "video"]
 specific_format = None
 script_directory = os.path.dirname(__file__)
-database_path = os.path.join(script_directory, "downloads.db")
+
+database_path = os.environ.get(
+    "DOWNLOADS_DB_PATH", os.path.join(script_directory, "downloads.db")
+)
 
 
 class Downloader(str, Enum):
@@ -161,8 +164,14 @@ class Download:
     def start_download_query(self):
         execute_query(
             self.db,
-            f"""INSERT INTO downloads (url, downloader, download_status, start_date) VALUES (?,?,?,?) """,
-            (self.url, self.downloader, self.download_status, self.start_date),
+            f"""INSERT INTO downloads (url, downloader, download_status, start_date, database_path) VALUES (?,?,?,?,?) """,
+            (
+                self.url,
+                self.downloader,
+                self.download_status,
+                self.start_date,
+                database_path,
+            ),
         )
 
     def set_download_status_query(self, status: DownloadStatus):

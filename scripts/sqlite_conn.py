@@ -37,6 +37,7 @@ def get_sqlite_connection(database_path: sqlite3.Connection):
         downloader text NOT NULL, 
         download_status text NOT NULL,
         start_date DATE, 
+        database_path text NOT NULL,
         PRIMARY KEY (url, downloader)
     );""",
     )
