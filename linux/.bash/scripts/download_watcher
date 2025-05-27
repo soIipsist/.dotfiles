@@ -1,8 +1,5 @@
 #!/bin/bash
 
-LOG_FILE="/tmp/logs/download_watcher.log"
-STATE_FILE="/tmp/logs/last_download_state.txt"
-
 download() {
     SCRIPT_PATH="$SCRIPTS_DIRECTORY/downloader.py"
 
@@ -35,20 +32,24 @@ download() {
     fi
 }
 
-create_file() {
+check_required_file() {
     file_path="$1"
-
     if [ ! -f "$file_path" ]; then
-        touch "$file_path"
-        chmod 644 "$file_path"
-        chown $(whoami):$(whoami) "$file_path"
+        echo "Required file not found: $file_path"
+        exit 1
     fi
 }
 
+# ensure required env vars are set
+if [ -z "$DOWNLOADS_PATH" ] || [ -z "$LOG_FILE" ] || [ -z "$STATE_FILE" ]; then
+    echo "Missing environment variables: DOWNLOADS_PATH, LOG_FILE, or STATE_FILE."
+    exit 1
+fi
+
 # ensure files exist
-create_file "$DOWNLOADS_PATH"
-create_file "$LOG_FILE"
-create_file "$STATE_FILE"
+check_required_file "$DOWNLOADS_PATH"
+check_required_file "$LOG_FILE"
+check_required_file "$STATE_FILE"
 
 # create initial state
 cp "$DOWNLOADS_PATH" "$STATE_FILE"
