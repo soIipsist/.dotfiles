@@ -130,3 +130,13 @@ alias ta='tmux attach -t'
 alias tn='tmux new-session'
 alias tl='tmux list-sessions'
 alias tk='tmux kill-server'
+
+# general service control
+alias sstart='sudo systemctl start'
+alias sstop='sudo systemctl stop'
+alias srestart='sudo systemctl restart'
+alias sstatus='systemctl status'
+alias senable='sudo systemctl enable'
+alias sdisable='sudo systemctl disable'
+alias sjournal='journalctl -u'
+alias sjtail='journalctl -fu'
