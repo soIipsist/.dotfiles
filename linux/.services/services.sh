@@ -46,8 +46,18 @@ for file in "$source_services_directory"/*.conf; do
 
     filename="$(basename "$file")"
     temp_file="$(mktemp)"
-
     envsubst <"$file" >"$temp_file"
+
+    state_file=$(grep -oP 'STATE_FILE="\K[^"]+' "$temp_file")
+
+    if [ -n "$state_file" ]; then
+        sudo mkdir -p "$(dirname "$state_file")"
+        sudo touch "$state_file"
+        sudo chown "$(whoami):$(whoami)" "$state_file"
+        sudo chmod 644 "$state_file"
+        echo "Created state file $state_file"
+    fi
+
     copy "$temp_file" "$dest_config_directory" "$filename"
     rm "$temp_file"
 
