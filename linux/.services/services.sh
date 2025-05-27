@@ -37,7 +37,7 @@ for file in "$source_services_directory"/*.service; do
     # Recreate log files with correct ownership and permissions
     sudo touch "$log_file" "$err_file"
     sudo chown $(whoami):$(whoami) "$log_file" "$err_file"
-    sudo chmod 644 "$log_file" "$err_file"§
+    sudo chmod 644 "$log_file" "$err_file"
 
     echo "Created log files for $service_base in $log_dir."
 done

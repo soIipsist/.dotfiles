@@ -34,9 +34,15 @@ download() {
 
 check_required_file() {
     file_path="$1"
+    clean="${2:-1}" # Default to 1 if not provided
+
     if [ ! -f "$file_path" ]; then
         echo "Required file not found: $file_path"
         exit 1
+    fi
+
+    if [ "$clean" -eq 1 ]; then
+        : >"$file_path"
     fi
 }
 
@@ -47,7 +53,7 @@ if [ -z "$DOWNLOADS_PATH" ] || [ -z "$LOG_FILE" ] || [ -z "$STATE_FILE" ]; then
 fi
 
 # ensure files exist
-check_required_file "$DOWNLOADS_PATH"
+check_required_file "$DOWNLOADS_PATH" 0
 check_required_file "$LOG_FILE"
 check_required_file "$STATE_FILE"
 
