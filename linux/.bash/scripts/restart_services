@@ -6,9 +6,7 @@ conf_files_dir="$GIT_DOTFILES_DIRECTORY/linux/.services/services"
 for conf in "$conf_files_dir"/*.conf; do
 
     filename="$(basename "$conf")"
-    envsubst <"$conf" >"/etc/default/$filename"
-    echo "Generated and copied $filename to $dest_config_directory."
+    dest_conf="/etc/default/$filename"
+    envsubst <"$conf" >"$dest_conf"
+    echo "Generated and copied $filename to $dest_conf."
 done
-
-echo "Reloading systemd daemon..."
-sudo systemctl daemon-reload
