@@ -2,5 +2,20 @@ set completion-ignore-case on
 set show-all-if-ambiguous on
 TAB: menu-complete
 
-"\e[1;5C": forward-word
-"\e[1;5D": backward-word
+# Shift + Left Arrow: backward-word
+"\e[1;2D": backward-word
+
+# Shift + Right Arrow: forward-word
+"\e[1;2C": forward-word
+
+# Ctrl + W: backward-kill-word
+"\e[1;5W": backward-kill-word
+
+# Ctrl + K: kill-line
+"\e[1;5K": kill-line
+
+# Ctrl + U: backward-kill-line
+"\e[1;5U": backward-kill-line
+
+# Ctrl + D: kill-word
+"\e[1;5D": kill-word
