@@ -3,6 +3,7 @@ Description=Download watcher
 After=network.target
 
 [Service]
+ExecStartPre=/usr/local/bin/services.sh
 ExecStart=/usr/local/bin/download_watcher
 Restart=always
 User=solipsist
