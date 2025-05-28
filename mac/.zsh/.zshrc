@@ -109,8 +109,8 @@ alias cdf='cd "$(find . -type d | fzf)"'
 alias llm="ollama run $OLLAMA_MODEL"
 
 # key bindings
-bindkey '^[[1;2D' backward-word # Shift + Left Arrow
-bindkey '^[[1;2C' forward-word  # Shift + Right Arrow
+bindkey '^[[1;5D' backward-word # Ctrl + Left Arrow
+bindkey '^[[1;5C' forward-word  # Ctrl + Right Arrow
 
 bindkey '^[[1;5W' backward-kill-word # Ctrl + W
 bindkey '^[[1;5K' kill-line          # Ctrl + K
@@ -121,9 +121,9 @@ bindkey '^[[1;5D' kill-word          # Ctrl + D
 bindkey '^[[1;5Q' overwrite-mode     # Ctrl + Q
 bindkey '^[[1;5F' autosuggest-accept # Ctrl + F
 
-bindkey '^[c' capitalize-word # Alt + C
-bindkey '^[d' down-case-word  # Alt + D
-bindkey '^[u' up-case-word    # Alt + U
+bindkey '^[c' c1apitalize-word # Alt + C
+bindkey '^[d' down-case-word   # Alt + D
+bindkey '^[u' up-case-word     # Alt + U
 
 zle -N repeat-last-command
 zle -N copy-line-to-keyboard
