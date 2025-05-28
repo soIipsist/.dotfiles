@@ -47,7 +47,7 @@ check_required_file() {
 }
 
 # ensure required env vars are set
-if [ -z "$DOWNLOADS_PATH" ] || [ -z "$LOG_FILE" ] || [ -z "$STATE_FILE" ]; then
+if [ -z "$DOWNLOADS_PATH" ] || [ -z "$LOG_FILE" ] || [ -z "$STATE_FILE" ] || [ -z "$ERR_FILE" ]; then
     echo "Missing environment variables: DOWNLOADS_PATH, LOG_FILE, or STATE_FILE."
     exit 1
 fi
@@ -55,6 +55,7 @@ fi
 # ensure files exist
 check_required_file "$DOWNLOADS_PATH" 0
 check_required_file "$LOG_FILE"
+check_required_file "$ERR_FILE"
 check_required_file "$STATE_FILE"
 
 # create initial state
