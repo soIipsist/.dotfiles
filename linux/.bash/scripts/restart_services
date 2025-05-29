@@ -2,6 +2,8 @@
 
 # find all .conf files
 conf_files_dir="$GIT_DOTFILES_DIRECTORY/linux/.services/services"
+source "~/.zshrc"
+source "~/.bashrc"
 
 for conf in "$conf_files_dir"/*.conf; do
 
