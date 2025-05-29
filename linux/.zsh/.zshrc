@@ -140,3 +140,19 @@ alias senable='sudo systemctl enable'
 alias sdisable='sudo systemctl disable'
 alias sjournal='journalctl -u'
 alias sjtail='journalctl -fu'
+
+function sedit() {
+    local service="$1"
+    local conf="/etc/default/${service}.conf"
+
+    if [[ -z "$service" ]]; then
+        echo "Usage: sedit <service-name>"
+        return 1
+    fi
+
+    if [[ -f "$conf" ]]; then
+        sudo "${EDITOR:-nano}" "$conf"
+    else
+        sudo systemctl edit "$service"
+    fi
+}

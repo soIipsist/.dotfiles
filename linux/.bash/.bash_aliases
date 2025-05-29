@@ -52,6 +52,22 @@ mnt_ntfs() {
     sudo mount -t ntfs-3g -o uid=$(id -u),gid=$(id -g) "$1" "$2"
 }
 
+sedit() {
+    local service="$1"
+    local conf="/etc/default/${service}.conf"
+
+    if [[ -z "$service" ]]; then
+        echo "Usage: sedit <service-name>"
+        return 1
+    fi
+
+    if [[ -f "$conf" ]]; then
+        sudo "${EDITOR:-nano}" "$conf"
+    else
+        sudo systemctl edit "$service"
+    fi
+}
+
 mnt_auto() {
     if [ $# -ne 2 ]; then
         echo "Usage: mnt_auto <device> <mount_point>"
