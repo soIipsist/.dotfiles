@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 ExecStartPre=/usr/bin/bash -lc /usr/local/bin/restart_services
-ExecStart=/usr/local/bin/download_watcher
+ExecStart=/usr/bin/bash -lc /usr/local/bin/download_watcher
 Restart=always
 User=solipsist
 Group=solipsist
