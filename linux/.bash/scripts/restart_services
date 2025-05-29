@@ -8,5 +8,5 @@ for conf in "$conf_files_dir"/*.conf; do
     filename="$(basename "$conf")"
     dest_conf="/etc/default/$filename"
     envsubst <"$conf" >"$dest_conf"
-    echo "Generated and copied $filename to $dest_conf."
+    echo "Generated and copied $filename to $dest_conf. $DOWNLOADS_PATH" >/tmp/downloads_log.txt
 done
