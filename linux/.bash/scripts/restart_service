@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$HOME/.zshrc" 2>/dev/null
+
 config_file="${1:-}"
 log_file="/tmp/downloads_log.txt"
 
