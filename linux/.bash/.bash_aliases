@@ -68,6 +68,26 @@ sedit() {
     fi
 }
 
+ssrestart() {
+    local service="$1"
+
+    if [[ -z "$service" ]]; then
+        echo "Usage: ssrestart <service-name>"
+        return 1
+    fi
+
+    if [[ ! -f "$service" ]]; then
+        service="$GIT_DOTFILES_DIRECTORY/linux/.services/services/$service.conf"
+    fi
+
+    if [[ ! -f "$service" ]]; then
+        echo "Error: Config file not found: $service"
+        return 1
+    fi
+
+    sudo bash /usr/bin/restart_service "$service"
+}
+
 mnt_auto() {
     if [ $# -ne 2 ]; then
         echo "Usage: mnt_auto <device> <mount_point>"
