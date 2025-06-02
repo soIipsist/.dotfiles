@@ -85,7 +85,7 @@ ssrestart() {
         return 1
     fi
 
-    sudo bash /usr/local/bin/restart_service "$service"
+    bash /usr/local/bin/restart_service "$service"
 }
 
 mnt_auto() {
