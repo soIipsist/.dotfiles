@@ -156,3 +156,23 @@ function sedit() {
         sudo systemctl edit "$service"
     fi
 }
+
+function ssrestart() {
+    local service="$1"
+
+    if [[ -z "$service" ]]; then
+        echo "Usage: ssrestart <service-name>"
+        return 1
+    fi
+
+    if [[ ! -f "$service" ]]; then
+        service="$GIT_DOTFILES_DIRECTORY/linux/.services/services/$service.conf"
+    fi
+
+    if [[ ! -f "$service" ]]; then
+        echo "Error: Config file not found: $service"
+        return 1
+    fi
+
+    sudo bash /usr/bin/restart_service "$service"
+}
