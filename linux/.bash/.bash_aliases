@@ -85,7 +85,7 @@ ssrestart() {
         return 1
     fi
 
-    bash -lc /usr/local/bin/restart_service "$service"
+    source /usr/local/bin/restart_service "$service"
 }
 
 mnt_auto() {

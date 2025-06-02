@@ -1,8 +1,6 @@
 #!/bin/bash
 
-if [ -f "$HOME/.zshrc" ]; then
-    source "$HOME/.zshrc"
-fi
+source "$HOME/.zshrc" 2>/dev/null
 
 config_file="${1:-}"
 log_file="/tmp/downloads_log.txt"
@@ -20,16 +18,13 @@ env >>"$log_file"
 filename="$(basename "$config_file")"
 dest_conf="/etc/default/$filename"
 
-temp_file="$(mktemp)"
-if envsubst <"$config_file" >"$temp_file"; then
-    sudo cp "$temp_file" "$dest_conf"
+if envsubst <"$config_file" >"$dest_conf"; then
     echo "✔ $filename generated at $dest_conf" >>"$log_file"
     echo "[DEBUG] Substitution output for $filename:" >>"$log_file"
-    cat "$temp_file" >>"$log_file"
+    envsubst <"$config_file" >>"$log_file"
 else
     echo "✖ Failed to generate $filename" >>"$log_file"
     exit 1
 fi
 
-rm "$temp_file"
 echo "Done. See log: $log_file"
