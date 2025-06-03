@@ -1,6 +1,6 @@
 from datetime import datetime
 from functools import lru_cache
-from inspect import signature
+from inspect import getmembers, signature
 import os
 import sqlite3
 from ast import literal_eval

@@ -1,0 +1,205 @@
+from sqlite3 import Connection
+from typing import Any, Dict
+from sqlite import (
+    select_items,
+    update_item,
+    insert_items,
+    delete_items,
+    create_connection,
+    filter_items,
+    get_random_row,
+)
+
+conn = None
+
+
+class SQLiteItem:
+
+    logging = True
+    db_path: str = None
+    _conn: Connection = None
+    _column_names = []
+    _table_name = None
+    _filter_condition = None
+    _token = None
+
+    def __init__(
+        self,
+        table_values: list,
+        column_names: list = None,
+        logging: bool = False,
+        db_path: str = None,
+    ) -> None:
+        self.table_name = self.__class__.__name__
+        self.table_values = table_values
+        self.column_names = column_names
+        self.logging = logging
+        self._filter_condition = None
+        self.db_path = db_path if db_path else None
+
+    @property
+    def table_name(self):
+        return self._table_name
+
+    @table_name.setter
+    def table_name(self, table_name: str):
+        self._table_name = table_name
+
+    @property
+    def column_names(self):
+        return self._column_names
+
+    @column_names.setter
+    def column_names(self, column_names: list):
+        self._column_names = (
+            column_names if column_names else self.get_column_names_from_table()
+        )
+
+    @property
+    def conn(self):
+        if self._conn is None:
+            global conn
+            if conn is None:
+                conn = create_connection(self.db_path)
+            self._conn = conn
+
+        return self._conn
+
+    @property
+    def filter_condition(self):
+        return self._filter_condition
+
+    @filter_condition.setter
+    def filter_condition(self, new_filter_condition):
+        self._filter_condition = new_filter_condition
+
+    # sqlite operations
+
+    def get_unique_object(self):
+        sqlite_item = SQLiteItem(self.table_values, self.column_names)
+        sqlite_keys = list(vars(sqlite_item).keys())
+
+        dictionary: dict = vars(self)
+        temp_dict = dictionary.copy()
+
+        for key in dictionary:
+            if key in sqlite_keys or key.startswith("_") or key.startswith("__"):
+                temp_dict.pop(key)
+
+        return temp_dict
+
+    def get_default_attr_names(self):
+        return [name for name in self.column_names if name != "id"]
+
+    def get_column_names_from_table(self):
+        return [v.split(" ")[0] for v in self.table_values]
+
+    def get_object_values(self, attr_names: list = []):
+
+        if not attr_names:
+            attr_names = self.column_names
+
+        return [getattr(self, name) for name in attr_names]
+
+    def filter_by(self, query_params: list = None):
+        if isinstance(query_params, dict):
+            for key, val in query_params.items():
+                if hasattr(self, key):
+                    setattr(self, key, val)
+
+            query_params = query_params.keys()
+
+        if query_params:
+            return filter_items(self.conn, self.table_name, query_params, self)
+        else:
+            return self.select_all()
+
+    def select(self, filter_condition=None):
+
+        condition = (
+            self.filter_condition if filter_condition is None else filter_condition
+        )
+
+        items = select_items(
+            self.conn,
+            self.table_name,
+            condition,
+            type(self),
+            column_names=self.column_names,
+        )
+
+        return items
+
+    def select_first(self, filter_condition=None):
+        items = self.select(filter_condition)
+        return items[0] if len(items) > 0 else None
+
+    def select_all(self):
+        return select_items(
+            self.conn, self.table_name, None, type(self), self.column_names
+        )
+
+    def insert(self):
+        return insert_items(self.conn, self.table_name, [self], self.column_names)
+
+    def upsert(self, filter_condition=None):
+        if self.item_exists(filter_condition):
+            id = self.update(filter_condition)
+        else:
+            id = self.insert()
+
+        return id
+
+    @classmethod
+    def insert_all(cls, items: list):
+        for item in items:
+            if isinstance(item, SQLiteItem):
+                item.insert()
+
+    def update(self, filter_condition=None):
+        obj = self.get_unique_object()
+        condition = (
+            self.filter_condition if filter_condition is None else filter_condition
+        )
+        return update_item(
+            self.conn, self.table_name, obj, condition, self.column_names
+        )
+
+    def delete(self, filter_condition=None):
+
+        condition = (
+            self.filter_condition if filter_condition is None else filter_condition
+        )
+        return delete_items(self.conn, self.table_name, condition)
+
+    def item_exists(self, filter_condition=None) -> bool:
+        condition = (
+            self.filter_condition if filter_condition is None else filter_condition
+        )
+        return self.select_first(condition) is not None
+
+    def get_random_item(self):
+        item = get_random_row(self.conn, self.table_name, type(self))
+        return item[0] if len(item) > 0 else None
+
+    def log(self, log_message: str = None):
+
+        if self.logging and log_message:
+            print(log_message)
+
+    def as_dict(self) -> Dict[str, Any]:
+        """Convert the model instance to a dictionary without leading underscores."""
+
+        result = {}
+        for c in self.__table__.columns:
+            attr_name = c.name
+            if attr_name.startswith("_"):
+                attr_name = attr_name[1:]
+            result[attr_name] = getattr(self, c.name)
+
+        return result
+
+    # @classmethod
+    # def from_dict(cls, data: dict):
+    #     """Initialize model from a dictionary, useful for API responses."""
+    #     return cls(**data)
