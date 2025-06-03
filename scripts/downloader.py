@@ -7,7 +7,7 @@ import sys
 from typing import List, Optional
 from sqlite_item import SQLiteItem, create_connection
 from sqlite import execute_query
-from sqlite_conn import download_values, downloader_values
+from sqlite_conn import create_db, download_values, downloader_values
 from ytdlp import download as ytdlp_download, get_options, get_urls as get_ytdlp_urls
 from wget import download as wget_download
 
@@ -23,8 +23,9 @@ database_path = os.environ.get(
     "DOWNLOADS_DB_PATH", os.path.join(script_directory, "downloads.db")
 )
 
-# create downloads table
+# create connection and tables
 db = create_connection(database_path)
+create_db(database_path)
 
 
 class DownloadStatus(str, Enum):
@@ -35,7 +36,7 @@ class DownloadStatus(str, Enum):
 
 class Downloader(SQLiteItem):
     _name: str = None
-    _format: str = None
+    _downloader_format: str = None
     _downloader_path: str = None
 
     @property
@@ -47,12 +48,12 @@ class Downloader(SQLiteItem):
         self._name = name
 
     @property
-    def format(self):
-        return self._format
+    def downloader_format(self):
+        return self._downloader_format
 
-    @format.setter
-    def format(self, format):
-        self._format = format
+    @downloader_format.setter
+    def downloader_format(self, downloader_format):
+        self._downloader_format = downloader_format
 
     @property
     def downloader_path(self):
@@ -64,22 +65,23 @@ class Downloader(SQLiteItem):
 
     def __init__(
         self,
-        name,
-        format,
-        downloader_path,
+        name: str = None,
+        downloader_format: str = None,
+        downloader_path: str = None,
     ):
         column_names = (
             [
                 "name",
-                "format",
+                "downloader_format",
                 "downloader_path",
             ],
         )
         super().__init__(downloader_values, column_names, db_path=database_path)
         self.name = name
-        self.format = format
+        self.downloader_format = downloader_format
         self.downloader_path = downloader_path
         self.filter_condition = f"name = {self._name}"
+        self.table_name = "downloaders"
 
 
 # fetch all downloaders
@@ -95,18 +97,6 @@ class Download(SQLiteItem):
     _downloads_path: str = None
     _db: sqlite3.Connection = None
     _output_directory: str = None
-
-    # def __init__(
-    #     self,
-    #     download_str: str = None,
-    #     downloader: Downloader = None,
-    #     downloads_path: Optional[str] = None,
-    #     output_directory: Optional[str] = None,
-    # ):
-    #     self.downloader = downloader
-    #     self.downloads_path = downloads_path
-    #     self.output_directory = output_directory
-    #     self.download_str = download_str
 
     def __init__(
         self,
@@ -126,6 +116,7 @@ class Download(SQLiteItem):
         self.downloads_path = downloads_path
         self.output_directory = output_directory
         self.download_str = download_str
+        self.table_name = "downloads"
 
     @property
     def download_status(self):
@@ -150,12 +141,6 @@ class Download(SQLiteItem):
     @start_date.setter
     def start_date(self, start_date):
         self._start_date = start_date
-
-    @property
-    def db(self):
-        if not self._db:
-            self._db = create_connection(database_path)
-        return self._db
 
     @property
     def ytdlp_options_path(self):
@@ -220,7 +205,7 @@ class Download(SQLiteItem):
 
     def start_download_query(self):
         execute_query(
-            self.db,
+            self._db,
             f"""INSERT INTO downloads (url, downloader, download_status, start_date) VALUES (?,?,?,?) """,
             (self.url, self.downloader, self.download_status, self.start_date),
         )
@@ -228,7 +213,7 @@ class Download(SQLiteItem):
     def set_download_status_query(self, status: DownloadStatus):
         self.download_status = status
         execute_query(
-            self.db,
+            self._db,
             f"""UPDATE downloads SET download_status = ? WHERE url = ?""",
             (self.download_status, self.url),
         )
@@ -320,16 +305,11 @@ class Download(SQLiteItem):
                 else default_audio_downloader
             )
         else:
-            format = self.downloader.format
+            format = self.downloader.downloader_format
         return format
 
     def fetch_downloads(self):
-        query = "SELECT * FROM downloads WHERE download_status = ? OR start_date = ? OR downloader = ?"
-        params = [self.download_status, self.start_date, self.downloader]
-
-        results = execute_query(self.db, query, params)
-
-        return results
+        return self.select_all()
 
     def __repr__(self):
         return f"{self.downloader}, {self.url}"
@@ -337,7 +317,7 @@ class Download(SQLiteItem):
 
 def get_downloads(
     url: str,
-    downloader_type: Downloader = Downloader.YTDLP,
+    downloader_type: Downloader = None,
     downloads_path: str = None,
     output_directory: str = None,
 ) -> List[Download]:
@@ -379,7 +359,7 @@ def get_downloads(
 
 def main(
     url: str = None,
-    downloader_type=Downloader.YTDLP,
+    downloader_type=None,
     downloads_path: str = None,
     output_directory: str = None,
 ):
@@ -391,7 +371,7 @@ def main(
 
 
 def fetch_downloads(
-    download_status: DownloadStatus = None, downloader: Downloader = Downloader.YTDLP
+    download_status: DownloadStatus = None, downloader: Downloader = None
 ):
 
     print("Fetching downloads")
