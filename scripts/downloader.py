@@ -5,11 +5,9 @@ import datetime
 from enum import Enum
 import sys
 from typing import List, Optional
-from sqlite_conn import (
-    execute_query,
-    get_sqlite_connection,
-    map_sqlite_results_to_objects,
-)
+from sqlite_item import SQLiteItem, create_connection
+from sqlite import execute_query
+from sqlite_conn import download_values, downloader_values
 from ytdlp import download as ytdlp_download, get_options, get_urls as get_ytdlp_urls
 from wget import download as wget_download
 
@@ -26,27 +24,7 @@ database_path = os.environ.get(
 )
 
 # create downloads table
-db = get_sqlite_connection(database_path)
-
-execute_query(
-    db,
-    """CREATE TABLE IF NOT EXISTS downloads (
-        url text NOT NULL, 
-        downloader text NOT NULL, 
-        download_status text NOT NULL,
-        start_date DATE, 
-        PRIMARY KEY (url, downloader)
-    );""",
-)
-
-execute_query(
-    db,
-    """CREATE TABLE IF NOT EXISTS downloaders (
-        name text NOT NULL PRIMARY KEY,
-        format text NOT NULL,
-        downloader_path text NOT NULL
-    );""",
-)
+db = create_connection(database_path)
 
 
 class DownloadStatus(str, Enum):
@@ -55,7 +33,7 @@ class DownloadStatus(str, Enum):
     INTERRUPTED = "interrupted"
 
 
-class Downloader:
+class Downloader(SQLiteItem):
     _name: str = None
     _format: str = None
     _downloader_path: str = None
@@ -85,20 +63,30 @@ class Downloader:
         self._downloader_path = downloader_path
 
     def __init__(
-        self, name: str = None, format: str = None, downloader_path: str = None
+        self,
+        name,
+        format,
+        downloader_path,
     ):
+        column_names = (
+            [
+                "name",
+                "format",
+                "downloader_path",
+            ],
+        )
+        super().__init__(downloader_values, column_names, db_path=database_path)
         self.name = name
         self.format = format
         self.downloader_path = downloader_path
+        self.filter_condition = f"name = {self._name}"
 
 
 # fetch all downloaders
-d_results = execute_query(db, """SELECT * FROM downloaders""")
-downloaders = map_sqlite_results_to_objects(d_results, Downloader)
-downloader_types = []
+downloaders = Downloader().select_all()
 
 
-class Download:
+class Download(SQLiteItem):
     _downloader = None
     _download_status = DownloadStatus.STARTED
     _start_date = str(datetime.datetime.now())
@@ -108,6 +96,18 @@ class Download:
     _db: sqlite3.Connection = None
     _output_directory: str = None
 
+    # def __init__(
+    #     self,
+    #     download_str: str = None,
+    #     downloader: Downloader = None,
+    #     downloads_path: Optional[str] = None,
+    #     output_directory: Optional[str] = None,
+    # ):
+    #     self.downloader = downloader
+    #     self.downloads_path = downloads_path
+    #     self.output_directory = output_directory
+    #     self.download_str = download_str
+
     def __init__(
         self,
         download_str: str = None,
@@ -115,6 +115,13 @@ class Download:
         downloads_path: Optional[str] = None,
         output_directory: Optional[str] = None,
     ):
+        column_names = [
+            "url",
+            "downloader",
+            "download_status",
+            "start_date",
+        ]
+        super().__init__(download_values, column_names, db_path=database_path)
         self.downloader = downloader
         self.downloads_path = downloads_path
         self.output_directory = output_directory
@@ -147,7 +154,7 @@ class Download:
     @property
     def db(self):
         if not self._db:
-            self._db = get_sqlite_connection(database_path)
+            self._db = create_connection(database_path)
         return self._db
 
     @property
@@ -406,7 +413,7 @@ if __name__ == "__main__":
     download_cmd = subparsers.add_parser("download", help="Download a URL")
     download_cmd.add_argument("url", type=str)
     download_cmd.add_argument(
-        "-t", "--downloader_type", default=None, type=str, choices=downloader_types
+        "-t", "--downloader_type", default=None, type=str, choices=[]
     )
     download_cmd.add_argument(
         "-d", "--downloads_path", default=os.environ.get("DOWNLOADS_PATH"), type=str
