@@ -1,7 +1,9 @@
 import os
+from pprint import PrettyPrinter
 import sqlite3
 import datetime
 from enum import Enum
+import sys
 from typing import List, Optional
 from sqlite_conn import execute_query, get_sqlite_connection
 from ytdlp import download as ytdlp_download, get_options, get_urls as get_ytdlp_urls
@@ -13,6 +15,7 @@ import subprocess
 valid_formats = ["audio", "video"]
 specific_format = None
 script_directory = os.path.dirname(__file__)
+pp = PrettyPrinter(indent=2)
 
 database_path = os.environ.get(
     "DOWNLOADS_DB_PATH", os.path.join(script_directory, "downloads.db")
@@ -63,7 +66,7 @@ class Download:
 
     def __init__(
         self,
-        download_str: str,
+        download_str: str = None,
         downloader: Downloader = None,
         downloads_path: Optional[str] = None,
         output_directory: Optional[str] = None,
@@ -141,6 +144,9 @@ class Download:
 
     def parse_url(self, download_str: str):
         self._download_str = download_str
+
+        if self.download_str is None:
+            return self.download_str
 
         download_str = download_str.split(" ")  # split download_str into spaces
 
@@ -276,6 +282,14 @@ class Download:
             format = YTDLP_DOWNLOADER_FORMATS.get(self.downloader, "videos")
         return format
 
+    def fetch_downloads(self):
+        query = "SELECT * FROM downloads WHERE download_status = ? OR start_date = ? OR downloader = ?"
+        params = [self.download_status, self.start_date, self.downloader]
+
+        results = execute_query(self.db, query, params)
+
+        return results
+
     def __repr__(self):
         return f"{self.downloader}, {self.url}"
 
@@ -335,32 +349,53 @@ def main(
         download.start_download()
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("url", type=str, default=None, nargs="?")
-    parser.add_argument(
-        "-t",
-        "--downloader_type",
-        default=None,
-        type=str,
-        choices=downloader_keys,
-    )
-    parser.add_argument(
-        "-d",
-        "--downloads_path",
-        default=os.environ.get("DOWNLOADS_PATH"),
-        type=str,
-    )
+def fetch_downloads(
+    download_status: DownloadStatus = None, downloader: Downloader = Downloader.YTDLP
+):
 
-    parser.add_argument(
+    print("Fetching downloads")
+    download = Download(downloader=downloader)
+    download.download_status = download_status
+    download.downloader = downloader
+    results = download.fetch_downloads()
+    pp.pprint(results)
+
+
+if __name__ == "__main__":
+    # Check if the user skipped the subcommand, and inject 'download'
+    if len(sys.argv) > 1 and sys.argv[1] not in ["download", "list", "-h", "--help"]:
+        sys.argv.insert(1, "download")
+
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    download_cmd = subparsers.add_parser("download", help="Download a URL")
+    download_cmd.add_argument("url", type=str)
+    download_cmd.add_argument(
+        "-t", "--downloader_type", default=None, type=str, choices=downloader_keys
+    )
+    download_cmd.add_argument(
+        "-d", "--downloads_path", default=os.environ.get("DOWNLOADS_PATH"), type=str
+    )
+    download_cmd.add_argument(
         "-o",
         "--output_directory",
         default=os.environ.get("DOWNLOADS_OUTPUT_DIR"),
         type=str,
     )
+    download_cmd.set_defaults(func=main)
+
+    list_cmd = subparsers.add_parser("list", help="List downloads")
+    list_cmd.add_argument("--download_status", type=str, default=None)
+    list_cmd.set_defaults(func=fetch_downloads)
 
     args = vars(parser.parse_args())
-    main(**args)
+    func = args.get("func")
+    args.pop("command")
+    args.pop("func")
+
+    print(args)
+    func(**args)
 
 
 # tests
