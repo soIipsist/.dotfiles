@@ -5,7 +5,11 @@ import datetime
 from enum import Enum
 import sys
 from typing import List, Optional
-from sqlite_conn import execute_query, get_sqlite_connection
+from sqlite_conn import (
+    execute_query,
+    get_sqlite_connection,
+    map_sqlite_results_to_objects,
+)
 from ytdlp import download as ytdlp_download, get_options, get_urls as get_ytdlp_urls
 from wget import download as wget_download
 
@@ -43,8 +47,6 @@ execute_query(
         downloader_path text NOT NULL
     );""",
 )
-
-# fetch all downloaders
 
 
 class DownloadStatus(str, Enum):
@@ -88,6 +90,12 @@ class Downloader:
         self.name = name
         self.format = format
         self.downloader_path = downloader_path
+
+
+# fetch all downloaders
+d_results = execute_query(db, """SELECT * FROM downloaders""")
+downloaders = map_sqlite_results_to_objects(d_results, Downloader)
+downloader_types = []
 
 
 class Download:
@@ -240,7 +248,7 @@ class Download:
 
     def start_ytldp_download(self):
 
-        if not self.downloader in YTDLP_DOWNLOADERS.keys():
+        if not self.downloader in downloaders:
             return
 
         print("Downloading with ytdlp...")
@@ -275,7 +283,7 @@ class Download:
             self.set_download_status_query(DownloadStatus.COMPLETED)
 
     def _get_ytdlp_options_path(self):
-        options = YTDLP_DOWNLOADERS.get(self.downloader)
+        options = self.downloader.downloader_path
         options_path = os.path.join(script_directory, options)
         return options_path
 
@@ -305,7 +313,7 @@ class Download:
                 else default_audio_downloader
             )
         else:
-            format = YTDLP_DOWNLOADER_FORMATS.get(self.downloader, "videos")
+            format = self.downloader.format
         return format
 
     def fetch_downloads(self):
@@ -398,7 +406,7 @@ if __name__ == "__main__":
     download_cmd = subparsers.add_parser("download", help="Download a URL")
     download_cmd.add_argument("url", type=str)
     download_cmd.add_argument(
-        "-t", "--downloader_type", default=None, type=str, choices=downloader_keys
+        "-t", "--downloader_type", default=None, type=str, choices=downloader_types
     )
     download_cmd.add_argument(
         "-d", "--downloads_path", default=os.environ.get("DOWNLOADS_PATH"), type=str

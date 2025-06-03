@@ -1,3 +1,4 @@
+from ast import literal_eval
 import sqlite3
 
 
@@ -32,5 +33,32 @@ def get_sqlite_connection(database_path: sqlite3.Connection):
     return db
 
 
-def create_objects_from_sqlite_results(results: list):
-    pass
+def map_sqlite_results_to_objects(
+    sqlite_results: list, object_type, column_names: list = []
+):
+    """Maps SQLite query results to a list of objects"""
+    objects = []
+    if len(column_names) > 0:
+        for result in sqlite_results:
+            o = object_type(*result)
+
+            for name, result in zip(column_names, result):
+                # check if result is array
+                if (
+                    isinstance(result, str)
+                    and result.startswith("[")
+                    and result.endswith("]")
+                ):
+                    result = literal_eval(result)
+                if (
+                    isinstance(result, str)
+                    and result.startswith("{")
+                    and result.endswith("}")
+                ):
+                    result = literal_eval(result)
+
+                setattr(o, name, result)
+            objects.append(o)
+    else:
+        objects = [object_type(*row) for row in sqlite_results]
+    return objects
