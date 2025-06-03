@@ -21,37 +21,73 @@ database_path = os.environ.get(
     "DOWNLOADS_DB_PATH", os.path.join(script_directory, "downloads.db")
 )
 
+# create downloads table
+db = get_sqlite_connection(database_path)
 
-class Downloader(str, Enum):
-    YTDLP = "ytdlp"
-    YTDLP_AUDIO_1 = "ytdlp_audio"
-    YTDLP_VIDEO_1 = "ytdlp_video"
-    YTDLP_VIDEO_2 = "ytdlp_video_2"
-    WGET = "wget"
+execute_query(
+    db,
+    """CREATE TABLE IF NOT EXISTS downloads (
+        url text NOT NULL, 
+        downloader text NOT NULL, 
+        download_status text NOT NULL,
+        start_date DATE, 
+        PRIMARY KEY (url, downloader)
+    );""",
+)
 
+execute_query(
+    db,
+    """CREATE TABLE IF NOT EXISTS downloaders (
+        name text NOT NULL PRIMARY KEY,
+        format text NOT NULL,
+        downloader_path text NOT NULL
+    );""",
+)
 
-# each downloader has a set of different options
-YTDLP_DOWNLOADERS = {
-    Downloader.YTDLP: "video_options.json",
-    Downloader.YTDLP_AUDIO_1: "audio_options.json",
-    Downloader.YTDLP_VIDEO_1: "video_options.json",
-    Downloader.YTDLP_VIDEO_2: "video_options_2.json",
-}
-
-YTDLP_DOWNLOADER_FORMATS = {
-    Downloader.YTDLP: "video",
-    Downloader.YTDLP_AUDIO_1: "audio",
-    Downloader.YTDLP_VIDEO_1: "video",
-    Downloader.YTDLP_VIDEO_2: "video",
-}
-
-downloader_keys = [key.value for key in Downloader]
+# fetch all downloaders
 
 
 class DownloadStatus(str, Enum):
     STARTED = "started"
     COMPLETED = "completed"
     INTERRUPTED = "interrupted"
+
+
+class Downloader:
+    _name: str = None
+    _format: str = None
+    _downloader_path: str = None
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        self._name = name
+
+    @property
+    def format(self):
+        return self._format
+
+    @format.setter
+    def format(self, format):
+        self._format = format
+
+    @property
+    def downloader_path(self):
+        return self._downloader_path
+
+    @downloader_path.setter
+    def downloader_path(self, downloader_path):
+        self._downloader_path = downloader_path
+
+    def __init__(
+        self, name: str = None, format: str = None, downloader_path: str = None
+    ):
+        self.name = name
+        self.format = format
+        self.downloader_path = downloader_path
 
 
 class Download:
@@ -170,14 +206,8 @@ class Download:
     def start_download_query(self):
         execute_query(
             self.db,
-            f"""INSERT INTO downloads (url, downloader, download_status, start_date, database_path) VALUES (?,?,?,?,?) """,
-            (
-                self.url,
-                self.downloader,
-                self.download_status,
-                self.start_date,
-                database_path,
-            ),
+            f"""INSERT INTO downloads (url, downloader, download_status, start_date) VALUES (?,?,?,?) """,
+            (self.url, self.downloader, self.download_status, self.start_date),
         )
 
     def set_download_status_query(self, status: DownloadStatus):
@@ -197,7 +227,7 @@ class Download:
         self.start_wget_download()
 
     def start_wget_download(self):
-        if not self.downloader == Downloader.WGET:
+        if not self.downloader == "wget":
             return
 
         self.start_download_query()
@@ -247,10 +277,6 @@ class Download:
     def _get_ytdlp_options_path(self):
         options = YTDLP_DOWNLOADERS.get(self.downloader)
         options_path = os.path.join(script_directory, options)
-
-        if not os.path.exists(options_path):
-            options_path = os.path.join(script_directory, "metadata", options)
-
         return options_path
 
     def _get_ytdlp_format(self):

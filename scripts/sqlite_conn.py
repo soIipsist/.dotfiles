@@ -29,17 +29,8 @@ def get_sqlite_connection(database_path: sqlite3.Connection):
         print("Error connecting to the database:", e)
         print("Database path: ", database_path)
 
-    # create downloads table
-    execute_query(
-        db,
-        """CREATE TABLE IF NOT EXISTS downloads (
-        url text NOT NULL, 
-        downloader text NOT NULL, 
-        download_status text NOT NULL,
-        start_date DATE, 
-        database_path text NOT NULL,
-        PRIMARY KEY (url, downloader)
-    );""",
-    )
-
     return db
+
+
+def create_objects_from_sqlite_results(results: list):
+    pass
