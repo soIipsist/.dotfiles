@@ -6,7 +6,7 @@ from enum import Enum
 import sys
 from typing import List, Optional
 from sqlite_item import SQLiteItem, create_connection
-from sqlite import execute_query
+from sqlite import execute_query, is_valid_url
 from sqlite_conn import create_db, download_values, downloader_values
 from ytdlp import download as ytdlp_download, get_options, get_urls as get_ytdlp_urls
 from wget import download as wget_download
@@ -100,8 +100,10 @@ class Download(SQLiteItem):
 
     def __init__(
         self,
-        download_str: str = None,
+        url: str = None,
         downloader: Downloader = None,
+        download_status: DownloadStatus = DownloadStatus.STARTED,
+        start_date: str = None,
         downloads_path: Optional[str] = None,
         output_directory: Optional[str] = None,
     ):
@@ -112,11 +114,16 @@ class Download(SQLiteItem):
             "start_date",
         ]
         super().__init__(download_values, column_names, db_path=database_path)
+        self.url = url
         self.downloader = downloader
+        self.download_status = download_status
         self.downloads_path = downloads_path
         self.output_directory = output_directory
-        self.download_str = download_str
+        self.start_date = start_date
+
         self.table_name = "downloads"
+        self.filter_condition = f"url = {self.url}"
+        print(self.filter_condition)
 
     @property
     def download_status(self):
@@ -163,14 +170,6 @@ class Download(SQLiteItem):
         self._url = url
 
     @property
-    def download_str(self):
-        return self._download_str
-
-    @download_str.setter
-    def download_str(self, download_str: str):
-        self.parse_url(download_str)
-
-    @property
     def downloader(self):
         return self._downloader
 
@@ -178,40 +177,18 @@ class Download(SQLiteItem):
     def downloader(self, downloader: Downloader):
         self._downloader = downloader
 
-    def parse_url(self, download_str: str):
-        self._download_str = download_str
-
-        if self.download_str is None:
-            return self.download_str
-
-        download_str = download_str.split(" ")  # split download_str into spaces
-
-        # string can be of this format
-        # {some_url} -> stored in a music.txt, will use default audio downloader
-        # or
-        # {some_url} {downloader} -> stored in a downloads.txt, will use default video downloader
-
-        self.url = download_str[0]
-
-        if not self.downloader:
-            self.downloader = Downloader.YTDLP.value
-
-        if not self.downloads_path:
-            return
-
-        self.downloader = download_str[1] if len(download_str) > 1 else self.downloader
-        self.download_status = DownloadStatus.STARTED.value
-        self.start_date = str(datetime.datetime.now())
-
     def start_download_query(self):
-        execute_query(
-            self._db,
-            f"""INSERT INTO downloads (url, downloader, download_status, start_date) VALUES (?,?,?,?) """,
-            (self.url, self.downloader, self.download_status, self.start_date),
-        )
+        self.insert()
+        # execute_query(
+        #     self._db,
+        #     f"""INSERT INTO downloads (url, downloader, download_status, start_date) VALUES (?,?,?,?) """,
+        #     (self.url, self.downloader, self.download_status, self.start_date),
+        # )
 
     def set_download_status_query(self, status: DownloadStatus):
         self.download_status = status
+
+        self.update()
         execute_query(
             self._db,
             f"""UPDATE downloads SET download_status = ? WHERE url = ?""",
@@ -315,13 +292,12 @@ class Download(SQLiteItem):
         return f"{self.downloader}, {self.url}"
 
 
-def get_downloads(
-    url: str,
-    downloader_type: Downloader = None,
+def download_all(
+    url: str = None,
+    downloader_type=None,
     downloads_path: str = None,
     output_directory: str = None,
-) -> List[Download]:
-
+):
     downloads = []
 
     if not url and not downloads_path:
@@ -341,29 +317,35 @@ def get_downloads(
         else:
             print("File was not created.")
 
-    if not url:
+    if downloads_path is not None:
         with open(downloads_path, "r") as file:
             for line in file:
                 download_str = line.strip()
                 if not download_str:
                     continue
+
+                download_str = download_str.split(" ")
+
+                url = download_str[0]
+
+                downloader = download_str[1] if len(download_str) > 1 else downloader
+
+                if not downloader:
+                    downloader = Downloader().select_first()
+
+                if not downloads_path:
+                    return
+
+                start_date = str(datetime.datetime.now())
                 download = Download(
-                    download_str, downloader_type, downloads_path, output_directory
+                    url, downloader_type, downloads_path, output_directory
                 )
                 downloads.append(download)
-    else:
-        download = Download(url, downloader_type, downloads_path, output_directory)
-        downloads.append(download)
-    return downloads
 
-
-def main(
-    url: str = None,
-    downloader_type=None,
-    downloads_path: str = None,
-    output_directory: str = None,
-):
-    downloads = get_downloads(url, downloader_type, downloads_path, output_directory)
+                # string can be of this format
+        # {some_url} -> stored in a music.txt, will use default audio downloader
+        # or
+        # {some_url} {downloader} -> stored in a downloads.txt, will use default video downloader
 
     for download in downloads:
         download: Download
@@ -404,7 +386,7 @@ if __name__ == "__main__":
         default=os.environ.get("DOWNLOADS_OUTPUT_DIR"),
         type=str,
     )
-    download_cmd.set_defaults(func=main)
+    download_cmd.set_defaults(func=download_all)
 
     list_cmd = subparsers.add_parser("list", help="List downloads")
     list_cmd.add_argument("--download_status", type=str, default=None)
