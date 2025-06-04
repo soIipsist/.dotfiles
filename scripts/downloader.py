@@ -82,10 +82,6 @@ class Downloader(SQLiteItem):
         self.table_name = "downloaders"
 
 
-# fetch all downloaders
-downloaders = Downloader().select_all()
-
-
 class Download(SQLiteItem):
     _downloader = None
     _download_status = DownloadStatus.STARTED
@@ -121,7 +117,6 @@ class Download(SQLiteItem):
 
         self.table_name = "downloads"
         self.filter_condition = f"url = {self.url}"
-        print(self.filter_condition)
 
     @property
     def download_status(self):
@@ -205,6 +200,7 @@ class Download(SQLiteItem):
             self.set_download_status_query(DownloadStatus.COMPLETED)
 
     def start_ytldp_download(self):
+        downloaders = Downloader().select_all()
 
         if not self.downloader in downloaders:
             return
@@ -365,7 +361,13 @@ def downloaders_cmd(**kwargs):
 
 def download_all_cmd(**kwargs):
     print(kwargs)
-    download = Download(**kwargs)
+    downloader_type = kwargs.get("downloader_type")
+    downloader = Downloader(name=downloader_type)
+    d = downloader.filter_by(downloader.column_names)
+    print("DOWNLOADER", d)
+
+    kwargs.pop("downloader_type")
+    download = Download(**kwargs, downloader=d)
 
     if kwargs.get("url") is None:
         downloads = download.filter_by()
