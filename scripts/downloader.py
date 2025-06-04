@@ -68,13 +68,12 @@ class Downloader(SQLiteItem):
         downloader_format: str = None,
         downloader_path: str = None,
     ):
-        column_names = (
-            [
-                "name",
-                "downloader_format",
-                "downloader_path",
-            ],
-        )
+        column_names = [
+            "name",
+            "downloader_format",
+            "downloader_path",
+        ]
+
         super().__init__(downloader_values, column_names, db_path=database_path)
         self.name = name
         self.downloader_format = downloader_format
@@ -180,11 +179,6 @@ class Download(SQLiteItem):
 
     def start_download_query(self):
         self.insert()
-        # execute_query(
-        #     self._db,
-        #     f"""INSERT INTO downloads (url, downloader, download_status, start_date) VALUES (?,?,?,?) """,
-        #     (self.url, self.downloader, self.download_status, self.start_date),
-        # )
 
     def set_download_status_query(self, status: DownloadStatus):
         self.download_status = status
@@ -282,11 +276,12 @@ class Download(SQLiteItem):
         return f"{self.downloader}, {self.url}"
 
 
-def download_all(
+def start_downloads(
     url: str = None,
     downloader_type=None,
     downloads_path: str = None,
     output_directory: str = None,
+    **kwargs,
 ):
     downloads = []
 
@@ -351,18 +346,10 @@ def download_all(
     #     download.start_download()
 
 
-def fetch_downloads(*args, **kwargs):
-
-    print(*args)
-    print("Fetching downloads")
-    # download = Download(*args)
-    # download.download_status = download_status
-    # download.downloader = downloader
-    # results = download.fetch_downloads()
-    # pp.pprint(results)
+# argparse commands
 
 
-def downloaders_cmd(*args, **kwargs):
+def downloaders_cmd(**kwargs):
     print(kwargs)
 
     action = kwargs.get("action")
@@ -372,15 +359,25 @@ def downloaders_cmd(*args, **kwargs):
     if action == "add":
         d.insert()
     else:  # list downloaders
-        downloaders = d.select_all()
+        downloaders = d.filter_by()
         pp.pprint(downloaders)
+
+
+def download_all_cmd(**kwargs):
+    print(kwargs)
+    download = Download(**kwargs)
+
+    if kwargs.get("url") is None:
+        downloads = download.filter_by()
+        pp.pprint(downloads)
+    else:
+        start_downloads(**kwargs)
 
 
 if __name__ == "__main__":
     # Check if the user skipped the subcommand, and inject 'download'
-    if len(sys.argv) > 1 and sys.argv[1] not in [
+    if len(sys.argv) == 1 or sys.argv[1] not in [
         "download",
-        "list",
         "downloaders",
         "-h",
         "--help",
@@ -390,29 +387,34 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
 
+    # download cmd
     download_cmd = subparsers.add_parser("download", help="Download a URL")
-    download_cmd.add_argument("url", type=str)
+    download_cmd.add_argument("url", type=str, nargs="?")
     download_cmd.add_argument(
         "-t", "--downloader_type", default=None, type=str, choices=[]
     )
     download_cmd.add_argument(
         "-d", "--downloads_path", default=os.environ.get("DOWNLOADS_PATH"), type=str
     )
+
+    download_cmd.add_argument(
+        "--download_status",
+        type=DownloadStatus,
+        default=None,
+    )
+
     download_cmd.add_argument(
         "-o",
         "--output_directory",
         default=os.environ.get("DOWNLOADS_OUTPUT_DIR"),
         type=str,
     )
-    download_cmd.set_defaults(func=download_all)
+    download_cmd.set_defaults(func=download_all_cmd)
 
-    list_cmd = subparsers.add_parser("list", help="List downloads")
-    list_cmd.add_argument("--download_status", type=str, default=None)
-    list_cmd.set_defaults(func=fetch_downloads)
-
+    # downloader cmd
     downloader_cmd = subparsers.add_parser("downloaders", help="List downloaders")
     downloader_cmd.add_argument(
-        "action", type=str, choices=["add", "list"], default="list"
+        "action", type=str, choices=["add", "list"], default="list", nargs="?"
     )
     downloader_cmd.add_argument("-n", "--name", type=str, default=None)
     downloader_cmd.add_argument(
