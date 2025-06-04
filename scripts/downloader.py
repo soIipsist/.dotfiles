@@ -6,7 +6,6 @@ from enum import Enum
 import sys
 from typing import List, Optional
 from sqlite_item import SQLiteItem, create_connection
-from sqlite import execute_query, is_valid_url
 from sqlite_conn import create_db, download_values, downloader_values
 from ytdlp import download as ytdlp_download, get_options, get_urls as get_ytdlp_urls
 from wget import download as wget_download
@@ -147,6 +146,8 @@ class Download(SQLiteItem):
 
     @start_date.setter
     def start_date(self, start_date):
+        if start_date is None:
+            start_date = str(datetime.datetime.now())
         self._start_date = start_date
 
     @property
@@ -187,13 +188,7 @@ class Download(SQLiteItem):
 
     def set_download_status_query(self, status: DownloadStatus):
         self.download_status = status
-
         self.update()
-        execute_query(
-            self._db,
-            f"""UPDATE downloads SET download_status = ? WHERE url = ?""",
-            (self.download_status, self.url),
-        )
 
     def start_download(self):
 
@@ -267,13 +262,8 @@ class Download(SQLiteItem):
         format = formats.get(path_name)
 
         if format:
-            default_video_downloader = os.environ.get(
-                "VIDEO_DOWNLOADER", Downloader.YTDLP_VIDEO_1
-            )
-
-            default_audio_downloader = os.environ.get(
-                "YTDLP_DOWNLOADER", Downloader.YTDLP_AUDIO_1
-            )
+            default_video_downloader = os.environ.get("VIDEO_DOWNLOADER", "ytdlp")
+            default_audio_downloader = os.environ.get("YTDLP_DOWNLOADER", "ytdlp_audio")
 
             # set downloader again, if format was found
             self.downloader = (
@@ -326,6 +316,8 @@ def download_all(
 
                 download_str = download_str.split(" ")
 
+                print("DOWNLOAD STR", download_str)
+
                 url = download_str[0]
 
                 downloader = download_str[1] if len(download_str) > 1 else downloader
@@ -336,9 +328,16 @@ def download_all(
                 if not downloads_path:
                     return
 
-                start_date = str(datetime.datetime.now())
+                downloader = Downloader(name=downloader_type).select()
+
+                if not downloader:
+                    pass
+
                 download = Download(
-                    url, downloader_type, downloads_path, output_directory
+                    url,
+                    downloader,
+                    downloads_path=downloads_path,
+                    output_directory=output_directory,
                 )
                 downloads.append(download)
 
@@ -347,26 +346,45 @@ def download_all(
         # or
         # {some_url} {downloader} -> stored in a downloads.txt, will use default video downloader
 
-    for download in downloads:
-        download: Download
-        download.start_download()
+    # for download in downloads:
+    #     download: Download
+    #     download.start_download()
 
 
-def fetch_downloads(
-    download_status: DownloadStatus = None, downloader: Downloader = None
-):
+def fetch_downloads(*args, **kwargs):
 
+    print(*args)
     print("Fetching downloads")
-    download = Download(downloader=downloader)
-    download.download_status = download_status
-    download.downloader = downloader
-    results = download.fetch_downloads()
-    pp.pprint(results)
+    # download = Download(*args)
+    # download.download_status = download_status
+    # download.downloader = downloader
+    # results = download.fetch_downloads()
+    # pp.pprint(results)
+
+
+def downloaders_cmd(*args, **kwargs):
+    print(kwargs)
+
+    action = kwargs.get("action")
+    kwargs.pop("action")
+    d = Downloader(**kwargs)
+
+    if action == "add":
+        d.insert()
+    else:  # list downloaders
+        downloaders = d.select_all()
+        pp.pprint(downloaders)
 
 
 if __name__ == "__main__":
     # Check if the user skipped the subcommand, and inject 'download'
-    if len(sys.argv) > 1 and sys.argv[1] not in ["download", "list", "-h", "--help"]:
+    if len(sys.argv) > 1 and sys.argv[1] not in [
+        "download",
+        "list",
+        "downloaders",
+        "-h",
+        "--help",
+    ]:
         sys.argv.insert(1, "download")
 
     parser = argparse.ArgumentParser()
@@ -392,12 +410,22 @@ if __name__ == "__main__":
     list_cmd.add_argument("--download_status", type=str, default=None)
     list_cmd.set_defaults(func=fetch_downloads)
 
+    downloader_cmd = subparsers.add_parser("downloaders", help="List downloaders")
+    downloader_cmd.add_argument(
+        "action", type=str, choices=["add", "list"], default="list"
+    )
+    downloader_cmd.add_argument("-n", "--name", type=str, default=None)
+    downloader_cmd.add_argument(
+        "-f", "--downloader_format", type=str, default="video", choices=["video, audio"]
+    )
+    downloader_cmd.add_argument("-p", "--downloader_path", type=str, default=None)
+    downloader_cmd.set_defaults(func=downloaders_cmd)
+
     args = vars(parser.parse_args())
     func = args.get("func")
     args.pop("command")
     args.pop("func")
 
-    print(args)
     func(**args)
 
 
