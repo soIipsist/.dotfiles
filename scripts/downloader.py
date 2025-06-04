@@ -98,6 +98,9 @@ default_downloaders = [
     Downloader("wget", "wget", os.path.join(script_directory, "wget_options.json")),
 ]
 
+if not db_exists:
+    Downloader.insert_all(default_downloaders)
+
 
 class Download(SQLiteItem):
     _downloader = None
