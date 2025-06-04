@@ -267,6 +267,7 @@ def filter_items(
     table_name: str,
     query_params: list,
     object: object,
+    conjunction_type: bool = "AND",
 ):
     """Given an object and a list of attributes, return filtered items."""
 
@@ -277,7 +278,7 @@ def filter_items(
             value = getattr(object, param)
             filter_condition.append(f"{param} = {value}")
 
-    filter_condition = " AND ".join(filter_condition)
+    filter_condition = f" {conjunction_type} ".join(filter_condition)
     # print("FILTER CONDITION", filter_condition)
     return select_items(conn, table_name, filter_condition, type(object))
 

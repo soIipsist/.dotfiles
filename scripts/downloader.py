@@ -78,6 +78,7 @@ class Downloader(SQLiteItem):
         self.name = name
         self.downloader_format = downloader_format
         self.downloader_path = downloader_path
+        self.conjunction_type = "OR"
         self.filter_condition = f"name = {self._name}"
         self.table_name = "downloaders"
 
@@ -116,6 +117,7 @@ class Download(SQLiteItem):
         self.start_date = start_date
 
         self.table_name = "downloads"
+        self.conjunction_type = "OR"
         self.filter_condition = f"url = {self.url}"
 
     @property
@@ -393,7 +395,7 @@ if __name__ == "__main__":
     download_cmd = subparsers.add_parser("download", help="Download a URL")
     download_cmd.add_argument("url", type=str, nargs="?")
     download_cmd.add_argument(
-        "-t", "--downloader_type", default=None, type=str, choices=[]
+        "-t", "--downloader_type", default=None, type=str, choices=["ytdlp"]
     )
     download_cmd.add_argument(
         "-d", "--downloads_path", default=os.environ.get("DOWNLOADS_PATH"), type=str

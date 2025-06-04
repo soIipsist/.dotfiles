@@ -23,6 +23,8 @@ class SQLiteItem:
     _filter_condition = None
     _token = None
 
+    _conjunction_type = "AND"
+
     def __init__(
         self,
         table_values: list,
@@ -36,6 +38,14 @@ class SQLiteItem:
         self.logging = logging
         self._filter_condition = None
         self.db_path = db_path if db_path else None
+
+    @property
+    def conjunction_type(self):
+        return self._conjunction_type
+
+    @conjunction_type.setter
+    def conjunction_type(self, conjunction_type: str):
+        self._conjunction_type = conjunction_type
 
     @property
     def table_name(self):
@@ -101,7 +111,12 @@ class SQLiteItem:
 
         return [getattr(self, name) for name in attr_names]
 
-    def filter_by(self, query_params: list = None):
+    def filter_by(self, query_params: list = None, conjunction_type: str = None):
+
+        conjunction_type = (
+            self.conjunction_type if conjunction_type is None else conjunction_type
+        )
+
         if isinstance(query_params, dict):
             for key, val in query_params.items():
                 if hasattr(self, key):
@@ -110,7 +125,9 @@ class SQLiteItem:
             query_params = query_params.keys()
 
         if query_params:
-            return filter_items(self.conn, self.table_name, query_params, self)
+            return filter_items(
+                self.conn, self.table_name, query_params, self, conjunction_type
+            )
         else:
             return self.select_all()
 
