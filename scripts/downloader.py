@@ -24,6 +24,7 @@ database_path = os.environ.get(
 
 # create connection and tables
 db = create_connection(database_path)
+db_exists = os.path.exists(database_path)
 create_db(database_path)
 
 
@@ -81,6 +82,21 @@ class Downloader(SQLiteItem):
         self.conjunction_type = "OR"
         self.filter_condition = f"name = {self._name}"
         self.table_name = "downloaders"
+
+    def __repr__(self):
+        return f"{self.name}, {self.downloader_format}, {self.downloader_path}"
+
+    def __str__(self):
+        return f"{self.name}, {self.downloader_format}, {self.downloader_path}"
+
+
+default_downloaders = [
+    Downloader("ytdlp", "video", os.path.join(script_directory, "video_options.json")),
+    Downloader(
+        "ytdlp_audio", "audio", os.path.join(script_directory, "audio_options.json")
+    ),
+    Downloader("wget", "wget", os.path.join(script_directory, "wget_options.json")),
+]
 
 
 class Download(SQLiteItem):
@@ -273,6 +289,9 @@ class Download(SQLiteItem):
     def __repr__(self):
         return f"{self.downloader}, {self.url}"
 
+    def __str__(self):
+        return f"{self.downloader}, {self.url}"
+
 
 def start_downloads(
     url: str = None,
@@ -339,9 +358,10 @@ def start_downloads(
         # or
         # {some_url} {downloader} -> stored in a downloads.txt, will use default video downloader
 
-    # for download in downloads:
-    #     download: Download
-    #     download.start_download()
+    for download in downloads:
+        download: Download
+        print(download)
+        # download.start_download()
 
 
 # argparse commands
