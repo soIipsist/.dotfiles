@@ -5,6 +5,7 @@ import datetime
 from enum import Enum
 import sys
 from typing import List, Optional
+from sqlite import is_valid_path
 from sqlite_item import SQLiteItem, create_connection
 from sqlite_conn import create_db, download_values, downloader_values
 from ytdlp import download as ytdlp_download, get_options, get_urls as get_ytdlp_urls
@@ -84,10 +85,10 @@ class Downloader(SQLiteItem):
         self.table_name = "downloaders"
 
     def __repr__(self):
-        return f"{self.name}, {self.downloader_format}, {self.downloader_path}"
+        return f"<Downloader({self.name}, {self.downloader_format}, {self.downloader_path})>"
 
     def __str__(self):
-        return f"{self.name}, {self.downloader_format}, {self.downloader_path}"
+        return f"<Downloader({self.name}, {self.downloader_format}, {self.downloader_path})>"
 
 
 default_downloaders = [
@@ -295,10 +296,14 @@ class Download(SQLiteItem):
     def __str__(self):
         return f"{self.downloader}, {self.url}"
 
+    @classmethod
+    def parse_download_string(cls, downloads_path: str):
+        pass
+
 
 def start_downloads(
     url: str = None,
-    downloader_type=None,
+    downloader_type: str = "ytdlp",
     downloads_path: str = None,
     output_directory: str = None,
     **kwargs,
@@ -308,6 +313,13 @@ def start_downloads(
     if not url and not downloads_path:
         raise ValueError("Either url or downloads path must be defined.")
 
+    # get downloader based on type
+    downloader = Downloader(name=downloader_type).select()
+
+    if not downloader:
+        raise ValueError(f"Downloader of type '{downloader_type}' does not exist.")
+
+    # create download string
     if not os.path.exists(downloads_path):
         prompt = (
             input(f"{downloads_path} does not exist. Create it? (y/N): ")
@@ -343,11 +355,6 @@ def start_downloads(
                 if not downloads_path:
                     return
 
-                downloader = Downloader(name=downloader_type).select()
-
-                if not downloader:
-                    pass
-
                 download = Download(
                     url,
                     downloader,
@@ -380,7 +387,7 @@ def downloaders_cmd(**kwargs):
     if action == "add":
         d.insert()
     else:  # list downloaders
-        downloaders = d.filter_by()
+        downloaders = d.filter_by(d.column_names)
         pp.pprint(downloaders)
 
 
@@ -395,7 +402,7 @@ def download_all_cmd(**kwargs):
     download = Download(**kwargs, downloader=d)
 
     if kwargs.get("url") is None:
-        downloads = download.filter_by()
+        downloads = download.filter_by(download.column_names)
         pp.pprint(downloads)
     else:
         start_downloads(**kwargs)
@@ -445,9 +452,15 @@ if __name__ == "__main__":
     )
     downloader_cmd.add_argument("-n", "--name", type=str, default=None)
     downloader_cmd.add_argument(
-        "-f", "--downloader_format", type=str, default="video", choices=["video, audio"]
+        "-f",
+        "--downloader_format",
+        type=str,
+        default="video",
+        choices=["video", "audio"],
     )
-    downloader_cmd.add_argument("-p", "--downloader_path", type=str, default=None)
+    downloader_cmd.add_argument(
+        "-d", "--downloader_path", type=is_valid_path, default=None
+    )
     downloader_cmd.set_defaults(func=downloaders_cmd)
 
     args = vars(parser.parse_args())
