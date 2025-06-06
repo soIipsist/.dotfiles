@@ -24,8 +24,8 @@ database_path = os.environ.get(
 )
 
 # create connection and tables
-db = create_connection(database_path)
 db_exists = os.path.exists(database_path)
+db = create_connection(database_path)
 create_db(database_path)
 
 
@@ -101,6 +101,7 @@ default_downloaders = [
 
 if not db_exists:
     Downloader.insert_all(default_downloaders)
+    print("Successfully generated default downloaders.")
 
 
 class Download(SQLiteItem):
@@ -192,6 +193,8 @@ class Download(SQLiteItem):
 
     @downloader.setter
     def downloader(self, downloader: Downloader):
+        if isinstance(downloader, str):
+            downloader = Downloader(name=downloader).select_first()
         self._downloader = downloader
 
     def start_download_query(self):
@@ -297,8 +300,35 @@ class Download(SQLiteItem):
         return f"{self.downloader}, {self.url}"
 
     @classmethod
-    def parse_download_string(cls, downloads_path: str):
-        pass
+    def parse_download_string(
+        cls,
+        download_str: str,
+        downloader: Optional[Downloader] = None,
+        downloads_path: Optional[str] = None,
+        output_directory: Optional[str] = None,
+    ):
+        # {some_url} -> stored in a music.txt, will use default audio downloader
+        # or
+        # {some_url} {downloader} -> stored in a downloads.txt, will use default video downloader
+
+        download_str = download_str.split(" ")
+        url = download_str[0]
+        downloader = download_str[1] if len(download_str) > 1 else downloader
+        output_directory = (
+            download_str[2] if len(download_str) > 2 else output_directory
+        )
+
+        if not downloader:
+            downloader = Downloader().select_first()
+
+        download = Download(
+            url,
+            downloader,
+            downloads_path=downloads_path,
+            output_directory=output_directory,
+        )
+
+        return download
 
 
 def start_downloads(
@@ -334,39 +364,17 @@ def start_downloads(
         else:
             print("File was not created.")
 
-    if downloads_path is not None:
+    if downloads_path:
         with open(downloads_path, "r") as file:
             for line in file:
                 download_str = line.strip()
                 if not download_str:
                     continue
 
-                download_str = download_str.split(" ")
-
-                print("DOWNLOAD STR", download_str)
-
-                url = download_str[0]
-
-                downloader = download_str[1] if len(download_str) > 1 else downloader
-
-                if not downloader:
-                    downloader = Downloader().select_first()
-
-                if not downloads_path:
-                    return
-
-                download = Download(
-                    url,
-                    downloader,
-                    downloads_path=downloads_path,
-                    output_directory=output_directory,
+                download = Download.parse_download_string(
+                    download_str, downloads_path, output_directory
                 )
                 downloads.append(download)
-
-                # string can be of this format
-        # {some_url} -> stored in a music.txt, will use default audio downloader
-        # or
-        # {some_url} {downloader} -> stored in a downloads.txt, will use default video downloader
 
     for download in downloads:
         download: Download
