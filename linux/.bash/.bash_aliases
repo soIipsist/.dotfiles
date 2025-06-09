@@ -14,6 +14,38 @@ alias sdisable='sudo systemctl disable'
 alias sjournal='journalctl -u'
 alias sjtail='journalctl -fu'
 
+mnt_auto() {
+    if [ $# -ne 2 ]; then
+        echo "Usage: mnt_auto <device> <mount_point>"
+        return 1
+    fi
+
+    device="$1"
+    mount_point="$2"
+
+    if [ ! -d "$mount_point" ]; then
+        sudo mkdir -p "$mount_point"
+    fi
+
+    fstype=$(lsblk -no FSTYPE "$device")
+
+    case "$fstype" in
+    vfat)
+        mnt_vfat "$device" "$mount_point"
+        ;;
+    exfat)
+        mnt_exfat "$device" "$mount_point"
+        ;;
+    ntfs)
+        mnt_ntfs "$device" "$mount_point"
+        ;;
+    *)
+        echo "Unsupported or unknown filesystem: $fstype"
+        return 2
+        ;;
+    esac
+}
+
 mnt_vfat() {
     if [ $# -ne 2 ]; then
         echo "Usage: mnt_vfat <device> <mount_point>"
@@ -86,38 +118,6 @@ ssrestart() {
     fi
 
     source /usr/local/bin/restart_service "$service"
-}
-
-mnt_auto() {
-    if [ $# -ne 2 ]; then
-        echo "Usage: mnt_auto <device> <mount_point>"
-        return 1
-    fi
-
-    device="$1"
-    mount_point="$2"
-
-    if [ ! -d "$mount_point" ]; then
-        sudo mkdir -p "$mount_point"
-    fi
-
-    fstype=$(lsblk -no FSTYPE "$device")
-
-    case "$fstype" in
-    vfat)
-        mnt_vfat "$device" "$mount_point"
-        ;;
-    exfat)
-        mnt_exfat "$device" "$mount_point"
-        ;;
-    ntfs)
-        mnt_ntfs "$device" "$mount_point"
-        ;;
-    *)
-        echo "Unsupported or unknown filesystem: $fstype"
-        return 2
-        ;;
-    esac
 }
 
 get_codec() {

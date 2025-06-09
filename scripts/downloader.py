@@ -23,6 +23,20 @@ database_path = os.environ.get(
     "DOWNLOADS_DB_PATH", os.path.join(script_directory, "downloads.db")
 )
 
+# environment variables
+# DOWNLOADER="ytdlp"
+# DOWNLOADS_PATH="$HOME/videos/downloads.txt"
+# DOWNLOADS_DB_PATH="$HOME/scripts/downloads.db"
+# DOWNLOADS_OUTPUT_DIR="$HOME/videos"
+# YTDLP_FORMAT="audio"
+# YTDLP_EXTRACT_INFO="1"
+# YTDLP_OPTIONS_PATH="$HOME/scripts/video_options.json"
+# FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
+# YTDLP_UPDATE_OPTIONS="1"
+# YTDLP_VIDEO_DIRECTORY="$HOME/mnt/"
+# YTDLP_AUDIO_DIRECTORY="$HOME/mnt/ssd/Music"
+# VENV_PATH="$HOME/venv"
+
 # create connection and tables
 db_exists = os.path.exists(database_path)
 db = create_connection(database_path)
@@ -62,7 +76,11 @@ class Downloader(SQLiteItem):
 
     @downloader_path.setter
     def downloader_path(self, downloader_path):
-        self._downloader_path = downloader_path
+        self._downloader_path = (
+            os.path.abspath(downloader_path)
+            if downloader_path is not None
+            else downloader_path
+        )
 
     def __init__(
         self,
@@ -195,10 +213,8 @@ class Download(SQLiteItem):
     def downloader(self, downloader: Downloader):
         if isinstance(downloader, str):
             downloader = Downloader(name=downloader).select_first()
-        self._downloader = downloader
 
-    def start_download_query(self):
-        self.insert()
+        self._downloader = downloader
 
     def set_download_status_query(self, status: DownloadStatus):
         self.download_status = status
@@ -209,14 +225,13 @@ class Download(SQLiteItem):
         if self.output_directory:
             os.makedirs(self.output_directory, exist_ok=True)
 
-        self.start_ytldp_download()
-        self.start_wget_download()
+        if self.downloader.downloader_format == "wget":
+            self.start_wget_download()
+        else:
+            self.start_ytldp_download()
 
     def start_wget_download(self):
-        if not self.downloader == "wget":
-            return
-
-        self.start_download_query()
+        self.insert()
         status_code = wget_download(self.url, self.output_directory)
 
         if status_code == 1:
@@ -225,15 +240,13 @@ class Download(SQLiteItem):
             self.set_download_status_query(DownloadStatus.COMPLETED)
 
     def start_ytldp_download(self):
-        downloaders = Downloader().select_all()
-
-        if not self.downloader in downloaders:
-            return
 
         print("Downloading with ytdlp...")
 
         status_code = 0
         ytdlp_format = self._get_ytdlp_format()
+        print("YTDLP FORMAT", ytdlp_format)
+
         ytdlp_options = get_options(
             ytdlp_format,
             output_directory=self.output_directory,
@@ -241,9 +254,10 @@ class Download(SQLiteItem):
         )
 
         try:
-            self.start_download_query()
+            self.insert()
             urls = get_ytdlp_urls([self.url], removed_args=None)
             ytdlp_download(urls, ytdlp_options)
+
         except KeyboardInterrupt:
             print("\nDownload interrupted by user.")
             status_code = 1
@@ -273,25 +287,13 @@ class Download(SQLiteItem):
             return "video"
 
         path_name = os.path.basename(self.downloads_path).removesuffix(".txt")
-        formats = {"music": "audio", "mp3": "audio", "videos": "video"}
-        format = formats.get(path_name)
+        file_formats = {"music": "audio", "mp3": "audio", "videos": "video"}
+        ytdlp_format = file_formats.get(path_name)
 
-        if format:
-            default_video_downloader = os.environ.get("VIDEO_DOWNLOADER", "ytdlp")
-            default_audio_downloader = os.environ.get("YTDLP_DOWNLOADER", "ytdlp_audio")
+        if not ytdlp_format:
+            ytdlp_format = self.downloader.downloader_format
 
-            # set downloader again, if format was found
-            self.downloader = (
-                default_video_downloader
-                if format == "video"
-                else default_audio_downloader
-            )
-        else:
-            format = self.downloader.downloader_format
-        return format
-
-    def fetch_downloads(self):
-        return self.select_all()
+        return ytdlp_format
 
     def __repr__(self):
         return f"{self.downloader}, {self.url}"
@@ -310,6 +312,11 @@ class Download(SQLiteItem):
         # {some_url} -> stored in a music.txt, will use default audio downloader
         # or
         # {some_url} {downloader} -> stored in a downloads.txt, will use default video downloader
+
+        download_str = download_str.strip()
+
+        if not download_str:
+            return
 
         download_str = download_str.split(" ")
         url = download_str[0]
@@ -367,14 +374,11 @@ def start_downloads(
     if downloads_path:
         with open(downloads_path, "r") as file:
             for line in file:
-                download_str = line.strip()
-                if not download_str:
-                    continue
-
                 download = Download.parse_download_string(
-                    download_str, downloads_path, output_directory
+                    line, downloads_path, output_directory
                 )
-                downloads.append(download)
+                if download is not None:
+                    downloads.append(download)
 
     for download in downloads:
         download: Download
@@ -433,7 +437,11 @@ if __name__ == "__main__":
     download_cmd = subparsers.add_parser("download", help="Download a URL")
     download_cmd.add_argument("url", type=str, nargs="?")
     download_cmd.add_argument(
-        "-t", "--downloader_type", default=None, type=str, choices=["ytdlp"]
+        "-t",
+        "--downloader_type",
+        default=os.environ.get("DOWNLOADER"),
+        type=str,
+        choices=["ytdlp"],
     )
     download_cmd.add_argument(
         "-d", "--downloads_path", default=os.environ.get("DOWNLOADS_PATH"), type=str
@@ -464,7 +472,7 @@ if __name__ == "__main__":
         "--downloader_format",
         type=str,
         default="video",
-        choices=["video", "audio"],
+        choices=[None, "video", "audio", "wget"],
     )
     downloader_cmd.add_argument(
         "-d", "--downloader_path", type=is_valid_path, default=None
