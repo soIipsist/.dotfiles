@@ -11,7 +11,7 @@ download_values = [
 
 downloader_values = [
     "name text NOT NULL PRIMARY KEY",
-    "downloader_format text NOT NULL",
+    "downloader_type text NOT NULL",
     "downloader_path text NOT NULL",
 ]
 

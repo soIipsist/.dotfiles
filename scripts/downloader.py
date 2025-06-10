@@ -14,8 +14,6 @@ from wget import download as wget_download
 import argparse
 import subprocess
 
-valid_formats = ["audio", "video"]
-specific_format = None
 script_directory = os.path.dirname(__file__)
 pp = PrettyPrinter(indent=2)
 
@@ -51,7 +49,7 @@ class DownloadStatus(str, Enum):
 
 class Downloader(SQLiteItem):
     _name: str = None
-    _downloader_format: str = None
+    _downloader_type: str = None
     _downloader_path: str = None
 
     @property
@@ -63,12 +61,12 @@ class Downloader(SQLiteItem):
         self._name = name
 
     @property
-    def downloader_format(self):
-        return self._downloader_format
+    def downloader_type(self):
+        return self._downloader_type
 
-    @downloader_format.setter
-    def downloader_format(self, downloader_format):
-        self._downloader_format = downloader_format
+    @downloader_type.setter
+    def downloader_type(self, downloader_type):
+        self._downloader_type = downloader_type
 
     @property
     def downloader_path(self):
@@ -85,18 +83,18 @@ class Downloader(SQLiteItem):
     def __init__(
         self,
         name: str = None,
-        downloader_format: str = None,
+        downloader_type: str = None,
         downloader_path: str = None,
     ):
         column_names = [
             "name",
-            "downloader_format",
+            "downloader_type",
             "downloader_path",
         ]
 
         super().__init__(downloader_values, column_names, db_path=database_path)
         self.name = name
-        self.downloader_format = downloader_format
+        self.downloader_type = downloader_type
         self.downloader_path = downloader_path
         self.conjunction_type = "OR"
         self.filter_condition = f"name = {self._name}"
@@ -110,9 +108,13 @@ class Downloader(SQLiteItem):
 
 
 default_downloaders = [
-    Downloader("ytdlp", "video", os.path.join(script_directory, "video_options.json")),
     Downloader(
-        "ytdlp_audio", "audio", os.path.join(script_directory, "audio_options.json")
+        "ytdlp", "ytdlp_video", os.path.join(script_directory, "video_options.json")
+    ),
+    Downloader(
+        "ytdlp_audio",
+        "ytdlp_audio",
+        os.path.join(script_directory, "audio_options.json"),
     ),
     Downloader("wget", "wget", os.path.join(script_directory, "wget_options.json")),
 ]
@@ -226,7 +228,7 @@ class Download(SQLiteItem):
         if self.output_directory:
             os.makedirs(self.output_directory, exist_ok=True)
 
-        if self.downloader.downloader_format == "wget":
+        if self.downloader.downloader_type == "wget":
             self.start_wget_download()
         else:
             self.start_ytldp_download()
@@ -246,7 +248,6 @@ class Download(SQLiteItem):
 
         status_code = 0
         ytdlp_format = self._get_ytdlp_format()
-        print("YTDLP FORMAT", ytdlp_format)
 
         ytdlp_options = get_options(
             ytdlp_format,
@@ -283,16 +284,22 @@ class Download(SQLiteItem):
 
     def _get_ytdlp_format(self):
 
-        # choose different format based on path name
-        if not self.downloads_path:
-            return "video"
+        # choose different format based on downloader.txt base file name
+        ytdlp_format = self.downloader.downloader_type
 
-        path_name = os.path.basename(self.downloads_path).removesuffix(".txt")
-        file_formats = {"music": "audio", "mp3": "audio", "videos": "video"}
-        ytdlp_format = file_formats.get(path_name)
+        path_name = (
+            os.path.basename(self.downloads_path).removesuffix(".txt")
+            if self.downloads_path is not None
+            else None
+        )
+        file_formats = {
+            "music": "ytdlp_audio",
+            "mp3": "ytdlp_audio",
+            "videos": "ytdlp_video",
+        }
 
-        if not ytdlp_format:
-            ytdlp_format = self.downloader.downloader_format
+        if path_name in file_formats.keys():
+            ytdlp_format = file_formats.get(path_name)
 
         return ytdlp_format
 
@@ -348,10 +355,18 @@ def start_downloads(
     if not url and not downloads_path:
         raise ValueError("Either url or downloads path must be defined.")
 
+    if url:
+        downloads.append(
+            Download(
+                url,
+                downloader,
+                downloads_path=downloads_path,
+                output_directory=output_directory,
+            )
+        )
     # create download string
     if downloads_path:
         skip_read = False
-        print("DOWNLOADS PATH", downloads_path)
         if not os.path.exists(downloads_path):
             prompt = (
                 input(f"{downloads_path} does not exist. Create it? (y/N): ")
@@ -378,8 +393,7 @@ def start_downloads(
 
     for download in downloads:
         download: Download
-        print("DO", download)
-        # download.start_download()
+        download.start_download()
 
 
 # argparse commands
@@ -395,6 +409,8 @@ def downloaders_cmd(**kwargs):
     if action == "add":
         d.insert()
     else:  # list downloaders
+        d_type = kwargs.get("downloader_type")
+
         downloaders = d.filter_by(d.column_names)
         pp.pprint(downloaders)
 
@@ -464,13 +480,7 @@ if __name__ == "__main__":
         "action", type=str, choices=["add", "list"], default="list", nargs="?"
     )
     downloader_cmd.add_argument("-n", "--name", type=str, default=None)
-    downloader_cmd.add_argument(
-        "-f",
-        "--downloader_format",
-        type=str,
-        default="video",
-        choices=[None, "video", "audio", "wget"],
-    )
+    downloader_cmd.add_argument("-f", "--downloader_type", type=str, default="all")
     downloader_cmd.add_argument(
         "-d", "--downloader_path", type=is_valid_path, default=None
     )
