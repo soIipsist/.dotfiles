@@ -103,10 +103,10 @@ class Downloader(SQLiteItem):
         self.table_name = "downloaders"
 
     def __repr__(self):
-        return f"<Downloader({self.name}, {self.downloader_format}, {self.downloader_path})>"
+        return f"{self.name}"
 
     def __str__(self):
-        return f"<Downloader({self.name}, {self.downloader_format}, {self.downloader_path})>"
+        return f"{self.name}"
 
 
 default_downloaders = [
@@ -124,6 +124,7 @@ if not db_exists:
 
 class Download(SQLiteItem):
     _downloader = None
+    _downloader_type: str = None
     _download_status = DownloadStatus.STARTED
     _start_date = str(datetime.datetime.now())
     _url: str = None
@@ -143,7 +144,7 @@ class Download(SQLiteItem):
     ):
         column_names = [
             "url",
-            "downloader",
+            "downloader_type",
             "download_status",
             "start_date",
         ]
@@ -325,9 +326,6 @@ class Download(SQLiteItem):
             download_str[2] if len(download_str) > 2 else output_directory
         )
 
-        if not downloader:
-            downloader = Downloader().select_first()
-
         download = Download(
             url,
             downloader,
@@ -340,7 +338,7 @@ class Download(SQLiteItem):
 
 def start_downloads(
     url: str = None,
-    downloader_type: str = "ytdlp",
+    downloader: Downloader = None,
     downloads_path: str = None,
     output_directory: str = None,
     **kwargs,
@@ -350,39 +348,37 @@ def start_downloads(
     if not url and not downloads_path:
         raise ValueError("Either url or downloads path must be defined.")
 
-    # get downloader based on type
-    downloader = Downloader(name=downloader_type).select()
-
-    if not downloader:
-        raise ValueError(f"Downloader of type '{downloader_type}' does not exist.")
-
     # create download string
-    if not os.path.exists(downloads_path):
-        prompt = (
-            input(f"{downloads_path} does not exist. Create it? (y/N): ")
-            .strip()
-            .lower()
-        )
-        if prompt == "y":
-            # os.makedirs(os.path.dirname(downloads_path), exist_ok=True)
-            with open(downloads_path, "w") as f:
-                pass  # creates an empty file
-            print(f"Created file: {downloads_path}")
-        else:
-            print("File was not created.")
-
     if downloads_path:
-        with open(downloads_path, "r") as file:
-            for line in file:
-                download = Download.parse_download_string(
-                    line, downloads_path, output_directory
-                )
-                if download is not None:
-                    downloads.append(download)
+        skip_read = False
+        print("DOWNLOADS PATH", downloads_path)
+        if not os.path.exists(downloads_path):
+            prompt = (
+                input(f"{downloads_path} does not exist. Create it? (y/N): ")
+                .strip()
+                .lower()
+            )
+            if prompt == "y":
+                # os.makedirs(os.path.dirname(downloads_path), exist_ok=True)
+                with open(downloads_path, "w") as f:
+                    pass  # creates an empty file
+                print(f"Created file: {downloads_path}")
+            else:
+                print("File was not created.")
+                skip_read = True
+
+        if not skip_read:
+            with open(downloads_path, "r") as file:
+                for line in file:
+                    download = Download.parse_download_string(
+                        line, downloader, downloads_path, output_directory
+                    )
+                    if download is not None:
+                        downloads.append(download)
 
     for download in downloads:
         download: Download
-        print(download)
+        print("DO", download)
         # download.start_download()
 
 
@@ -406,18 +402,20 @@ def downloaders_cmd(**kwargs):
 def download_all_cmd(**kwargs):
     print(kwargs)
     downloader_type = kwargs.get("downloader_type")
-    downloader = Downloader(name=downloader_type)
-    d = downloader.filter_by(downloader.column_names)
-    print("DOWNLOADER", d)
+
+    # get downloader based on type
+    downloader = Downloader(name=downloader_type).select_first()
+    if not downloader:
+        raise ValueError(f"Downloader of type '{downloader_type}' does not exist.")
 
     kwargs.pop("downloader_type")
-    download = Download(**kwargs, downloader=d)
+    download = Download(**kwargs, downloader=downloader)
 
     if kwargs.get("url") is None:
         downloads = download.filter_by(download.column_names)
         pp.pprint(downloads)
     else:
-        start_downloads(**kwargs)
+        start_downloads(**kwargs, downloader=downloader)
 
 
 if __name__ == "__main__":
@@ -439,9 +437,8 @@ if __name__ == "__main__":
     download_cmd.add_argument(
         "-t",
         "--downloader_type",
-        default=os.environ.get("DOWNLOADER"),
+        default=os.environ.get("DOWNLOADER", "ytdlp"),
         type=str,
-        choices=["ytdlp"],
     )
     download_cmd.add_argument(
         "-d", "--downloads_path", default=os.environ.get("DOWNLOADS_PATH"), type=str
