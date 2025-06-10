@@ -480,7 +480,7 @@ if __name__ == "__main__":
         "action", type=str, choices=["add", "list"], default="list", nargs="?"
     )
     downloader_cmd.add_argument("-n", "--name", type=str, default=None)
-    downloader_cmd.add_argument("-f", "--downloader_type", type=str, default="all")
+    downloader_cmd.add_argument("-t", "--downloader_type", type=str, default="all")
     downloader_cmd.add_argument(
         "-d", "--downloader_path", type=is_valid_path, default=None
     )
@@ -496,6 +496,8 @@ if __name__ == "__main__":
 
 # tests
 
+# downloads
+
 # 1) with downloads path (e.g downloads.txt)
 # python downloader.py "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/640px-ChessSet.jpg" -d "downloads.txt"
 # python downloader.py -d "downloads.txt" -o ~/temp
@@ -503,3 +505,9 @@ if __name__ == "__main__":
 # 2) with specific downloader type
 # python downloader.py -t ytdlp_audio -d "downloads.txt" (type should precede everything unless explicitly defined inside the .txt)
 # python downloader.py -t ytdlp_audio -d "downloads.txt" -o ~/temp
+
+# downloaders
+
+# python downloader.py downloaders
+# python downloader.py downloaders -t ytdlp_audio
+# python downloader.py downloaders add -n ytdlp_2 -t ytdlp_video -d downloader_path.json
