@@ -64,7 +64,7 @@ ytdlp_mp4() {
         source $VENV_PATH/bin/activate
     fi
 
-    python3 $SCRIPT_PATH -f video "$@"
+    python3 $SCRIPT_PATH -f ytdlp_video "$@"
 
     # Deactivate the virtual environment properly
     if [ -n "$VIRTUAL_ENV" ]; then

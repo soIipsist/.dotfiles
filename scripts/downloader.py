@@ -26,7 +26,7 @@ database_path = os.environ.get(
 # DOWNLOADS_PATH="$HOME/videos/downloads.txt"
 # DOWNLOADS_DB_PATH="$HOME/scripts/downloads.db"
 # DOWNLOADS_OUTPUT_DIR="$HOME/videos"
-# YTDLP_FORMAT="audio"
+# YTDLP_FORMAT="ytdlp_audio"
 # YTDLP_EXTRACT_INFO="1"
 # YTDLP_OPTIONS_PATH="$HOME/scripts/video_options.json"
 # FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
@@ -427,9 +427,14 @@ def download_all_cmd(**kwargs):
     kwargs.pop("downloader_type")
     download = Download(**kwargs, downloader=downloader)
 
-    if kwargs.get("url") is None:
+    url = kwargs.get("url")
+
+    if url is None:
         downloads = download.filter_by(download.column_names)
-        pp.pprint(downloads)
+        print(f"Total downloads ({len(downloads)}):")
+
+        for download in downloads:
+            pp.pprint(download)
     else:
         start_downloads(**kwargs, downloader=downloader)
 
@@ -498,13 +503,13 @@ if __name__ == "__main__":
 
 # downloads
 
-# 1) with downloads path (e.g downloads.txt)
+# python downloader.py downloads
 # python downloader.py "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/640px-ChessSet.jpg" -d "downloads.txt"
 # python downloader.py -d "downloads.txt" -o ~/temp
 
-# 2) with specific downloader type
 # python downloader.py -t ytdlp_audio -d "downloads.txt" (type should precede everything unless explicitly defined inside the .txt)
 # python downloader.py -t ytdlp_audio -d "downloads.txt" -o ~/temp
+
 
 # downloaders
 
