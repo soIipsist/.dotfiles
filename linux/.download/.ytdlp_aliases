@@ -10,6 +10,17 @@ export YTDLP_UPDATE_OPTIONS="1"
 # export YTDLP_AUDIO_DIRECTORY="$HOME/mnt/ssd/Music"
 export VENV_PATH="$HOME/venv"
 
+clone_ytdlp() {
+
+    if [ ! -e "$YTDLP_PATH" ]; then
+        echo "Cloning yt-dlp..."
+        mkdir -p "$(dirname "$YTDLP_PATH")"
+        release_name=$(basename $YTDLP_PATH)
+        curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/$release_name -o "$YTDLP_PATH"
+        chmod a+rx "$YTDLP_PATH"
+    fi
+}
+
 ytdlp_mp3() {
 
     if [ -z "$SCRIPTS_DIRECTORY" ]; then
@@ -22,12 +33,7 @@ ytdlp_mp3() {
         return
     fi
 
-    if [ ! -e "$YTDLP_PATH" ]; then
-        echo "Cloning yt-dlp..."
-        mkdir -p "$(dirname "$YTDLP_PATH")"
-        curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o "$YTDLP_PATH"
-        chmod a+rx "$YTDLP_PATH"
-    fi
+    clone_ytdlp
 
     if [ -n "$VENV_PATH" ]; then
         source $VENV_PATH/bin/activate
@@ -53,12 +59,7 @@ ytdlp_mp4() {
         return
     fi
 
-    if [ ! -e "$YTDLP_PATH" ]; then
-        echo "Cloning yt-dlp..."
-        mkdir -p "$(dirname "$YTDLP_PATH")"
-        curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o "$YTDLP_PATH"
-        chmod a+rx "$YTDLP_PATH"
-    fi
+    clone_ytdlp
 
     if [ -n "$VENV_PATH" ]; then
         source $VENV_PATH/bin/activate
