@@ -79,12 +79,12 @@ fi
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' menu select=2
 
-if [ -f ~/.zsh_ytdlp_aliases ]; then
-    . ~/.zsh_ytdlp_aliases
+if [ -f ~/.ytdlp_aliases ]; then
+    . ~/.ytdlp_aliases
 fi
 
-if [ -f ~/.zsh_download_aliases ]; then
-    . ~/.zsh_download_aliases
+if [ -f ~/.download_aliases ]; then
+    . ~/.download_aliases
 fi
 
 # VSCode variables
@@ -109,8 +109,8 @@ alias cdf='cd "$(find . -type d | fzf)"'
 alias llm="ollama run $OLLAMA_MODEL"
 
 # key bindings
-bindkey '^[[1;5D' backward-word # Ctrl + Left Arrow
-bindkey '^[[1;5C' forward-word  # Ctrl + Right Arrow
+bindkey '^[^[[C' backward-word # Ctrl + Left Arrow
+bindkey '^[^[[D' forward-word  # Ctrl + Right Arrow
 
 bindkey '^[[1;5W' backward-kill-word # Ctrl + W
 bindkey '^[[1;5K' kill-line          # Ctrl + K

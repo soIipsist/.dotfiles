@@ -44,12 +44,12 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # aliases
-if [ -f ~/.bash_ytdlp_aliases ]; then
-    . ~/.bash_ytdlp_aliases
+if [ -f ~/.ytdlp_aliases ]; then
+    . ~/.ytdlp_aliases
 fi
 
-if [ -f ~/.bash_download_aliases ]; then
-    . ~/.bash_download_aliases
+if [ -f ~/.download_aliases ]; then
+    . ~/.download_aliases
 fi
 
 if [ -f ~/.bash_aliases ]; then

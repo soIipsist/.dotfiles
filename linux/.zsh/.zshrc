@@ -85,12 +85,12 @@ export PROMPT="%(?.%F{211}●.%F{red}●%f) %F{211}%1~%f ${vcs_info_msg_0_} "
 alias python="python3"
 alias cdf='cd "$(find . -type d | fzf)"'
 
-if [ -f ~/.zsh_ytdlp_aliases ]; then
-    . ~/.zsh_ytdlp_aliases
+if [ -f ~/.ytdlp_aliases ]; then
+    . ~/.ytdlp_aliases
 fi
 
-if [ -f ~/.zsh_download_aliases ]; then
-    . ~/.zsh_download_aliases
+if [ -f ~/.download_aliases ]; then
+    . ~/.download_aliases
 fi
 
 # key bindings
