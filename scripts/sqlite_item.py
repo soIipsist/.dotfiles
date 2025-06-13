@@ -208,11 +208,8 @@ class SQLiteItem:
         """Convert the model instance to a dictionary without leading underscores."""
 
         result = {}
-        for c in self.__table__.columns:
-            attr_name = c.name
-            if attr_name.startswith("_"):
-                attr_name = attr_name[1:]
-            result[attr_name] = getattr(self, c.name)
+        for c in self.column_names:
+            result[c] = getattr(self, c)
 
         return result
 

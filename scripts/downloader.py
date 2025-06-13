@@ -409,10 +409,10 @@ def downloaders_cmd(**kwargs):
     if action == "add":
         d.insert()
     else:  # list downloaders
-        d_type = kwargs.get("downloader_type")
-
         downloaders = d.filter_by(d.column_names)
-        pp.pprint(downloaders)
+        for downloader in downloaders:
+            downloader: Downloader
+            pp.pprint(downloader.as_dict())
 
 
 def download_all_cmd(**kwargs):
@@ -485,7 +485,9 @@ if __name__ == "__main__":
         "action", type=str, choices=["add", "list"], default="list", nargs="?"
     )
     downloader_cmd.add_argument("-n", "--name", type=str, default=None)
-    downloader_cmd.add_argument("-t", "--downloader_type", type=str, default="all")
+    downloader_cmd.add_argument(
+        "-t", "--downloader_type", type=str, default="ytdlp_video"
+    )
     downloader_cmd.add_argument(
         "-d", "--downloader_path", type=is_valid_path, default=None
     )

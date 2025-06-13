@@ -109,8 +109,8 @@ alias cdf='cd "$(find . -type d | fzf)"'
 alias llm="ollama run $OLLAMA_MODEL"
 
 # key bindings
-bindkey '^[^[[C' backward-word # Ctrl + Left Arrow
-bindkey '^[^[[D' forward-word  # Ctrl + Right Arrow
+bindkey '^[[1;2D' backward-word # Shift + Left Arrow
+bindkey '^[[1;2C' forward-word  # Shift + Right Arrow
 
 bindkey '^[[1;5W' backward-kill-word # Ctrl + W
 bindkey '^[[1;5K' kill-line          # Ctrl + K
