@@ -213,9 +213,6 @@ def update_items(
 
     try:
 
-        if not isinstance(objects, dict):
-            objects = vars(objects)
-
         if not column_names:
             column_names = objects.keys()
 
@@ -230,7 +227,6 @@ def update_items(
         query = f"UPDATE {table_name} SET {set_clause} WHERE {filter_condition}"
 
         for obj in objects:
-            update_values = list(obj.values())
             update_values = get_object_values(obj, column_names)
             update_values.extend(params)
             cursor, results = execute_query(
@@ -254,10 +250,16 @@ def get_object_values(obj, column_names: list):
             return value
         return str(value)
 
-    return [
-        normalize(obj.get(name) if isinstance(obj, dict) else getattr(obj, name, None))
-        for name in column_names
-    ]
+    results = []
+
+    for name in column_names:
+
+        result = normalize(
+            obj.get(name) if isinstance(obj, dict) else getattr(obj, name, None)
+        )
+        results.append(result)
+        # print("RES", result, obj, name)
+    return results
 
 
 def get_last_inserted_row_id(conn: sqlite3.Connection, table_name: str):

@@ -6,6 +6,8 @@ download_values = [
     "downloader text NOT NULL",
     "download_status text NOT NULL",
     "start_date DATE",
+    "end_date DATE",
+    "time_elapsed text",
     "PRIMARY KEY (url, downloader)",
 ]
 

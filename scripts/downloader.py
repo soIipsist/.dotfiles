@@ -129,6 +129,8 @@ class Download(SQLiteItem):
     _downloader_type: str = None
     _download_status = DownloadStatus.STARTED
     _start_date = str(datetime.datetime.now())
+    _end_date = None
+    _time_elapsed = None
     _url: str = None
     _download_str: str = None
     _downloads_path: str = None
@@ -149,6 +151,8 @@ class Download(SQLiteItem):
             "downloader",
             "download_status",
             "start_date",
+            "end_date",
+            "time_elapsed",
         ]
         super().__init__(download_values, column_names, db_path=database_path)
         self.url = url
@@ -189,6 +193,22 @@ class Download(SQLiteItem):
         self._start_date = start_date
 
     @property
+    def end_date(self):
+        return self._end_date
+
+    @end_date.setter
+    def end_date(self, end_date):
+        self._end_date = end_date
+
+    @property
+    def time_elapsed(self):
+        return self._time_elapsed
+
+    @time_elapsed.setter
+    def time_elapsed(self, time_elapsed):
+        self._time_elapsed = time_elapsed
+
+    @property
     def ytdlp_options_path(self):
         return self._get_ytdlp_options_path()
 
@@ -221,7 +241,16 @@ class Download(SQLiteItem):
 
     def set_download_status_query(self, status: DownloadStatus):
         self.download_status = status
-        print("SETTING DOWNLOAD STATUS", self.download_status, self.filter_condition)
+
+        if self.download_status == DownloadStatus.COMPLETED:
+            self.end_date = str(datetime.datetime.now())
+            fmt = "%Y-%m-%d %H:%M:%S"
+            start_dt = datetime.strptime(self.start_date, fmt)
+            end_dt = datetime.strptime(self.end_date, fmt)
+
+            self.time_elapsed = str(end_dt - start_dt)
+            print("TIME ELAPSED: ", self.time_elapsed)
+
         self.update()
 
     def start_download(self):
