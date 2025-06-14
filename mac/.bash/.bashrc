@@ -43,6 +43,34 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
+run_venv_script() {
+    local SCRIPT_NAME="$1"
+    shift
+
+    if [ -z "$SCRIPTS_DIRECTORY" ]; then
+        if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+            GIT_DOTFILES_DIRECTORY="$HOME"
+        fi
+        SCRIPTS_DIRECTORY="$GIT_DOTFILES_DIRECTORY/scripts"
+    fi
+    local SCRIPT_PATH="$SCRIPTS_DIRECTORY/$SCRIPT_NAME"
+
+    if [ ! -f "$SCRIPT_PATH" ]; then
+        echo "Could not find script: $SCRIPT_PATH"
+        return 1
+    fi
+
+    if [ -n "$VENV_PATH" ]; then
+        source "$VENV_PATH/bin/activate"
+    fi
+
+    python3 "$SCRIPT_PATH" "$@"
+
+    if [ -n "$VIRTUAL_ENV" ]; then
+        deactivate
+    fi
+}
+
 # aliases
 if [ -f ~/.ytdlp_aliases ]; then
     . ~/.ytdlp_aliases

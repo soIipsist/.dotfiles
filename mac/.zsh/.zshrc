@@ -34,13 +34,32 @@ function sesh-sessions() {
     }
 }
 
-function get_codec() {
-    if [ ! -f "$1" ]; then
-        echo "File not found: $1" >&2
+function run_venv_script() {
+    local SCRIPT_NAME="$1"
+    shift
+
+    if [ -z "$SCRIPTS_DIRECTORY" ]; then
+        if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+            GIT_DOTFILES_DIRECTORY="$HOME"
+        fi
+        SCRIPTS_DIRECTORY="$GIT_DOTFILES_DIRECTORY/scripts"
+    fi
+    local SCRIPT_PATH="$SCRIPTS_DIRECTORY/$SCRIPT_NAME"
+
+    if [ ! -f "$SCRIPT_PATH" ]; then
+        echo "Could not find script: $SCRIPT_PATH"
         return 1
     fi
-    codec=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=nw=1:nk=1 "$1")
-    echo "$codec"
+
+    if [ -n "$VENV_PATH" ]; then
+        source "$VENV_PATH/bin/activate"
+    fi
+
+    python3 "$SCRIPT_PATH" "$@"
+
+    if [ -n "$VIRTUAL_ENV" ]; then
+        deactivate
+    fi
 }
 
 # PATH variable
