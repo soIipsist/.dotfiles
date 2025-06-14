@@ -146,7 +146,7 @@ class Download(SQLiteItem):
     ):
         column_names = [
             "url",
-            "downloader_type",
+            "downloader",
             "download_status",
             "start_date",
         ]
@@ -221,6 +221,7 @@ class Download(SQLiteItem):
 
     def set_download_status_query(self, status: DownloadStatus):
         self.download_status = status
+        print("SETTING DOWNLOAD STATUS", self.download_status, self.filter_condition)
         self.update()
 
     def start_download(self):
@@ -418,11 +419,13 @@ def downloaders_cmd(**kwargs):
 def download_all_cmd(**kwargs):
     print(kwargs)
     downloader_type = kwargs.get("downloader_type")
+    downloader = None
 
     # get downloader based on type
-    downloader = Downloader(name=downloader_type).select_first()
-    if not downloader:
-        raise ValueError(f"Downloader of type '{downloader_type}' does not exist.")
+    if downloader_type:
+        downloader = Downloader(name=downloader_type).select_first()
+        if not downloader:
+            raise ValueError(f"Downloader of type '{downloader_type}' does not exist.")
 
     kwargs.pop("downloader_type")
     download = Download(**kwargs, downloader=downloader)

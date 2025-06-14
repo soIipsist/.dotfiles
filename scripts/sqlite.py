@@ -184,7 +184,6 @@ def insert_items(
         columns = ", ".join(column_names)
 
         query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
-
         last_row_id = None
         for obj in objects:
             values = get_object_values(obj, column_names)
@@ -197,61 +196,68 @@ def insert_items(
         print("Error inserting data:", e)
 
 
-def update_item(
+def update_items(
     conn: sqlite3.Connection,
     table_name: str,
-    obj: dict,
+    objects: list,
     filter_condition: str,
-    updated_columns: list = None,
+    column_names: list = None,
 ):
     """Update any given SQL object based on a filter condition."""
 
+    if column_names and not isinstance(column_names, list):
+        raise ValueError("'column_names' must be of type list.")
+
+    if not isinstance(objects, list):
+        raise ValueError("'objects' must be a list.")
+
     try:
 
-        if not isinstance(obj, dict):
-            obj = vars(obj)
+        if not isinstance(objects, dict):
+            objects = vars(objects)
 
-        if not updated_columns:
-            updated_columns = obj.keys()
+        if not column_names:
+            column_names = objects.keys()
 
-        set_clause = ", ".join([f"{column} = ?" for column in updated_columns])
+        column_names = (
+            get_column_names(conn.cursor, table_name)
+            if column_names is None
+            else column_names
+        )
+        set_clause = ", ".join([f"{column} = ?" for column in column_names])
         filter_condition, params = get_filter_condition(filter_condition)
 
         query = f"UPDATE {table_name} SET {set_clause} WHERE {filter_condition}"
 
-        update_values = list(obj.values())
-        update_values = get_object_values(obj, updated_columns)
-        update_values.extend(params)
-        cursor, results = execute_query(conn, query, update_values, return_cursor=True)
-        last_row_id = None
-        if cursor:
-            last_row_id = cursor.lastrowid if cursor.lastrowid else last_row_id
+        for obj in objects:
+            update_values = list(obj.values())
+            update_values = get_object_values(obj, column_names)
+            update_values.extend(params)
+            cursor, results = execute_query(
+                conn, query, update_values, return_cursor=True
+            )
+            last_row_id = None
+            if cursor:
+                last_row_id = cursor.lastrowid if cursor.lastrowid else last_row_id
+
         return last_row_id
     except sqlite3.Error as e:
         print("Error updating data: ", e)
         return -1
 
 
-def get_object_values(object, column_names: list):
+def get_object_values(obj, column_names: list):
     """Given a list of column names, returns the respective values for an object."""
 
-    values = []
+    def normalize(value):
+        if isinstance(value, (str, int, float, bool, type(None))):
+            return value
+        return str(value)
 
-    for name in column_names:
-        if isinstance(object, dict):
-            value = object.get(name)
-        else:
-            value = getattr(object, name, None)
-
-        if (
-            isinstance(value, list)
-            or isinstance(value, tuple)
-            or isinstance(value, dict)
-        ):
-            value = str(value)
-
-        values.append(value)
-    return values
+    return [
+        normalize(obj.get(name) if isinstance(obj, dict) else getattr(obj, name, None))
+        for name in column_names
+    ]
 
 
 def get_last_inserted_row_id(conn: sqlite3.Connection, table_name: str):

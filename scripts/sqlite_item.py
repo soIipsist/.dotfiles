@@ -2,7 +2,7 @@ from sqlite3 import Connection
 from typing import Any, Dict
 from sqlite import (
     select_items,
-    update_item,
+    update_items,
     insert_items,
     delete_items,
     create_connection,
@@ -95,7 +95,6 @@ class SQLiteItem:
         for key in dictionary:
             if key in sqlite_keys or key.startswith("_") or key.startswith("__"):
                 temp_dict.pop(key)
-
         return temp_dict
 
     def get_default_attr_names(self):
@@ -159,6 +158,12 @@ class SQLiteItem:
     def insert(self):
         return insert_items(self.conn, self.table_name, [self], self.column_names)
 
+    @classmethod
+    def insert_all(cls, items: list):
+        for item in items:
+            if isinstance(item, SQLiteItem):
+                item.insert()
+
     def upsert(self, filter_condition=None):
         if self.item_exists(filter_condition):
             id = self.update(filter_condition)
@@ -167,19 +172,13 @@ class SQLiteItem:
 
         return id
 
-    @classmethod
-    def insert_all(cls, items: list):
-        for item in items:
-            if isinstance(item, SQLiteItem):
-                item.insert()
-
     def update(self, filter_condition=None):
-        obj = self.get_unique_object()
         condition = (
             self.filter_condition if filter_condition is None else filter_condition
         )
-        return update_item(
-            self.conn, self.table_name, obj, condition, self.column_names
+
+        return update_items(
+            self.conn, self.table_name, [self], condition, self.column_names
         )
 
     def delete(self, filter_condition=None):

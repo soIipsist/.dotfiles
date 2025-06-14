@@ -8,5 +8,5 @@ download() {
 }
 
 downloaders() {
-    run_venv_script "downloader.py" downloaders "$@"
+    run_venv_script "downloader.py" downloaders -t "" "$@"
 }
