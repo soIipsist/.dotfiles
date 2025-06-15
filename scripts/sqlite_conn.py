@@ -9,7 +9,8 @@ download_values = [
     "end_date DATE",
     "time_elapsed text",
     "output_path text",
-    "PRIMARY KEY (url, downloader)",
+    "source_url text",
+    "PRIMARY KEY (url, downloader, download_status)",
 ]
 
 downloader_values = [
