@@ -1,10 +1,11 @@
 import os
 from pprint import PrettyPrinter
 import sqlite3
-import datetime
+from datetime import datetime
 from enum import Enum
 import sys
 from typing import List, Optional
+from urllib.parse import urlparse
 from sqlite import is_valid_path
 from sqlite_item import SQLiteItem, create_connection
 from sqlite_conn import create_db, download_values, downloader_values
@@ -128,7 +129,7 @@ class Download(SQLiteItem):
     _downloader = None
     _downloader_type: str = None
     _download_status = DownloadStatus.STARTED
-    _start_date = str(datetime.datetime.now())
+    _start_date = str(datetime.now())
     _end_date = None
     _time_elapsed = None
     _url: str = None
@@ -136,6 +137,7 @@ class Download(SQLiteItem):
     _downloads_path: str = None
     _db: sqlite3.Connection = None
     _output_directory: str = None
+    _output_path: str = os.getcwd()
 
     def __init__(
         self,
@@ -153,6 +155,7 @@ class Download(SQLiteItem):
             "start_date",
             "end_date",
             "time_elapsed",
+            "output_path",
         ]
         super().__init__(download_values, column_names, db_path=database_path)
         self.url = url
@@ -189,7 +192,7 @@ class Download(SQLiteItem):
     @start_date.setter
     def start_date(self, start_date):
         if start_date is None:
-            start_date = str(datetime.datetime.now())
+            start_date = str(datetime.now())
         self._start_date = start_date
 
     @property
@@ -199,6 +202,14 @@ class Download(SQLiteItem):
     @end_date.setter
     def end_date(self, end_date):
         self._end_date = end_date
+
+    @property
+    def output_path(self):
+        return self._output_path
+
+    @output_path.setter
+    def output_path(self, output_path: str):
+        self._output_path = output_path
 
     @property
     def time_elapsed(self):
@@ -243,8 +254,8 @@ class Download(SQLiteItem):
         self.download_status = status
 
         if self.download_status == DownloadStatus.COMPLETED:
-            self.end_date = str(datetime.datetime.now())
-            fmt = "%Y-%m-%d %H:%M:%S"
+            self.end_date = str(datetime.now())
+            fmt = "%Y-%m-%d %H:%M:%S.%f"
             start_dt = datetime.strptime(self.start_date, fmt)
             end_dt = datetime.strptime(self.end_date, fmt)
 
@@ -263,8 +274,22 @@ class Download(SQLiteItem):
         else:
             self.start_ytldp_download()
 
+        return self.output_path
+
+    def get_output_path(self, url: str):
+        filename = os.path.basename(urlparse(url).path)
+
+        if not self.output_directory:
+            self.output_directory = os.getcwd()
+
+        output_path = os.path.join(self.output_directory, filename)
+        return output_path
+
     def start_wget_download(self):
+
+        self.output_path = self.get_output_path(self.url)
         self.insert()
+
         status_code = wget_download(self.url, self.output_directory)
 
         if status_code == 1:
@@ -273,8 +298,6 @@ class Download(SQLiteItem):
             self.set_download_status_query(DownloadStatus.COMPLETED)
 
     def start_ytldp_download(self):
-
-        print("Downloading with ytdlp...")
 
         status_code = 0
         ytdlp_format = self._get_ytdlp_format()
@@ -288,7 +311,8 @@ class Download(SQLiteItem):
         try:
             self.insert()
             urls = get_ytdlp_urls([self.url], removed_args=None)
-            ytdlp_download(urls, ytdlp_options)
+            all_entries, error_entries = ytdlp_download(urls, ytdlp_options)
+            print(all_entries)
 
         except KeyboardInterrupt:
             print("\nDownload interrupted by user.")
@@ -466,7 +490,8 @@ def download_all_cmd(**kwargs):
         print(f"Total downloads ({len(downloads)}):")
 
         for download in downloads:
-            pp.pprint(download)
+            download: Download
+            pp.pprint(download.as_dict())
     else:
         start_downloads(**kwargs, downloader=downloader)
 
@@ -498,6 +523,7 @@ if __name__ == "__main__":
     )
 
     download_cmd.add_argument(
+        "-s",
         "--download_status",
         type=DownloadStatus,
         default=None,
@@ -509,6 +535,9 @@ if __name__ == "__main__":
         default=os.environ.get("DOWNLOADS_OUTPUT_DIR"),
         type=str,
     )
+
+    # download_cmd.add_argument("")
+
     download_cmd.set_defaults(func=download_all_cmd)
 
     # downloader cmd
@@ -535,6 +564,13 @@ if __name__ == "__main__":
 
 # tests
 
+# playlist urls
+# https://www.youtube.com/playlist?list=PL3A_1s_Z8MQbYIvki-pbcerX8zrF4U8zQ
+
+# regular video urls
+# https://youtu.be/MvsAesQ-4zA?si=gDyPQcdb6sTLWipY
+# https://youtu.be/OlEqHXRrcpc?si=4JAYOOH2B0A6MBvF
+
 # downloads
 
 # python downloader.py downloads
@@ -543,7 +579,6 @@ if __name__ == "__main__":
 
 # python downloader.py -t ytdlp_audio -d "downloads.txt" (type should precede everything unless explicitly defined inside the .txt)
 # python downloader.py -t ytdlp_audio -d "downloads.txt" -o ~/temp
-
 
 # downloaders
 

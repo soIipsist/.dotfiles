@@ -8,6 +8,7 @@ download_values = [
     "start_date DATE",
     "end_date DATE",
     "time_elapsed text",
+    "output_path text",
     "PRIMARY KEY (url, downloader)",
 ]
 

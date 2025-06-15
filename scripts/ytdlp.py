@@ -187,6 +187,8 @@ def extract_video_info(ytdl: yt_dlp.YoutubeDL, url: str, extract_info: bool):
 
 
 def download(urls: list, options: dict = None, extract_info: bool = True):
+    print("Downloading with ytdlp...")
+
     all_entries = []  # list of dictionaries containing info for each url
     error_entries = []
     pp.pprint(options)
