@@ -14,15 +14,14 @@ download() {
 
     # start a new tmux session or attach to already existing
 
-    # if tmux has-session -t downloads 2>/dev/null; then
-    #     # Session exists: create a new window to run the script
-    #     tmux new-window -t downloads -n "dl-$(date +%s)" "python3 \"$SCRIPT_PATH\" \"$@\""
-    #     tmux select-window -t downloads:!
-    #     tmux attach-session -t downloads
-    # else
-    #     tmux new-session -s downloads -n "dl" "python3 \"$SCRIPT_PATH\" \"$@\""
-    # fi
-    python3 $SCRIPT_PATH "$@" >/dev/null 2>&1
+    if tmux has-session -t downloads 2>/dev/null; then
+        # Session exists: create a new window to run the script
+        tmux new-window -t downloads -n "dl-$(date +%s)" "python3 \"$SCRIPT_PATH\" \"$@\""
+        tmux select-window -t downloads:!
+        tmux attach-session -t downloads
+    else
+        tmux new-session -s downloads -n "dl" "python3 \"$SCRIPT_PATH\" \"$@\""
+    fi
 
     echo "$(date): Completed download: $@" >>"$LOG_FILE"
 
