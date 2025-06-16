@@ -41,6 +41,24 @@ db_exists = os.path.exists(database_path)
 db = create_connection(database_path)
 create_db(database_path)
 
+LOG_COLORS = {
+    "DEBUG": "\033[36m",  # Cyan
+    "INFO": "\033[32m",  # Green
+    "WARNING": "\033[33m",  # Yellow
+    "ERROR": "\033[31m",  # Red
+    "CRITICAL": "\033[41m",  # Red background
+    "RESET": "\033[0m",  # Reset to default
+}
+
+
+class ColoredFormatter(logging.Formatter):
+    def format(self, record):
+        levelname = record.levelname
+        color = LOG_COLORS.get(levelname, "")
+        reset = LOG_COLORS["RESET"]
+        record.levelname = f"{color}{levelname}{reset}"
+        return super().format(record)
+
 
 def setup_logger(name="downloader", log_dir="/tmp", level=logging.INFO):
     if not os.path.exists(log_dir):
@@ -65,7 +83,11 @@ def setup_logger(name="downloader", log_dir="/tmp", level=logging.INFO):
         )
 
         file_handler.setFormatter(formatter)
-        console_handler.setFormatter(formatter)
+
+        color_formatter = ColoredFormatter(
+            "[%(asctime)s] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+        )
+        console_handler.setFormatter(color_formatter)
 
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
@@ -307,7 +329,7 @@ class Download(SQLiteItem):
 
     def set_download_status_query(self, status: DownloadStatus):
         self.download_status = status
-        self.logger.info("Setting download status: ", status)
+        self.logger.info(f"Setting download status: {str(status)}")
 
         if self.download_status == DownloadStatus.COMPLETED:
             self.end_date = str(datetime.now())
@@ -319,7 +341,8 @@ class Download(SQLiteItem):
             log_message = f"Time elapsed: {self.time_elapsed}"
             self.logger.info(log_message)
         else:
-            self.logger.error(f"An unexpected error has occured! {self.as_dict()} ")
+            data = self.as_dict()
+            self.logger.error(f"An unexpected error has occured! \n{pp.pformat(data)} ")
         self.update()
 
     def start_download(self):
@@ -479,6 +502,16 @@ class Download(SQLiteItem):
             downloads_path=downloads_path,
             output_directory=output_directory,
         )
+        parsed_info = {
+            "URL": url,
+            "Downloader": downloader,
+            "Output directory": output_directory,
+        }
+
+        download.logger.info(f"Reading downloads from file {downloads_path}.")
+        download.logger.info(
+            f"Parsed download string {download_str}:\n{pp.pformat(parsed_info)}"
+        )
 
         return download
 
@@ -526,7 +559,10 @@ def start_downloads(
             with open(downloads_path, "r") as file:
                 for line in file:
                     download = Download.parse_download_string(
-                        line, downloader, downloads_path, output_directory
+                        line,
+                        downloader,
+                        downloads_path,
+                        output_directory,
                     )
                     if download is not None:
                         downloads.append(download)
