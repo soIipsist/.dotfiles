@@ -11,7 +11,7 @@ from sqlite_item import SQLiteItem, create_connection
 from sqlite_conn import create_db, download_values, downloader_values
 from ytdlp import download as ytdlp_download, get_options, get_urls as get_ytdlp_urls
 from wget import download as wget_download
-
+import logging
 import argparse
 import subprocess
 
@@ -42,6 +42,37 @@ db = create_connection(database_path)
 create_db(database_path)
 
 
+def setup_logger(name="downloader", log_dir="/tmp", level=logging.INFO):
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+
+    log_file = os.path.join(
+        log_dir, f"{name}_{datetime.now().strftime('%Y-%m-%d')}.log"
+    )
+
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+
+    if not logger.handlers:
+        file_handler = logging.FileHandler(log_file, encoding="utf-8")
+        file_handler.setLevel(level)
+
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(level)
+
+        formatter = logging.Formatter(
+            "[%(asctime)s] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+        )
+
+        file_handler.setFormatter(formatter)
+        console_handler.setFormatter(formatter)
+
+        logger.addHandler(file_handler)
+        logger.addHandler(console_handler)
+
+    return logger
+
+
 class DownloadStatus(str, Enum):
     STARTED = "started"
     COMPLETED = "completed"
@@ -52,6 +83,13 @@ class Downloader(SQLiteItem):
     _name: str = None
     _downloader_type: str = None
     _downloader_path: str = None
+    _logger = None
+
+    @property
+    def logger(self):
+        if self._logger is None:
+            self._logger = setup_logger()
+        return self._logger
 
     @property
     def name(self):
@@ -139,6 +177,13 @@ class Download(SQLiteItem):
     _output_directory: str = None
     _output_path: str = None
     _source_url: str = None
+    _logger = None
+
+    @property
+    def logger(self):
+        if self._logger is None:
+            self._logger = setup_logger(name="download")
+        return self._logger
 
     def __init__(
         self,
@@ -262,6 +307,7 @@ class Download(SQLiteItem):
 
     def set_download_status_query(self, status: DownloadStatus):
         self.download_status = status
+        self.logger.info("Setting download status: ", status)
 
         if self.download_status == DownloadStatus.COMPLETED:
             self.end_date = str(datetime.now())
@@ -270,14 +316,18 @@ class Download(SQLiteItem):
             end_dt = datetime.strptime(self.end_date, fmt)
 
             self.time_elapsed = str(end_dt - start_dt)
-            print("TIME ELAPSED: ", self.time_elapsed)
-
+            log_message = f"Time elapsed: {self.time_elapsed}"
+            self.logger.info(log_message)
+        else:
+            self.logger.error(f"An unexpected error has occured! {self.as_dict()} ")
         self.update()
 
     def start_download(self):
 
         if self.output_directory:
             os.makedirs(self.output_directory, exist_ok=True)
+
+        self.logger.info(f"Starting {self.downloader.downloader_type} download.")
 
         if self.downloader.downloader_type == "wget":
             self.start_wget_download()
@@ -571,8 +621,6 @@ if __name__ == "__main__":
         default=os.environ.get("DOWNLOADS_OUTPUT_DIR"),
         type=str,
     )
-
-    # download_cmd.add_argument("")
 
     download_cmd.set_defaults(func=download_all_cmd)
 
