@@ -374,7 +374,7 @@ class Download(SQLiteItem):
     def start_wget_download(self):
 
         self.output_path = self.get_output_path(self.url)
-        self.insert()
+        self.upsert()
 
         status_code = wget_download(self.url, self.output_directory)
 
@@ -430,16 +430,12 @@ class Download(SQLiteItem):
             }
             self.logger.info(f"Inserting playlist entry: \n{pp.pformat(entry_data)}")
             self.url = url
-
-            try:
-                self.insert()
-            except sqlite3.IntegrityError:
-                self.logger.warning(f"Duplicate entry skipped for URL: {url}")
-
-            if entry in error_entries:
-                self.set_download_status_query(DownloadStatus.INTERRUPTED)
-            else:
-                self.set_download_status_query(DownloadStatus.COMPLETED)
+            self.download_status = (
+                DownloadStatus.COMPLETED
+                if entry not in error_entries
+                else DownloadStatus.INTERRUPTED
+            )
+            self.upsert()
 
     def start_ytldp_download(self):
 
@@ -454,7 +450,7 @@ class Download(SQLiteItem):
 
         try:
             urls = get_ytdlp_urls([self.url], removed_args=None)
-            self.insert()
+            self.upsert()
             all_entries, error_entries = ytdlp_download(urls, ytdlp_options)
             self._insert_ytdlp_entries(all_entries, error_entries)
 
@@ -618,7 +614,7 @@ def downloaders_cmd(**kwargs):
     d = Downloader(**kwargs)
 
     if action == "add":
-        d.insert()
+        d.upsert()
     else:  # list downloaders
         downloaders = d.filter_by(d.column_names)
         for downloader in downloaders:
@@ -725,6 +721,9 @@ if __name__ == "__main__":
 # regular video urls
 # https://youtu.be/MvsAesQ-4zA?si=gDyPQcdb6sTLWipY
 # https://youtu.be/OlEqHXRrcpc?si=4JAYOOH2B0A6MBvF
+
+# regular urls (wget)
+# https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/640px-ChessSet.jpg
 
 # downloads
 

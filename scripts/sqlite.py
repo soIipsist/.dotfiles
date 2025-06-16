@@ -373,7 +373,7 @@ def execute_query(
         conn.commit()
 
     except sqlite3.Error as e:
-        print("Error executing query:", e, query)
+        print(f"Error executing query: {e} \n {query}")
 
     if return_cursor:
         return cursor, results
