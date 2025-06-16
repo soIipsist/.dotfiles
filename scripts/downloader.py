@@ -393,7 +393,7 @@ class Download(SQLiteItem):
             new_path = parsed.path.rstrip("/") + "/" + id
             return urlunparse(parsed._replace(path=new_path))
 
-    def _insert_ytdlp_entries(self, entries):
+    def _insert_ytdlp_entries(self, entries, error_entries: list):
 
         # generate a new download based on url of entry
         is_playlist = len(entries) > 1
@@ -407,10 +407,9 @@ class Download(SQLiteItem):
             entry_id = entry.get("id")
             url = None
 
-            self.url = (
+            url = (
                 self._normalize_ytdlp_url(self.url, entry_id) if entry_id else self.url
             )
-            self.logger.error(f"YOOO {entry.keys()} {url}")
 
             if title:
                 filename = title.strip().replace("/", "_")
@@ -423,11 +422,24 @@ class Download(SQLiteItem):
             if is_playlist:
                 self.source_url = original_url
 
-            self.logger.info(
-                f"Inserting playlist entries: {entry}, {title},{url}, {self.source_url}, {self.output_path}"
-            )
+            entry_data = {
+                "Title": title,
+                "URL": url,
+                "Source url (playlist url)": self.source_url,
+                "Output path": self.output_path,
+            }
+            self.logger.info(f"Inserting playlist entry: \n{pp.pformat(entry_data)}")
+            self.url = url
 
-            self.insert()
+            try:
+                self.insert()
+            except sqlite3.IntegrityError:
+                self.logger.warning(f"Duplicate entry skipped for URL: {url}")
+
+            if entry in error_entries:
+                self.set_download_status_query(DownloadStatus.INTERRUPTED)
+            else:
+                self.set_download_status_query(DownloadStatus.COMPLETED)
 
     def start_ytldp_download(self):
 
@@ -444,7 +456,7 @@ class Download(SQLiteItem):
             urls = get_ytdlp_urls([self.url], removed_args=None)
             self.insert()
             all_entries, error_entries = ytdlp_download(urls, ytdlp_options)
-            self._insert_ytdlp_entries(all_entries)
+            self._insert_ytdlp_entries(all_entries, error_entries)
 
         except KeyboardInterrupt:
             print("\nDownload interrupted by user.")
