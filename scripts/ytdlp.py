@@ -187,6 +187,26 @@ def extract_video_info(ytdl: yt_dlp.YoutubeDL, url: str, extract_info: bool):
 
 
 # new
+
+
+# def get_ytdlp_entries(self, ytdl: yt_dlp.YoutubeDL, url: list):
+
+#     info = extract_video_info(ytdl, url, extract_info)
+#     entries = info.get("entries", [{"webpage_url": url}])
+
+#     if len(entries) > 1:
+#         print(
+#             f"Processing playlist: {info.get('title', 'Untitled Playlist')} ({len(info['entries'])} videos)"
+#         )
+
+#     for entry in entries:
+#         entry_url = entry.get("webpage_url")
+#         status_code = ytdl.download(entry_url)
+
+#         if status_code == 1:
+#             error_entries.append(entry)
+
+
 def get_normalized_url_entry(original_url: str, id: str) -> str:
     parsed = urlparse(original_url)
     hostname = parsed.hostname or ""
