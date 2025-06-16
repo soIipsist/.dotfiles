@@ -177,8 +177,6 @@ class SQLiteItem:
             self.filter_condition if filter_condition is None else filter_condition
         )
 
-        print("FILTER CONDITION", condition)
-
         return update_items(
             self.conn, self.table_name, [self], condition, self.column_names
         )

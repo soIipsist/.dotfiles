@@ -5,7 +5,7 @@ from datetime import datetime
 from enum import Enum
 import sys
 from typing import List, Optional
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 from sqlite import is_valid_path
 from sqlite_item import SQLiteItem, create_connection
 from sqlite_conn import create_db, download_values, downloader_values
@@ -166,6 +166,9 @@ class Downloader(SQLiteItem):
 
     def __str__(self):
         return f"{self.name}"
+
+    # def start_download(self):
+    #     pass
 
 
 default_downloaders = [
@@ -380,6 +383,16 @@ class Download(SQLiteItem):
         else:
             self.set_download_status_query(DownloadStatus.COMPLETED)
 
+    def _normalize_ytdlp_url(self, original_url: str, id: str) -> str:
+        parsed = urlparse(original_url)
+        hostname = parsed.hostname or ""
+
+        if "youtube" in hostname or "youtu.be" in hostname:
+            return f"https://www.youtube.com/watch?v={id}"
+        else:
+            new_path = parsed.path.rstrip("/") + "/" + id
+            return urlunparse(parsed._replace(path=new_path))
+
     def _insert_ytdlp_entries(self, entries):
 
         # generate a new download based on url of entry
@@ -391,7 +404,13 @@ class Download(SQLiteItem):
 
         for entry in entries:
             title = entry.get("title")
-            self.url = entry.get("url", self.url)
+            entry_id = entry.get("id")
+            url = None
+
+            self.url = (
+                self._normalize_ytdlp_url(self.url, entry_id) if entry_id else self.url
+            )
+            self.logger.error(f"YOOO {entry.keys()} {url}")
 
             if title:
                 filename = title.strip().replace("/", "_")
@@ -399,10 +418,14 @@ class Download(SQLiteItem):
                     self.output_directory or os.getcwd(), filename
                 )
             else:
-                self.output_path = self.get_output_path(self.url)
+                self.output_path = self.get_output_path(url)
 
             if is_playlist:
                 self.source_url = original_url
+
+            self.logger.info(
+                f"Inserting playlist entries: {entry}, {title},{url}, {self.source_url}, {self.output_path}"
+            )
 
             self.insert()
 
