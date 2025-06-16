@@ -167,8 +167,8 @@ class Downloader(SQLiteItem):
     def __str__(self):
         return f"{self.name}"
 
-    # def start_download(self):
-    #     pass
+    def start_downloads(self, downloads: list):
+        pass
 
 
 default_downloaders = [
