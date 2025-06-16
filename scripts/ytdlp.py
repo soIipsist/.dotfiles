@@ -186,6 +186,18 @@ def extract_video_info(ytdl: yt_dlp.YoutubeDL, url: str, extract_info: bool):
     return info
 
 
+# new
+def get_normalized_url_entry(original_url: str, id: str) -> str:
+    parsed = urlparse(original_url)
+    hostname = parsed.hostname or ""
+
+    if "youtube" in hostname or "youtu.be" in hostname:
+        return f"https://www.youtube.com/watch?v={id}"
+    else:
+        new_path = parsed.path.rstrip("/") + "/" + id
+        return urlunparse(parsed._replace(path=new_path))
+
+
 def download(urls: list, options: dict = None, extract_info: bool = True):
     print("Downloading with ytdlp...")
 
