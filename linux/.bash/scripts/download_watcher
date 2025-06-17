@@ -18,8 +18,8 @@ download() {
         # Session exists: create a new window to run the script
         tmux new-window -t downloads -n "dl-$(date +%s)" "python3 \"$SCRIPT_PATH\" \"$@\""
         tmux select-window -t downloads:!
-        tmux attach-session -t downloads
     else
+        echo "Starting tmux session." >>"$LOG_FILE"
         tmux new-session -s downloads -n "dl" "python3 \"$SCRIPT_PATH\" \"$@\""
     fi
 
