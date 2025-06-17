@@ -219,14 +219,16 @@ def get_normalized_url_entry(original_url: str, id: str) -> str:
 
 
 def download(urls: list, options: dict = None, extract_info: bool = True):
-    print("Downloading with ytdlp...")
+    """Always returns a list of entries"""
 
-    all_entries = []  # list of dictionaries containing info for each url
-    error_entries = []
+    print("Downloading with yt-dlp...")
     pp.pprint(options)
 
+    all_entries = []
+    error_entries = []
+
     for url in urls:
-        entries = []
+        print(f"\nProcessing URL: {url}")
         try:
             with yt_dlp.YoutubeDL(options) as ytdl:
                 info = extract_video_info(ytdl, url, extract_info)
@@ -234,25 +236,22 @@ def download(urls: list, options: dict = None, extract_info: bool = True):
 
                 if len(entries) > 1:
                     print(
-                        f"Processing playlist: {info.get('title', 'Untitled Playlist')} ({len(info['entries'])} videos)"
+                        f"Playlist: {info.get('title', 'Untitled')} ({len(entries)} videos)"
                     )
 
                 for entry in entries:
                     entry_url = entry.get("webpage_url")
-                    status_code = ytdl.download(entry_url)
-
-                    if status_code == 1:
+                    if ytdl.download([entry_url]) != 0:
                         error_entries.append(entry)
 
+                all_entries.extend(entries)
+
         except yt_dlp.utils.DownloadError as e:
-            print(f"Download error for {url}: {e}")
+            print(f"Download error: {e}")
         except SystemExit as e:
-            print(f"SystemExit encountered for {url}: {e}. Continuing with next URL...")
+            print(f"SystemExit: {e} — continuing...")
         except Exception as e:
-            print(f"An unexpected error occurred with {url}: {e}")
-        finally:
-            all_entries.extend(entries)
-            print(f"Finished processing URL: {url}")
+            print(f"Unexpected error: {e}")
 
     return all_entries, error_entries
 
