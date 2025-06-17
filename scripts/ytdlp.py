@@ -184,8 +184,11 @@ def get_entry_url(original_url: str, entry: dict) -> str:
 
 def download(urls: list, options: dict = None):
     print("Downloading with yt-dlp...")
-    pp.pprint(options)
 
+    if isinstance(options, str):  # this is a path
+        options = get_options(options_path=options)
+
+    pp.pprint(options)
     all_entries = []
     error_entries = []
 

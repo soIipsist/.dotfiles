@@ -14,9 +14,11 @@ download_values = [
 ]
 
 downloader_values = [
-    "name text NOT NULL PRIMARY KEY",
     "downloader_type text NOT NULL",
     "downloader_path text NOT NULL",
+    "func text NOT NULL",
+    "script text",
+    "PRIMARY KEY (downloader_type, downloader_path)",
 ]
 
 tables = ["downloads", "downloaders"]

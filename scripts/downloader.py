@@ -101,24 +101,34 @@ class DownloadStatus(str, Enum):
 
 
 class Downloader(SQLiteItem):
-    _name: str = None
+    _logger = None
+
     _downloader_type: str = None
     _downloader_path: str = None
-    _logger = None
+    _func = None
+    _script = None
+
+    @property
+    def script(self):
+        return self._script
+
+    @script.setter
+    def script(self, script: str):
+        self._script = script
+
+    @property
+    def func(self):
+        return self._func
+
+    @func.setter
+    def func(self, func: str):
+        self._func = func
 
     @property
     def logger(self):
         if self._logger is None:
             self._logger = setup_logger()
         return self._logger
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, name):
-        self._name = name
 
     @property
     def downloader_type(self):
@@ -142,44 +152,38 @@ class Downloader(SQLiteItem):
 
     def __init__(
         self,
-        name: str = None,
         downloader_type: str = None,
         downloader_path: str = None,
     ):
         column_names = [
-            "name",
             "downloader_type",
             "downloader_path",
         ]
 
         super().__init__(downloader_values, column_names, db_path=database_path)
-        self.name = name
         self.downloader_type = downloader_type
         self.downloader_path = downloader_path
         self.conjunction_type = "OR"
-        self.filter_condition = f"name = {self._name}"
+        self.filter_condition = f"downloader_type = {self._downloader_type}"
         self.table_name = "downloaders"
 
     def __repr__(self):
-        return f"{self.name}"
+        return f"{self.downloader_type}"
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.downloader_type}"
 
     def start_downloads(self, downloads: list):
         pass
 
 
 default_downloaders = [
+    Downloader("ytdlp_video", os.path.join(script_directory, "video_options.json")),
     Downloader(
-        "ytdlp", "ytdlp_video", os.path.join(script_directory, "video_options.json")
-    ),
-    Downloader(
-        "ytdlp_audio",
         "ytdlp_audio",
         os.path.join(script_directory, "audio_options.json"),
     ),
-    Downloader("wget", "wget", os.path.join(script_directory, "wget_options.json")),
+    Downloader("wget", os.path.join(script_directory, "wget_options.json")),
 ]
 
 if not db_exists:
@@ -628,7 +632,7 @@ def download_all_cmd(**kwargs):
 
     # get downloader based on type
     if downloader_type:
-        downloader = Downloader(name=downloader_type).select_first()
+        downloader = Downloader(downloader_type).select_first()
         if not downloader:
             raise ValueError(f"Downloader of type '{downloader_type}' does not exist.")
 
