@@ -11,16 +11,15 @@ download() {
     if [ -n "$VENV_PATH" ]; then
         source $VENV_PATH/bin/activate
     fi
+    echo "TERM=$TERM" >>"$LOG_FILE"
 
     # start a new tmux session or attach to already existing
 
     if tmux has-session -t downloads 2>/dev/null; then
-        # Session exists: create a new window to run the script
         tmux new-window -t downloads -n "dl-$(date +%s)" "python3 \"$SCRIPT_PATH\" \"$@\""
-        tmux select-window -t downloads:!
     else
-        echo "Starting tmux session." >>"$LOG_FILE"
-        tmux new-session -s downloads -n "dl" "python3 \"$SCRIPT_PATH\" \"$@\""
+        echo "Starting detached tmux session." >>"$LOG_FILE"
+        tmux new-session -d -s downloads -n "dl" "python3 \"$SCRIPT_PATH\" \"$@\""
     fi
 
     echo "$(date): Completed download: $@" >>"$LOG_FILE"
