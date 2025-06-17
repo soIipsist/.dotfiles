@@ -699,7 +699,6 @@ if __name__ == "__main__":
     downloader_cmd.add_argument(
         "action", type=str, choices=["add", "list"], default="list", nargs="?"
     )
-    downloader_cmd.add_argument("-n", "--name", type=str, default=None)
     downloader_cmd.add_argument(
         "-t", "--downloader_type", type=str, default="ytdlp_video"
     )
