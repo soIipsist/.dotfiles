@@ -1,0 +1,5 @@
+{
+  "format": "bestvideo+bestaudio/best",
+  "progress": true,
+  "outtmpl": "%(title)s.%(ext)s"
+}
