@@ -2,7 +2,6 @@
 export YTDLP_PATH="$HOME/ytdlp/yt-dlp_macos"
 alias ytdlp="yt-dlp"
 export YTDLP_FORMAT="ytdlp_audio"
-export YTDLP_EXTRACT_INFO="1"
 export YTDLP_OPTIONS_PATH="$HOME/scripts/video_options.json"
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 export YTDLP_UPDATE_OPTIONS="1"

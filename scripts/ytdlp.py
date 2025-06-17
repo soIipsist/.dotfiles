@@ -165,48 +165,6 @@ def get_options(
     return options
 
 
-def extract_video_info(ytdl: yt_dlp.YoutubeDL, url: str, extract_info: bool):
-
-    entries = [{"webpage_url": url}]
-    info = {"entries": entries}
-
-    if extract_info:
-        info = ytdl.extract_info(url, download=False)
-        entries = info["entries"] if "entries" in info else [info]
-
-        cleaned_entries = []
-        for idx, entry in enumerate(entries):
-            if not entry:
-                print(f"Skipping unavailable video at index {idx}.")
-                continue
-            cleaned_entries.append(entry)
-
-        info["entries"] = cleaned_entries
-
-    return info
-
-
-# new
-
-
-# def get_ytdlp_entries(self, ytdl: yt_dlp.YoutubeDL, url: list):
-
-#     info = extract_video_info(ytdl, url, extract_info)
-#     entries = info.get("entries", [{"webpage_url": url}])
-
-#     if len(entries) > 1:
-#         print(
-#             f"Processing playlist: {info.get('title', 'Untitled Playlist')} ({len(info['entries'])} videos)"
-#         )
-
-#     for entry in entries:
-#         entry_url = entry.get("webpage_url")
-#         status_code = ytdl.download(entry_url)
-
-#         if status_code == 1:
-#             error_entries.append(entry)
-
-
 def get_normalized_url_entry(original_url: str, id: str) -> str:
     parsed = urlparse(original_url)
     hostname = parsed.hostname or ""
@@ -218,9 +176,7 @@ def get_normalized_url_entry(original_url: str, id: str) -> str:
         return urlunparse(parsed._replace(path=new_path))
 
 
-def download(urls: list, options: dict = None, extract_info: bool = True):
-    """Always returns a list of entries"""
-
+def download(urls: list, options: dict = None):
     print("Downloading with yt-dlp...")
     pp.pprint(options)
 
@@ -231,20 +187,36 @@ def download(urls: list, options: dict = None, extract_info: bool = True):
         print(f"\nProcessing URL: {url}")
         try:
             with yt_dlp.YoutubeDL(options) as ytdl:
-                info = extract_video_info(ytdl, url, extract_info)
-                entries = info.get("entries", [{"webpage_url": url}])
+                info = ytdl.extract_info(url, download=False)
 
-                if len(entries) > 1:
+                # Determine if it's a playlist or a single video
+                is_playlist = info.get("entries") is not None
+                entries = info["entries"] if is_playlist else [info]
+
+                if is_playlist:
                     print(
                         f"Playlist: {info.get('title', 'Untitled')} ({len(entries)} videos)"
                     )
 
-                for entry in entries:
-                    entry_url = entry.get("webpage_url")
-                    if ytdl.download([entry_url]) != 0:
-                        error_entries.append(entry)
+                cleaned_entries = []
+                for idx, entry in enumerate(entries):
+                    if not entry:
+                        print(f"Skipping unavailable video at index {idx}.")
+                        continue
 
-                all_entries.extend(entries)
+                    entry_url = entry.get("webpage_url")
+                    if not entry_url:
+                        print(f"Missing URL at index {idx}. Skipping.")
+                        continue
+
+                    print(f"Downloading: {entry.get('title', entry_url)}")
+                    if ytdl.download([entry_url]) != 0:
+                        print(f"Error downloading: {entry_url}")
+                        error_entries.append(entry)
+                    else:
+                        cleaned_entries.append(entry)
+
+                all_entries.extend(cleaned_entries)
 
         except yt_dlp.utils.DownloadError as e:
             print(f"Download error: {e}")
@@ -271,13 +243,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "-p", "--prefix", default=os.environ.get("YTDLP_PREFIX"), type=str
     )
-    parser.add_argument(
-        "-i",
-        "--extract_info",
-        default=os.environ.get("YTDLP_EXTRACT_INFO", 0),
-        type=str_to_bool,
-        choices=bool_choices,
-    )
     parser.add_argument("-e", "--extension", default=None)
     parser.add_argument("-cf", "--custom_format", default=None)
     parser.add_argument("-ppa", "--postprocessor_args", default=None, nargs="+")
@@ -297,7 +262,6 @@ if __name__ == "__main__":
     urls = args.get("urls")
     removed_args = args.get("removed_args")
     format = args.get("format")
-    extract_info = args.get("extract_info")
     output_directory = args.get("output_directory")
     prefix = args.get("prefix")
     custom_format = args.get("custom_format")
@@ -318,7 +282,7 @@ if __name__ == "__main__":
     )
 
     urls = get_urls(urls, removed_args)
-    all_entries, error_entries = download(urls, options, extract_info)
+    all_entries, error_entries = download(urls, options)
 
 # playlist tests
 # python ytdlp.py "https://youtube.com/playlist?list=OLAK5uy_nTBnmorryZikTJrjY0Lj1lHG_DWy4IPvk" -f ytdlp_audio

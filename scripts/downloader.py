@@ -28,7 +28,6 @@ database_path = os.environ.get(
 # DOWNLOADS_DB_PATH="$HOME/scripts/downloads.db"
 # DOWNLOADS_OUTPUT_DIR="$HOME/videos"
 # YTDLP_FORMAT="ytdlp_audio"
-# YTDLP_EXTRACT_INFO="1"
 # YTDLP_OPTIONS_PATH="$HOME/scripts/video_options.json"
 # FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 # YTDLP_UPDATE_OPTIONS="1"
