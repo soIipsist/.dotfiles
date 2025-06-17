@@ -12,6 +12,7 @@ from ytdlp import download
 playlist_urls = [
     "https://www.youtube.com/playlist?list=PL3A_1s_Z8MQbYIvki-pbcerX8zrF4U8zQ"
 ]
+pp = PrettyPrinter(indent=2)
 
 
 class TestYtdlp(TestBase):
@@ -19,7 +20,11 @@ class TestYtdlp(TestBase):
         super().setUp()
 
     def test_download_playlist_urls(self):
-        pass
+        # single url
+        all_entries, error_entries = download(urls=playlist_urls)
+        pp.pprint(all_entries)
+
+        # self.assertTrue()
 
     def test_download_regular_urls(self):
         pass
