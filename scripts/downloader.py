@@ -442,7 +442,7 @@ class Download(SQLiteItem):
         ytdlp_format = self._get_ytdlp_format()
 
         ytdlp_options = get_options(
-            ytdlp_format,
+            ytdlp_format=ytdlp_format,
             output_directory=self.output_directory,
             options_path=self.ytdlp_options_path,
         )

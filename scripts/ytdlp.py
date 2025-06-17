@@ -43,7 +43,7 @@ def read_json_file(json_file, errors=None):
 
 
 def get_outtmpl(
-    options: dict, format: str, prefix: str = None, output_directory: str = None
+    options: dict, ytdlp_format: str, prefix: str = None, output_directory: str = None
 ):
 
     outtmpl = options.get("outtmpl", f"%(title)s.%(ext)s")
@@ -52,10 +52,10 @@ def get_outtmpl(
         outtmpl = f"{prefix}{outtmpl}"
 
     if not output_directory:
-        if format == "ytdlp_audio":
+        if ytdlp_format == "ytdlp_audio":
             output_directory = os.environ.get("YTDLP_AUDIO_DIRECTORY")
 
-        elif format == "ytdlp_video":
+        elif ytdlp_format == "ytdlp_video":
             output_directory = os.environ.get("YTDLP_VIDEO_DIRECTORY")
 
     if output_directory:
@@ -102,19 +102,19 @@ def get_postprocessor_args(options: dict, postprocessor_args: list = []):
 
 
 def get_options(
-    format: str,
+    options_path="",
+    ytdlp_format: str = "ytdlp_video",
     custom_format: str = None,
-    update_options: bool = True,
+    update_options: bool = False,
     prefix: str = None,
     extension: str = None,
     postprocessor_args: list = None,
     output_directory=None,
-    options_path="",
 ):
-    format = format.lower()
+    ytdlp_format = ytdlp_format.lower()
 
-    if format not in valid_formats:
-        format = "ytdlp_video"
+    if ytdlp_format not in valid_formats:
+        ytdlp_format = "ytdlp_video"
 
     if os.path.exists(options_path):  # read from metadata file, if it exists
         print(f"Using ytdlp options from path: {options_path}.")
@@ -127,7 +127,7 @@ def get_options(
 
     options: dict
 
-    if format == "ytdlp_video":  # default ytdlp_video options
+    if ytdlp_format == "ytdlp_video":  # default ytdlp_video options
         options.update(
             {
                 "progress": True,
@@ -140,7 +140,7 @@ def get_options(
         if not extension:
             extension = "mp4"
 
-    elif format == "ytdlp_audio":
+    elif ytdlp_format == "ytdlp_audio":
         if not extension:
             extension = "mp3"
 
@@ -151,10 +151,10 @@ def get_options(
             }
         )
 
-    ytdlp_format = get_format(options, format, custom_format)
-    postprocessors = get_postprocessors(options, format, extension)
+    ytdlp_format = get_format(options, ytdlp_format, custom_format)
+    postprocessors = get_postprocessors(options, ytdlp_format, extension)
     options_postprocessor_args = get_postprocessor_args(options, postprocessor_args)
-    outtmpl = get_outtmpl(options, format, prefix, output_directory)
+    outtmpl = get_outtmpl(options, ytdlp_format, prefix, output_directory)
 
     options["merge_output_format"] = extension
     options["outtmpl"] = outtmpl
@@ -315,6 +315,7 @@ if __name__ == "__main__":
     update_options = args.get("update_options")
 
     options = get_options(
+        options_path,
         format,
         custom_format,
         update_options,
@@ -322,7 +323,6 @@ if __name__ == "__main__":
         extension,
         postprocessor_args,
         output_directory,
-        options_path,
     )
 
     urls = get_urls(urls, removed_args)
