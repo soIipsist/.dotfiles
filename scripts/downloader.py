@@ -100,97 +100,6 @@ class DownloadStatus(str, Enum):
     INTERRUPTED = "interrupted"
 
 
-class Downloader(SQLiteItem):
-    _logger = None
-
-    _downloader_type: str = None
-    _downloader_path: str = None
-    _func = None
-    _script = None
-
-    @property
-    def script(self):
-        return self._script
-
-    @script.setter
-    def script(self, script: str):
-        self._script = script
-
-    @property
-    def func(self):
-        return self._func
-
-    @func.setter
-    def func(self, func: str):
-        self._func = func
-
-    @property
-    def logger(self):
-        if self._logger is None:
-            self._logger = setup_logger()
-        return self._logger
-
-    @property
-    def downloader_type(self):
-        return self._downloader_type
-
-    @downloader_type.setter
-    def downloader_type(self, downloader_type):
-        self._downloader_type = downloader_type
-
-    @property
-    def downloader_path(self):
-        return self._downloader_path
-
-    @downloader_path.setter
-    def downloader_path(self, downloader_path):
-        self._downloader_path = (
-            os.path.abspath(downloader_path)
-            if downloader_path is not None
-            else downloader_path
-        )
-
-    def __init__(
-        self,
-        downloader_type: str = None,
-        downloader_path: str = None,
-    ):
-        column_names = [
-            "downloader_type",
-            "downloader_path",
-        ]
-
-        super().__init__(downloader_values, column_names, db_path=database_path)
-        self.downloader_type = downloader_type
-        self.downloader_path = downloader_path
-        self.conjunction_type = "OR"
-        self.filter_condition = f"downloader_type = {self._downloader_type}"
-        self.table_name = "downloaders"
-
-    def __repr__(self):
-        return f"{self.downloader_type}"
-
-    def __str__(self):
-        return f"{self.downloader_type}"
-
-    def start_downloads(self, downloads: list):
-        pass
-
-
-default_downloaders = [
-    Downloader("ytdlp_video", os.path.join(script_directory, "video_options.json")),
-    Downloader(
-        "ytdlp_audio",
-        os.path.join(script_directory, "audio_options.json"),
-    ),
-    Downloader("wget", os.path.join(script_directory, "wget_options.json")),
-]
-
-if not db_exists:
-    Downloader.insert_all(default_downloaders)
-    print("Successfully generated default downloaders.")
-
-
 class Download(SQLiteItem):
     _downloader = None
     _downloader_type: str = None
@@ -216,7 +125,7 @@ class Download(SQLiteItem):
     def __init__(
         self,
         url: str = None,
-        downloader: Downloader = None,
+        downloader=None,
         download_status: DownloadStatus = DownloadStatus.STARTED,
         start_date: str = None,
         downloads_path: Optional[str] = None,
@@ -327,7 +236,7 @@ class Download(SQLiteItem):
         return self._downloader
 
     @downloader.setter
-    def downloader(self, downloader: Downloader):
+    def downloader(self, downloader):
         if isinstance(downloader, str):
             downloader = Downloader(name=downloader).select_first()
 
@@ -350,20 +259,6 @@ class Download(SQLiteItem):
             data = self.as_dict()
             self.logger.error(f"An unexpected error has occured! \n{pp.pformat(data)} ")
         self.update()
-
-    def start_download(self):
-
-        if self.output_directory:
-            os.makedirs(self.output_directory, exist_ok=True)
-
-        self.logger.info(f"Starting {self.downloader.downloader_type} download.")
-
-        if self.downloader.downloader_type == "wget":
-            self.start_wget_download()
-        else:
-            self.start_ytldp_download()
-
-        return self.output_path
 
     def get_output_path(self, url: str):
         filename = os.path.basename(urlparse(url).path)
@@ -455,7 +350,7 @@ class Download(SQLiteItem):
             urls = get_ytdlp_urls([self.url], removed_args=None)
             self.upsert()
             all_entries, error_entries = ytdlp_download(urls, ytdlp_options)
-            self._insert_ytdlp_entries(all_entries, error_entries)
+            # self._insert_ytdlp_entries(all_entries, error_entries)
 
         except KeyboardInterrupt:
             print("\nDownload interrupted by user.")
@@ -510,7 +405,7 @@ class Download(SQLiteItem):
     def parse_download_string(
         cls,
         download_str: str,
-        downloader: Optional[Downloader] = None,
+        downloader=None,
         downloads_path: Optional[str] = None,
         output_directory: Optional[str] = None,
     ):
@@ -548,6 +443,106 @@ class Download(SQLiteItem):
         )
 
         return download
+
+
+class Downloader(SQLiteItem):
+    _logger = None
+
+    _downloader_type: str = None
+    _downloader_path: str = None
+    _func = None
+    _script = None
+
+    @property
+    def script(self):
+        return self._script
+
+    @script.setter
+    def script(self, script: str):
+        self._script = script
+
+    @property
+    def func(self):
+        return self._func
+
+    @func.setter
+    def func(self, func: str):
+        self._func = func
+
+    @property
+    def logger(self):
+        if self._logger is None:
+            self._logger = setup_logger()
+        return self._logger
+
+    @property
+    def downloader_type(self):
+        return self._downloader_type
+
+    @downloader_type.setter
+    def downloader_type(self, downloader_type):
+        self._downloader_type = downloader_type
+
+    @property
+    def downloader_path(self):
+        return self._downloader_path
+
+    @downloader_path.setter
+    def downloader_path(self, downloader_path):
+        self._downloader_path = (
+            os.path.abspath(downloader_path)
+            if downloader_path is not None
+            else downloader_path
+        )
+
+    def __init__(
+        self,
+        downloader_type: str = None,
+        downloader_path: str = None,
+        script: str = None,
+        func: str = None,
+        downloader_args: str = None,
+    ):
+        column_names = [
+            "downloader_type",
+            "downloader_path",
+        ]
+
+        super().__init__(downloader_values, column_names, db_path=database_path)
+        self.downloader_type = downloader_type
+        self.downloader_path = downloader_path
+        self.conjunction_type = "OR"
+        self.filter_condition = f"downloader_type = {self._downloader_type}"
+        self.table_name = "downloaders"
+
+    def __repr__(self):
+        return f"{self.downloader_type}"
+
+    def __str__(self):
+        return f"{self.downloader_type}"
+
+    def start_downloads(self, downloads: list[Download]):
+
+        for download in downloads:
+            if download.output_directory:
+                os.makedirs(download.output_directory, exist_ok=True)
+
+            self.logger.info(f"Starting {self.downloader_type} download.")
+            # downloader function
+
+
+default_downloaders = [
+    Downloader("ytdlp_video", os.path.join(script_directory, "video_options.json")),
+    Downloader(
+        "ytdlp_audio",
+        os.path.join(script_directory, "audio_options.json"),
+    ),
+    Downloader("wget", os.path.join(script_directory, "wget_options.json")),
+]
+
+if not db_exists:
+    Downloader.insert_all(default_downloaders)
+    print("Successfully generated default downloaders.")
 
 
 def start_downloads(
@@ -600,10 +595,6 @@ def start_downloads(
                     )
                     if download is not None:
                         downloads.append(download)
-
-    for download in downloads:
-        download: Download
-        download.start_download()
 
 
 # argparse commands
