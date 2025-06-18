@@ -8,7 +8,13 @@ parent_directory = current_file.parents[2]
 os.sys.path.insert(0, str(parent_directory))
 
 from ytdlp import download, get_options, read_json_file
-from downloader import Downloader, Download, download_all_cmd, downloaders_cmd
+from downloader import (
+    Downloader,
+    Download,
+    download_all_cmd,
+    downloaders_cmd,
+    default_downloaders,
+)
 
 # playlist_urls = [
 #     "https://www.youtube.com/playlist?list=PL3A_1s_Z8MQbYIvki-pbcerX8zrF4U8zQ"
@@ -21,7 +27,9 @@ video_urls = [
     "https://youtu.be/OlEqHXRrcpc?si=4JAYOOH2B0A6MBvF"
 ]
 
-options_path = os.path.join(os.path.dirname(os.getcwd()), "video_options.json")
+downloader = default_downloaders[0]
+scripts_dir = os.path.dirname(os.getcwd())
+options_path = os.path.join(scripts_dir, "video_options.json")
 print(options_path)
 pp = PrettyPrinter(indent=2)
 
@@ -35,6 +43,12 @@ class TestDownloader(TestBase):
 
     def test_parse_download_string(self):
         pass
+
+    def test_get_downloader_func(self):
+        downloader_path = os.path.join(scripts_dir, "video_options.json")
+        downloader = Downloader("ytdlp_video", downloader_path, "")
+
+        self.assertTrue(downloader.get_function("") == downloader.func)
 
 
 if __name__ == "__main__":

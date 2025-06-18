@@ -1,3 +1,4 @@
+from importlib import import_module
 import os
 from pprint import PrettyPrinter
 import sqlite3
@@ -450,16 +451,17 @@ class Downloader(SQLiteItem):
 
     _downloader_type: str = None
     _downloader_path: str = None
+    _downloader_args: list = None
     _func = None
-    _script = None
+    _module = None
 
     @property
-    def script(self):
-        return self._script
+    def module(self):
+        return self._module
 
-    @script.setter
-    def script(self, script: str):
-        self._script = script
+    @module.setter
+    def module(self, module: str):
+        self._module = module
 
     @property
     def func(self):
@@ -467,7 +469,15 @@ class Downloader(SQLiteItem):
 
     @func.setter
     def func(self, func: str):
-        self._func = func
+        self._func = self.get_function(func)
+
+    @property
+    def downloader_args(self):
+        return self._downloader_args
+
+    @downloader_args.setter
+    def downloader_args(self, downloader_args: str):
+        self._downloader_args = downloader_args
 
     @property
     def logger(self):
@@ -499,18 +509,24 @@ class Downloader(SQLiteItem):
         self,
         downloader_type: str = None,
         downloader_path: str = None,
-        script: str = None,
+        module: str = None,
         func: str = None,
         downloader_args: str = None,
     ):
         column_names = [
             "downloader_type",
             "downloader_path",
+            "module",
+            "func",
+            "downloader_args",
         ]
 
         super().__init__(downloader_values, column_names, db_path=database_path)
         self.downloader_type = downloader_type
         self.downloader_path = downloader_path
+        self.module = module
+        self.func = func
+        self.downloader_args = downloader_args
         self.conjunction_type = "OR"
         self.filter_condition = f"downloader_type = {self._downloader_type}"
         self.table_name = "downloaders"
@@ -521,6 +537,16 @@ class Downloader(SQLiteItem):
     def __str__(self):
         return f"{self.downloader_type}"
 
+    def get_function(self, function: str, module: str = None):
+        # determine what function to run for reach download
+        module = import_module(module)
+        func = getattr(module, function)
+        return func
+
+    def get_downloader_args(self, downloader_args: list = None):
+        if not downloader_args:
+            pass
+
     def start_downloads(self, downloads: list[Download]):
 
         for download in downloads:
@@ -528,11 +554,15 @@ class Downloader(SQLiteItem):
                 os.makedirs(download.output_directory, exist_ok=True)
 
             self.logger.info(f"Starting {self.downloader_type} download.")
-            # downloader function
 
 
 default_downloaders = [
-    Downloader("ytdlp_video", os.path.join(script_directory, "video_options.json")),
+    Downloader(
+        "ytdlp_video",
+        os.path.join(script_directory, "video_options.json"),
+        "ytdlp",
+        "download",
+    ),
     Downloader(
         "ytdlp_audio",
         os.path.join(script_directory, "audio_options.json"),
