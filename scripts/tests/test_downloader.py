@@ -39,7 +39,15 @@ class TestDownloader(TestBase):
         super().setUp()
 
     def test_parse_download_string(self):
-        pass
+        downloads_path = "downloads.txt"
+
+        with open(downloads_path, "r") as file:
+            for line in file:
+                print(line)
+
+                download = Download.parse_download_string(
+                    line,
+                )
 
     def test_get_downloader_func(self):
         downloader_path = os.path.join(scripts_dir, "video_options.json")
@@ -49,13 +57,15 @@ class TestDownloader(TestBase):
         self.assertTrue(download == func)
         print(func, download)
 
+    def test_get_downloader_args(self):
+        pass
+
 
 if __name__ == "__main__":
     test_methods = [
         # TestDownloader.test_downloader,
         # TestDownloader.test_parse_download_string,
         TestDownloader.test_get_downloader_func,
-        # TestYtdlp.test_download_playlist_urls_no_options,
-        # TestYtdlp.test_download_regular_urls,
+        # TestDownloader.test_get_downloader_args,
     ]
     run_test_methods(test_methods)

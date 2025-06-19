@@ -1,6 +1,7 @@
 from importlib import import_module
 import os
 from pprint import PrettyPrinter
+import shlex
 import sqlite3
 from datetime import datetime
 from enum import Enum
@@ -10,8 +11,6 @@ from urllib.parse import urlparse, urlunparse
 from sqlite import is_valid_path
 from sqlite_item import SQLiteItem, create_connection
 from sqlite_conn import create_db, download_values, downloader_values
-from ytdlp import download as ytdlp_download, get_options, get_urls as get_ytdlp_urls
-from wget import download as wget_download
 import logging
 import argparse
 import subprocess
@@ -101,6 +100,9 @@ class DownloadStatus(str, Enum):
     INTERRUPTED = "interrupted"
 
 
+logger = setup_logger(name="download")
+
+
 class Download(SQLiteItem):
     _downloader = None
     _downloader_type: str = None
@@ -113,15 +115,8 @@ class Download(SQLiteItem):
     _downloads_path: str = None
     _db: sqlite3.Connection = None
     _output_directory: str = None
-    _output_path: str = None
+    _output_filename: str = None
     _source_url: str = None
-    _logger = None
-
-    @property
-    def logger(self):
-        if self._logger is None:
-            self._logger = setup_logger(name="download")
-        return self._logger
 
     def __init__(
         self,
@@ -131,6 +126,7 @@ class Download(SQLiteItem):
         start_date: str = None,
         downloads_path: Optional[str] = None,
         output_directory: Optional[str] = None,
+        output_filename: Optional[str] = None,
     ):
         column_names = [
             "url",
@@ -148,6 +144,7 @@ class Download(SQLiteItem):
         self.download_status = download_status
         self.downloads_path = downloads_path
         self.output_directory = output_directory
+        self.output_filename = output_filename
         self.start_date = start_date
 
         self.table_name = "downloads"
@@ -179,6 +176,18 @@ class Download(SQLiteItem):
         self._output_directory = output_directory
 
     @property
+    def output_filename(self):
+        return self._output_filename
+
+    @output_filename.setter
+    def output_filename(self, output_filename: str):
+        self._output_filename = output_filename
+
+    @property
+    def output_path(self):
+        return self.get_output_path()
+
+    @property
     def start_date(self):
         return self._start_date
 
@@ -197,24 +206,12 @@ class Download(SQLiteItem):
         self._end_date = end_date
 
     @property
-    def output_path(self):
-        return self._output_path
-
-    @output_path.setter
-    def output_path(self, output_path: str):
-        self._output_path = output_path
-
-    @property
     def time_elapsed(self):
         return self._time_elapsed
 
     @time_elapsed.setter
     def time_elapsed(self, time_elapsed):
         self._time_elapsed = time_elapsed
-
-    @property
-    def ytdlp_options_path(self):
-        return self._get_ytdlp_options_path()
 
     @property
     def downloads_path(self):
@@ -239,13 +236,13 @@ class Download(SQLiteItem):
     @downloader.setter
     def downloader(self, downloader):
         if isinstance(downloader, str):
-            downloader = Downloader(name=downloader).select_first()
+            downloader = Downloader(downloader).select_first()
 
         self._downloader = downloader
 
     def set_download_status_query(self, status: DownloadStatus):
         self.download_status = status
-        self.logger.info(f"Setting download status: {str(status)}")
+        logger.info(f"Setting download status: {str(status)}")
 
         if self.download_status == DownloadStatus.COMPLETED:
             self.end_date = str(datetime.now())
@@ -255,14 +252,18 @@ class Download(SQLiteItem):
 
             self.time_elapsed = str(end_dt - start_dt)
             log_message = f"Time elapsed: {self.time_elapsed}"
-            self.logger.info(log_message)
+            logger.info(log_message)
         else:
             data = self.as_dict()
-            self.logger.error(f"An unexpected error has occured! \n{pp.pformat(data)} ")
+            logger.error(f"An unexpected error has occured! \n{pp.pformat(data)} ")
         self.update()
 
-    def get_output_path(self, url: str):
-        filename = os.path.basename(urlparse(url).path)
+    def get_output_path(self):
+        filename = (
+            self.output_filename
+            if self.output_filename
+            else os.path.basename(urlparse(self.url).path)
+        )
 
         if not self.output_directory:
             self.output_directory = os.getcwd()
@@ -270,70 +271,53 @@ class Download(SQLiteItem):
         output_path = os.path.join(self.output_directory, filename)
         return output_path
 
-    def start_wget_download(self):
-
-        self.output_path = self.get_output_path(self.url)
-        self.upsert()
-
-        status_code = wget_download(self.url, self.output_directory)
-
-        if status_code == 1:
-            self.set_download_status_query(DownloadStatus.INTERRUPTED)
-        else:
-            self.set_download_status_query(DownloadStatus.COMPLETED)
-
     def __repr__(self):
         return f"{self.downloader}, {self.url}"
 
     def __str__(self):
         return f"{self.downloader}, {self.url}"
 
+    # {some_url} -> stored in a music.txt, will use default audio downloader
+    # or
+    # {some_url} {downloader} -> stored in a downloads.txt, will use default video downloader
+
     @classmethod
-    def parse_download_string(
-        cls,
-        download_str: str,
-        downloader=None,
-        downloads_path: Optional[str] = None,
-        output_directory: Optional[str] = None,
-    ):
-        # {some_url} -> stored in a music.txt, will use default audio downloader
-        # or
-        # {some_url} {downloader} -> stored in a downloads.txt, will use default video downloader
+    def parse_download_string(cls, download_str: str):
 
         download_str = download_str.strip()
 
         if not download_str:
             return
 
-        download_str = download_str.split(" ")
-        url = download_str[0]
-        downloader = download_str[1] if len(download_str) > 1 else downloader
-        output_directory = (
-            download_str[2] if len(download_str) > 2 else output_directory
-        )
+        lexer = shlex.shlex(download_str, posix=False)
+        lexer.whitespace_split = True
+        lexer.commenters = ""
+        parts = list(lexer)
+        url = None
+        downloader = None
+        filename = None
 
-        download = Download(
-            url,
-            downloader,
-            downloads_path=downloads_path,
-            output_directory=output_directory,
-        )
+        for part in parts:
+            if part.startswith(("http://", "https://")):
+                url = part
+            elif part.startswith('"') and part.endswith('"'):
+                filename = part
+            elif not downloader:
+                downloader = part
+
         parsed_info = {
             "URL": url,
             "Downloader": downloader,
-            "Output directory": output_directory,
+            "Output filename": filename,
         }
 
-        download.logger.info(f"Reading downloads from file {downloads_path}.")
-        download.logger.info(
+        logger.info(
             f"Parsed download string {download_str}:\n{pp.pformat(parsed_info)}"
         )
-
-        return download
+        return Download(url, downloader, filename)
 
 
 class Downloader(SQLiteItem):
-    _logger = None
 
     _downloader_type: str = None
     _downloader_path: str = None
@@ -364,12 +348,6 @@ class Downloader(SQLiteItem):
     @downloader_args.setter
     def downloader_args(self, downloader_args: str):
         self._downloader_args = downloader_args
-
-    @property
-    def logger(self):
-        if self._logger is None:
-            self._logger = setup_logger()
-        return self._logger
 
     @property
     def downloader_type(self):
@@ -429,8 +407,8 @@ class Downloader(SQLiteItem):
         func = getattr(module, self.func)
         return func
 
-    def get_downloader_args(self, downloader_args: list = None):
-        if not downloader_args:
+    def get_downloader_args(self, func):
+        if not self.downloader_args:
             pass
 
     def start_downloads(self, downloads: list[Download]):
@@ -439,8 +417,16 @@ class Downloader(SQLiteItem):
             if download.output_directory:
                 os.makedirs(download.output_directory, exist_ok=True)
 
-            self.logger.info(f"Starting {self.downloader_type} download.")
+            logger.info(f"Starting {self.downloader_type} download.")
             func = self.get_function()
+            downloader_args = self.get_downloader_args(func)
+
+            status_code = func(**downloader_args)
+
+            if status_code == 1:
+                download.set_download_status_query(DownloadStatus.INTERRUPTED)
+            else:
+                download.set_download_status_query(DownloadStatus.COMPLETED)
 
 
 default_downloaders = [
@@ -453,6 +439,8 @@ default_downloaders = [
     Downloader(
         "ytdlp_audio",
         os.path.join(script_directory, "audio_options.json"),
+        "ytdlp",
+        "download",
     ),
     Downloader("wget", os.path.join(script_directory, "wget_options.json")),
 ]
@@ -490,12 +478,9 @@ def start_downloads(
 
         with open(downloads_path, "r") as file:
             for line in file:
-                download = Download.parse_download_string(
-                    line,
-                    downloader,
-                    downloads_path,
-                    output_directory,
-                )
+                download = Download.parse_download_string(line)
+                download.logger.info(f"Reading downloads from file {downloads_path}.")
+
                 if download is not None:
                     downloads.append(download)
 

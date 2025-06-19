@@ -32,7 +32,6 @@ def get_date_format(date_string: str, date_formats=[]):
 
     if not date_formats:
         date_formats = [
-            "%d/%m",
             "%d/%m/%Y",
             "%Y-%m-%d %H:%M:%S",
             "%Y-%m-%d %H:%M",
@@ -489,7 +488,7 @@ def get_filter_condition(filter_condition: str, default_params: list = None):
                 if operator in part:
 
                     key, value = re.split(
-                        r"\s*" + re.escape(operator) + r"\s*", part, 1
+                        r"\s*" + re.escape(operator) + r"\s*", part, maxsplit=1
                     )
                     key = key.strip()
 
