@@ -282,120 +282,6 @@ class Download(SQLiteItem):
         else:
             self.set_download_status_query(DownloadStatus.COMPLETED)
 
-    def _normalize_ytdlp_url(self, original_url: str, id: str) -> str:
-        parsed = urlparse(original_url)
-        hostname = parsed.hostname or ""
-
-        if "youtube" in hostname or "youtu.be" in hostname:
-            return f"https://www.youtube.com/watch?v={id}"
-        else:
-            new_path = parsed.path.rstrip("/") + "/" + id
-            return urlunparse(parsed._replace(path=new_path))
-
-    def _insert_ytdlp_entries(self, entries, error_entries: list):
-
-        # generate a new download based on url of entry
-        is_playlist = len(entries) > 1
-        original_url = self.url
-
-        if is_playlist:
-            print(f"Downloading playlist {self.url}")
-
-        for entry in entries:
-            title = entry.get("title")
-            entry_id = entry.get("id")
-            url = None
-
-            url = (
-                self._normalize_ytdlp_url(self.url, entry_id) if entry_id else self.url
-            )
-
-            if title:
-                filename = title.strip().replace("/", "_")
-                self.output_path = os.path.join(
-                    self.output_directory or os.getcwd(), filename
-                )
-            else:
-                self.output_path = self.get_output_path(url)
-
-            if is_playlist:
-                self.source_url = original_url
-
-            entry_data = {
-                "Title": title,
-                "URL": url,
-                "Source url (playlist url)": self.source_url,
-                "Output path": self.output_path,
-            }
-            self.logger.info(f"Inserting playlist entry: \n{pp.pformat(entry_data)}")
-            self.url = url
-            self.download_status = (
-                DownloadStatus.COMPLETED
-                if entry not in error_entries
-                else DownloadStatus.INTERRUPTED
-            )
-            self.upsert()
-
-    def start_ytldp_download(self):
-
-        status_code = 0
-        ytdlp_format = self._get_ytdlp_format()
-
-        ytdlp_options = get_options(
-            ytdlp_format=ytdlp_format,
-            output_directory=self.output_directory,
-            options_path=self.ytdlp_options_path,
-        )
-
-        try:
-            urls = get_ytdlp_urls([self.url], removed_args=None)
-            self.upsert()
-            all_entries, error_entries = ytdlp_download(urls, ytdlp_options)
-            # self._insert_ytdlp_entries(all_entries, error_entries)
-
-        except KeyboardInterrupt:
-            print("\nDownload interrupted by user.")
-            status_code = 1
-
-        except subprocess.CalledProcessError as e:
-            print(f"\nDownload failed: {e}")
-            status_code = 1
-
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-            status_code = 1
-
-        if status_code == 1:
-            self.set_download_status_query(DownloadStatus.INTERRUPTED)
-        else:
-            self.set_download_status_query(DownloadStatus.COMPLETED)
-
-    def _get_ytdlp_options_path(self):
-        options = self.downloader.downloader_path
-        options_path = os.path.join(script_directory, options)
-        return options_path
-
-    def _get_ytdlp_format(self):
-
-        # choose different format based on downloader.txt base file name
-        ytdlp_format = self.downloader.downloader_type
-
-        path_name = (
-            os.path.basename(self.downloads_path).removesuffix(".txt")
-            if self.downloads_path is not None
-            else None
-        )
-        file_formats = {
-            "music": "ytdlp_audio",
-            "mp3": "ytdlp_audio",
-            "videos": "ytdlp_video",
-        }
-
-        if path_name in file_formats.keys():
-            ytdlp_format = file_formats.get(path_name)
-
-        return ytdlp_format
-
     def __repr__(self):
         return f"{self.downloader}, {self.url}"
 
@@ -469,7 +355,7 @@ class Downloader(SQLiteItem):
 
     @func.setter
     def func(self, func: str):
-        self._func = self.get_function(func)
+        self._func = func
 
     @property
     def downloader_args(self):
@@ -537,10 +423,10 @@ class Downloader(SQLiteItem):
     def __str__(self):
         return f"{self.downloader_type}"
 
-    def get_function(self, function: str, module: str = None):
-        # determine what function to run for reach download
-        module = import_module(module)
-        func = getattr(module, function)
+    def get_function(self):
+        # determine what function to run for each download
+        module = import_module(self.module)
+        func = getattr(module, self.func)
         return func
 
     def get_downloader_args(self, downloader_args: list = None):
@@ -554,6 +440,7 @@ class Downloader(SQLiteItem):
                 os.makedirs(download.output_directory, exist_ok=True)
 
             self.logger.info(f"Starting {self.downloader_type} download.")
+            func = self.get_function()
 
 
 default_downloaders = [
@@ -598,33 +485,21 @@ def start_downloads(
         )
     # create download string
     if downloads_path:
-        skip_read = False
         if not os.path.exists(downloads_path):
-            prompt = (
-                input(f"{downloads_path} does not exist. Create it? (y/N): ")
-                .strip()
-                .lower()
-            )
-            if prompt == "y":
-                # os.makedirs(os.path.dirname(downloads_path), exist_ok=True)
-                with open(downloads_path, "w") as f:
-                    pass  # creates an empty file
-                print(f"Created file: {downloads_path}")
-            else:
-                print("File was not created.")
-                skip_read = True
+            raise FileNotFoundError(f"Download path {downloads_path} does not exist.")
 
-        if not skip_read:
-            with open(downloads_path, "r") as file:
-                for line in file:
-                    download = Download.parse_download_string(
-                        line,
-                        downloader,
-                        downloads_path,
-                        output_directory,
-                    )
-                    if download is not None:
-                        downloads.append(download)
+        with open(downloads_path, "r") as file:
+            for line in file:
+                download = Download.parse_download_string(
+                    line,
+                    downloader,
+                    downloads_path,
+                    output_directory,
+                )
+                if download is not None:
+                    downloads.append(download)
+
+    downloader.start_downloads(downloads)
 
 
 # argparse commands
@@ -726,6 +601,9 @@ if __name__ == "__main__":
     downloader_cmd.add_argument(
         "-d", "--downloader_path", type=is_valid_path, default=None
     )
+    downloader_cmd.add_argument("-f", "--function", type=str, default=None)
+    downloader_cmd.add_argument("-m", "--module", type=str, default=None)
+
     downloader_cmd.set_defaults(func=downloaders_cmd)
 
     args = vars(parser.parse_args())

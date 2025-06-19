@@ -238,6 +238,113 @@ def download(urls: list, options: dict = None):
     return all_entries, error_entries
 
 
+# def start_ytldp_download(self):
+
+#     status_code = 0
+#     ytdlp_format = self._get_ytdlp_format()
+
+#     ytdlp_options = get_options(
+#         ytdlp_format=ytdlp_format,
+#         output_directory=self.output_directory,
+#         options_path=self.ytdlp_options_path,
+#     )
+
+#     try:
+#         urls = get_ytdlp_urls([self.url], removed_args=None)
+#         self.upsert()
+#         all_entries, error_entries = ytdlp_download(urls, ytdlp_options)
+#         # self._insert_ytdlp_entries(all_entries, error_entries)
+
+#     except KeyboardInterrupt:
+#         print("\nDownload interrupted by user.")
+#         status_code = 1
+
+#     except subprocess.CalledProcessError as e:
+#         print(f"\nDownload failed: {e}")
+#         status_code = 1
+
+#     except Exception as e:
+#         print(f"An unexpected error occurred: {e}")
+#         status_code = 1
+
+#     if status_code == 1:
+#         self.set_download_status_query(DownloadStatus.INTERRUPTED)
+#     else:
+#         self.set_download_status_query(DownloadStatus.COMPLETED)
+
+
+# def _get_ytdlp_options_path(self):
+#     options = self.downloader.downloader_path
+#     options_path = os.path.join(script_directory, options)
+#     return options_path
+
+
+#   def _insert_ytdlp_entries(self, entries, error_entries: list):
+
+#         # generate a new download based on url of entry
+#         is_playlist = len(entries) > 1
+#         original_url = self.url
+
+#         if is_playlist:
+#             print(f"Downloading playlist {self.url}")
+
+#         for entry in entries:
+#             title = entry.get("title")
+#             entry_id = entry.get("id")
+#             url = None
+
+#             url = (
+#                 self._normalize_ytdlp_url(self.url, entry_id) if entry_id else self.url
+#             )
+
+#             if title:
+#                 filename = title.strip().replace("/", "_")
+#                 self.output_path = os.path.join(
+#                     self.output_directory or os.getcwd(), filename
+#                 )
+#             else:
+#                 self.output_path = self.get_output_path(url)
+
+#             if is_playlist:
+#                 self.source_url = original_url
+
+#             entry_data = {
+#                 "Title": title,
+#                 "URL": url,
+#                 "Source url (playlist url)": self.source_url,
+#                 "Output path": self.output_path,
+#             }
+#             self.logger.info(f"Inserting playlist entry: \n{pp.pformat(entry_data)}")
+#             self.url = url
+#             self.download_status = (
+#                 DownloadStatus.COMPLETED
+#                 if entry not in error_entries
+#                 else DownloadStatus.INTERRUPTED
+#             )
+#             self.upsert()
+
+#  def _get_ytdlp_format(self):
+
+#         # choose different format based on downloader.txt base file name
+#         ytdlp_format = self.downloader.downloader_type
+
+#         path_name = (
+#             os.path.basename(self.downloads_path).removesuffix(".txt")
+#             if self.downloads_path is not None
+#             else None
+#         )
+#         file_formats = {
+#             "music": "ytdlp_audio",
+#             "mp3": "ytdlp_audio",
+#             "videos": "ytdlp_video",
+#         }
+
+#         if path_name in file_formats.keys():
+#             ytdlp_format = file_formats.get(path_name)
+
+#         return ytdlp_format
+
+
 def download_url(url: str, options: dict) -> list[tuple[bool, dict]]:
     results = []
 
