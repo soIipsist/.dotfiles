@@ -422,6 +422,13 @@ class Downloader(SQLiteItem):
 
             for key, param in func_params.items():
                 p = None if param.default == param.empty else param.default
+
+                if key == "urls":
+                    p = getattr(download, "url")
+
+                    if isinstance(p, str):
+                        p = [p]
+
                 downloader_args.update({key: p})
         else:
             keys = self.downloader_args.split(",")

@@ -69,7 +69,18 @@ class TestDownloader(TestBase):
         print(downloader_args)
 
     def test_get_downloader_args(self):
-        pass
+        downloader = Downloader(
+            "ytdlp_video", video_options_1, "ytdlp", "download", "url,downloads_path"
+        )
+        d = Download(
+            url=playlist_urls[0], downloader=downloader, downloads_path=video_options_1
+        )
+        downloader_args = downloader.get_downloader_args(
+            d,
+            download,
+        )
+
+        print(downloader_args)
 
 
 if __name__ == "__main__":
@@ -77,7 +88,7 @@ if __name__ == "__main__":
         # TestDownloader.test_downloader,
         # TestDownloader.test_parse_download_string,
         # TestDownloader.test_get_downloader_func,
-        # TestDownloader.test_get_downloader_args,
-        TestDownloader.test_get_downloader_args_with_no_values,
+        TestDownloader.test_get_downloader_args,
+        # TestDownloader.test_get_downloader_args_with_no_values,
     ]
     run_test_methods(test_methods)

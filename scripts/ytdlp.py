@@ -182,8 +182,14 @@ def get_entry_url(original_url: str, entry: dict) -> str:
     return url
 
 
-def download(urls: list, options: dict = None):
+def download(
+    urls: list,
+    options: dict = None,
+):
     print("Downloading with yt-dlp...")
+
+    if isinstance(urls, str):
+        urls = [urls]
 
     if isinstance(options, str):  # this is a path
         options = get_options(options_path=options)
