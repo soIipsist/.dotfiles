@@ -105,7 +105,15 @@ class TestDownloader(TestBase):
         # self.assertCountEqual(downloaders, all_downloaders)
 
     def test_downloaders_cmd_add(self):
-        downloaders = downloaders_cmd(action="add", downloader_type="ytdlp_video")
+        # downloaders = downloaders_cmd(action="add", downloader_type="ytdlp_video")
+        downloaders = downloaders_cmd(
+            action="add",
+            downloader_type="ytdlp_video",
+            downloader_path=video_options_2,
+            module="ytdlp",
+            func="download",
+            downloader_args="",
+        )
 
 
 if __name__ == "__main__":

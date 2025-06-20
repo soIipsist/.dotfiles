@@ -455,15 +455,21 @@ default_downloaders = [
         os.path.join(script_directory, "video_options.json"),
         "ytdlp",
         "download",
+        "url, downloads_path",
     ),
     Downloader(
         "ytdlp_audio",
         os.path.join(script_directory, "audio_options.json"),
         "ytdlp",
         "download",
+        "url, downloads_path",
     ),
     Downloader(
-        "wget", os.path.join(script_directory, "wget_options.json"), "wget", "download"
+        "wget",
+        os.path.join(script_directory, "wget_options.json"),
+        "wget",
+        "download",
+        "url, output_directory",
     ),
 ]
 
@@ -486,7 +492,7 @@ def downloaders_cmd(
     downloaders = [d]
 
     if action == "add":
-        d.upsert()
+        d.insert()
     else:  # list downloaders
         if downloader_type:
             downloaders = d.filter_by(d.column_names)
