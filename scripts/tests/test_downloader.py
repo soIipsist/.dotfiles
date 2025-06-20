@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-
 from test_base import *
 
 current_file = Path(__file__).resolve()
@@ -19,6 +18,8 @@ from downloader import (
 # playlist_urls = [
 #     "https://www.youtube.com/playlist?list=PL3A_1s_Z8MQbYIvki-pbcerX8zrF4U8zQ"
 # ]
+
+
 playlist_urls = [
     "https://www.youtube.com/playlist?list=PL4-sEuX-6HJV8C2TTbgguSByrLXKB_0WY"
 ]
@@ -29,8 +30,12 @@ video_urls = [
 
 downloader = default_downloaders[0]
 scripts_dir = os.path.dirname(os.getcwd())
-options_path = os.path.join(scripts_dir, "video_options.json")
-print(options_path)
+
+video_options_1 = os.path.join(scripts_dir, "video_options.json")
+video_options_2 = os.path.join(scripts_dir, "video_options_2.json")
+video_options_3 = os.path.join(scripts_dir, "video_options_3.json")
+wget_options = os.path.join(scripts_dir, "wget_options.json")
+
 pp = PrettyPrinter(indent=2)
 
 
@@ -50,12 +55,18 @@ class TestDownloader(TestBase):
                 )
 
     def test_get_downloader_func(self):
-        downloader_path = os.path.join(scripts_dir, "video_options.json")
-        downloader = Downloader("ytdlp_video", downloader_path, "ytdlp", "download")
+        downloader = Downloader("ytdlp_video", video_options_1, "ytdlp", "download")
 
         func = downloader.get_function()
         self.assertTrue(download == func)
         print(func, download)
+
+    def test_get_downloader_args_with_no_values(self):
+        downloader = Downloader("ytdlp_video", video_options_1, "ytdlp", "download")
+        d = Download(url=playlist_urls[0], downloader=downloader)
+        downloader_args = downloader.get_downloader_args(d, download)
+
+        print(downloader_args)
 
     def test_get_downloader_args(self):
         pass
@@ -65,7 +76,8 @@ if __name__ == "__main__":
     test_methods = [
         # TestDownloader.test_downloader,
         # TestDownloader.test_parse_download_string,
-        TestDownloader.test_get_downloader_func,
+        # TestDownloader.test_get_downloader_func,
         # TestDownloader.test_get_downloader_args,
+        TestDownloader.test_get_downloader_args_with_no_values,
     ]
     run_test_methods(test_methods)

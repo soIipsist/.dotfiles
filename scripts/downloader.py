@@ -14,6 +14,7 @@ from sqlite_conn import create_db, download_values, downloader_values
 import logging
 import argparse
 import subprocess
+import inspect
 
 script_directory = os.path.dirname(__file__)
 pp = PrettyPrinter(indent=2)
@@ -101,11 +102,11 @@ class DownloadStatus(str, Enum):
 
 
 logger = setup_logger(name="download")
+logger.disabled = True
 
 
 class Download(SQLiteItem):
     _downloader = None
-    _downloader_type: str = None
     _download_status = DownloadStatus.STARTED
     _start_date = str(datetime.now())
     _end_date = None
@@ -302,7 +303,7 @@ class Download(SQLiteItem):
                 url = part
             elif part.startswith('"') and part.endswith('"'):
                 filename = part
-            elif not downloader:
+            else:
                 downloader = part
 
         parsed_info = {
@@ -314,7 +315,7 @@ class Download(SQLiteItem):
         logger.info(
             f"Parsed download string {download_str}:\n{pp.pformat(parsed_info)}"
         )
-        return Download(url, downloader, filename)
+        return Download(url, downloader, output_filename=filename)
 
 
 class Downloader(SQLiteItem):
@@ -407,9 +408,28 @@ class Downloader(SQLiteItem):
         func = getattr(module, self.func)
         return func
 
-    def get_downloader_args(self, func):
+    def get_downloader_args(self, download: Download, func):
+        downloader_args = {}
+
+        if not callable(func):
+            raise ValueError("not a function")
+
         if not self.downloader_args:
-            pass
+            func_signature = inspect.signature(func)
+            func_params = {
+                param.name: param for param in func_signature.parameters.values()
+            }
+
+            for key, param in func_params.items():
+                p = None if param.default == param.empty else param.default
+                downloader_args.update({key: p})
+        else:
+            keys = self.downloader_args.split(",")
+
+            for key in keys:
+                downloader_args.update({key: getattr(download, key)})
+
+        return downloader_args
 
     def start_downloads(self, downloads: list[Download]):
 
@@ -419,7 +439,7 @@ class Downloader(SQLiteItem):
 
             logger.info(f"Starting {self.downloader_type} download.")
             func = self.get_function()
-            downloader_args = self.get_downloader_args(func)
+            downloader_args = self.get_downloader_args(func, download)
 
             status_code = func(**downloader_args)
 
@@ -442,7 +462,9 @@ default_downloaders = [
         "ytdlp",
         "download",
     ),
-    Downloader("wget", os.path.join(script_directory, "wget_options.json")),
+    Downloader(
+        "wget", os.path.join(script_directory, "wget_options.json"), "wget", "download"
+    ),
 ]
 
 if not db_exists:
@@ -479,7 +501,7 @@ def start_downloads(
         with open(downloads_path, "r") as file:
             for line in file:
                 download = Download.parse_download_string(line)
-                download.logger.info(f"Reading downloads from file {downloads_path}.")
+                logger.info(f"Reading downloads from file {downloads_path}.")
 
                 if download is not None:
                     downloads.append(download)
@@ -490,11 +512,8 @@ def start_downloads(
 # argparse commands
 
 
-def downloaders_cmd(**kwargs):
-    print(kwargs)
-
-    action = kwargs.get("action")
-    kwargs.pop("action")
+def downloaders_cmd(action: str, **kwargs):
+    print(action, kwargs)
     d = Downloader(**kwargs)
 
     if action == "add":
@@ -506,9 +525,7 @@ def downloaders_cmd(**kwargs):
             pp.pprint(downloader.as_dict())
 
 
-def download_all_cmd(**kwargs):
-    print(kwargs)
-    downloader_type = kwargs.get("downloader_type")
+def download_all_cmd(downloader_type: str = None, downloads_path: str = None, **kwargs):
     downloader = None
 
     # get downloader based on type
@@ -517,8 +534,7 @@ def download_all_cmd(**kwargs):
         if not downloader:
             raise ValueError(f"Downloader of type '{downloader_type}' does not exist.")
 
-    kwargs.pop("downloader_type")
-    download = Download(**kwargs, downloader=downloader)
+    download = Download(**kwargs)
 
     url = kwargs.get("url")
 
@@ -573,6 +589,8 @@ if __name__ == "__main__":
         type=str,
     )
 
+    download_cmd.add_argument("-f", "--output_filename", default=None, type=str)
+
     download_cmd.set_defaults(func=download_all_cmd)
 
     # downloader cmd
@@ -586,7 +604,7 @@ if __name__ == "__main__":
     downloader_cmd.add_argument(
         "-d", "--downloader_path", type=is_valid_path, default=None
     )
-    downloader_cmd.add_argument("-f", "--function", type=str, default=None)
+    downloader_cmd.add_argument("-f", "--func", type=str, default=None)
     downloader_cmd.add_argument("-m", "--module", type=str, default=None)
 
     downloader_cmd.set_defaults(func=downloaders_cmd)

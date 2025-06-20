@@ -238,7 +238,7 @@ def download(urls: list, options: dict = None):
     return all_entries, error_entries
 
 
-def get_ytdlp_format(self, ytdlp_format: str, downloads_path: str):
+def get_ytdlp_format(ytdlp_format: str, downloads_path: str):
 
     path_name = (
         os.path.basename(downloads_path).removesuffix(".txt")
