@@ -236,9 +236,6 @@ class Download(SQLiteItem):
 
     @downloader.setter
     def downloader(self, downloader):
-        if isinstance(downloader, str):
-            downloader = Downloader(downloader).select_first()
-
         self._downloader = downloader
 
     def set_download_status_query(self, status: DownloadStatus):
@@ -277,10 +274,6 @@ class Download(SQLiteItem):
 
     def __str__(self):
         return f"{self.downloader}, {self.url}"
-
-    # {some_url} -> stored in a music.txt, will use default audio downloader
-    # or
-    # {some_url} {downloader} -> stored in a downloads.txt, will use default video downloader
 
     @classmethod
     def parse_download_string(cls, download_str: str):
@@ -478,72 +471,51 @@ if not db_exists:
     Downloader.insert_all(default_downloaders)
     print("Successfully generated default downloaders.")
 
-
-def start_downloads(
-    url: str = None,
-    downloader: Downloader = None,
-    downloads_path: str = None,
-    output_directory: str = None,
-    **kwargs,
-):
-    downloads = []
-
-    if not url and not downloads_path:
-        raise ValueError("Either url or downloads path must be defined.")
-
-    if url:
-        downloads.append(
-            Download(
-                url,
-                downloader,
-                downloads_path=downloads_path,
-                output_directory=output_directory,
-            )
-        )
-    # create download string
-    if downloads_path:
-        if not os.path.exists(downloads_path):
-            raise FileNotFoundError(f"Download path {downloads_path} does not exist.")
-
-        with open(downloads_path, "r") as file:
-            for line in file:
-                download = Download.parse_download_string(line)
-                logger.info(f"Reading downloads from file {downloads_path}.")
-
-                if download is not None:
-                    downloads.append(download)
-
-    downloader.start_downloads(downloads)
-
-
 # argparse commands
 
 
-def downloaders_cmd(action: str, **kwargs):
-    print(action, kwargs)
-    d = Downloader(**kwargs)
+def downloaders_cmd(
+    action: str,
+    downloader_type: str = None,
+    downloader_path: str = None,
+    module: str = None,
+    func: str = None,
+    downloader_args: str = None,
+):
+    d = Downloader(downloader_type, downloader_path, module, func, downloader_args)
+    downloaders = [d]
 
     if action == "add":
         d.upsert()
     else:  # list downloaders
-        downloaders = d.filter_by(d.column_names)
-        for downloader in downloaders:
-            downloader: Downloader
-            pp.pprint(downloader.as_dict())
+        if downloader_type:
+            downloaders = d.filter_by(d.column_names)
+        else:
+            downloaders = d.select_all()
+    return downloaders
 
 
-def download_all_cmd(downloader_type: str = None, downloads_path: str = None, **kwargs):
-    downloader = None
+def download_all_cmd(
+    url: str = None,
+    downloader_type: str = None,
+    downloads_path: str = None,
+    output_directory: str = None,
+    **kwargs,
+):
+    downloader: Downloader = None
+
+    if not url and not downloads_path:
+        raise ValueError("Either url or downloads path must be defined.")
 
     # get downloader based on type
+
     if downloader_type:
         downloader = Downloader(downloader_type).select_first()
         if not downloader:
             raise ValueError(f"Downloader of type '{downloader_type}' does not exist.")
 
-    download = Download(**kwargs)
-
-    url = kwargs.get("url")
+    download = Download(**kwargs, downloader=downloader)
+    downloads = []
 
     if url is None:
         downloads = download.filter_by(download.column_names)
@@ -553,7 +525,32 @@ def download_all_cmd(downloader_type: str = None, downloads_path: str = None, **
             download: Download
             pp.pprint(download.as_dict())
     else:
-        start_downloads(**kwargs, downloader=downloader)
+
+        downloads.append(
+            Download(
+                url,
+                downloader,
+                downloads_path=downloads_path,
+                output_directory=output_directory,
+            )
+        )
+        # create download string
+        if downloads_path:
+            if not os.path.exists(downloads_path):
+                raise FileNotFoundError(
+                    f"Download path {downloads_path} does not exist."
+                )
+
+            with open(downloads_path, "r") as file:
+                for line in file:
+                    download = Download.parse_download_string(line)
+                    logger.info(f"Reading downloads from file {downloads_path}.")
+
+                    if download is not None:
+                        download.output_directory = output_directory
+                        download.downloads_path = downloads_path
+                        downloads.append(download)
+        downloader.start_downloads(downloads)
 
 
 if __name__ == "__main__":
@@ -621,8 +618,10 @@ if __name__ == "__main__":
     args.pop("command")
     args.pop("func")
 
-    func(**args)
+    output = func(**args)
 
+    if output:
+        pp.pprint(output)
 
 # tests
 
