@@ -83,7 +83,11 @@ class TestDownloader(TestBase):
         print(downloader_args)
 
     def test_download_all_cmd(self):
-        pass
+        downloads = download_all_cmd(
+            playlist_urls[0], downloader_type="ytdlp_audio", downloads_path=""
+        )
+
+        self.assertTrue(len(downloads) == 1)
 
     def test_downloaders_cmd_list(self):
         downloaders = downloaders_cmd(
@@ -91,13 +95,14 @@ class TestDownloader(TestBase):
         )  # returns all downloaders of type
 
         for downloader in downloaders:
+            print(downloader.downloader_type, downloader.downloader_path)
             self.assertTrue(downloader.downloader_type == "ytdlp_video")
 
         downloaders = downloaders_cmd(action="list")  # this selects all of them
         all_downloaders = Downloader().select_all()
 
         for d, a in zip(downloaders, all_downloaders):
-            print(d, a)
+            # print(d, a)
             self.assertTrue(isinstance(d, Downloader))
             self.assertTrue(isinstance(a, Downloader))
             self.assertTrue(d.downloader_path == a.downloader_path)
@@ -122,9 +127,9 @@ if __name__ == "__main__":
         # TestDownloader.test_parse_download_string,
         # TestDownloader.test_get_downloader_func,
         # TestDownloader.test_get_downloader_args,
-        # TestDownloader.test_download_all_cmd,
+        TestDownloader.test_download_all_cmd,
         # TestDownloader.test_downloaders_cmd_list,
-        TestDownloader.test_downloaders_cmd_add,
+        # TestDownloader.test_downloaders_cmd_add,
         # TestDownloader.test_get_downloader_args_with_no_values,
     ]
     run_test_methods(test_methods)

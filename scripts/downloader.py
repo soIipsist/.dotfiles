@@ -448,6 +448,8 @@ class Downloader(SQLiteItem):
             else:
                 download.set_download_status_query(DownloadStatus.COMPLETED)
 
+        return downloads
+
 
 default_downloaders = [
     Downloader(
@@ -506,6 +508,7 @@ def download_all_cmd(
     downloader_type: str = None,
     downloads_path: str = None,
     output_directory: str = None,
+    output_filename: str = None,
     **kwargs,
 ):
     downloader: Downloader = None
@@ -538,6 +541,7 @@ def download_all_cmd(
                 downloader,
                 downloads_path=downloads_path,
                 output_directory=output_directory,
+                output_filename=output_filename,
             )
         )
         # create download string
@@ -557,6 +561,8 @@ def download_all_cmd(
                         download.downloads_path = downloads_path
                         downloads.append(download)
         downloader.start_downloads(downloads)
+
+    return downloads
 
 
 if __name__ == "__main__":
