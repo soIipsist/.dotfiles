@@ -404,8 +404,8 @@ class Downloader(SQLiteItem):
     def get_downloader_args(self, download: Download, func):
         downloader_args = {}
 
-        if not callable(func):
-            raise ValueError("not a function")
+        # if not callable(func):
+        #     raise ValueError("not a function")
 
         if not self.downloader_args:
             func_signature = inspect.signature(func)
@@ -427,6 +427,7 @@ class Downloader(SQLiteItem):
             keys = self.downloader_args.split(",")
 
             for key in keys:
+                key = key.strip()
                 downloader_args.update({key: getattr(download, key)})
 
         return downloader_args
@@ -439,14 +440,14 @@ class Downloader(SQLiteItem):
 
             logger.info(f"Starting {self.downloader_type} download.")
             func = self.get_function()
-            downloader_args = self.get_downloader_args(func, download)
+            downloader_args = self.get_downloader_args(download, func)
 
-            status_code = func(**downloader_args)
+            # status_code = func(**downloader_args)
 
-            if status_code == 1:
-                download.set_download_status_query(DownloadStatus.INTERRUPTED)
-            else:
-                download.set_download_status_query(DownloadStatus.COMPLETED)
+            # if status_code == 1:
+            #     download.set_download_status_query(DownloadStatus.INTERRUPTED)
+            # else:
+            #     download.set_download_status_query(DownloadStatus.COMPLETED)
 
         return downloads
 

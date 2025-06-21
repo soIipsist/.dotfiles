@@ -84,8 +84,12 @@ class TestDownloader(TestBase):
 
     def test_download_all_cmd(self):
         downloads = download_all_cmd(
-            playlist_urls[0], downloader_type="ytdlp_audio", downloads_path=""
+            playlist_urls, downloader_type="ytdlp_audio", downloads_path=""
         )
+
+        for download in downloads:
+            download: Download
+            self.assertTrue(isinstance(download, Download))
 
         self.assertTrue(len(downloads) == 1)
 

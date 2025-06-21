@@ -16,8 +16,8 @@ download_values = [
 downloader_values = [
     "downloader_type text NOT NULL",
     "downloader_path text NOT NULL",
-    "func text NOT NULL",
     "module text NOT NULL",
+    "func text NOT NULL",
     "downloader_args text",
     "PRIMARY KEY (downloader_path)",
 ]
