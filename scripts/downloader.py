@@ -119,6 +119,10 @@ class Download(SQLiteItem):
     _output_filename: str = None
     _source_url: str = None
 
+    @property
+    def downloader_path(self):
+        return getattr(self.downloader, "downloader_path") if self.downloader else None
+
     def __init__(
         self,
         url: str = None,
@@ -358,9 +362,7 @@ class Downloader(SQLiteItem):
     @downloader_path.setter
     def downloader_path(self, downloader_path):
         self._downloader_path = (
-            os.path.abspath(downloader_path)
-            if downloader_path is not None
-            else downloader_path
+            os.path.abspath(downloader_path.strip()) if downloader_path else ""
         )
 
     def __init__(
@@ -443,8 +445,6 @@ class Downloader(SQLiteItem):
             if download.output_directory:
                 os.makedirs(download.output_directory, exist_ok=True)
 
-            print("D", download.downloader)
-
             logger.info(f"Starting {self.downloader_type} download.")
             func = self.get_function()
             downloader_args = self.get_downloader_args(download, func)
@@ -466,14 +466,14 @@ default_downloaders = [
         os.path.join(script_directory, "video_options.json"),
         "ytdlp",
         "download",
-        "url, downloads_path",
+        "url, downloader_path",
     ),
     Downloader(
         "ytdlp_audio",
         os.path.join(script_directory, "audio_options.json"),
         "ytdlp",
         "download",
-        "url, downloads_path",
+        "url, downloader_path",
     ),
     Downloader(
         "wget",
