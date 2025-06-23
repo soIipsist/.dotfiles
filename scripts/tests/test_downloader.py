@@ -82,17 +82,6 @@ class TestDownloader(TestBase):
 
         print(downloader_args)
 
-    def test_download_all_cmd(self):
-        downloads = download_all_cmd(
-            playlist_urls, downloader_type="ytdlp_audio", downloads_path=""
-        )
-
-        for download in downloads:
-            download: Download
-            self.assertTrue(isinstance(download, Download))
-
-        self.assertTrue(len(downloads) == 1)
-
     def test_downloaders_cmd_list(self):
         downloaders = downloaders_cmd(
             action="list", downloader_type="ytdlp_video", downloader_path=""
@@ -123,6 +112,24 @@ class TestDownloader(TestBase):
             func="download",
             downloader_args="",
         )
+
+    def test_download_all_cmd(self):
+        urls = playlist_urls
+        downloader_type = "ytdlp_video"
+        downloads_path = "downloads.txt"
+        output_directory = None
+        output_filename = None
+
+        downloads = download_all_cmd(
+            urls, downloader_type, downloads_path, output_directory, output_filename
+        )
+
+        for download in downloads:
+            download: Download
+            self.assertTrue(isinstance(download, Download))
+
+        if downloads_path is None:
+            self.assertTrue(len(downloads) == len(urls))
 
 
 if __name__ == "__main__":

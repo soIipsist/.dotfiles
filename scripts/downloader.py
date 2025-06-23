@@ -404,8 +404,13 @@ class Downloader(SQLiteItem):
     def get_downloader_args(self, download: Download, func):
         downloader_args = {}
 
-        # if not callable(func):
-        #     raise ValueError("not a function")
+        # check if download has different downloader
+        downloader: Downloader = self
+
+        if download.downloader is not None:
+            downloader: Downloader = getattr(download, "downloader", self)
+
+        # print("ACTUAL DOWNLOADER", downloader)
 
         if not self.downloader_args:
             func_signature = inspect.signature(func)
@@ -428,7 +433,7 @@ class Downloader(SQLiteItem):
 
             for key in keys:
                 key = key.strip()
-                downloader_args.update({key: getattr(download, key)})
+                downloader_args.update({key: getattr(download, key, key)})
 
         return downloader_args
 
@@ -438,10 +443,13 @@ class Downloader(SQLiteItem):
             if download.output_directory:
                 os.makedirs(download.output_directory, exist_ok=True)
 
+            print("D", download.downloader)
+
             logger.info(f"Starting {self.downloader_type} download.")
             func = self.get_function()
             downloader_args = self.get_downloader_args(download, func)
 
+            print(downloader_args)
             # status_code = func(**downloader_args)
 
             # if status_code == 1:
@@ -585,7 +593,7 @@ if __name__ == "__main__":
     download_cmd.add_argument(
         "-t",
         "--downloader_type",
-        default=os.environ.get("DOWNLOADER", "ytdlp"),
+        default=os.environ.get("DOWNLOADER", "ytdlp_video"),
         type=str,
     )
     download_cmd.add_argument(
