@@ -1,3 +1,4 @@
+import inspect
 from pathlib import Path
 import os
 from test_base import *
@@ -69,8 +70,13 @@ class TestDownloader(TestBase):
         print(downloader_args)
 
     def test_get_downloader_args(self):
+        downloader_type = "ytdlp_video"
+        downloader_path = video_options_1
+        module = "ytdlp"
+        func = "download"
+        downloader_args = "url, downloads_path"
         downloader = Downloader(
-            "ytdlp_video", video_options_1, "ytdlp", "download", "url,downloads_path"
+            downloader_type, downloader_path, module, func, downloader_args
         )
         d = Download(
             url=playlist_urls[0], downloader=downloader, downloads_path=video_options_1
@@ -80,7 +86,9 @@ class TestDownloader(TestBase):
             download,
         )
 
-        print(downloader_args)
+        self.assertTrue(
+            len(downloader_args) == len(inspect.signature(download).parameters)
+        )
 
     def test_downloaders_cmd_list(self):
         downloaders = downloaders_cmd(
@@ -137,8 +145,8 @@ if __name__ == "__main__":
         # TestDownloader.test_downloader,
         # TestDownloader.test_parse_download_string,
         # TestDownloader.test_get_downloader_func,
-        # TestDownloader.test_get_downloader_args,
-        TestDownloader.test_download_all_cmd,
+        TestDownloader.test_get_downloader_args,
+        # TestDownloader.test_download_all_cmd,
         # TestDownloader.test_downloaders_cmd_list,
         # TestDownloader.test_downloaders_cmd_add,
         # TestDownloader.test_get_downloader_args_with_no_values,

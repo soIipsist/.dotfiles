@@ -406,34 +406,14 @@ class Downloader(SQLiteItem):
         return func
 
     def get_downloader_args(self, download: Download, func):
-        downloader_args = {}
-
-        print("DOWNLOAD OPTIONS", download.downloader_path)
-
         if not self.downloader_args:
-            func_signature = inspect.signature(func)
-            func_params = {
-                param.name: param for param in func_signature.parameters.values()
-            }
-
-            for key, param in func_params.items():
-                p = None if param.default == param.empty else param.default
-
-                if key == "urls":
-                    p = getattr(download, "url")
-
-                    if isinstance(p, str):
-                        p = [p]
-
-                downloader_args.update({key: p})
+            return [
+                None if param.default is inspect.Parameter.empty else param.default
+                for param in inspect.signature(func).parameters.values()
+            ]
         else:
-            keys = self.downloader_args.split(",")
-
-            for key in keys:
-                key = key.strip()
-                downloader_args.update({key: getattr(download, key, key)})
-
-        return downloader_args
+            keys = [key.strip() for key in self.downloader_args.split(",")]
+            return [getattr(download, key, key) for key in keys]
 
     def start_downloads(self, downloads: list[Download]):
 
@@ -441,12 +421,10 @@ class Downloader(SQLiteItem):
             if download.output_directory:
                 os.makedirs(download.output_directory, exist_ok=True)
 
-            logger.info(f"Starting {self.downloader_type} download.")
+            logger.info(f"Starting {download.downloader} download.")
             func = self.get_function()
             downloader_args = self.get_downloader_args(download, func)
-
-            print(downloader_args)
-            # status_code = func(**downloader_args)
+            status_code = func(**downloader_args)
 
             # if status_code == 1:
             #     download.set_download_status_query(DownloadStatus.INTERRUPTED)

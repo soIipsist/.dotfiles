@@ -266,41 +266,41 @@ def get_ytdlp_format(ytdlp_format: str, downloads_path: str):
     return ytdlp_format
 
 
-def download_url(url: str, options: dict) -> list[tuple[bool, dict]]:
-    results = []
+# def download_url(url: str, options: dict) -> list[tuple[bool, dict]]:
+#     results = []
 
-    try:
-        with yt_dlp.YoutubeDL(options) as ytdl:
-            info = ytdl.extract_info(url, download=False)
-            is_playlist = info.get("_type") == "playlist"
-            entries = info["entries"] if is_playlist else [info]
+#     try:
+#         with yt_dlp.YoutubeDL(options) as ytdl:
+#             info = ytdl.extract_info(url, download=False)
+#             is_playlist = info.get("_type") == "playlist"
+#             entries = info["entries"] if is_playlist else [info]
 
-            for idx, entry in enumerate(entries):
-                if not entry:
-                    print(f"Skipping unavailable video at index {idx}.")
-                    results.append((False, None))
-                    continue
+#             for idx, entry in enumerate(entries):
+#                 if not entry:
+#                     print(f"Skipping unavailable video at index {idx}.")
+#                     results.append((False, None))
+#                     continue
 
-                entry_url = entry.get("webpage_url")
-                if not entry_url:
-                    print(f"Missing URL at index {idx}. Skipping.")
-                    results.append((False, entry))
-                    continue
+#                 entry_url = entry.get("webpage_url")
+#                 if not entry_url:
+#                     print(f"Missing URL at index {idx}. Skipping.")
+#                     results.append((False, entry))
+#                     continue
 
-                print(f"Downloading: {entry.get('title', entry_url)}")
-                try:
-                    success = ytdl.download([entry_url]) == 0
-                except Exception as e:
-                    print(f"Download failed: {e}")
-                    success = False
+#                 print(f"Downloading: {entry.get('title', entry_url)}")
+#                 try:
+#                     success = ytdl.download([entry_url]) == 0
+#                 except Exception as e:
+#                     print(f"Download failed: {e}")
+#                     success = False
 
-                results.append((success, entry))
+#                 results.append((success, entry))
 
-    except Exception as e:
-        print(f"Failed to process URL '{url}': {e}")
-        return [(False, None)]
+#     except Exception as e:
+#         print(f"Failed to process URL '{url}': {e}")
+#         return [(False, None)]
 
-    return results
+#     return results
 
 
 if __name__ == "__main__":

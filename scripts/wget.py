@@ -3,30 +3,25 @@ import subprocess
 
 
 def download(url: str, output_directory: str = None):
-    status_code = 0
+    result = {"url": url, "status": 0}
+
     try:
         print("Downloading with wget...")
 
         cmd = (
             ["wget", "-P", output_directory, url] if output_directory else ["wget", url]
         )
-
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        print("STDOUT:", result.stdout)
-        print("STDERR:", result.stderr)
-    except KeyboardInterrupt:
-        print("\nDownload interrupted by user.")
-        status_code = 1
-
+        proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        result["stdout"] = proc.stdout
+        result["stderr"] = proc.stderr
     except subprocess.CalledProcessError as e:
-        print(f"\nDownload failed: {e}")
-        status_code = 1
-
+        result["status"] = 1
+        result["error"] = str(e)
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        status_code = 1
+        result["status"] = 1
+        result["error"] = f"Unexpected: {e}"
 
-    return status_code
+    return result
 
 
 if __name__ == "__main__":
