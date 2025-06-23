@@ -236,6 +236,8 @@ class Download(SQLiteItem):
 
     @property
     def downloader(self):
+        if isinstance(self._downloader, str):
+            return Downloader(downloader_type=self._downloader).select_first()
         return self._downloader
 
     @downloader.setter
@@ -406,13 +408,7 @@ class Downloader(SQLiteItem):
     def get_downloader_args(self, download: Download, func):
         downloader_args = {}
 
-        # check if download has different downloader
-        downloader: Downloader = self
-
-        if download.downloader is not None:
-            downloader: Downloader = getattr(download, "downloader", self)
-
-        # print("ACTUAL DOWNLOADER", downloader)
+        print("DOWNLOAD OPTIONS", download.downloader_path)
 
         if not self.downloader_args:
             func_signature = inspect.signature(func)
@@ -462,8 +458,29 @@ class Downloader(SQLiteItem):
 
 default_downloaders = [
     Downloader(
+        "ytdlp",
+        os.path.join(script_directory, "video_options_blank.json"),
+        "ytdlp",
+        "download",
+        "url, downloader_path",
+    ),
+    Downloader(
         "ytdlp_video",
         os.path.join(script_directory, "video_options.json"),
+        "ytdlp",
+        "download",
+        "url, downloader_path",
+    ),
+    Downloader(
+        "ytdlp_video_2",
+        os.path.join(script_directory, "video_options_2.json"),
+        "ytdlp",
+        "download",
+        "url, downloader_path",
+    ),
+    Downloader(
+        "ytdlp_video_3",
+        os.path.join(script_directory, "video_options_3.json"),
         "ytdlp",
         "download",
         "url, downloader_path",
@@ -477,11 +494,12 @@ default_downloaders = [
     ),
     Downloader(
         "wget",
-        os.path.join(script_directory, "wget_options.json"),
+        None,
         "wget",
         "download",
         "url, output_directory",
     ),
+    Downloader("urllib", None, "url_lib", "download", "url, output_directory"),
 ]
 
 if not db_exists:
