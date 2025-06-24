@@ -151,15 +151,23 @@ class TestYtdlp(TestBase):
 
     def test_get_outtmpl(self):
         options = get_options(options_path)
-        prefix = "YOLO - "
-        outtmpl = get_outtmpl(
-            options,
-            ytdlp_format,
-        )
+        prefix = "yolo - "
+        output_directory = os.getcwd()
+        outtmpl = get_outtmpl(options, ytdlp_format, prefix, output_directory)
+
+        expected = options.get("outtmpl", "%(title)s.%(ext)s")
 
         if prefix:
-            self.assertTrue(outtmpl.startswith(prefix))
-            outtmpl
+            expected = (
+                os.path.join(output_directory, prefix) if output_directory else prefix
+            )
+            self.assertTrue(outtmpl.startswith(expected))
+        else:
+            if output_directory:
+                expected = os.path.join(output_directory, expected)
+            self.assertEqual(outtmpl, expected)
+
+        print(outtmpl)
 
 
 if __name__ == "__main__":
