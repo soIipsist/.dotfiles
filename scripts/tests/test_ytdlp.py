@@ -149,14 +149,27 @@ class TestYtdlp(TestBase):
             self.assertTrue(output == "ytdlp_video")
         print("YTDLP FORMAT", output)
 
+    def test_get_outtmpl(self):
+        options = get_options(options_path)
+        prefix = "YOLO - "
+        outtmpl = get_outtmpl(
+            options,
+            ytdlp_format,
+        )
+
+        if prefix:
+            self.assertTrue(outtmpl.startswith(prefix))
+            outtmpl
+
 
 if __name__ == "__main__":
     test_methods = [
         # TestYtdlp.test_get_options,
         # TestYtdlp.test_download_playlist_urls,
-        TestYtdlp.test_download_regular_urls,
+        # TestYtdlp.test_download_regular_urls,
         # TestYtdlp.test_get_urls,
         # TestYtdlp.test_get_video_format,
         # TestYtdlp.test_get_ytdlp_format,
+        TestYtdlp.test_get_outtmpl,
     ]
     run_test_methods(test_methods)
