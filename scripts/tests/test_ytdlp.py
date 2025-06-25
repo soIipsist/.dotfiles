@@ -39,6 +39,10 @@ video_options_3 = os.path.join(scripts_dir, "video_options_3.json")
 video_options_blank = os.path.join(scripts_dir, "video_options_blank.json")
 pp = PrettyPrinter(indent=2)
 
+
+# global vars
+options_path = video_options_1
+update_options = True
 ytdlp_format = "ytdlp_video"
 
 
@@ -50,8 +54,10 @@ class TestYtdlp(TestBase):
         for result in results:
             entry_url = result.get("entry_url")
             original_url = result.get("original_url")
+            error = result.get("error")
             print("ENTRY URL", entry_url)
             print("ORIGINAL URL", original_url)
+            print("ERROR", error)
 
     def test_get_options(self):
         # update options is false
@@ -71,7 +77,13 @@ class TestYtdlp(TestBase):
         self.print_results(results)
 
     def test_download_regular_urls(self):
-        results = download(urls=video_urls[0])
+        output_directory = os.path.join(os.getcwd(), "videos")
+        results = download(
+            urls=video_urls[0],
+            options_path=options_path,
+            update_options=update_options,
+            output_directory=output_directory,
+        )
         self.print_results(results)
 
     def test_get_urls(self):
@@ -136,9 +148,9 @@ if __name__ == "__main__":
     test_methods = [
         # TestYtdlp.test_get_options,
         # TestYtdlp.test_download_playlist_urls,
-        # TestYtdlp.test_download_regular_urls,
+        TestYtdlp.test_download_regular_urls,
         # TestYtdlp.test_get_urls,
         # TestYtdlp.test_get_video_format,
-        TestYtdlp.test_get_ytdlp_format,
+        # TestYtdlp.test_get_ytdlp_format,
     ]
     run_test_methods(test_methods)
