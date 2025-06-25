@@ -51,13 +51,17 @@ class TestYtdlp(TestBase):
         super().setUp()
 
     def print_results(self, results: list):
-        for result in results:
+        for idx, result in enumerate(results):
             entry_url = result.get("entry_url")
             original_url = result.get("original_url")
             error = result.get("error")
             print("ENTRY URL", entry_url)
             print("ORIGINAL URL", original_url)
             print("ERROR", error)
+
+            self.assertIsNotNone(entry_url, f"entry at index: {idx}!")
+            self.assertIsNotNone(original_url, f"entry at index: {idx}!")
+            self.assertIsNone(error, f"entry at index: {idx}!")
 
     def test_get_options(self):
         # update options is false
@@ -78,13 +82,15 @@ class TestYtdlp(TestBase):
 
     def test_download_regular_urls(self):
         output_directory = os.path.join(os.getcwd(), "videos")
+        urls = video_urls
         results = download(
-            urls=video_urls[0],
+            urls=urls,
             options_path=options_path,
             update_options=update_options,
             output_directory=output_directory,
         )
         self.print_results(results)
+        self.assertTrue(len(results) == len(urls))
 
     def test_get_urls(self):
         urls = [
