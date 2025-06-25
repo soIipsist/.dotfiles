@@ -12,6 +12,9 @@ pp = PrettyPrinter(indent=2)
 
 
 def get_urls(urls: list, removed_args: list = None):
+    if isinstance(urls, str):
+        urls = [urls]
+
     if not removed_args:
         return urls
 
@@ -64,25 +67,47 @@ def get_outtmpl(
     return outtmpl
 
 
-def get_format(options: dict, format: str, custom_format: str = None):
+def get_video_format(options: dict, ytdlp_format: str, custom_format: str = None):
     existing_format = options.get("format")
 
     if custom_format:
         return custom_format
 
-    if format == "ytdlp_audio":
+    if ytdlp_format == "ytdlp_audio":
         return "bestaudio/best"
 
     return "bestvideo+bestaudio" if not existing_format else existing_format
 
 
-def get_postprocessors(options: dict, format: str, extension: str):
+def get_ytdlp_format(ytdlp_format: str, downloads_path: str):
+
+    path_name = (
+        os.path.basename(downloads_path).removesuffix(".txt")
+        if downloads_path is not None
+        else None
+    )
+
+    # choose different format based on downloader.txt base file name
+
+    file_formats = {
+        "music": "ytdlp_audio",
+        "mp3": "ytdlp_audio",
+        "videos": "ytdlp_video",
+    }
+
+    if path_name in file_formats.keys():
+        ytdlp_format = file_formats.get(path_name)
+
+    return ytdlp_format
+
+
+def get_postprocessors(options: dict, ytdlp_format: str, extension: str):
     postprocessors: list = options.get("postprocessors", [])
 
     embed_subtitle = {"already_have_subtitle": False, "key": "FFmpegEmbedSubtitle"}
     extract_audio = {"key": "FFmpegExtractAudio", "preferredcodec": extension}
 
-    if format == "ytdlp_video":
+    if ytdlp_format == "ytdlp_video":
         if embed_subtitle not in postprocessors:
             postprocessors.append(embed_subtitle)
     else:
@@ -111,6 +136,7 @@ def get_options(
     postprocessor_args: list = None,
     output_directory=None,
 ):
+
     ytdlp_format = ytdlp_format.lower()
 
     if ytdlp_format not in valid_formats:
@@ -151,7 +177,7 @@ def get_options(
             }
         )
 
-    ytdlp_format = get_format(options, ytdlp_format, custom_format)
+    video_format = get_video_format(options, ytdlp_format, custom_format)
     postprocessors = get_postprocessors(options, ytdlp_format, extension)
     options_postprocessor_args = get_postprocessor_args(options, postprocessor_args)
     outtmpl = get_outtmpl(options, ytdlp_format, prefix, output_directory)
@@ -160,7 +186,7 @@ def get_options(
     options["outtmpl"] = outtmpl
     options["postprocessors"] = postprocessors
     options["postprocessor_args"] = options_postprocessor_args
-    options["format"] = ytdlp_format
+    options["format"] = video_format
 
     return options
 
@@ -184,15 +210,29 @@ def get_entry_url(original_url: str, entry: dict) -> str:
 
 def download(
     urls: list,
-    options: dict = None,
+    options_path="",
+    ytdlp_format: str = "ytdlp_video",
+    custom_format: str = None,
+    update_options: bool = False,
+    prefix: str = None,
+    extension: str = None,
+    postprocessor_args: list = None,
+    removed_args: list = None,
+    output_directory=None,
 ):
     print("Downloading with yt-dlp...")
+    options = get_options(
+        options_path,
+        ytdlp_format,
+        custom_format,
+        update_options,
+        prefix,
+        extension,
+        postprocessor_args,
+        output_directory,
+    )
 
-    if isinstance(urls, str):
-        urls = [urls]
-
-    if isinstance(options, str):  # this is a path
-        options = get_options(options_path=options)
+    urls = get_urls(urls, removed_args)
 
     pp.pprint(options)
     results = []
@@ -285,28 +325,6 @@ def download(
     return results
 
 
-def get_ytdlp_format(ytdlp_format: str, downloads_path: str):
-
-    path_name = (
-        os.path.basename(downloads_path).removesuffix(".txt")
-        if downloads_path is not None
-        else None
-    )
-
-    # choose different format based on downloader.txt base file name
-
-    file_formats = {
-        "music": "ytdlp_audio",
-        "mp3": "ytdlp_audio",
-        "videos": "ytdlp_video",
-    }
-
-    if path_name in file_formats.keys():
-        ytdlp_format = file_formats.get(path_name)
-
-    return ytdlp_format
-
-
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -314,7 +332,7 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--removed_args", default=None, nargs="+")
     parser.add_argument(
         "-f",
-        "--format",
+        "--ytdlp_format",
         default=os.environ.get("YTDLP_FORMAT", "ytdlp_video"),
         choices=["ytdlp_video", "ytdlp_audio"],
     )
@@ -340,7 +358,7 @@ if __name__ == "__main__":
 
     urls = args.get("urls")
     removed_args = args.get("removed_args")
-    format = args.get("format")
+    ytdlp_format = args.get("ytdlp_format")
     output_directory = args.get("output_directory")
     prefix = args.get("prefix")
     custom_format = args.get("custom_format")
@@ -349,19 +367,18 @@ if __name__ == "__main__":
     options_path = args.get("options_path", "")
     update_options = args.get("update_options")
 
-    options = get_options(
+    results = download(
+        urls,
         options_path,
-        format,
+        ytdlp_format,
         custom_format,
         update_options,
         prefix,
         extension,
         postprocessor_args,
+        removed_args,
         output_directory,
     )
-
-    urls = get_urls(urls, removed_args)
-    results = download(urls, options)
 
 # playlist tests
 # python ytdlp.py "https://youtube.com/playlist?list=OLAK5uy_nTBnmorryZikTJrjY0Lj1lHG_DWy4IPvk" -f ytdlp_audio
