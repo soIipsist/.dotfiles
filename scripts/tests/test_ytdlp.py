@@ -40,6 +40,7 @@ video_options_blank = os.path.join(scripts_dir, "video_options_blank.json")
 pp = PrettyPrinter(indent=2)
 
 ytdlp_format = "ytdlp_video"
+downloads_path = None
 
 
 class TestYtdlp(TestBase):
@@ -114,9 +115,23 @@ class TestYtdlp(TestBase):
     def test_get_ytdlp_format(self):
 
         ytdlp_format = "ytdlp_video"
-        output = get_ytdlp_format(
-            ytdlp_format,
-        )
+        downloads_path = "downloads.txt"
+        output = get_ytdlp_format(ytdlp_format, downloads_path)
+
+        file_formats = {
+            "music": "ytdlp_audio",
+            "mp3": "ytdlp_audio",
+            "videos": "ytdlp_video",
+        }
+
+        if downloads_path:
+            self.assertTrue(os.path.exists(downloads_path))
+            d_path = os.path.basename(downloads_path).removesuffix(".txt")
+            self.assertTrue(file_formats.get(d_path, ytdlp_format) == output)
+        else:
+            self.assertTrue(output == ytdlp_format)
+
+        print("YTDLP FORMAT", output)
 
 
 if __name__ == "__main__":
@@ -125,7 +140,7 @@ if __name__ == "__main__":
         # TestYtdlp.test_download_playlist_urls,
         # TestYtdlp.test_download_regular_urls,
         # TestYtdlp.test_get_urls,
-        TestYtdlp.test_get_video_format,
-        # TestYtdlp.test_get_ytdlp_format,
+        # TestYtdlp.test_get_video_format,
+        TestYtdlp.test_get_ytdlp_format,
     ]
     run_test_methods(test_methods)

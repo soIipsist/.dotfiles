@@ -83,28 +83,19 @@ def get_video_format(options: dict, ytdlp_format: str, custom_format: str = None
 
 
 def get_ytdlp_format(ytdlp_format: str, downloads_path: str = ""):
-
     if not downloads_path:
         return ytdlp_format
 
-    path_name = (
-        os.path.basename(downloads_path).removesuffix(".txt")
-        if downloads_path is not None
-        else None
-    )
-
-    # choose different format based on downloader.txt base file name
+    path_name = os.path.basename(downloads_path).removesuffix(".txt")
 
     file_formats = {
         "music": "ytdlp_audio",
         "mp3": "ytdlp_audio",
         "videos": "ytdlp_video",
     }
+    # choose different format based on downloader.txt base file name
 
-    if path_name in file_formats.keys():
-        ytdlp_format = file_formats.get(path_name)
-
-    return ytdlp_format
+    return file_formats.get(path_name, ytdlp_format)
 
 
 def get_postprocessors(options: dict, ytdlp_format: str, extension: str):
