@@ -8,7 +8,15 @@ current_file = Path(__file__).resolve()
 parent_directory = current_file.parents[2]
 os.sys.path.insert(0, str(parent_directory))
 
-from ytdlp import download, get_options, get_urls, read_json_file
+from ytdlp import (
+    download,
+    get_options,
+    get_urls,
+    read_json_file,
+    get_video_format,
+    get_ytdlp_format,
+    get_outtmpl,
+)
 
 # playlist_urls = [
 #     "https://www.youtube.com/playlist?list=PL3A_1s_Z8MQbYIvki-pbcerX8zrF4U8zQ"
@@ -30,6 +38,8 @@ video_options_2 = os.path.join(scripts_dir, "video_options_2.json")
 video_options_3 = os.path.join(scripts_dir, "video_options_3.json")
 video_options_blank = os.path.join(scripts_dir, "video_options_blank.json")
 pp = PrettyPrinter(indent=2)
+
+ytdlp_format = "ytdlp_video"
 
 
 class TestYtdlp(TestBase):
@@ -81,12 +91,41 @@ class TestYtdlp(TestBase):
             for arg in removed_args:
                 self.assertNotIn(arg, query_params, f"{arg} was found in {url}")
 
+    def test_get_video_format(self):
+        options = get_options(video_options_blank)  # "format" may or may not be in here
+        ytdlp_format = "ytdlp_audio"
+        custom_format = None
+
+        video_format = get_video_format(options, ytdlp_format, custom_format)
+
+        expected_format = custom_format or (
+            "bestaudio/best"
+            if ytdlp_format == "ytdlp_audio" and not options.get("format")
+            else (
+                "bestvideo+bestaudio"
+                if ytdlp_format == "ytdlp_video" and not options.get("format")
+                else options.get("format")
+            )
+        )
+
+        self.assertEqual(video_format, expected_format)
+        print("VIDEO FORMAT:", video_format)
+
+    def test_get_ytdlp_format(self):
+
+        ytdlp_format = "ytdlp_video"
+        output = get_ytdlp_format(
+            ytdlp_format,
+        )
+
 
 if __name__ == "__main__":
     test_methods = [
         # TestYtdlp.test_get_options,
         # TestYtdlp.test_download_playlist_urls,
         # TestYtdlp.test_download_regular_urls,
-        TestYtdlp.test_get_urls
+        # TestYtdlp.test_get_urls,
+        TestYtdlp.test_get_video_format,
+        # TestYtdlp.test_get_ytdlp_format,
     ]
     run_test_methods(test_methods)

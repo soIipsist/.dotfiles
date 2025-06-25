@@ -68,18 +68,24 @@ def get_outtmpl(
 
 
 def get_video_format(options: dict, ytdlp_format: str, custom_format: str = None):
-    existing_format = options.get("format")
+    video_format = options.get("format")
 
     if custom_format:
         return custom_format
 
-    if ytdlp_format == "ytdlp_audio":
-        return "bestaudio/best"
+    if not video_format:
+        if ytdlp_format == "ytdlp_audio":
+            video_format = "bestaudio/best"
+        else:
+            video_format = "bestvideo+bestaudio"
 
-    return "bestvideo+bestaudio" if not existing_format else existing_format
+    return video_format
 
 
-def get_ytdlp_format(ytdlp_format: str, downloads_path: str):
+def get_ytdlp_format(ytdlp_format: str, downloads_path: str = ""):
+
+    if not downloads_path:
+        return ytdlp_format
 
     path_name = (
         os.path.basename(downloads_path).removesuffix(".txt")
