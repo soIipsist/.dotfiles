@@ -6,7 +6,6 @@ from pprint import PrettyPrinter
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 
 bool_choices = ["0", "1", 0, 1, "true", "false", True, False, None]
-valid_formats = ["ytdlp_audio", "ytdlp_video"]
 parent_directory = os.path.dirname(os.path.abspath(__file__))
 pp = PrettyPrinter(indent=2)
 
@@ -82,20 +81,18 @@ def get_video_format(options: dict, ytdlp_format: str, custom_format: str = None
     return video_format
 
 
-def get_ytdlp_format(ytdlp_format: str, downloads_path: str = ""):
-    if not downloads_path:
-        return ytdlp_format
-
-    path_name = os.path.basename(downloads_path).removesuffix(".txt")
+def get_ytdlp_format(ytdlp_format: str):
+    valid_formats = ["ytdlp_audio", "ytdlp_video"]
 
     file_formats = {
         "music": "ytdlp_audio",
         "mp3": "ytdlp_audio",
         "videos": "ytdlp_video",
     }
-    # choose different format based on downloader.txt base file name
 
-    return file_formats.get(path_name, ytdlp_format)
+    ytdlp_format = file_formats.get(ytdlp_format, ytdlp_format)
+
+    return ytdlp_format if ytdlp_format in valid_formats else "ytdlp_video"
 
 
 def get_postprocessors(options: dict, ytdlp_format: str, extension: str):
@@ -134,10 +131,7 @@ def get_options(
     output_directory=None,
 ):
 
-    ytdlp_format = ytdlp_format.lower()
-
-    if ytdlp_format not in valid_formats:
-        ytdlp_format = "ytdlp_video"
+    ytdlp_format = get_ytdlp_format(ytdlp_format)
 
     if os.path.exists(options_path):  # read from metadata file, if it exists
         print(f"Using ytdlp options from path: {options_path}.")
@@ -333,6 +327,7 @@ if __name__ == "__main__":
         default=os.environ.get("YTDLP_FORMAT", "ytdlp_video"),
         choices=["ytdlp_video", "ytdlp_audio"],
     )
+    parser.add_argument("-D", "--downloads_path", type=str, default="")
     parser.add_argument("-d", "--output_directory", type=str, default=None)
     parser.add_argument(
         "-p", "--prefix", default=os.environ.get("YTDLP_PREFIX"), type=str
@@ -362,11 +357,13 @@ if __name__ == "__main__":
     extension = args.get("extension")
     postprocessor_args = args.get("postprocessor_args", [])
     options_path = args.get("options_path", "")
+    downloads_path = args.get("downloads_path", "")
     update_options = args.get("update_options")
 
     results = download(
         urls,
         options_path,
+        downloads_path,
         ytdlp_format,
         custom_format,
         update_options,
