@@ -195,8 +195,7 @@ def download(
         options = get_options(options_path=options)
 
     pp.pprint(options)
-    all_entries = []
-    error_entries = []
+    results = []
 
     for url in urls:
         print(f"\nProcessing URL: {url}")
@@ -213,35 +212,77 @@ def download(
                         f"Playlist: {info.get('title', 'Untitled')} ({len(entries)} videos)"
                     )
 
-                cleaned_entries = []
                 for idx, entry in enumerate(entries):
+                    entry_url = None
+
+                    result = {
+                        "original_url": url,
+                        "entry_index": idx,
+                        "entry_url": entry_url,
+                        "status": 1,
+                    }
+
                     if not entry:
                         print(f"Skipping unavailable video at index {idx}.")
-                        error_entries.append(entry)
+                        result["error"] = "Unavailable entry"
+                        results.append(result)
                         continue
 
                     entry_url = entry.get("webpage_url", get_entry_url(url, entry))
+
                     if not entry_url:
                         print(f"Missing URL at index {idx}. Skipping.")
+                        result["error"] = "Missing entry URL"
+                        results.append(result)
                         continue
 
+                    result["entry_url"] = entry_url
                     print(f"Downloading: {entry.get('title', entry_url)}")
-                    if ytdl.download([entry_url]) != 0:
-                        print(f"Error downloading: {entry_url}")
-                        error_entries.append(entry)
-                    else:
-                        cleaned_entries.append(entry)
+                    status = ytdl.download([entry_url])
 
-                all_entries.extend(cleaned_entries)
+                    result.update(
+                        {
+                            "status": status,
+                            "entry": entry,
+                        }
+                    )
+
+                    if status != 0:
+                        result["error"] = "Download failed"
+
+                    results.append(result)
 
         except yt_dlp.utils.DownloadError as e:
             print(f"Download error: {e}")
+            results.append(
+                {
+                    "original_url": url,
+                    "status": 1,
+                    "error": str(e),
+                }
+            )
+
         except SystemExit as e:
             print(f"SystemExit: {e} — continuing...")
+            results.append(
+                {
+                    "original_url": url,
+                    "status": 1,
+                    "error": f"SystemExit: {e}",
+                }
+            )
+
         except Exception as e:
             print(f"Unexpected error: {e}")
+            results.append(
+                {
+                    "original_url": url,
+                    "status": 1,
+                    "error": f"Unexpected error: {e}",
+                }
+            )
 
-    return all_entries, error_entries
+    return results
 
 
 def get_ytdlp_format(ytdlp_format: str, downloads_path: str):
@@ -264,43 +305,6 @@ def get_ytdlp_format(ytdlp_format: str, downloads_path: str):
         ytdlp_format = file_formats.get(path_name)
 
     return ytdlp_format
-
-
-# def download_url(url: str, options: dict) -> list[tuple[bool, dict]]:
-#     results = []
-
-#     try:
-#         with yt_dlp.YoutubeDL(options) as ytdl:
-#             info = ytdl.extract_info(url, download=False)
-#             is_playlist = info.get("_type") == "playlist"
-#             entries = info["entries"] if is_playlist else [info]
-
-#             for idx, entry in enumerate(entries):
-#                 if not entry:
-#                     print(f"Skipping unavailable video at index {idx}.")
-#                     results.append((False, None))
-#                     continue
-
-#                 entry_url = entry.get("webpage_url")
-#                 if not entry_url:
-#                     print(f"Missing URL at index {idx}. Skipping.")
-#                     results.append((False, entry))
-#                     continue
-
-#                 print(f"Downloading: {entry.get('title', entry_url)}")
-#                 try:
-#                     success = ytdl.download([entry_url]) == 0
-#                 except Exception as e:
-#                     print(f"Download failed: {e}")
-#                     success = False
-
-#                 results.append((success, entry))
-
-#     except Exception as e:
-#         print(f"Failed to process URL '{url}': {e}")
-#         return [(False, None)]
-
-#     return results
 
 
 if __name__ == "__main__":
@@ -357,7 +361,7 @@ if __name__ == "__main__":
     )
 
     urls = get_urls(urls, removed_args)
-    all_entries, error_entries = download(urls, options)
+    results = download(urls, options)
 
 # playlist tests
 # python ytdlp.py "https://youtube.com/playlist?list=OLAK5uy_nTBnmorryZikTJrjY0Lj1lHG_DWy4IPvk" -f ytdlp_audio

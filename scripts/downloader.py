@@ -422,14 +422,21 @@ class Downloader(SQLiteItem):
                 os.makedirs(download.output_directory, exist_ok=True)
 
             logger.info(f"Starting {download.downloader} download.")
-            func = self.get_function()
+            downloader = download.downloader
+            func = downloader.get_function()
             downloader_args = self.get_downloader_args(download, func)
-            status_code = func(**downloader_args)
+            results = func(**downloader_args)
 
-            # if status_code == 1:
-            #     download.set_download_status_query(DownloadStatus.INTERRUPTED)
-            # else:
-            #     download.set_download_status_query(DownloadStatus.COMPLETED)
+            if not isinstance(results, list):
+                results = [results]
+
+            for result in results:
+                status_code = result.get("status", 1)
+
+                if status_code == 1:
+                    download.set_download_status_query(DownloadStatus.INTERRUPTED)
+                else:
+                    download.set_download_status_query(DownloadStatus.COMPLETED)
 
         return downloads
 
