@@ -42,7 +42,8 @@ pp = PrettyPrinter(indent=2)
 
 # global vars
 options_path = video_options_1
-update_options = True
+update_options = False
+output_directory = os.path.join(os.getcwd(), "videos")
 ytdlp_format = "ytdlp_video"
 
 
@@ -77,7 +78,15 @@ class TestYtdlp(TestBase):
         pp.pprint(options_data)
 
     def test_download_playlist_urls(self):
-        results = download(urls=playlist_urls[0])
+        # urls = playlist_urls[0]
+        urls = playlist_urls
+
+        results = download(
+            urls=urls,
+            options_path=options_path,
+            update_options=update_options,
+            output_directory=output_directory,
+        )
         self.print_results(results)
 
     def test_download_regular_urls(self):
@@ -131,15 +140,17 @@ class TestYtdlp(TestBase):
 
     def test_get_ytdlp_format(self):
 
-        ytdlp_format = None
+        ytdlp_format = "~/Users/p/Desktop/music.txt"
         output = get_ytdlp_format(ytdlp_format)
 
         file_formats = {
             "music": "ytdlp_audio",
             "mp3": "ytdlp_audio",
-            "videos": "ytdlp_video",
         }
         valid_formats = ["ytdlp_video", "ytdlp_audio"]
+
+        if ytdlp_format.endswith(".txt"):
+            ytdlp_format = os.path.basename(ytdlp_format.removesuffix(".txt"))
 
         if ytdlp_format in file_formats:
             self.assertTrue(output == file_formats.get(ytdlp_format))
@@ -177,7 +188,7 @@ if __name__ == "__main__":
         # TestYtdlp.test_download_regular_urls,
         # TestYtdlp.test_get_urls,
         # TestYtdlp.test_get_video_format,
-        # TestYtdlp.test_get_ytdlp_format,
-        TestYtdlp.test_get_outtmpl,
+        TestYtdlp.test_get_ytdlp_format,
+        # TestYtdlp.test_get_outtmpl,
     ]
     run_test_methods(test_methods)

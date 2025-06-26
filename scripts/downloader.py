@@ -174,6 +174,8 @@ class Download(SQLiteItem):
 
     @property
     def output_directory(self):
+        if self._output_directory is None:
+            return os.getcwd()
         return self._output_directory
 
     @output_directory.setter
@@ -268,9 +270,6 @@ class Download(SQLiteItem):
             if self.output_filename
             else os.path.basename(urlparse(self.url).path)
         )
-
-        if not self.output_directory:
-            self.output_directory = os.getcwd()
 
         output_path = os.path.join(self.output_directory, filename)
         return output_path

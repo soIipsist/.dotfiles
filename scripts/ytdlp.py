@@ -81,7 +81,11 @@ def get_video_format(options: dict, ytdlp_format: str, custom_format: str = None
     return video_format
 
 
-def get_ytdlp_format(ytdlp_format: str):
+def get_ytdlp_format(ytdlp_format: str = "ytdlp_video"):
+
+    if ytdlp_format.endswith(".txt"):
+        ytdlp_format = os.path.basename(ytdlp_format).removesuffix(".txt")
+
     valid_formats = ["ytdlp_audio", "ytdlp_video"]
 
     file_formats = {
@@ -327,7 +331,6 @@ if __name__ == "__main__":
         default=os.environ.get("YTDLP_FORMAT", "ytdlp_video"),
         choices=["ytdlp_video", "ytdlp_audio"],
     )
-    parser.add_argument("-D", "--downloads_path", type=str, default="")
     parser.add_argument("-d", "--output_directory", type=str, default=None)
     parser.add_argument(
         "-p", "--prefix", default=os.environ.get("YTDLP_PREFIX"), type=str
@@ -349,21 +352,19 @@ if __name__ == "__main__":
     args = vars(parser.parse_args())
 
     urls = args.get("urls")
-    removed_args = args.get("removed_args")
+    options_path = args.get("options_path", "")
     ytdlp_format = args.get("ytdlp_format")
-    output_directory = args.get("output_directory")
-    prefix = args.get("prefix")
     custom_format = args.get("custom_format")
+    update_options = args.get("update_options")
+    prefix = args.get("prefix")
     extension = args.get("extension")
     postprocessor_args = args.get("postprocessor_args", [])
-    options_path = args.get("options_path", "")
-    downloads_path = args.get("downloads_path", "")
-    update_options = args.get("update_options")
+    removed_args = args.get("removed_args")
+    output_directory = args.get("output_directory")
 
     results = download(
         urls,
         options_path,
-        downloads_path,
         ytdlp_format,
         custom_format,
         update_options,

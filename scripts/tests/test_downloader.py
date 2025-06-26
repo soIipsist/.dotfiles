@@ -22,11 +22,14 @@ from downloader import (
 
 
 playlist_urls = [
-    "https://www.youtube.com/playlist?list=PL4-sEuX-6HJV8C2TTbgguSByrLXKB_0WY"
+    "https://www.youtube.com/playlist?list=PL4-sEuX-6HJV8C2TTbgguSByrLXKB_0WY",
+    "https://www.youtube.com/playlist?list=PL4-sEuX-6HJWpbDV-SbyGUVIql65KlEhl",
 ]
+
 video_urls = [
-    "https://youtu.be/MvsAesQ-4zA?si=gDyPQcdb6sTLWipY"
-    "https://youtu.be/OlEqHXRrcpc?si=4JAYOOH2B0A6MBvF"
+    "https://www.youtube.com/watch?v=j17yEgxPwkk",
+    "https://youtu.be/j17yEgxPwkk?si=mV_z1hW6oZRkvzvh",
+    "https://youtu.be/tPEE9ZwTmy0?si=CvPXvCucN4ST-fcN",
 ]
 
 downloader = default_downloaders[0]
@@ -46,14 +49,26 @@ class TestDownloader(TestBase):
 
     def test_parse_download_string(self):
         downloads_path = "downloads.txt"
+        self.assertTrue(os.path.exists(downloads_path))
 
         with open(downloads_path, "r") as file:
             for line in file:
                 print(line)
+                download = Download.parse_download_string(line)
 
-                download = Download.parse_download_string(
-                    line,
-                )
+                if not download:
+                    continue
+
+                self.assertTrue(download.url in line)  # check url
+                self.assertTrue(download.output_directory is not None)
+
+                if download.output_filename:
+                    self.assertTrue(
+                        download.output_path
+                        == os.path.join(
+                            download.output_directory, download.output_filename
+                        )
+                    )
 
     def test_get_downloader_func(self):
         downloader = Downloader("ytdlp_video", video_options_1, "ytdlp", "download")
@@ -142,10 +157,9 @@ class TestDownloader(TestBase):
 
 if __name__ == "__main__":
     test_methods = [
-        # TestDownloader.test_downloader,
-        # TestDownloader.test_parse_download_string,
+        TestDownloader.test_parse_download_string,
         # TestDownloader.test_get_downloader_func,
-        TestDownloader.test_get_downloader_args,
+        # TestDownloader.test_get_downloader_args,
         # TestDownloader.test_download_all_cmd,
         # TestDownloader.test_downloaders_cmd_list,
         # TestDownloader.test_downloaders_cmd_add,
