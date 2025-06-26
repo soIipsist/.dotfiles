@@ -45,10 +45,17 @@ def read_json_file(json_file, errors=None):
 
 
 def get_outtmpl(
-    options: dict, ytdlp_format: str, prefix: str = None, output_directory: str = None
+    options: dict,
+    ytdlp_format: str,
+    prefix: str = None,
+    output_directory: str = None,
+    output_filename: str = None,
 ):
 
     outtmpl = options.get("outtmpl", f"%(title)s.%(ext)s")
+
+    if output_filename:
+        outtmpl = f"{output_filename}.%(ext)s"
 
     if prefix:
         outtmpl = f"{prefix}{outtmpl}"
@@ -133,6 +140,7 @@ def get_options(
     extension: str = None,
     postprocessor_args: list = None,
     output_directory=None,
+    output_filename=None,
 ):
 
     ytdlp_format = get_ytdlp_format(ytdlp_format)
@@ -175,7 +183,9 @@ def get_options(
     video_format = get_video_format(options, ytdlp_format, custom_format)
     postprocessors = get_postprocessors(options, ytdlp_format, extension)
     options_postprocessor_args = get_postprocessor_args(options, postprocessor_args)
-    outtmpl = get_outtmpl(options, ytdlp_format, prefix, output_directory)
+    outtmpl = get_outtmpl(
+        options, ytdlp_format, prefix, output_directory, output_filename
+    )
 
     options["merge_output_format"] = extension
     options["outtmpl"] = outtmpl
@@ -214,6 +224,7 @@ def download(
     postprocessor_args: list = None,
     removed_args: list = None,
     output_directory=None,
+    output_filename=None,
 ):
     print("Downloading with yt-dlp...")
     options = get_options(
@@ -225,6 +236,7 @@ def download(
         extension,
         postprocessor_args,
         output_directory,
+        output_filename,
     )
 
     urls = get_urls(urls, removed_args)
@@ -348,6 +360,7 @@ if __name__ == "__main__":
         type=str_to_bool,
         choices=bool_choices,
     )
+    parser.add_argument("-F", "output_filename", default=None)
 
     args = vars(parser.parse_args())
 
@@ -361,6 +374,7 @@ if __name__ == "__main__":
     postprocessor_args = args.get("postprocessor_args", [])
     removed_args = args.get("removed_args")
     output_directory = args.get("output_directory")
+    output_filename = args.get("output_filename")
 
     results = download(
         urls,
@@ -373,6 +387,7 @@ if __name__ == "__main__":
         postprocessor_args,
         removed_args,
         output_directory,
+        output_filename,
     )
 
 # playlist tests

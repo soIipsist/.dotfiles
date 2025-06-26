@@ -164,7 +164,10 @@ class TestYtdlp(TestBase):
         options = get_options(options_path)
         prefix = "yolo - "
         output_directory = os.getcwd()
-        outtmpl = get_outtmpl(options, ytdlp_format, prefix, output_directory)
+        output_filename = None
+        outtmpl = get_outtmpl(
+            options, ytdlp_format, prefix, output_directory, output_filename
+        )
 
         expected = options.get("outtmpl", "%(title)s.%(ext)s")
 
@@ -188,7 +191,7 @@ if __name__ == "__main__":
         # TestYtdlp.test_download_regular_urls,
         # TestYtdlp.test_get_urls,
         # TestYtdlp.test_get_video_format,
-        TestYtdlp.test_get_ytdlp_format,
-        # TestYtdlp.test_get_outtmpl,
+        # TestYtdlp.test_get_ytdlp_format,
+        TestYtdlp.test_get_outtmpl,
     ]
     run_test_methods(test_methods)
