@@ -121,9 +121,23 @@ class TestDownloader(TestBase):
         download = Download(
             url=playlist_urls[0], downloader=downloader, downloads_path=video_options_1
         )
-        downloader_args = downloader.get_downloader_args(download, ytdlp_download)
+        output_downloader_args = downloader.get_downloader_args(
+            download, ytdlp_download
+        )
+        func_params = inspect.signature(ytdlp_download).parameters
+        downloader_args = downloader_args.split(",")
 
-        print(downloader_args)
+        for arg in downloader_args:
+            arg = arg.strip()
+            if "=" in arg:
+                k, v = arg.split("=")
+                self.assertTrue(k in func_params)
+                print(k, output_downloader_args.get(k), v)
+                value = getattr(download, v, v)
+                self.assertTrue(output_downloader_args.get(k) == value)
+            else:
+                # positional arg
+                value = getattr(download, arg, arg)
 
     def test_downloaders_cmd_list(self):
         downloaders = downloaders_cmd(
