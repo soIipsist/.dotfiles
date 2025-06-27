@@ -1,3 +1,4 @@
+from ast import literal_eval
 from importlib import import_module
 import os
 from pprint import PrettyPrinter
@@ -421,11 +422,10 @@ class Downloader(SQLiteItem):
 
         keys = [key.strip() for key in self.downloader_args.split(",")]
 
-        func_keys = {}
-        for key in keys:
-            if "=" in key:
-                k, v = key.split("=")
-                func_keys[k] = v
+        func_keys = {
+            k.strip(): v.strip()
+            for k, v in (key.split("=", 1) for key in keys if "=" in key)
+        }
 
         for idx, param in enumerate(func_params):
             key = None
@@ -439,6 +439,11 @@ class Downloader(SQLiteItem):
                 if param in func_keys:
                     val = func_keys[param]
                     args_val = getattr(download, val, val)
+
+                    if args_val.lower() == "false":
+                        args_val = False
+                    elif args_val.lower() == "true":
+                        args_val = True
                     args_dict[param] = args_val
 
         return args_dict
