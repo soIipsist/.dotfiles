@@ -405,14 +405,32 @@ class Downloader(SQLiteItem):
         return func
 
     def get_downloader_args(self, download: Download, func):
+
+        func_signature = inspect.signature(func)
+        func_params = func_signature.parameters
+
+        args_dict = {}
+
         if not self.downloader_args:
-            return [
-                None if param.default is inspect.Parameter.empty else param.default
-                for param in inspect.signature(func).parameters.values()
-            ]
-        else:
-            keys = [key.strip() for key in self.downloader_args.split(",")]
-            return [getattr(download, key, key) for key in keys]
+            for name, param in func_params.items():
+                if param.default is not inspect.Parameter.empty:
+                    args_dict[name] = param.default
+                else:
+                    args_dict[name] = getattr(download, name, None)
+            return args_dict
+
+        keys = [key.strip() for key in self.downloader_args.split(",")]
+
+        for key in keys:
+            if "=" in key:
+                k, v = key.split("=")
+
+                if k in func_params:
+                    args_dict[k] = func_params.get(k, k)
+            else:
+                func_key = func_params.get(key)
+                args_dict[func_key] = getattr(download, key, key)
+        return args_dict
 
     def start_downloads(self, downloads: list[Download]):
 
@@ -422,8 +440,9 @@ class Downloader(SQLiteItem):
 
             logger.info(f"Starting {download.downloader} download.")
             downloader = download.downloader
+            downloader: Downloader
             func = downloader.get_function()
-            downloader_args = self.get_downloader_args(download, func)
+            downloader_args = downloader.get_downloader_args(download, func)
             results = func(**downloader_args)
 
             if not isinstance(results, list):

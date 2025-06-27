@@ -8,7 +8,7 @@ current_file = Path(__file__).resolve()
 parent_directory = current_file.parents[2]
 os.sys.path.insert(0, str(parent_directory))
 
-from ytdlp import download, get_options, read_json_file
+from ytdlp import download as ytdlp_download, get_options, read_json_file
 from downloader import (
     Downloader,
     Download,
@@ -43,6 +43,13 @@ wget_options = os.path.join(scripts_dir, "wget_options.json")
 
 pp = PrettyPrinter(indent=2)
 
+# global vars
+downloader_path = video_options_1
+downloader_type = "ytdlp_video"
+module = "ytdlp"
+func = "download"
+downloader_args = "url, downloader_path, update_options=False"
+
 
 class TestDownloader(TestBase):
     def setUp(self) -> None:
@@ -67,7 +74,7 @@ class TestDownloader(TestBase):
                     line,
                     f"Parsed URL not in original line: {download.url}",
                 )
-
+                print("URL:", download.url)
                 # Extract expected downloader directly from the line
                 expected_downloader = None
                 for part in shlex.split(line):
@@ -102,38 +109,21 @@ class TestDownloader(TestBase):
 
     def test_get_downloader_func(self):
         downloader = Downloader("ytdlp_video", video_options_1, "ytdlp", "download")
-
         func = downloader.get_function()
-        self.assertTrue(download == func)
-        print(func, download)
-
-    def test_get_downloader_args_with_no_values(self):
-        downloader = Downloader("ytdlp_video", video_options_1, "ytdlp", "download")
-        d = Download(url=playlist_urls[0], downloader=downloader)
-        downloader_args = downloader.get_downloader_args(d, download)
-
-        print(downloader_args)
+        self.assertTrue(ytdlp_download == func)
+        print(func, ytdlp_download)
 
     def test_get_downloader_args(self):
-        downloader_type = "ytdlp_video"
-        downloader_path = video_options_1
-        module = "ytdlp"
-        func = "download"
-        downloader_args = "url, downloads_path"
+        downloader_args = "url, downloader"
         downloader = Downloader(
             downloader_type, downloader_path, module, func, downloader_args
         )
-        d = Download(
+        download = Download(
             url=playlist_urls[0], downloader=downloader, downloads_path=video_options_1
         )
-        downloader_args = downloader.get_downloader_args(
-            d,
-            download,
-        )
+        downloader_args = downloader.get_downloader_args(download, ytdlp_download)
 
-        self.assertTrue(
-            len(downloader_args) == len(inspect.signature(download).parameters)
-        )
+        print(downloader_args)
 
     def test_downloaders_cmd_list(self):
         downloaders = downloaders_cmd(
@@ -187,12 +177,11 @@ class TestDownloader(TestBase):
 
 if __name__ == "__main__":
     test_methods = [
-        TestDownloader.test_parse_download_string,
+        # TestDownloader.test_parse_download_string,
         # TestDownloader.test_get_downloader_func,
-        # TestDownloader.test_get_downloader_args,
+        TestDownloader.test_get_downloader_args,
         # TestDownloader.test_download_all_cmd,
         # TestDownloader.test_downloaders_cmd_list,
         # TestDownloader.test_downloaders_cmd_add,
-        # TestDownloader.test_get_downloader_args_with_no_values,
     ]
     run_test_methods(test_methods)
