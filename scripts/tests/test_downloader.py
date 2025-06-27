@@ -45,10 +45,14 @@ pp = PrettyPrinter(indent=2)
 
 # global vars
 downloader_path = video_options_1
+# downloads_path = "downloads.txt"
+downloads_path = None
 downloader_type = "ytdlp_audio"
 module = "ytdlp"
 func = "download"
 downloader_args = "url, downloader_path, update_options=False"
+output_directory = None
+output_filename = None
 
 
 class TestDownloader(TestBase):
