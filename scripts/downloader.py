@@ -421,15 +421,26 @@ class Downloader(SQLiteItem):
 
         keys = [key.strip() for key in self.downloader_args.split(",")]
 
+        func_keys = {}
         for key in keys:
             if "=" in key:
                 k, v = key.split("=")
+                func_keys[k] = v
 
-                if k in func_params:
-                    args_dict[k] = func_params.get(k, k)
+        for idx, param in enumerate(func_params):
+            key = None
+            if idx < len(keys):
+                key = keys[idx]
+
+            if key and "=" not in key:
+                args_val = getattr(download, key, key)
+                args_dict[param] = args_val
             else:
-                func_key = func_params.get(key)
-                args_dict[func_key] = getattr(download, key, key)
+                if param in func_keys:
+                    val = func_keys[param]
+                    args_val = getattr(download, val, val)
+                    args_dict[param] = args_val
+
         return args_dict
 
     def start_downloads(self, downloads: list[Download]):
