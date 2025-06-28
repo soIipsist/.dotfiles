@@ -54,7 +54,7 @@ downloader_type = "ytdlp_audio"
 module = "ytdlp"
 func = "download"
 downloader_args = "url, downloader_path, update_options=False"
-output_directory = None
+output_directory = os.path.join(os.getcwd(), "videos")
 output_filename = None
 
 
@@ -148,9 +148,7 @@ class TestDownloader(TestBase):
 
     def test_start_downloads(self):
         downloads = [
-            Download(wget_urls, "url_lib"),
-            Download(video_urls[0], "ytdlp_audio"),
-            Download(wget_urls, "wget"),
+            Download(wget_urls[0], "wget", output_directory=output_directory),
         ]
         download_results = Downloader.start_downloads(downloads)
         pp.pprint(download_results)

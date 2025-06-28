@@ -2,26 +2,37 @@ import argparse
 import subprocess
 
 
-def download(url: str, output_directory: str = None):
-    result = {"url": url, "status": 0}
+def download(urls: list, output_directory: str = None):
+    results = []
 
-    try:
-        print("Downloading with wget...")
+    if isinstance(urls, str):
+        urls = [urls]
 
-        cmd = (
-            ["wget", "-P", output_directory, url] if output_directory else ["wget", url]
-        )
-        proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        result["stdout"] = proc.stdout
-        result["stderr"] = proc.stderr
-    except subprocess.CalledProcessError as e:
-        result["status"] = 1
-        result["error"] = str(e)
-    except Exception as e:
-        result["status"] = 1
-        result["error"] = f"Unexpected: {e}"
+    for url in urls:
+        result = {"url": url, "status": 0}
 
-    return result
+        try:
+            print("Downloading with wget...")
+
+            cmd = (
+                ["wget", "-P", output_directory, url]
+                if output_directory
+                else ["wget", url]
+            )
+            proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            result["stdout"] = proc.stdout
+            result["stderr"] = proc.stderr
+        except subprocess.CalledProcessError as e:
+            result["status"] = 1
+            result["error"] = str(e)
+        except Exception as e:
+            result["status"] = 1
+            result["error"] = f"Unexpected: {e}"
+            print(e)
+
+        results.append(result)
+
+    return results
 
 
 if __name__ == "__main__":
@@ -34,5 +45,4 @@ if __name__ == "__main__":
     urls = args.get("urls")
     output_directory = args.get("output_directory")
 
-    for url in urls:
-        status = download(url, output_directory)
+    results = download(urls, output_directory)

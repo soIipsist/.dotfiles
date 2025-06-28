@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from importlib import import_module
 import os
 from pprint import PrettyPrinter
@@ -450,33 +451,57 @@ class Downloader(SQLiteItem):
     def start_downloads(downloads: list[Download]):
         download_results = []
 
-        for idx, download in enumerate(downloads):
-            if download.output_directory:
-                os.makedirs(download.output_directory, exist_ok=True)
+        for idx, target_download in enumerate(downloads):
+            if target_download.output_directory:
+                os.makedirs(target_download.output_directory, exist_ok=True)
 
-            logger.info(f"Starting {download.downloader} download.")
-            downloader = download.downloader
+            logger.info(f"Starting {target_download.downloader} download.")
+            downloader = target_download.downloader
             downloader: Downloader
-            results = []
 
             try:
                 if not downloader:
                     raise ValueError(f"Downloader not found at index {idx}!")
 
                 func = downloader.get_function()
-                downloader_args = downloader.get_downloader_args(download, func)
+                downloader_args = downloader.get_downloader_args(target_download, func)
+                result_iter = func(**downloader_args)
 
-                for result in func(**downloader_args):
+                print(func, downloader_args)
+                if isinstance(result_iter, (str, dict)):
+                    result_iter = [result_iter]
+                elif isinstance(result_iter, Iterable):
+                    pass
+                else:
+                    result_iter = [result_iter]
+
+                for result in result_iter:
+
+                    print("RESULT", result)
+                    entry_index = result.get("entry_index")
+                    child_download = None
+
+                    if entry_index is not None:
+                        child_download = target_download
+
+                    target_download = (
+                        child_download if child_download else target_download
+                    )
                     status_code = result.get("status", 1)
 
                     if status_code == 1:
-                        download.set_download_status_query(DownloadStatus.INTERRUPTED)
+                        target_download.set_download_status_query(
+                            DownloadStatus.INTERRUPTED
+                        )
                     else:
-                        download.set_download_status_query(DownloadStatus.COMPLETED)
+                        target_download.set_download_status_query(
+                            DownloadStatus.COMPLETED
+                        )
+                    download_results.append(result)
+
             except Exception as e:
                 print(e)
                 continue
-            # download_results.extend(results)
 
         return download_results
 
