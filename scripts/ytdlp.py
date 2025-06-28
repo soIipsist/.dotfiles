@@ -301,33 +301,30 @@ def download(
 
         except yt_dlp.utils.DownloadError as e:
             print(f"Download error: {e}")
-            results.append(
-                {
-                    "original_url": url,
-                    "status": 1,
-                    "error": str(e),
-                }
-            )
+            result = {
+                "original_url": url,
+                "status": 1,
+                "error": str(e),
+            }
+            results.append(result)
 
         except SystemExit as e:
             print(f"SystemExit: {e} — continuing...")
-            results.append(
-                {
-                    "original_url": url,
-                    "status": 1,
-                    "error": f"SystemExit: {e}",
-                }
-            )
+            result = {
+                "original_url": url,
+                "status": 1,
+                "error": f"SystemExit: {e}",
+            }
+            results.append(result)
 
         except Exception as e:
             print(f"Unexpected error: {e}")
-            results.append(
-                {
-                    "original_url": url,
-                    "status": 1,
-                    "error": f"Unexpected error: {e}",
-                }
-            )
+            result = {
+                "original_url": url,
+                "status": 1,
+                "error": f"Unexpected error: {e}",
+            }
+            results.append(result)
 
     return results
 

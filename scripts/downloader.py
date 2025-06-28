@@ -450,31 +450,33 @@ class Downloader(SQLiteItem):
     def start_downloads(downloads: list[Download]):
         download_results = []
 
-        for download in downloads:
+        for idx, download in enumerate(downloads):
             if download.output_directory:
                 os.makedirs(download.output_directory, exist_ok=True)
 
             logger.info(f"Starting {download.downloader} download.")
             downloader = download.downloader
             downloader: Downloader
-            func = downloader.get_function()
-            downloader_args = downloader.get_downloader_args(download, func)
-            results = func(**downloader_args)
+            results = []
 
-            pp.pprint(results)
+            try:
+                if not downloader:
+                    raise ValueError(f"Downloader not found at index {idx}!")
 
-            if not isinstance(results, list):
-                results = [results]
+                func = downloader.get_function()
+                downloader_args = downloader.get_downloader_args(download, func)
 
-            # for result in results:
-            #     status_code = result.get("status", 1)
+                for result in func(**downloader_args):
+                    status_code = result.get("status", 1)
 
-            #     if status_code == 1:
-            #         download.set_download_status_query(DownloadStatus.INTERRUPTED)
-            #     else:
-            #         download.set_download_status_query(DownloadStatus.COMPLETED)
-
-            download_results.extend(results)
+                    if status_code == 1:
+                        download.set_download_status_query(DownloadStatus.INTERRUPTED)
+                    else:
+                        download.set_download_status_query(DownloadStatus.COMPLETED)
+            except Exception as e:
+                print(e)
+                continue
+            # download_results.extend(results)
 
         return download_results
 

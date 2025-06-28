@@ -32,6 +32,9 @@ video_urls = [
     "https://youtu.be/j17yEgxPwkk?si=mV_z1hW6oZRkvzvh",
     "https://youtu.be/tPEE9ZwTmy0?si=CvPXvCucN4ST-fcN",
 ]
+wget_urls = [
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/640px-ChessSet.jpg"
+]
 
 downloader = default_downloaders[0]
 scripts_dir = os.path.dirname(os.getcwd())
@@ -144,8 +147,13 @@ class TestDownloader(TestBase):
                 value = getattr(download, arg, arg)
 
     def test_start_downloads(self):
-        downloads = [Download(video_urls[0], "ytdlp_video")]
+        downloads = [
+            Download(wget_urls, "url_lib"),
+            Download(video_urls[0], "ytdlp_audio"),
+            Download(wget_urls, "wget"),
+        ]
         download_results = Downloader.start_downloads(downloads)
+        pp.pprint(download_results)
 
 
 if __name__ == "__main__":
