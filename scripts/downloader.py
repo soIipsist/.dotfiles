@@ -1,4 +1,3 @@
-from ast import literal_eval
 from importlib import import_module
 import os
 from pprint import PrettyPrinter
@@ -8,13 +7,12 @@ from datetime import datetime
 from enum import Enum
 import sys
 from typing import List, Optional
-from urllib.parse import urlparse, urlunparse
+from urllib.parse import urlparse
 from sqlite import is_valid_path
 from sqlite_item import SQLiteItem, create_connection
 from sqlite_conn import create_db, download_values, downloader_values
 import logging
 import argparse
-import subprocess
 import inspect
 
 script_directory = os.path.dirname(__file__)
@@ -448,7 +446,9 @@ class Downloader(SQLiteItem):
 
         return args_dict
 
-    def start_downloads(self, downloads: list[Download]):
+    @staticmethod
+    def start_downloads(downloads: list[Download]):
+        download_results = []
 
         for download in downloads:
             if download.output_directory:
@@ -461,18 +461,22 @@ class Downloader(SQLiteItem):
             downloader_args = downloader.get_downloader_args(download, func)
             results = func(**downloader_args)
 
+            pp.pprint(results)
+
             if not isinstance(results, list):
                 results = [results]
 
-            for result in results:
-                status_code = result.get("status", 1)
+            # for result in results:
+            #     status_code = result.get("status", 1)
 
-                if status_code == 1:
-                    download.set_download_status_query(DownloadStatus.INTERRUPTED)
-                else:
-                    download.set_download_status_query(DownloadStatus.COMPLETED)
+            #     if status_code == 1:
+            #         download.set_download_status_query(DownloadStatus.INTERRUPTED)
+            #     else:
+            #         download.set_download_status_query(DownloadStatus.COMPLETED)
 
-        return downloads
+            download_results.extend(results)
+
+        return download_results
 
 
 default_downloaders = [
@@ -540,7 +544,9 @@ def downloaders_cmd(
     downloaders = [d]
 
     if action == "add":
-        d.insert()
+        d.upsert()
+    elif action == "delete":
+        d.delete()
     else:  # list downloaders
         if downloader_type:
             downloaders = d.filter_by(d.column_names)
@@ -606,7 +612,7 @@ def download_all_cmd(
                         download.output_directory = output_directory
                         download.downloads_path = downloads_path
                         downloads.append(download)
-        downloader.start_downloads(downloads)
+        Downloader.start_downloads(downloads)
 
     return downloads
 
@@ -653,12 +659,12 @@ if __name__ == "__main__":
 
     download_cmd.add_argument("-f", "--output_filename", default=None, type=str)
 
-    download_cmd.set_defaults(func=download_all_cmd)
+    download_cmd.set_defaults(call=download_all_cmd)
 
     # downloader cmd
     downloader_cmd = subparsers.add_parser("downloaders", help="List downloaders")
     downloader_cmd.add_argument(
-        "action", type=str, choices=["add", "list"], default="list", nargs="?"
+        "action", type=str, choices=["add", "delete", "list"], default="list", nargs="?"
     )
     downloader_cmd.add_argument(
         "-t", "--downloader_type", type=str, default="ytdlp_video"
@@ -666,17 +672,18 @@ if __name__ == "__main__":
     downloader_cmd.add_argument(
         "-d", "--downloader_path", type=is_valid_path, default=None
     )
-    downloader_cmd.add_argument("-f", "--func", type=str, default=None)
-    downloader_cmd.add_argument("-m", "--module", type=str, default=None)
+    downloader_cmd.add_argument("-f", "--func", type=str, default="download")
+    downloader_cmd.add_argument("-m", "--module", type=str, default="ytdlp")
+    downloader_cmd.add_argument("-a", "--downloader_args", type=str, default=None)
 
-    downloader_cmd.set_defaults(func=downloaders_cmd)
+    downloader_cmd.set_defaults(call=downloaders_cmd)
 
     args = vars(parser.parse_args())
-    func = args.get("func")
+    call = args.get("call")
     args.pop("command")
-    args.pop("func")
+    args.pop("call")
 
-    output = func(**args)
+    output = call(**args)
 
     if output:
         pp.pprint(output)

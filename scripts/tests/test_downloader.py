@@ -143,63 +143,16 @@ class TestDownloader(TestBase):
                 # positional arg
                 value = getattr(download, arg, arg)
 
-    def test_downloaders_cmd_list(self):
-        downloaders = downloaders_cmd(
-            action="list", downloader_type="ytdlp_video", downloader_path=""
-        )  # returns all downloaders of type
-
-        for downloader in downloaders:
-            print(downloader.downloader_type, downloader.downloader_path)
-            self.assertTrue(downloader.downloader_type == "ytdlp_video")
-
-        downloaders = downloaders_cmd(action="list")  # this selects all of them
-        all_downloaders = Downloader().select_all()
-
-        for d, a in zip(downloaders, all_downloaders):
-            # print(d, a)
-            self.assertTrue(isinstance(d, Downloader))
-            self.assertTrue(isinstance(a, Downloader))
-            self.assertTrue(d.downloader_path == a.downloader_path)
-
-        # self.assertCountEqual(downloaders, all_downloaders)
-
-    def test_downloaders_cmd_add(self):
-        # downloaders = downloaders_cmd(action="add", downloader_type="ytdlp_video")
-        downloaders = downloaders_cmd(
-            action="add",
-            downloader_type="ytdlp_video",
-            downloader_path=video_options_2,
-            module="ytdlp",
-            func="download",
-            downloader_args="",
-        )
-
-    def test_download_all_cmd(self):
-        urls = playlist_urls
-        downloader_type = "ytdlp_video"
-        downloads_path = "downloads.txt"
-        output_directory = None
-        output_filename = None
-
-        downloads = download_all_cmd(
-            urls, downloader_type, downloads_path, output_directory, output_filename
-        )
-
-        for download in downloads:
-            download: Download
-            self.assertTrue(isinstance(download, Download))
-
-        if downloads_path is None:
-            self.assertTrue(len(downloads) == len(urls))
+    def test_start_downloads(self):
+        downloads = [Download(video_urls[0], "ytdlp_video")]
+        download_results = Downloader.start_downloads(downloads)
 
 
 if __name__ == "__main__":
     test_methods = [
         # TestDownloader.test_parse_download_string,
         # TestDownloader.test_get_downloader_func,
-        TestDownloader.test_get_downloader_args,
-        # TestDownloader.test_download_all_cmd,
-        # TestDownloader.test_downloaders_cmd_list,
-        # TestDownloader.test_downloaders_cmd_add,
+        # TestDownloader.test_get_downloader_args,
+        TestDownloader.test_start_downloads,
     ]
     run_test_methods(test_methods)

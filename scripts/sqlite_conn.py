@@ -28,7 +28,6 @@ values = [download_values, downloader_values]
 
 def create_db(db_path: str, tables: list = tables, values: list = values):
 
-    print("Creating database...")
     conn = create_connection(db_path)
 
     # create tables
