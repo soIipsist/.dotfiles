@@ -55,7 +55,8 @@ module = "ytdlp"
 func = "download"
 downloader_args = "url, downloader_path, update_options=False"
 output_directory = os.path.join(os.getcwd(), "videos")
-output_filename = None
+# output_directory = None
+output_filename = "yolo"
 
 
 class TestDownloader(TestBase):
@@ -148,21 +149,19 @@ class TestDownloader(TestBase):
 
     def test_start_downloads(self):
         downloads = [
-            # Download(
-            #     playlist_urls[0], "ytdlp_video", output_directory=output_directory
-            # ),
+            Download(playlist_urls[0], "ytdlp_video"),
             # Download(wget_urls[0], "wget", output_directory=output_directory),
-            Download(
-                wget_urls[0],
-                "urllib",
-                output_directory=output_directory,
-                output_filename=output_filename,
-            ),
+            # Download(
+            #     wget_urls[0],
+            #     "urllib",
+            #     output_directory=output_directory,
+            #     output_filename=output_filename,
+            # ),
         ]
         download_results = Downloader.start_downloads(downloads)
 
         print("DOWNLOAD RESULTS")
-        pp.pprint(download_results)
+        # pp.pprint(download_results)
 
 
 if __name__ == "__main__":

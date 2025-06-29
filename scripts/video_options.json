@@ -15,6 +15,5 @@
   "merge_output_format": "mp4",
   "writesubtitles": true,
   "writeautomaticsub": true,
-  "subtitleslangs": ["en"],
-  "outtmpl": "%(title)s.%(ext)s"
+  "subtitleslangs": ["en"]
 }

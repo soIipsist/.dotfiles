@@ -439,9 +439,9 @@ class Downloader(SQLiteItem):
                     val = func_keys[param]
                     args_val = getattr(download, val, val)
 
-                    if args_val.lower() == "false":
+                    if args_val and args_val.lower() == "false":
                         args_val = False
-                    elif args_val.lower() == "true":
+                    elif args_val and args_val.lower() == "true":
                         args_val = True
                     args_dict[param] = args_val
 
@@ -479,9 +479,13 @@ class Downloader(SQLiteItem):
                     entry_url = result.get("entry_url")
                     status_code = result.get("status", 1)
                     is_playlist = result.get("is_playlist")
+                    output_filename = result.get("output_filename")
 
                     if is_playlist:  # change url if download is a playlist
                         download.url = entry_url
+
+                    if output_filename:
+                        download.output_filename = output_filename
 
                     download.insert()
 
@@ -511,7 +515,7 @@ default_downloaders = [
         os.path.join(script_directory, "video_options.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, downloads_path",
+        "url, downloader_path, downloads_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
         "ytdlp_video_2",

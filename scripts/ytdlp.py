@@ -52,7 +52,12 @@ def get_outtmpl(
     output_filename: str = None,
 ):
 
-    outtmpl = options.get("outtmpl", f"%(title)s.%(ext)s")
+    outtmpl = options.get("outtmpl")
+
+    if outtmpl is not None:
+        return outtmpl
+
+    outtmpl = f"%(title)s.%(ext)s"
 
     if output_filename:
         outtmpl = f"{output_filename}.%(ext)s"
@@ -151,6 +156,11 @@ def get_options(
     else:
         options = {}
 
+    outtmpl = get_outtmpl(
+        options, ytdlp_format, prefix, output_directory, output_filename
+    )
+    options["outtmpl"] = outtmpl
+
     if not update_options:
         return options
 
@@ -183,12 +193,8 @@ def get_options(
     video_format = get_video_format(options, ytdlp_format, custom_format)
     postprocessors = get_postprocessors(options, ytdlp_format, extension)
     options_postprocessor_args = get_postprocessor_args(options, postprocessor_args)
-    outtmpl = get_outtmpl(
-        options, ytdlp_format, prefix, output_directory, output_filename
-    )
 
     options["merge_output_format"] = extension
-    options["outtmpl"] = outtmpl
     options["postprocessors"] = postprocessors
     options["postprocessor_args"] = options_postprocessor_args
     options["format"] = video_format
@@ -298,6 +304,16 @@ def download(
                         result["error"] = "Download failed"
 
                     yield result
+
+        except KeyboardInterrupt as e:
+            print("User interrupted the download.")
+            result = {
+                "original_url": url,
+                "status": 1,
+                "error": str(e),
+                "is_playlist": is_playlist,
+            }
+            yield result
 
         except yt_dlp.utils.DownloadError as e:
             print(f"Download error: {e}")
