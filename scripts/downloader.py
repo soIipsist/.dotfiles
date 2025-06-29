@@ -541,7 +541,9 @@ default_downloaders = [
         "download",
         "url, output_directory",
     ),
-    Downloader("urllib", None, "url_lib", "download", "url, output_directory"),
+    Downloader(
+        "urllib", None, "url_lib", "download", "url, output_directory, output_filename"
+    ),
 ]
 
 if not db_exists:

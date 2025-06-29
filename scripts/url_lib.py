@@ -18,7 +18,12 @@ def download(
         result = {"url": url, "status": 0}
         try:
             path = urlparse(url).path
-            filename = os.path.basename(path) or output_filename or "downloaded_item"
+
+            filename = (
+                output_filename
+                if output_filename
+                else os.path.basename(path) or "filename"
+            )
 
             # Determine output path
             output_dir = Path(output_directory) if output_directory else Path(".")

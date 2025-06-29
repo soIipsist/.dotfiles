@@ -152,9 +152,16 @@ class TestDownloader(TestBase):
             #     playlist_urls[0], "ytdlp_video", output_directory=output_directory
             # ),
             # Download(wget_urls[0], "wget", output_directory=output_directory),
-            Download(wget_urls[0], "urllib", output_directory=output_directory),
+            Download(
+                wget_urls[0],
+                "urllib",
+                output_directory=output_directory,
+                output_filename=output_filename,
+            ),
         ]
         download_results = Downloader.start_downloads(downloads)
+
+        print("DOWNLOAD RESULTS")
         pp.pprint(download_results)
 
 
