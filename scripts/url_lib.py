@@ -5,10 +5,10 @@ from urllib.parse import urlparse
 from pathlib import Path
 
 
-def download(urls: list, output_directory: str = None) -> int:
+def download(
+    urls: list, output_directory: str = None, output_filename: str = None
+) -> int:
     http = urllib3.PoolManager()
-    status_code = 0
-
     results = []
 
     if isinstance(urls, str):
@@ -18,7 +18,7 @@ def download(urls: list, output_directory: str = None) -> int:
         result = {"url": url, "status": 0}
         try:
             path = urlparse(url).path
-            filename = os.path.basename(path) or "downloaded_file"
+            filename = os.path.basename(path) or output_filename or "downloaded_item"
 
             # Determine output path
             output_dir = Path(output_directory) if output_directory else Path(".")
@@ -28,8 +28,9 @@ def download(urls: list, output_directory: str = None) -> int:
             response = http.request("GET", url, preload_content=False)
 
             if response.status != 200:
-                print(f"Failed to download {url}: HTTP {response.status}")
-                result["error"] = f"Failed to download {url}: HTTP {response.status}"
+                error = f"Failed to download {url}: HTTP {response.status}"
+                print(error)
+                result["error"] = error
 
             with open(output_path, "wb") as f:
                 for chunk in response.stream(1024):
@@ -39,8 +40,12 @@ def download(urls: list, output_directory: str = None) -> int:
             response.release_conn()
 
         except Exception as e:
-            print(f"Error downloading {url}: {e}")
-            status_code = 1
+            error = f"Error downloading {url}: {e}"
+            print(error)
+            result["error"] = error
+            result["status"] = 1
+
+        results.append(result)
 
     return results
 
