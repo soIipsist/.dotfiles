@@ -90,7 +90,7 @@ def get_video_format(options: dict, ytdlp_format: str, custom_format: str = None
 
 def get_ytdlp_format(ytdlp_format: str = "ytdlp_video"):
 
-    if ytdlp_format.endswith(".txt"):
+    if ytdlp_format and ytdlp_format.endswith(".txt"):
         ytdlp_format = os.path.basename(ytdlp_format).removesuffix(".txt")
 
     valid_formats = ["ytdlp_audio", "ytdlp_video"]
@@ -242,7 +242,6 @@ def download(
     urls = get_urls(urls, removed_args)
 
     pp.pprint(options)
-    results = []
 
     for url in urls:
         print(f"\nProcessing URL: {url}")
@@ -265,6 +264,7 @@ def download(
                     result = {
                         "original_url": url,
                         "entry_index": idx,
+                        "is_playlist": is_playlist,
                         "entry_url": entry_url,
                         "status": 1,
                     }
@@ -272,7 +272,7 @@ def download(
                     if not entry:
                         print(f"Skipping unavailable video at index {idx}.")
                         result["error"] = "Unavailable entry"
-                        results.append(result)
+                        yield result
                         continue
 
                     entry_url = entry.get("webpage_url", get_entry_url(url, entry))
@@ -280,7 +280,7 @@ def download(
                     if not entry_url:
                         print(f"Missing URL at index {idx}. Skipping.")
                         result["error"] = "Missing entry URL"
-                        results.append(result)
+                        yield result
                         continue
 
                     result["entry_url"] = entry_url
@@ -297,7 +297,7 @@ def download(
                     if status != 0:
                         result["error"] = "Download failed"
 
-                    results.append(result)
+                    yield result
 
         except yt_dlp.utils.DownloadError as e:
             print(f"Download error: {e}")
@@ -305,8 +305,9 @@ def download(
                 "original_url": url,
                 "status": 1,
                 "error": str(e),
+                "is_playlist": is_playlist,
             }
-            results.append(result)
+            yield result
 
         except SystemExit as e:
             print(f"SystemExit: {e} — continuing...")
@@ -314,8 +315,9 @@ def download(
                 "original_url": url,
                 "status": 1,
                 "error": f"SystemExit: {e}",
+                "is_playlist": is_playlist,
             }
-            results.append(result)
+            yield result
 
         except Exception as e:
             print(f"Unexpected error: {e}")
@@ -323,10 +325,9 @@ def download(
                 "original_url": url,
                 "status": 1,
                 "error": f"Unexpected error: {e}",
+                "is_playlist": is_playlist,
             }
-            results.append(result)
-
-    return results
+            yield result
 
 
 if __name__ == "__main__":

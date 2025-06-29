@@ -148,6 +148,9 @@ class TestDownloader(TestBase):
 
     def test_start_downloads(self):
         downloads = [
+            # Download(
+            #     playlist_urls[0], "ytdlp_video", output_directory=output_directory
+            # ),
             Download(wget_urls[0], "wget", output_directory=output_directory),
         ]
         download_results = Downloader.start_downloads(downloads)

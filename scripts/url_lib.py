@@ -5,37 +5,44 @@ from urllib.parse import urlparse
 from pathlib import Path
 
 
-def download(url: str, output_directory: str = None) -> int:
+def download(urls: list, output_directory: str = None) -> int:
     http = urllib3.PoolManager()
     status_code = 0
 
-    try:
-        path = urlparse(url).path
-        filename = os.path.basename(path) or "downloaded_file"
+    results = []
 
-        # Determine output path
-        output_dir = Path(output_directory) if output_directory else Path(".")
-        output_dir.mkdir(parents=True, exist_ok=True)
-        output_path = output_dir / filename
+    if isinstance(urls, str):
+        urls = [urls]
 
-        response = http.request("GET", url, preload_content=False)
+    for url in urls:
+        result = {"url": url, "status": 0}
+        try:
+            path = urlparse(url).path
+            filename = os.path.basename(path) or "downloaded_file"
 
-        if response.status != 200:
-            print(f"Failed to download {url}: HTTP {response.status}")
-            return response.status
+            # Determine output path
+            output_dir = Path(output_directory) if output_directory else Path(".")
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_path = output_dir / filename
 
-        with open(output_path, "wb") as f:
-            for chunk in response.stream(1024):
-                f.write(chunk)
+            response = http.request("GET", url, preload_content=False)
 
-        print(f"Downloaded: {url} → {output_path}")
-        response.release_conn()
+            if response.status != 200:
+                print(f"Failed to download {url}: HTTP {response.status}")
+                result["error"] = f"Failed to download {url}: HTTP {response.status}"
 
-    except Exception as e:
-        print(f"Error downloading {url}: {e}")
-        status_code = 1
+            with open(output_path, "wb") as f:
+                for chunk in response.stream(1024):
+                    f.write(chunk)
 
-    return status_code
+            print(f"Downloaded: {url} → {output_path}")
+            response.release_conn()
+
+        except Exception as e:
+            print(f"Error downloading {url}: {e}")
+            status_code = 1
+
+    return results
 
 
 if __name__ == "__main__":
@@ -53,7 +60,4 @@ if __name__ == "__main__":
     urls = args.get("urls")
     output_directory = args.get("output_directory")
 
-    for url in urls:
-        status = download(url, output_directory)
-        if status != 0:
-            print(f"Download failed for: {url}")
+    results = download(urls, output_directory)

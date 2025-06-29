@@ -451,12 +451,12 @@ class Downloader(SQLiteItem):
     def start_downloads(downloads: list[Download]):
         download_results = []
 
-        for idx, target_download in enumerate(downloads):
-            if target_download.output_directory:
-                os.makedirs(target_download.output_directory, exist_ok=True)
+        for idx, download in enumerate(downloads):
+            if download.output_directory:
+                os.makedirs(download.output_directory, exist_ok=True)
 
-            logger.info(f"Starting {target_download.downloader} download.")
-            downloader = target_download.downloader
+            logger.info(f"Starting {download.downloader} download.")
+            downloader = download.downloader
             downloader: Downloader
 
             try:
@@ -464,10 +464,9 @@ class Downloader(SQLiteItem):
                     raise ValueError(f"Downloader not found at index {idx}!")
 
                 func = downloader.get_function()
-                downloader_args = downloader.get_downloader_args(target_download, func)
+                downloader_args = downloader.get_downloader_args(download, func)
                 result_iter = func(**downloader_args)
 
-                print(func, downloader_args)
                 if isinstance(result_iter, (str, dict)):
                     result_iter = [result_iter]
                 elif isinstance(result_iter, Iterable):
@@ -477,26 +476,19 @@ class Downloader(SQLiteItem):
 
                 for result in result_iter:
 
-                    print("RESULT", result)
-                    entry_index = result.get("entry_index")
-                    child_download = None
-
-                    if entry_index is not None:
-                        child_download = target_download
-
-                    target_download = (
-                        child_download if child_download else target_download
-                    )
+                    entry_url = result.get("entry_url")
                     status_code = result.get("status", 1)
+                    is_playlist = result.get("is_playlist")
+
+                    if is_playlist:  # change url if download is a playlist
+                        download.url = entry_url
+
+                    download.insert()
 
                     if status_code == 1:
-                        target_download.set_download_status_query(
-                            DownloadStatus.INTERRUPTED
-                        )
+                        download.set_download_status_query(DownloadStatus.INTERRUPTED)
                     else:
-                        target_download.set_download_status_query(
-                            DownloadStatus.COMPLETED
-                        )
+                        download.set_download_status_query(DownloadStatus.COMPLETED)
                     download_results.append(result)
 
             except Exception as e:
