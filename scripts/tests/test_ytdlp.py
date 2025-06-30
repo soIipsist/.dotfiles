@@ -2,6 +2,8 @@ from pathlib import Path
 import os
 from urllib.parse import parse_qs, urlparse
 
+import yt_dlp
+
 from test_base import *
 
 current_file = Path(__file__).resolve()
@@ -16,6 +18,8 @@ from ytdlp import (
     get_video_format,
     get_ytdlp_format,
     get_outtmpl,
+    get_entry_filename,
+    get_entry_url,
 )
 
 # playlist_urls = [
@@ -184,7 +188,25 @@ class TestYtdlp(TestBase):
         print(outtmpl)
 
     def test_get_entry_filename(self):
-        pass
+        url = video_urls[0]
+        options = read_json_file(options_path)
+
+        filename = None
+        try:
+            with yt_dlp.YoutubeDL(options) as ytdl:
+                info = ytdl.extract_info(url, download=False)
+
+                filename = get_entry_filename(info)
+                title = info.get("title")
+                ext = info.get("ext", "mp4")
+                if title:
+                    self.assertIsNotNone(filename)
+                    self.assertTrue(f"{title}.{ext}" == filename)
+
+        except Exception as e:
+            print(e)
+
+        print("FILENAME:", filename)
 
     def test_get_entry_url(self):
         pass
