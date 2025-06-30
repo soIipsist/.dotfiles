@@ -287,7 +287,7 @@ def filter_items(
 
     filter_condition = f" {conjunction_type} ".join(filter_condition)
     # print("FILTER CONDITION", filter_condition)
-    return select_items(conn, table_name, filter_condition, type(object))
+    return select_items(conn, table_name, filter_condition, type(object), query_params)
 
 
 @lru_cache(maxsize=None)

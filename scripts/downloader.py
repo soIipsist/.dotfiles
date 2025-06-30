@@ -117,6 +117,7 @@ class Download(SQLiteItem):
     _db: sqlite3.Connection = None
     _output_directory: str = None
     _output_filename: str = None
+    _output_path: str = None
     _source_url: str = None
 
     @property
@@ -193,6 +194,10 @@ class Download(SQLiteItem):
     @property
     def output_path(self):
         return self.get_output_path()
+
+    @output_path.setter
+    def output_path(self, output_path: str):
+        self._output_path = output_path
 
     @property
     def start_date(self):
@@ -559,7 +564,7 @@ default_downloaders = [
         None,
         "wget",
         "download",
-        "url, output_directory, output_filename",
+        "url, output_directory",
     ),
     Downloader(
         "urllib", None, "url_lib", "download", "url, output_directory, output_filename"
@@ -590,7 +595,7 @@ def downloaders_cmd(
         d.delete()
     else:  # list downloaders
         if downloader_type:
-            downloaders = d.filter_by(d.column_names)
+            downloaders = d.filter_by()
         else:
             downloaders = d.select_all()
     return downloaders
@@ -606,9 +611,6 @@ def download_all_cmd(
 ):
     downloader: Downloader = None
 
-    if not url and not downloads_path:
-        raise ValueError("Either url or downloads path must be defined.")
-
     # get downloader based on type
 
     if downloader_type:
@@ -619,8 +621,8 @@ def download_all_cmd(
     download = Download(**kwargs, downloader=downloader)
     downloads = []
 
-    if url is None:
-        downloads = download.filter_by(download.column_names)
+    if not url and not downloads_path:
+        downloads = download.filter_by()
         print(f"Total downloads ({len(downloads)}):")
 
         for download in downloads:

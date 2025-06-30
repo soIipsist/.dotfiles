@@ -112,6 +112,9 @@ class SQLiteItem:
 
     def filter_by(self, query_params: list = None, conjunction_type: str = None):
 
+        if query_params is None:
+            query_params = self.column_names
+
         conjunction_type = (
             self.conjunction_type if conjunction_type is None else conjunction_type
         )
@@ -123,12 +126,9 @@ class SQLiteItem:
 
             query_params = query_params.keys()
 
-        if query_params:
-            return filter_items(
-                self.conn, self.table_name, query_params, self, conjunction_type
-            )
-        else:
-            return self.select_all()
+        return filter_items(
+            self.conn, self.table_name, query_params, self, conjunction_type
+        )
 
     def select(self, filter_condition=None):
 

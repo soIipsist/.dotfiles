@@ -34,10 +34,14 @@ video_urls = [
     "https://youtu.be/tPEE9ZwTmy0?si=CvPXvCucN4ST-fcN",
 ]
 wget_urls = [
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/640px-ChessSet.jpg"
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/640px-ChessSet.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/e/ea/Elegant_Background-13.jpg",
 ]
 
-urllib_urls = []
+urllib_urls = [
+    "https://upload.wikimedia.org/wikipedia/commons/9/98/Elegant_Background-10.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/e/ea/Elegant_Background-13.jpg",
+]
 
 downloader = default_downloaders[0]
 scripts_dir = os.path.dirname(os.getcwd())
@@ -60,7 +64,7 @@ downloader_args = "url, downloader_path, update_options=False"
 output_directory = os.path.join(os.getcwd(), "videos")
 # output_directory = None
 output_filename = "yolo"
-output_filename = None
+# output_filename = None
 
 
 class TestDownloader(TestBase):
@@ -155,24 +159,24 @@ class TestDownloader(TestBase):
 
     def test_start_downloads(self):
         downloads = [
-            Download(
-                playlist_urls[1],
-                "ytdlp_video",
-                output_directory=output_directory,
-                output_filename=output_filename,
-            ),
+            # Download(
+            #     playlist_urls[1],
+            #     "ytdlp_video",
+            #     output_directory=output_directory,
+            #     output_filename=output_filename,
+            # ),
             # Download(
             #     wget_urls[0],
             #     "wget",
             #     output_directory=output_directory,
             #     output_filename=output_filename,
             # ),
-            # Download(
-            #     urllib_urls[0],
-            #     "urllib",
-            #     output_directory=output_directory,
-            #     output_filename=output_filename,
-            # ),
+            Download(
+                urllib_urls[0],
+                "urllib",
+                output_directory=output_directory,
+                output_filename=output_filename,
+            ),
         ]
         download_results = Downloader.start_downloads(downloads)
 

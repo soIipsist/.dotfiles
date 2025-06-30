@@ -2,7 +2,7 @@ import argparse
 import subprocess
 
 
-def download(urls: list, output_directory: str = None, output_filename: str = None):
+def download(urls: list, output_directory: str = None):
     results = []
 
     if isinstance(urls, str):
@@ -19,6 +19,7 @@ def download(urls: list, output_directory: str = None, output_filename: str = No
                 if output_directory
                 else ["wget", url]
             )
+
             proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
             result["stdout"] = proc.stdout
             result["stderr"] = proc.stderr

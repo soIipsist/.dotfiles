@@ -206,11 +206,11 @@ def get_entry_url(original_url: str, entry: dict, is_playlist: bool) -> str:
 
     url = entry.get("webpage_url")
 
-    if url:
-        return url
-
     if not is_playlist:
         return original_url
+
+    if url:
+        return url
 
     id = entry.get("id")
     if not id:
