@@ -37,6 +37,8 @@ wget_urls = [
     "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/640px-ChessSet.jpg"
 ]
 
+urllib_urls = []
+
 downloader = default_downloaders[0]
 scripts_dir = os.path.dirname(os.getcwd())
 
@@ -58,14 +60,14 @@ downloader_args = "url, downloader_path, update_options=False"
 output_directory = os.path.join(os.getcwd(), "videos")
 # output_directory = None
 output_filename = "yolo"
+output_filename = None
 
 
 class TestDownloader(TestBase):
     def setUp(self) -> None:
         super().setUp()
-        if os.path.exists(output_directory):
+        if output_directory and os.path.exists(output_directory):
             shutil.rmtree(output_directory)
-        # os.remove(os.path.dirname(os.getcwd(), "downloads.db"))
 
     def test_parse_download_string(self):
         downloads_path = "downloads.txt"
@@ -153,12 +155,20 @@ class TestDownloader(TestBase):
 
     def test_start_downloads(self):
         downloads = [
-            # Download(
-            #     playlist_urls[1], "ytdlp_video", output_directory=output_directory
-            # ),
-            Download(wget_urls[0], "wget", output_directory=output_directory),
+            Download(
+                playlist_urls[1],
+                "ytdlp_video",
+                output_directory=output_directory,
+                output_filename=output_filename,
+            ),
             # Download(
             #     wget_urls[0],
+            #     "wget",
+            #     output_directory=output_directory,
+            #     output_filename=output_filename,
+            # ),
+            # Download(
+            #     urllib_urls[0],
             #     "urllib",
             #     output_directory=output_directory,
             #     output_filename=output_filename,

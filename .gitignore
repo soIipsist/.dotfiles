@@ -173,3 +173,4 @@ mac/.iterm2/scripts/iterm.txt
 mac/.iterm2/scripts/iterm2.txt
 smb.conf
 /scripts/downloads.db
+/scripts/tests/videos/*

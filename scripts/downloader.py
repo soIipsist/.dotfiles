@@ -524,7 +524,7 @@ default_downloaders = [
         os.path.join(script_directory, "video_options_blank.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, downloads_path",
+        "url, downloader_path, downloads_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
         "ytdlp_video",
@@ -538,28 +538,28 @@ default_downloaders = [
         os.path.join(script_directory, "video_options_2.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, downloads_path",
+        "url, downloader_path, downloads_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
         "ytdlp_video_3",
         os.path.join(script_directory, "video_options_3.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, downloads_path",
+        "url, downloader_path, downloads_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
         "ytdlp_audio",
         os.path.join(script_directory, "audio_options.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, downloads_path",
+        "url, downloader_path, downloads_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
         "wget",
         None,
         "wget",
         "download",
-        "url, output_directory",
+        "url, output_directory, output_filename",
     ),
     Downloader(
         "urllib", None, "url_lib", "download", "url, output_directory, output_filename"
