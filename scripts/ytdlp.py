@@ -202,7 +202,16 @@ def get_options(
     return options
 
 
-def get_entry_url(original_url: str, entry: dict) -> str:
+def get_entry_url(original_url: str, entry: dict, is_playlist: bool) -> str:
+
+    url = entry.get("webpage_url")
+
+    if url:
+        return url
+
+    if not is_playlist:
+        return original_url
+
     id = entry.get("id")
     if not id:
         return None
@@ -293,7 +302,7 @@ def download(
                         yield result
                         continue
 
-                    entry_url = entry.get("webpage_url", get_entry_url(url, entry))
+                    entry_url = get_entry_url(url, entry, is_playlist)
                     entry_filename = get_entry_filename(entry)
 
                     if not entry_url:

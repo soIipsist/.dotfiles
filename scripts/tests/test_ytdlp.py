@@ -209,7 +209,26 @@ class TestYtdlp(TestBase):
         print("FILENAME:", filename)
 
     def test_get_entry_url(self):
-        pass
+        url = video_urls[0]
+        options = read_json_file(options_path)
+
+        try:
+            with yt_dlp.YoutubeDL(options) as ytdl:
+                info = ytdl.extract_info(url, download=False)
+                is_playlist = info.get("entries") is not None
+                entries = info.get("entries") if is_playlist else [info]
+
+                for entry in entries:
+                    entry_url = get_entry_url(url, info, is_playlist)
+
+                    if not is_playlist:
+                        print("NOT PLAYLIST")
+                        self.assertTrue(entry_url == url)
+                    else:
+                        print("PLAYLIST")
+
+        except Exception as e:
+            print(e)
 
 
 if __name__ == "__main__":
