@@ -183,6 +183,12 @@ class TestYtdlp(TestBase):
 
         print(outtmpl)
 
+    def test_get_entry_filename(self):
+        pass
+
+    def test_get_entry_url(self):
+        pass
+
 
 if __name__ == "__main__":
     test_methods = [
@@ -192,6 +198,8 @@ if __name__ == "__main__":
         # TestYtdlp.test_get_urls,
         # TestYtdlp.test_get_video_format,
         # TestYtdlp.test_get_ytdlp_format,
-        TestYtdlp.test_get_outtmpl,
+        # TestYtdlp.test_get_outtmpl,
+        # TestYtdlp.test_get_entry_filename,
+        TestYtdlp.test_get_entry_url,
     ]
     run_test_methods(test_methods)

@@ -271,8 +271,16 @@ class Download(SQLiteItem):
             else os.path.basename(urlparse(self.url).path)
         )
 
-        output_path = os.path.join(self.output_directory, filename)
-        return output_path
+        # Decode if bytes (just in case)
+        if isinstance(filename, bytes):
+            filename = filename.decode("utf-8")
+
+        if isinstance(self.output_directory, bytes):
+            output_directory = self.output_directory.decode("utf-8")
+        else:
+            output_directory = self.output_directory
+
+        return os.path.join(output_directory, filename)
 
     def __repr__(self):
         return f"{self.downloader}, {self.url}"
@@ -475,28 +483,36 @@ class Downloader(SQLiteItem):
                     result_iter = [result_iter]
 
                 for result in result_iter:
-
-                    entry_url = result.get("entry_url")
+                    entry_url = result.get("entry_url", download.url)
                     status_code = result.get("status", 1)
-                    is_playlist = result.get("is_playlist")
-                    output_filename = result.get("output_filename")
+                    entry_filename = result.get("entry_filename")
 
-                    if is_playlist:  # change url if download is a playlist
-                        download.url = entry_url
+                    if entry_filename:
+                        download.output_filename = entry_filename
 
-                    if output_filename:
-                        download.output_filename = output_filename
+                    child_download = Download(
+                        entry_url,
+                        download.downloader,
+                        downloads_path=download.downloads_path,
+                        output_directory=download.output_directory,
+                        output_filename=download.output_filename,
+                    )
 
-                    download.insert()
+                    child_download.insert()
 
                     if status_code == 1:
-                        download.set_download_status_query(DownloadStatus.INTERRUPTED)
+                        child_download.set_download_status_query(
+                            DownloadStatus.INTERRUPTED
+                        )
                     else:
-                        download.set_download_status_query(DownloadStatus.COMPLETED)
+                        child_download.set_download_status_query(
+                            DownloadStatus.COMPLETED
+                        )
+
                     download_results.append(result)
 
             except Exception as e:
-                print(e)
+                print("Exception: ", e)
                 continue
 
         return download_results

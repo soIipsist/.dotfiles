@@ -2,7 +2,7 @@ import argparse
 import subprocess
 
 
-def download(urls: list, output_directory: str = None):
+def download(urls: list, output_directory: str = None, output_filename: str = None):
     results = []
 
     if isinstance(urls, str):
@@ -28,7 +28,7 @@ def download(urls: list, output_directory: str = None):
         except Exception as e:
             result["status"] = 1
             result["error"] = f"Unexpected: {e}"
-            print(e)
+            print("Exception", e)
 
         results.append(result)
 

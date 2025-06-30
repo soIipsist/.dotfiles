@@ -219,6 +219,18 @@ def get_entry_url(original_url: str, entry: dict) -> str:
     return url
 
 
+def get_entry_filename(entry: dict):
+    title = entry.get("title")
+
+    if not title:
+        return None
+
+    ext = entry.get("ext", "mp4")
+    filename = f"{title}.{ext}"
+
+    return filename
+
+
 def download(
     urls: list,
     options_path="",
@@ -282,6 +294,7 @@ def download(
                         continue
 
                     entry_url = entry.get("webpage_url", get_entry_url(url, entry))
+                    entry_filename = get_entry_filename(entry)
 
                     if not entry_url:
                         print(f"Missing URL at index {idx}. Skipping.")
@@ -290,6 +303,7 @@ def download(
                         continue
 
                     result["entry_url"] = entry_url
+                    result["entry_filename"] = entry_filename
                     print(f"Downloading: {entry.get('title', entry_url)}")
                     status = ytdl.download([entry_url])
 

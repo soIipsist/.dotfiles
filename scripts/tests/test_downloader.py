@@ -2,6 +2,7 @@ import inspect
 from pathlib import Path
 import os
 import shlex
+import shutil
 from test_base import *
 
 current_file = Path(__file__).resolve()
@@ -62,6 +63,9 @@ output_filename = "yolo"
 class TestDownloader(TestBase):
     def setUp(self) -> None:
         super().setUp()
+        if os.path.exists(output_directory):
+            shutil.rmtree(output_directory)
+        # os.remove(os.path.dirname(os.getcwd(), "downloads.db"))
 
     def test_parse_download_string(self):
         downloads_path = "downloads.txt"
@@ -149,8 +153,10 @@ class TestDownloader(TestBase):
 
     def test_start_downloads(self):
         downloads = [
-            Download(playlist_urls[0], "ytdlp_video"),
-            # Download(wget_urls[0], "wget", output_directory=output_directory),
+            # Download(
+            #     playlist_urls[1], "ytdlp_video", output_directory=output_directory
+            # ),
+            Download(wget_urls[0], "wget", output_directory=output_directory),
             # Download(
             #     wget_urls[0],
             #     "urllib",
@@ -161,6 +167,7 @@ class TestDownloader(TestBase):
         download_results = Downloader.start_downloads(downloads)
 
         print("DOWNLOAD RESULTS")
+        print(len(download_results))
         # pp.pprint(download_results)
 
 
