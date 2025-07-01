@@ -432,7 +432,6 @@ def is_valid_quote_string(quoted_string: str) -> bool:
         r"^[a-zA-Z0-9\s\(\)\-_\.\,\;\/\:\+\'\"\=\*\&\!\?\#\$]*$",
     ]
 
-    print("QUOTES", quoted_string)
     for pattern in safe_patterns:
         if re.match(pattern, stripped_string):
             return True

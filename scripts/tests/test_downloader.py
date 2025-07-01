@@ -63,7 +63,7 @@ func = "download"
 downloader_args = "url, downloader_path, update_options=False"
 output_directory = os.path.join(os.getcwd(), "videos")
 # output_directory = None
-output_filename = "yolo"
+output_filename = "yolo.jpg"
 # output_filename = None
 
 
@@ -159,30 +159,38 @@ class TestDownloader(TestBase):
 
     def test_start_downloads(self):
         downloads = [
-            # Download(
-            #     playlist_urls[1],
-            #     "ytdlp_video",
-            #     output_directory=output_directory,
-            #     output_filename=output_filename,
-            # ),
-            # Download(
-            #     wget_urls[0],
-            #     "wget",
-            #     output_directory=output_directory,
-            #     output_filename=output_filename,
-            # ),
+            Download(
+                playlist_urls[1],
+                "ytdlp_video",
+                output_directory=output_directory,
+                output_filename=output_filename,
+            ),
+            Download(
+                wget_urls[0],
+                "wget",
+                output_directory=output_directory,
+                output_filename=output_filename,
+            ),
             Download(
                 urllib_urls[0],
                 "urllib",
                 output_directory=output_directory,
                 output_filename=output_filename,
             ),
+            # Download(video_urls[0], "ytdlp_audio", output_directory=output_directory),
         ]
         download_results = Downloader.start_downloads(downloads)
 
         print("DOWNLOAD RESULTS")
         print(len(download_results))
-        # pp.pprint(download_results)
+        playlist_counts = 0
+
+        for result in download_results:
+            if result.get("is_playlist"):
+                playlist_counts += 1
+                continue
+
+        print("PLAYLIST COUNTS", playlist_counts)
 
 
 if __name__ == "__main__":
