@@ -63,8 +63,8 @@ func = "download"
 downloader_args = "url, downloader_path, update_options=False"
 output_directory = os.path.join(os.getcwd(), "videos")
 # output_directory = None
-output_filename = "yolo.jpg"
-# output_filename = None
+# output_filename = "yolo.jpg"
+output_filename = None
 
 
 class TestDownloader(TestBase):

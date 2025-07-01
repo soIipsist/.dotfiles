@@ -598,7 +598,10 @@ def downloaders_cmd(
             downloaders = d.filter_by()
         else:
             downloaders = d.select_all()
-    return downloaders
+
+        for downloader in downloaders:
+            downloader: Downloader
+            pp.pprint(downloader.as_dict())
 
 
 def download_all_cmd(
@@ -656,8 +659,6 @@ def download_all_cmd(
                         download.downloads_path = downloads_path
                         downloads.append(download)
         Downloader.start_downloads(downloads)
-
-    return downloads
 
 
 if __name__ == "__main__":
