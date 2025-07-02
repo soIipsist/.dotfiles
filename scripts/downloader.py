@@ -595,7 +595,7 @@ def downloaders_cmd(
         d.delete()
     else:  # list downloaders
         if downloader_type:
-            downloaders = d.filter_by()
+            downloaders = d.filter_by(["downloader_type", "downloader_path"])
         else:
             downloaders = d.select_all()
 
@@ -680,7 +680,7 @@ if __name__ == "__main__":
     download_cmd.add_argument(
         "-t",
         "--downloader_type",
-        default=os.environ.get("DOWNLOADER", "ytdlp_video"),
+        default=os.environ.get("DOWNLOADER_TYPE", "ytdlp_video"),
         type=str,
     )
     download_cmd.add_argument(
