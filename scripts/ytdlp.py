@@ -151,11 +151,13 @@ def get_options(
     ytdlp_format = get_ytdlp_format(ytdlp_format)
 
     if not options_path and not update_options:
-        options_path = (
+        options_file = (
             "audio_options.json"
             if ytdlp_format == "ytdlp_audio"
             else "video_options.json"
         )
+        script_directory = os.path.dirname(__file__)
+        options_path = os.path.join(script_directory, options_file)
 
     if os.path.exists(options_path):  # read from metadata file, if it exists
         print(f"Using ytdlp options from path: {options_path}.")
