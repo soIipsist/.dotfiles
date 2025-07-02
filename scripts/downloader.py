@@ -102,7 +102,7 @@ class DownloadStatus(str, Enum):
 
 
 logger = setup_logger(name="download")
-logger.disabled = True
+logger.disabled = False
 
 
 class Download(SQLiteItem):

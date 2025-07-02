@@ -18,11 +18,11 @@ if [ ! -e "$YTDLP_PATH" ]; then
 fi
 
 ytdlp_mp3() {
-    run_venv_script "ytdlp.py" -f ytdlp_audio "$@"
+    run_venv_script "ytdlp.py" -f ytdlp_audio -d "" "$@"
 }
 
 ytdlp_mp4() {
-    run_venv_script "ytdlp.py" -f ytdlp_video "$@"
+    run_venv_script "ytdlp.py" -f ytdlp_video -d "" "$@"
 }
 
 get_codec() {
