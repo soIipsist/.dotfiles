@@ -150,6 +150,13 @@ def get_options(
 
     ytdlp_format = get_ytdlp_format(ytdlp_format)
 
+    if not options_path and not update_options:
+        options_path = (
+            "audio_options.json"
+            if ytdlp_format == "ytdlp_audio"
+            else "video_options.json"
+        )
+
     if os.path.exists(options_path):  # read from metadata file, if it exists
         print(f"Using ytdlp options from path: {options_path}.")
         options = read_json_file(options_path)
@@ -393,7 +400,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-u",
         "--update_options",
-        default=os.environ.get("YTDLP_UPDATE_OPTIONS", True),
+        default=os.environ.get("YTDLP_UPDATE_OPTIONS", False),
         type=str_to_bool,
         choices=bool_choices,
     )

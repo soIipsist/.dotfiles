@@ -2,9 +2,9 @@
 export YTDLP_PATH="$HOME/ytdlp/yt-dlp_macos"
 alias ytdlp="yt-dlp"
 export YTDLP_FORMAT="ytdlp_audio"
-export YTDLP_OPTIONS_PATH="$HOME/scripts/video_options.json"
+# export YTDLP_OPTIONS_PATH="$HOME/scripts/video_options.json"
 export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
-export YTDLP_UPDATE_OPTIONS="1"
+# export YTDLP_UPDATE_OPTIONS="1"
 # export YTDLP_VIDEO_DIRECTORY="$HOME/mnt/"
 # export YTDLP_AUDIO_DIRECTORY="$HOME/mnt/ssd/Music"
 export VENV_PATH="$HOME/venv"
@@ -18,11 +18,11 @@ if [ ! -e "$YTDLP_PATH" ]; then
 fi
 
 ytdlp_mp3() {
-    run_venv_script "ytdlp.py" -f ytdlp_audio -d "" "$@"
+    run_venv_script "ytdlp.py" -f ytdlp_audio "$@"
 }
 
 ytdlp_mp4() {
-    run_venv_script "ytdlp.py" -f ytdlp_video -d "" "$@"
+    run_venv_script "ytdlp.py" -f ytdlp_video "$@"
 }
 
 get_codec() {
