@@ -413,19 +413,24 @@ if __name__ == "__main__":
     output_directory = args.get("output_directory")
     output_filename = args.get("output_filename")
 
-    results = download(
-        urls,
-        options_path,
-        ytdlp_format,
-        custom_format,
-        update_options,
-        prefix,
-        extension,
-        postprocessor_args,
-        removed_args,
-        output_directory,
-        output_filename,
+    results = list(
+        download(
+            urls,
+            options_path,
+            ytdlp_format,
+            custom_format,
+            update_options,
+            prefix,
+            extension,
+            postprocessor_args,
+            removed_args,
+            output_directory,
+            output_filename,
+        )
     )
+
+    for result in results:
+        print(result)
 
 # playlist tests
 # python ytdlp.py "https://youtube.com/playlist?list=OLAK5uy_nTBnmorryZikTJrjY0Lj1lHG_DWy4IPvk" -f ytdlp_audio
