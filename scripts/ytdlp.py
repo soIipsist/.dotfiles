@@ -397,7 +397,7 @@ if __name__ == "__main__":
         type=str_to_bool,
         choices=bool_choices,
     )
-    parser.add_argument("-F", "output_filename", default=None)
+    parser.add_argument("-F", "--output_filename", default=None)
 
     args = vars(parser.parse_args())
 
