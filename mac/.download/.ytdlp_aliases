@@ -7,6 +7,8 @@ export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 # export YTDLP_UPDATE_OPTIONS="1"
 # export YTDLP_VIDEO_DIRECTORY="$HOME/mnt/"
 # export YTDLP_AUDIO_DIRECTORY="$HOME/mnt/ssd/Music"
+# export YTDLP_OUTPUT_DIRECTORY="$HOME/videos"
+
 export VENV_PATH="$HOME/venv"
 
 if [ ! -e "$YTDLP_PATH" ]; then

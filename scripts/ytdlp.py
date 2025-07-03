@@ -389,7 +389,12 @@ if __name__ == "__main__":
         default=os.environ.get("YTDLP_FORMAT", "ytdlp_video"),
         choices=["ytdlp_video", "ytdlp_audio"],
     )
-    parser.add_argument("-d", "--output_directory", type=str, default=None)
+    parser.add_argument(
+        "-d",
+        "--output_directory",
+        type=str,
+        default=os.environ.get("YTDLP_OUTPUT_DIRECTORY"),
+    )
     parser.add_argument(
         "-p", "--prefix", default=os.environ.get("YTDLP_PREFIX"), type=str
     )
@@ -439,7 +444,9 @@ if __name__ == "__main__":
     )
 
     for result in results:
-        print(result)
+        if result.get("entry"):
+            result.pop("entry")
+        pp.pprint(result)
 
 # playlist tests
 # python ytdlp.py "https://youtube.com/playlist?list=OLAK5uy_nTBnmorryZikTJrjY0Lj1lHG_DWy4IPvk" -f ytdlp_audio
