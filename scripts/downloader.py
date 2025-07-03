@@ -9,7 +9,7 @@ from enum import Enum
 import sys
 from typing import List, Optional
 from urllib.parse import urlparse
-from sqlite import is_valid_path
+from sqlite import is_valid_path, is_valid_url
 from sqlite_item import SQLiteItem, create_connection
 from sqlite_conn import create_db, download_values, downloader_values
 import logging
@@ -644,15 +644,17 @@ def download_all_cmd(
             pp.pprint(download.as_dict())
     else:
 
-        downloads.append(
-            Download(
-                url,
-                downloader,
-                downloads_path=downloads_path,
-                output_directory=output_directory,
-                output_filename=output_filename,
+        if is_valid_url(url):
+            downloads.append(
+                Download(
+                    url,
+                    downloader,
+                    downloads_path=downloads_path,
+                    output_directory=output_directory,
+                    output_filename=output_filename,
+                )
             )
-        )
+
         # create download string
         if downloads_path:
             if not os.path.exists(downloads_path):
