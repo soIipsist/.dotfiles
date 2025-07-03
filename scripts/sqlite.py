@@ -283,10 +283,15 @@ def filter_items(
     for param in query_params:
         if hasattr(object, param):
             value = getattr(object, param)
-            filter_condition.append(f"{param} = {value}")
+
+            if value:
+                if isinstance(value, str):
+                    value_str = f"'%{value}%'"
+                    filter_condition.append(f"{param} LIKE {value_str}")
+                else:
+                    filter_condition.append(f"{param} = {value}")
 
     filter_condition = f" {conjunction_type} ".join(filter_condition)
-    # print("FILTER CONDITION", filter_condition)
     return select_items(conn, table_name, filter_condition, type(object), query_params)
 
 
