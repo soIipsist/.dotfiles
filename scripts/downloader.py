@@ -167,7 +167,11 @@ class Download(SQLiteItem):
 
     @property
     def download_status(self):
-        return self._download_status
+        return (
+            self._download_status.value
+            if isinstance(self._download_status, Enum)
+            else self._download_status
+        )
 
     @download_status.setter
     def download_status(self, download_status):
