@@ -644,17 +644,6 @@ def download_all_cmd(
             pp.pprint(download.as_dict())
     else:
 
-        if is_valid_url(url):
-            downloads.append(
-                Download(
-                    url,
-                    downloader,
-                    downloads_path=downloads_path,
-                    output_directory=output_directory,
-                    output_filename=output_filename,
-                )
-            )
-
         # create download string
         if downloads_path:
             if not os.path.exists(downloads_path):
@@ -671,6 +660,16 @@ def download_all_cmd(
                         download.output_directory = output_directory
                         download.downloads_path = downloads_path
                         downloads.append(download)
+        else:
+            downloads.append(
+                Download(
+                    url,
+                    downloader,
+                    downloads_path=downloads_path,
+                    output_directory=output_directory,
+                    output_filename=output_filename,
+                )
+            )
 
         logger.info(f"New downloads: ({downloads})")
         Downloader.start_downloads(downloads)
