@@ -669,6 +669,8 @@ def download_all_cmd(
                         download.output_directory = output_directory
                         download.downloads_path = downloads_path
                         downloads.append(download)
+
+        logger.info(f"New downloads: ({downloads})")
         Downloader.start_downloads(downloads)
 
 
