@@ -267,7 +267,11 @@ class Download(SQLiteItem):
         else:
             data = self.as_dict()
             logger.error(f"An unexpected error has occured! \n{pp.pformat(data)} ")
-        self.update()
+
+        filter_condition = (
+            f"url = {self.url} AND downloader = {self.downloader.downloader_type}"
+        )
+        self.update(filter_condition)
 
     def get_output_path(self):
         filename = (
@@ -594,6 +598,8 @@ def downloaders_cmd(
     elif action == "delete":
         d.delete()
     else:  # list downloaders
+        logger.info(f"Fetching downloaders from file {database_path}.")
+
         if downloader_type:
             downloaders = d.filter_by(["downloader_type", "downloader_path"])
         else:
@@ -625,7 +631,8 @@ def download_all_cmd(
     downloads = []
 
     if not url and not downloads_path:
-        downloads = download.filter_by()
+        downloads = download.filter_by(["downloader", "download_status"])
+        logger.info(f"Fetching downloads from file {database_path}.")
         print(f"Total downloads ({len(downloads)}):")
 
         for download in downloads:
