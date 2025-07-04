@@ -56,7 +56,6 @@ pp = PrettyPrinter(indent=2)
 # global vars
 downloader_path = video_options_1
 # downloads_path = "downloads.txt"
-downloads_path = None
 downloader_type = "ytdlp_audio"
 module = "ytdlp"
 func = "download"
@@ -132,13 +131,13 @@ class TestDownloader(TestBase):
         print(func, ytdlp_download)
 
     def test_get_downloader_args(self):
-        downloader_args = "url, downloads_path, output_directory=red, ytdlp_format=ytdl, update_options=url"
+        downloader_args = (
+            "url, output_directory=red, ytdlp_format=ytdl, update_options=url"
+        )
         downloader = Downloader(
             downloader_type, downloader_path, module, func, downloader_args
         )
-        download = Download(
-            url=playlist_urls[0], downloader=downloader, downloads_path=video_options_1
-        )
+        download = Download(url=playlist_urls[0], downloader=downloader)
         output_downloader_args = downloader.get_downloader_args(
             download, ytdlp_download
         )

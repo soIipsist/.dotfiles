@@ -113,7 +113,6 @@ class Download(SQLiteItem):
     _time_elapsed = None
     _url: str = None
     _download_str: str = None
-    _downloads_path: str = None
     _db: sqlite3.Connection = None
     _output_directory: str = None
     _output_filename: str = None
@@ -130,7 +129,6 @@ class Download(SQLiteItem):
         downloader=None,
         download_status: DownloadStatus = DownloadStatus.STARTED,
         start_date: str = None,
-        downloads_path: Optional[str] = None,
         output_directory: Optional[str] = None,
         output_filename: Optional[str] = None,
     ):
@@ -148,7 +146,6 @@ class Download(SQLiteItem):
         self.url = url
         self.downloader = downloader
         self.download_status = download_status
-        self.downloads_path = downloads_path
         self.output_directory = output_directory
         self.output_filename = output_filename
         self.start_date = start_date
@@ -230,14 +227,6 @@ class Download(SQLiteItem):
         self._time_elapsed = time_elapsed
 
     @property
-    def downloads_path(self):
-        return self._downloads_path
-
-    @downloads_path.setter
-    def downloads_path(self, downloads_path: str):
-        self._downloads_path = downloads_path
-
-    @property
     def url(self):
         return self._url
 
@@ -302,39 +291,52 @@ class Download(SQLiteItem):
         return f"{self.downloader}, {self.url}"
 
     @classmethod
-    def parse_download_string(cls, download_str: str):
+    def parse_download_string(
+        cls,
+        url: str,
+        downloader_type=None,
+        output_directory: str = None,
+        output_filename: str = None,
+    ):
 
-        download_str = download_str.strip()
+        url = url.strip()
 
-        if not download_str:
-            return
-
-        lexer = shlex.shlex(download_str, posix=False)
+        lexer = shlex.shlex(url, posix=False)
         lexer.whitespace_split = True
         lexer.commenters = ""
         parts = list(lexer)
-        url = None
-        downloader = None
-        filename = None
 
         for part in parts:
             if part.startswith(("http://", "https://")):
                 url = part
             elif part.startswith('"') and part.endswith('"'):
-                filename = part
+                output_filename = part
+            elif part.startswith("'") and part.endswith("'"):
+                output_filename = part
             else:
-                downloader = part
+                downloader_type = part if part else downloader_type
+
+        downloader = Downloader(downloader_type).select_first()
+        if not downloader:
+            raise ValueError(f"Downloader of type '{downloader_type}' does not exist.")
+
+        if output_filename:
+            output_filename = output_filename.strip("'").strip('"')
 
         parsed_info = {
             "URL": url,
             "Downloader": downloader,
-            "Output filename": filename,
+            "Output filename": output_filename,
         }
 
-        logger.info(
-            f"Parsed download string {download_str}:\n{pp.pformat(parsed_info)}"
+        logger.info(f"Parsed download string {url}:\n{pp.pformat(parsed_info)}")
+
+        return Download(
+            url,
+            downloader_type,
+            output_filename=output_filename,
+            output_directory=output_directory,
         )
-        return Download(url, downloader, output_filename=filename)
 
 
 class Downloader(SQLiteItem):
@@ -506,7 +508,6 @@ class Downloader(SQLiteItem):
                     child_download = Download(
                         entry_url,
                         download.downloader,
-                        downloads_path=download.downloads_path,
                         output_directory=download.output_directory,
                         output_filename=download.output_filename,
                     )
@@ -537,35 +538,35 @@ default_downloaders = [
         os.path.join(script_directory, "video_options_blank.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, downloads_path, output_directory=output_directory, output_filename=output_filename",
+        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
         "ytdlp_video",
         os.path.join(script_directory, "video_options.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, downloads_path, output_directory=output_directory, output_filename=output_filename",
+        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
         "ytdlp_video_2",
         os.path.join(script_directory, "video_options_2.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, downloads_path, output_directory=output_directory, output_filename=output_filename",
+        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
         "ytdlp_video_3",
         os.path.join(script_directory, "video_options_3.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, downloads_path, output_directory=output_directory, output_filename=output_filename",
+        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
         "ytdlp_audio",
         os.path.join(script_directory, "audio_options.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, downloads_path, output_directory=output_directory, output_filename=output_filename",
+        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
         "wget",
@@ -617,24 +618,17 @@ def downloaders_cmd(
 def download_all_cmd(
     url: str = None,
     downloader_type: str = None,
-    downloads_path: str = None,
     output_directory: str = None,
     output_filename: str = None,
     **kwargs,
 ):
-    downloader: Downloader = None
 
-    # get downloader based on type
-
-    if downloader_type:
-        downloader = Downloader(downloader_type).select_first()
-        if not downloader:
-            raise ValueError(f"Downloader of type '{downloader_type}' does not exist.")
-
-    download = Download(**kwargs, downloader=downloader)
+    download = Download.parse_download_string(
+        url, downloader_type, output_directory, output_filename
+    )
     downloads = []
 
-    if not url and not downloads_path:
+    if not url:
         downloads = download.filter_by(["downloader", "download_status"])
         logger.info(f"Fetching downloads from file {database_path}.")
         print(f"Total downloads ({len(downloads)}):")
@@ -643,36 +637,10 @@ def download_all_cmd(
             download: Download
             pp.pprint(download.as_dict())
     else:
+        if download is not None:
+            downloads.append(download)
 
-        # create download string
-        if downloads_path:
-            if not os.path.exists(downloads_path):
-                raise FileNotFoundError(
-                    f"Download path {downloads_path} does not exist."
-                )
-
-            with open(downloads_path, "r") as file:
-                for line in file:
-                    download = Download.parse_download_string(line)
-                    logger.info(f"Reading downloads from file {downloads_path}.")
-
-                    if download is not None:
-                        download.output_directory = output_directory
-                        download.downloads_path = downloads_path
-                        downloads.append(download)
-        else:
-            downloads.append(
-                Download(
-                    url,
-                    downloader,
-                    downloads_path=downloads_path,
-                    output_directory=output_directory,
-                    output_filename=output_filename,
-                )
-            )
-
-        logger.info(f"New downloads: ({downloads})")
-        Downloader.start_downloads(downloads)
+        # Downloader.start_downloads(downloads)
 
 
 if __name__ == "__main__":
@@ -696,9 +664,6 @@ if __name__ == "__main__":
         "--downloader_type",
         default=os.environ.get("DOWNLOADER_TYPE", "ytdlp_video"),
         type=str,
-    )
-    download_cmd.add_argument(
-        "-d", "--downloads_path", default=os.environ.get("DOWNLOADS_PATH"), type=str
     )
 
     download_cmd.add_argument(
