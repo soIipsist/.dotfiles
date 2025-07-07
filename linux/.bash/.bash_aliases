@@ -120,11 +120,31 @@ ssrestart() {
     source /usr/local/bin/restart_service "$service"
 }
 
-get_codec() {
-    if [ ! -f "$1" ]; then
-        echo "File not found: $1" >&2
+rsync_push() {
+    local file="$1"
+    local server_alias="${2:-$RSYNC_REMOTE}"
+    local remote_dir="${3:-$RSYNC_REMOTE_DIR}"
+
+    if [[ -z $file || -z $server_alias || -z $remote_dir ]]; then
+        echo "Usage: rsync_push <file|dir> [server_alias] [/remote/dir]"
         return 1
     fi
-    codec=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=nw=1:nk=1 "$1")
-    echo "$codec"
+
+    rsync -avz --progress "$file" "${server_alias}:${remote_dir}/"
+}
+
+rsync_pull() {
+    local file="$1"
+    local server_alias="${2:-$RSYNC_REMOTE}"
+    local remote_dir="${3:-$RSYNC_REMOTE_DIR}"
+    local local_dir="${4:-.}"
+
+    if [[ -z $file || -z $server_alias || -z $remote_dir ]]; then
+        echo "Usage: rsync_pull <file|dir> [server_alias] [/remote/dir] [local_dir]"
+        return 1
+    fi
+
+    rsync -avz --progress \
+        "${server_alias}:${remote_dir}/${file}" \
+        "${local_dir}/"
 }

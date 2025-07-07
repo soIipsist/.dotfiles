@@ -274,3 +274,32 @@ function mnt_ntfs() {
 
     sudo mount -t ntfs-3g -o uid=$(id -u),gid=$(id -g) "$1" "$2"
 }
+
+function rsync_push() {
+    local file="$1"
+    local server_alias="${2:-$RSYNC_REMOTE}"
+    local remote_dir="${3:-$RSYNC_REMOTE_DIR}"
+
+    if [[ -z $file || -z $server_alias || -z $remote_dir ]]; then
+        echo "Usage: rsync_push <file|dir> [server_alias] [/remote/dir]"
+        return 1
+    fi
+
+    rsync -avz --progress "$file" "${server_alias}:${remote_dir}/"
+}
+
+function rsync_pull() {
+    local file="$1"
+    local server_alias="${2:-$RSYNC_REMOTE}"
+    local remote_dir="${3:-$RSYNC_REMOTE_DIR}"
+    local local_dir="${4:-.}"
+
+    if [[ -z $file || -z $server_alias || -z $remote_dir ]]; then
+        echo "Usage: rsync_pull <file|dir> [server_alias] [/remote/dir] [local_dir]"
+        return 1
+    fi
+
+    rsync -avz --progress \
+        "${server_alias}:${remote_dir}/${file}" \
+        "${local_dir}/"
+}
