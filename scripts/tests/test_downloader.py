@@ -9,12 +9,10 @@ current_file = Path(__file__).resolve()
 parent_directory = current_file.parents[2]
 os.sys.path.insert(0, str(parent_directory))
 
-from ytdlp import download as ytdlp_download, get_options, read_json_file
+from ytdlp import download as ytdlp_download
 from downloader import (
     Downloader,
     Download,
-    download_all_cmd,
-    downloaders_cmd,
     default_downloaders,
 )
 
@@ -82,6 +80,7 @@ class TestDownloader(TestBase):
                 if not line:
                     continue
 
+                print(line)
                 download = Download.parse_download_string(line)
 
                 self.assertIsNotNone(download, f"Failed to parse line: {line}")
@@ -91,19 +90,19 @@ class TestDownloader(TestBase):
                     line,
                     f"Parsed URL not in original line: {download.url}",
                 )
-                print("URL:", download.url)
                 # Extract expected downloader directly from the line
-                expected_downloader = None
-                for part in shlex.split(line):
-                    part.strip()
-                    if not part.startswith(
-                        ("http://", "https://")
-                    ) and not part.startswith('"'):
+                expected_downloader = "ytdlp_video"
+
+                lexer = shlex.shlex(line, posix=False)
+                lexer.whitespace_split = True
+                for part in lexer:
+                    if not part.startswith(("http://", "https://")) and not (
+                        part.startswith('"') or part.startswith("'")
+                    ):
                         expected_downloader = part
                         break
 
                 if download.downloader:
-                    print(download.downloader)
                     self.assertTrue(
                         str(download.downloader).strip() == expected_downloader.strip(),
                         f"Expected downloader '{expected_downloader}', got '{download.downloader}' from line: {line}",
@@ -194,9 +193,9 @@ class TestDownloader(TestBase):
 
 if __name__ == "__main__":
     test_methods = [
-        # TestDownloader.test_parse_download_string,
+        TestDownloader.test_parse_download_string,
         # TestDownloader.test_get_downloader_func,
         # TestDownloader.test_get_downloader_args,
-        TestDownloader.test_start_downloads,
+        # TestDownloader.test_start_downloads,
     ]
     run_test_methods(test_methods)

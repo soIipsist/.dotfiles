@@ -316,6 +316,9 @@ class Download(SQLiteItem):
             else:
                 downloader_type = part if part else downloader_type
 
+        if downloader_type is None:
+            downloader_type = "ytdlp_video"
+
         downloader = Downloader(downloader_type).select_first()
         if not downloader:
             raise ValueError(f"Downloader of type '{downloader_type}' does not exist.")
