@@ -299,8 +299,7 @@ class Download(SQLiteItem):
         output_filename: str = None,
     ):
 
-        print(url)
-        url = url.strip()
+        url = url.strip() if url else ""
         parts = url.split(" ") if " " in url else [url]
 
         # parts = [f'"{arg}"' if " " in arg else arg for arg in parts]
