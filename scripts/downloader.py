@@ -299,12 +299,13 @@ class Download(SQLiteItem):
         output_filename: str = None,
     ):
 
+        print(url)
         url = url.strip()
+        parts = url.split(" ") if " " in url else [url]
 
-        lexer = shlex.shlex(url, posix=False)
-        lexer.whitespace_split = True
-        lexer.commenters = ""
-        parts = list(lexer)
+        # parts = [f'"{arg}"' if " " in arg else arg for arg in parts]
+
+        print(parts)
 
         for part in parts:
             if part.startswith(("http://", "https://")):
@@ -643,7 +644,7 @@ def download_all_cmd(
         if download is not None:
             downloads.append(download)
 
-        # Downloader.start_downloads(downloads)
+    # Downloader.start_downloads(downloads)
 
 
 if __name__ == "__main__":

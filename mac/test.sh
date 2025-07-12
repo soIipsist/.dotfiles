@@ -9,10 +9,10 @@ source "../json.sh"
 # echo $some_var
 
 # VENV PATH TEST
-venv_path=$(get_json_value "venv_path")
-pip_packages=$(get_json_value "pip_packages")
-set_venv_path "$venv_path"
-install_pip_packages "$venv_path" "${pip_packages[@]}"
+# venv_path=$(get_json_value "venv_path")
+# pip_packages=$(get_json_value "pip_packages")
+# set_venv_path "$venv_path"
+# install_pip_packages "$venv_path" "${pip_packages[@]}"
 
 # GET SHELL VARIABLE TEST
 # shell_path=$(get_default_shell_path)
@@ -30,3 +30,18 @@ install_pip_packages "$venv_path" "${pip_packages[@]}"
 # SCRIPT_DIR="$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
 # set_default_shell_variable "GIT_DOTFILES_DIRECTORY" "$SCRIPT_DIR"
 # set_default_shell_variable "SCRIPTS_DIR" "$SCRIPT_DIR/scripts"
+SCRIPTS_DIRECTORY="$HOME/repos"
+download() {
+    args="$1"
+
+    SCRIPT_PATH="$SCRIPTS_DIRECTORY/downloader.py"
+    cmd="python3 \"$SCRIPT_PATH\" \"$args\""
+    echo $cmd
+}
+
+while IFS= read -r line; do
+    if [[ -n "$line" ]]; then
+        echo "$(date): Running download on: $line $DOWNLOADS_PATH" >>"$LOG_FILE"
+        download "$line"
+    fi
+done <<<"$NEW_LINES"

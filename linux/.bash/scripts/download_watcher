@@ -14,15 +14,16 @@ download() {
     echo "TERM=$TERM" >>"$LOG_FILE"
 
     # start a new tmux session or attach to already existing
+    args="$1"
 
     if tmux has-session -t downloads 2>/dev/null; then
-        tmux new-window -t downloads -n "dl-$(date +%s)" "python3 \"$SCRIPT_PATH\" \"$@\""
+        tmux new-window -t downloads -n "dl-$(date +%s)" "python3 \"$SCRIPT_PATH\" \"$args\""
     else
         echo "Starting detached tmux session." >>"$LOG_FILE"
-        tmux new-session -d -s downloads -n "dl" "python3 \"$SCRIPT_PATH\" \"$@\""
+        tmux new-session -d -s downloads -n "dl" "python3 \"$SCRIPT_PATH\" \"$args\""
     fi
 
-    echo "$(date): Completed download: $@" >>"$LOG_FILE"
+    echo "$(date): Completed download: $args" >>"$LOG_FILE"
 
     # Deactivate the virtual environment properly
     if [ -n "$VIRTUAL_ENV" ]; then
