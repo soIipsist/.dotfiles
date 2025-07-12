@@ -2,16 +2,14 @@ SCRIPTS_DIRECTORY="$HOME/repos"
 DOWNLOADS_PATH="downloads.txt"
 
 download() {
-    args="$1"
-    new_arr=()
+    args=("$@")
 
-    for arg in $args; do
-        escaped="${arg//\"/\\\"}"
-        new_arr+=("$escaped")
+    for i in "${!args[@]}"; do
+        args[$i]="${args[$i]//\"/\\\"}"
     done
 
     SCRIPT_PATH="$SCRIPTS_DIRECTORY/downloader.py"
-    cmd="python3 \"$SCRIPT_PATH\" \"${new_arr[@]}\""
+    cmd="python3 \"$SCRIPT_PATH\" \"$args\""
     echo $cmd
 }
 

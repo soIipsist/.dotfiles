@@ -14,7 +14,11 @@ download() {
     echo "TERM=$TERM" >>"$LOG_FILE"
 
     # start a new tmux session or attach to already existing
-    args="$1"
+    args=("$@")
+
+    for i in "${!args[@]}"; do
+        args[$i]="${args[$i]//\"/\\\"}"
+    done
 
     if tmux has-session -t downloads 2>/dev/null; then
         tmux new-window -t downloads -n "dl-$(date +%s)" "python3 \"$SCRIPT_PATH\" \"$args\""
