@@ -1,6 +1,7 @@
 from datetime import datetime
 from functools import lru_cache
 from inspect import getmembers, signature
+from itertools import zip_longest
 import os
 import sqlite3
 from ast import literal_eval
@@ -97,7 +98,6 @@ def select_items(
 
         query += f" WHERE {filter_condition}"
         results = execute_query(conn, query, params)
-        # print(query, params)
     else:
         results = execute_query(conn, query)
 
@@ -281,9 +281,9 @@ def filter_items(
     filter_condition = []
 
     for param in query_params:
+
         if hasattr(object, param):
             value = getattr(object, param)
-
             if value:
                 if isinstance(value, str):
                     value_str = f"'%{value}%'"
@@ -293,7 +293,8 @@ def filter_items(
 
     filter_condition = f" {conjunction_type} ".join(filter_condition)
     # print("FILTER CONDITION", filter_condition)
-    return select_items(conn, table_name, filter_condition, type(object), query_params)
+    items = select_items(conn, table_name, filter_condition, type(object), query_params)
+    return items
 
 
 @lru_cache(maxsize=None)
@@ -318,10 +319,11 @@ def map_sqlite_results_to_objects(
     for result in sqlite_results:
         o = object_type()
 
-        for name, value in zip(column_names, result):
+        for value, column_name in zip_longest(result, column_names):
             # Only evaluate if this column is in the pre-determined list
+
             if (
-                name in eval_needed
+                column_name in eval_needed
                 and isinstance(value, str)
                 and (
                     value.startswith("[")
@@ -332,7 +334,10 @@ def map_sqlite_results_to_objects(
             ):
                 value = literal_eval(value)
 
-            setattr(o, name, value)
+            if column_name is not None and hasattr(o, column_name):
+                setattr(o, column_name, value)
+
+            # print("LVALUE", column_name, value)
 
         objects.append(o)
 

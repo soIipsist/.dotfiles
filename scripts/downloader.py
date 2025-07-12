@@ -299,12 +299,10 @@ class Download(SQLiteItem):
         output_filename: str = None,
     ):
 
-        url = url.strip() if url else ""
+        url = url.strip()
         parts = url.split(" ") if " " in url else [url]
 
         # parts = [f'"{arg}"' if " " in arg else arg for arg in parts]
-
-        print(parts)
 
         for part in parts:
             if part.startswith(("http://", "https://")):
@@ -602,6 +600,11 @@ def downloaders_cmd(
     downloaders = [d]
 
     if action == "add":
+        if d.module is None:
+            d.module = "ytdlp"
+        if d.func is None:
+            d.func = "download"
+
         d.upsert()
     elif action == "delete":
         d.delete()
@@ -609,7 +612,9 @@ def downloaders_cmd(
         logger.info(f"Fetching downloaders from file {database_path}.")
 
         if downloader_type:
-            downloaders = d.filter_by(["downloader_type", "downloader_path"])
+            downloaders = d.filter_by(
+                ["downloader_type", "downloader_path", "module", "func"]
+            )
         else:
             downloaders = d.select_all()
 
@@ -626,20 +631,22 @@ def download_all_cmd(
     **kwargs,
 ):
 
-    download = Download.parse_download_string(
-        url, downloader_type, output_directory, output_filename
-    )
     downloads = []
 
     if not url:
-        downloads = download.filter_by(["downloader", "download_status"])
+        download_status = kwargs.get("download_status")
+        download = Download(downloader=downloader_type, download_status=download_status)
+        downloads = download.filter_by()
+
         logger.info(f"Fetching downloads from file {database_path}.")
         print(f"Total downloads ({len(downloads)}):")
 
-        for download in downloads:
-            download: Download
-            pp.pprint(download.as_dict())
+        for d in downloads:
+            print(d.as_dict())
     else:
+        download = Download.parse_download_string(
+            url, downloader_type, output_directory, output_filename
+        )
         if download is not None:
             downloads.append(download)
 
@@ -698,8 +705,8 @@ if __name__ == "__main__":
     downloader_cmd.add_argument(
         "-d", "--downloader_path", type=is_valid_path, default=None
     )
-    downloader_cmd.add_argument("-f", "--func", type=str, default="download")
-    downloader_cmd.add_argument("-m", "--module", type=str, default="ytdlp")
+    downloader_cmd.add_argument("-f", "--func", type=str, default=None)
+    downloader_cmd.add_argument("-m", "--module", type=str, default=None)
     downloader_cmd.add_argument("-a", "--downloader_args", type=str, default=None)
 
     downloader_cmd.set_defaults(call=downloaders_cmd)

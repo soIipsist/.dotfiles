@@ -4,7 +4,7 @@ export DOWNLOADS_DB_PATH="$HOME/scripts/downloads.db"
 export DOWNLOADS_OUTPUT_DIR="$HOME/videos"
 
 download() {
-    run_venv_script "downloader.py" -d "" "$@"
+    run_venv_script "downloader.py" download "$@"
 }
 
 downloaders() {

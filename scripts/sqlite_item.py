@@ -119,16 +119,10 @@ class SQLiteItem:
             self.conjunction_type if conjunction_type is None else conjunction_type
         )
 
-        if isinstance(query_params, dict):
-            for key, val in query_params.items():
-                if hasattr(self, key):
-                    setattr(self, key, val)
-
-            query_params = query_params.keys()
-
-        return filter_items(
+        items = filter_items(
             self.conn, self.table_name, query_params, self, conjunction_type
         )
+        return items
 
     def select(self, filter_condition=None):
 
@@ -207,8 +201,12 @@ class SQLiteItem:
         """Convert the model instance to a dictionary without leading underscores."""
 
         result = {}
+
         for c in self.column_names:
-            result[c] = getattr(self, c)
+            # print("COLUMN", c)
+            value = getattr(self, c)
+            result[c] = value
+            # print("VALUE", value)
 
         return result
 
