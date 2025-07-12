@@ -650,7 +650,7 @@ def download_all_cmd(
         if download is not None:
             downloads.append(download)
 
-    # Downloader.start_downloads(downloads)
+    Downloader.start_downloads(downloads)
 
 
 if __name__ == "__main__":
