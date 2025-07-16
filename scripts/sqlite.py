@@ -1,8 +1,10 @@
+import argparse
 from datetime import datetime
 from functools import lru_cache
 from inspect import getmembers, signature
 from itertools import zip_longest
 import os
+from pprint import PrettyPrinter
 import sqlite3
 from ast import literal_eval
 import re
@@ -544,3 +546,44 @@ def get_filter_condition(filter_condition: str, default_params: list = None):
         final_filter_condition,
         tuple(sanitized_params),
     )
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-d",
+        "--database_path",
+        type=str,
+        default=os.environ.get("SQLITE_DB", "downloads.db"),
+    )
+    parser.add_argument(
+        "-a",
+        "--action",
+        type=str,
+        choices=["select", "delete", "delete_all"],
+        default="select",
+    )
+    parser.add_argument("-f", "--filter_condition", type=str, default=None)
+    parser.add_argument(
+        "-t",
+        "--table_name",
+        type=str,
+        default=os.environ.get("SQLITE_TABLE", "downloads"),
+    )
+
+    args = parser.parse_args()
+
+    conn = create_connection(args.database_path)
+
+    action_map = {
+        "select": lambda: select_items(conn, args.table_name, args.filter_condition),
+        "delete": lambda: delete_items(conn, args.table_name, args.filter_condition),
+        "delete_all": lambda: delete_items(conn, args.table_name, None),
+    }
+
+    output = action_map[args.action]()
+
+    pp = PrettyPrinter(indent=2)
+
+    print(f"Executing {args.action}...")
+    pp.pprint(output)
