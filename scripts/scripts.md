@@ -70,3 +70,13 @@ Echoes `DigitalProductId` from the registry.
 ```powershell
 ./Get-Product-Key.ps1
 ```
+
+## Shell
+
+### organize_files.sh
+
+Automatically organizes files (such as photos or videos) into folders by their year of creation.
+
+```shell
+./organize_files.sh <source_directory> [destination_directory]
+```
