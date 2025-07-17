@@ -12,6 +12,9 @@ dest_scripts_directory="/usr/local/bin"
 bin_scripts=($(ls $source_scripts_directory))
 
 for bin_script in "${bin_scripts[@]}"; do
+    if [[ "$bin_script" == */scripts/tests/* ]]; then
+        continue
+    fi
     sudo cp -f "$source_scripts_directory/$bin_script" "$dest_scripts_directory"
     sudo chmod +x "$dest_scripts_directory/$(basename "$bin_script")"
     echo "Copied $bin_script to $dest_scripts_directory."
