@@ -23,7 +23,7 @@ source ~/.bashrc
 You can download YouTube videos or videos from other sites using yt-dlp. The process is simplified by including default audio and video options in `.json` format.
 
 ```python
-python ytdlp.py "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --format="audio"
+python ytdlp.py "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --ytdlp_format="audio"
 ```
 
 **_NOTE:_ In order for this to work, you need to set up [ytdlp](https://github.com/yt-dlp/yt-dlp/wiki/Installation) and [ffmpeg](https://ffmpeg.org/download.html)**
