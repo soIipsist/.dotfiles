@@ -77,6 +77,8 @@ export GIT_HOME="$HOME/repos/soIipsist"
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE="2000"
 export SAVEHIST="2000"
+export HISTTIMEFORMAT="%F %T "
+
 setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
 setopt PROMPT_SUBST
