@@ -4,6 +4,10 @@ alias la='ls -A'
 alias l='ls -CF'
 alias ps='ps aux --sort=-%mem | head'
 
+# sqlite variables
+export SQLITE_DB="downloads.db"
+export SQLITE_TABLE="downloads"
+
 sqliteq() {
     run_venv_script "sqlite.py" "$@"
 }

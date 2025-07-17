@@ -1,3 +1,7 @@
+# sqlite variables
+export SQLITE_DB="downloads.db"
+export SQLITE_TABLE="downloads"
+
 alias python='python3'
 alias ll='ls -alF'
 alias la='ls -A'
