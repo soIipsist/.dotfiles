@@ -4,6 +4,10 @@ alias la='ls -A'
 alias l='ls -CF'
 alias ps='ps aux --sort=-%mem | head'
 
+sqliteq() {
+    run_venv_script "sqlite.py" "$@"
+}
+
 rsync_push() {
     local local_path="$1"
     local remote_path="${2:-$RSYNC_PATH}"

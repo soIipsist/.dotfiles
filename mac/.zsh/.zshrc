@@ -65,42 +65,6 @@ function run_venv_script() {
 # export RSYNC_PATH=""
 # export RSYNC_SERVER=""
 
-function rsync_push() {
-    local local_path="$1"
-    local remote_path="${2:-$RSYNC_PATH}"
-    local server_alias="${3:-$RSYNC_SERVER}"
-
-    if [[ -z "$local_path" || -z "$server_alias" ]]; then
-        echo "Usage: rsync_push <local_path> [remote_path] [server_alias]"
-        return 1
-    fi
-
-    if [ -z "$remote_path" ]; then
-        remote_path="."
-    fi
-
-    rsync -avz --progress "$local_path" "${server_alias}:${remote_path}"
-}
-
-function rsync_pull() {
-    local remote_path="$1"
-    local local_path="${2:-$RSYNC_PATH}"
-    local server_alias="${3:-$RSYNC_SERVER}"
-
-    if [[ -z "$remote_path" || -z "$server_alias" ]]; then
-        echo "Usage: rsync_pull <remote_path> [local_path] [server_alias]"
-        return 1
-    fi
-
-    if [ -z "$local_path" ]; then
-        local_path="."
-    fi
-
-    rsync -avz --progress \
-        "${server_alias}:${remote_path}" \
-        "${local_path}"
-}
-
 # PATH variable
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
@@ -137,6 +101,10 @@ fi
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' menu select=2
 
+if [ -f ~/.zsh_aliases ]; then
+    . ~/.zsh_aliases
+fi
+
 if [ -f ~/.ytdlp_aliases ]; then
     . ~/.ytdlp_aliases
 fi
@@ -144,27 +112,6 @@ fi
 if [ -f ~/.download_aliases ]; then
     . ~/.download_aliases
 fi
-
-# VSCode variables
-export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/vscode-workspaces/.workspaces"
-export VSCODE_PROJECT_DIRECTORY="$GIT_HOME"
-export OLLAMA_MODEL="deepseek-r1:14b"
-
-# aliases
-alias python="python3"
-alias yabais="yabai --start-service"
-alias yabaik="yabai --stop-service"
-alias yabair="yabai --restart-service"
-alias skhds="skhd --start-service"
-alias skhdk="skhd --stop-service"
-alias skhdr="skhd --restart-service"
-alias vlc="/Applications/VLC.app/Contents/MacOS/VLC"
-alias ios_backup="python3 $GIT_HOME/ios-backup-extractor/extract.py"
-alias adb_transfer="python3 $GIT_HOME/adb-wrapper/examples/transfer.py"
-alias adb_root="python3 $GIT_HOME/adb-wrapper/examples/root.py"
-alias vscode="python3 $GIT_HOME/vscode-workspaces/workspaces.py"
-alias cdf='cd "$(find . -type d | fzf)"'
-alias llm="ollama run $OLLAMA_MODEL"
 
 # key bindings
 bindkey '^[[1;2D' backward-word # Shift + Left Arrow
@@ -196,10 +143,3 @@ bindkey -s ^f "tmux-sessionizer\n"  # Ctrl + F
 
 # zsh suggestions
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff"
-
-# tmux aliases
-alias t='tmux attach || tmux new-session'
-alias ta='tmux attach -t'
-alias tn='tmux new-session'
-alias tl='tmux list-sessions'
-alias tk='tmux kill-server'

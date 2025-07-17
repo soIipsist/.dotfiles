@@ -1,8 +1,9 @@
-alias python='python3'
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-alias ps='ps aux --sort=-%mem | head'
+# tmux aliases
+alias t='tmux attach || tmux new-session'
+alias ta='tmux attach -t'
+alias tn='tmux new-session'
+alias tl='tmux list-sessions'
+alias tk='tmux kill-server'
 
 # general service control
 alias sstart='sudo systemctl start'
@@ -14,11 +15,43 @@ alias sdisable='sudo systemctl disable'
 alias sjournal='journalctl -u'
 alias sjtail='journalctl -fu'
 
-sqliteq() {
-    run_venv_script "sqlite.py" "$@"
+function sedit() {
+    local service="$1"
+    local conf="/etc/default/${service}.conf"
+
+    if [[ -z "$service" ]]; then
+        echo "Usage: sedit <service-name>"
+        return 1
+    fi
+
+    if [[ -f "$conf" ]]; then
+        sudo "${EDITOR:-nano}" "$conf"
+    else
+        sudo systemctl edit "$service"
+    fi
 }
 
-mnt_vfat() {
+function ssrestart() {
+    local service="$1"
+
+    if [[ -z "$service" ]]; then
+        echo "Usage: ssrestart <service-name>"
+        return 1
+    fi
+
+    if [[ ! -f "$service" ]]; then
+        service="$GIT_DOTFILES_DIRECTORY/linux/.services/services/$service.conf"
+    fi
+
+    if [[ ! -f "$service" ]]; then
+        echo "Error: Config file not found: $service"
+        return 1
+    fi
+
+    source /usr/local/bin/restart_service "$service"
+}
+
+function mnt_vfat() {
     if [ $# -ne 2 ]; then
         echo "Usage: mnt_vfat <device> <mount_point>"
         return 1
@@ -30,7 +63,7 @@ mnt_vfat() {
     sudo mount -o uid=$(id -u),gid=$(id -g) "$1" "$2"
 }
 
-mnt_exfat() {
+function mnt_exfat() {
     if [ $# -ne 2 ]; then
         echo "Usage: mnt_exfat <device> <mount_point>"
         return 1
@@ -43,7 +76,7 @@ mnt_exfat() {
     sudo mount -t exfat -o uid=$(id -u),gid=$(id -g) "$1" "$2"
 }
 
-mnt_ntfs() {
+function mnt_ntfs() {
     if [ $# -ne 2 ]; then
         echo "Usage: mnt_exfat <device> <mount_point>"
         return 1
@@ -56,7 +89,7 @@ mnt_ntfs() {
     sudo mount -t ntfs-3g -o uid=$(id -u),gid=$(id -g) "$1" "$2"
 }
 
-mnt_auto() {
+function mnt_auto() {
     if [ $# -ne 2 ]; then
         echo "Usage: mnt_auto <device> <mount_point>"
         return 1
@@ -87,43 +120,8 @@ mnt_auto() {
         ;;
     esac
 }
-sedit() {
-    local service="$1"
-    local conf="/etc/default/${service}.conf"
 
-    if [[ -z "$service" ]]; then
-        echo "Usage: sedit <service-name>"
-        return 1
-    fi
-
-    if [[ -f "$conf" ]]; then
-        sudo "${EDITOR:-nano}" "$conf"
-    else
-        sudo systemctl edit "$service"
-    fi
-}
-
-ssrestart() {
-    local service="$1"
-
-    if [[ -z "$service" ]]; then
-        echo "Usage: ssrestart <service-name>"
-        return 1
-    fi
-
-    if [[ ! -f "$service" ]]; then
-        service="$GIT_DOTFILES_DIRECTORY/linux/.services/services/$service.conf"
-    fi
-
-    if [[ ! -f "$service" ]]; then
-        echo "Error: Config file not found: $service"
-        return 1
-    fi
-
-    source /usr/local/bin/restart_service "$service"
-}
-
-rsync_push() {
+function rsync_push() {
     local local_path="$1"
     local remote_path="${2:-$RSYNC_PATH}"
     local server_alias="${3:-$RSYNC_SERVER}"
@@ -140,7 +138,7 @@ rsync_push() {
     rsync -avz --progress "$local_path" "${server_alias}:${remote_path}"
 }
 
-rsync_pull() {
+function rsync_pull() {
     local remote_path="$1"
     local local_path="${2:-$RSYNC_PATH}"
     local server_alias="${3:-$RSYNC_SERVER}"
@@ -157,4 +155,8 @@ rsync_pull() {
     rsync -avz --progress \
         "${server_alias}:${remote_path}" \
         "${local_path}"
+}
+
+function sqliteq() {
+    run_venv_script "sqlite.py" "$@"
 }
