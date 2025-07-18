@@ -103,6 +103,25 @@ fi
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' menu select=2
 
+# git
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git:*' formats ' (%b)'
+
+autoload -Uz vcs_info
+autoload -U colors && colors
+
+function precmd() {
+    vcs_info
+}
+
+if sudo -l -U "$USER" >/dev/null 2>&1; then
+    # 💙 Blue for sudoers
+    PROMPT="%{$fg[blue]%}%n@%m %{$fg[cyan]%}%~%{$reset_color%} \$ "
+else
+    # 🧡 Orange (yellow) for non-sudoers
+    PROMPT="%{$fg[yellow]%}%n@%m %{$fg[magenta]%}%~%{$reset_color%} \$ "
+fi
+
 if [ -f ~/.zsh_aliases ]; then
     . ~/.zsh_aliases
 fi
