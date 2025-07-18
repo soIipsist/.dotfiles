@@ -114,12 +114,24 @@ function precmd() {
     vcs_info
 }
 
+setopt prompt_subst
+DARK_ORANGE="%F{166}"
+SLATE_BLUE="%F{99}"
+GREEN="%F{46}"
+CYAN_1="%F{51}"
+CYAN_2="%F{50}"
+PURPLE_1="%F{57}"
+PURPLE_2="%F{56}"
+PURPLE_3="%F{55}"
+PURPLE_4="%F{54}"
+PURPLE_0="%F{135}"
+
 if sudo -l -U "$USER" >/dev/null 2>&1; then
-    # 💙 Blue for sudoers
-    PROMPT="%{$fg[blue]%}%n@%m %{$fg[cyan]%}%~%{$reset_color%} \$ "
+    # 💙 ORANGE for sudoers
+    PROMPT="$PURPLE_0%n@%m $PURPLE_2%~%{$reset_color%} % "
 else
     # 🧡 Orange (yellow) for non-sudoers
-    PROMPT="%{$fg[yellow]%}%n@%m %{$fg[magenta]%}%~%{$reset_color%} \$ "
+    PROMPT="%{$fg[yellow]%}%n@%m %{$fg[magenta]%}%~%{$reset_color%} % "
 fi
 
 if [ -f ~/.zsh_aliases ]; then
