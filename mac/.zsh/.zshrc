@@ -62,9 +62,6 @@ function run_venv_script() {
     fi
 }
 
-# export RSYNC_PATH=""
-# export RSYNC_SERVER=""
-
 # PATH variable
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"

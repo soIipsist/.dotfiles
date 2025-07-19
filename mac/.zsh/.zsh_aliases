@@ -7,6 +7,9 @@ export OLLAMA_MODEL="deepseek-r1:14b"
 export SQLITE_DB="downloads.db"
 export SQLITE_TABLE="downloads"
 
+# export RSYNC_PATH=""
+export RSYNC_SERVER="home"
+
 # aliases
 alias python="python3"
 alias yabais="yabai --start-service"

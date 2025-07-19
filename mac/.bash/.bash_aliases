@@ -8,6 +8,9 @@ alias ps='ps aux --sort=-%mem | head'
 export SQLITE_DB="downloads.db"
 export SQLITE_TABLE="downloads"
 
+# export RSYNC_PATH=""
+export RSYNC_SERVER="home"
+
 sqliteq() {
     run_venv_script "sqlite.py" "$@"
 }

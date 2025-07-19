@@ -2,6 +2,9 @@
 export SQLITE_DB="downloads.db"
 export SQLITE_TABLE="downloads"
 
+# export RSYNC_PATH=""
+export RSYNC_SERVER="home"
+
 alias python='python3'
 alias ll='ls -alF'
 alias la='ls -A'

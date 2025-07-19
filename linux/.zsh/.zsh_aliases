@@ -2,6 +2,9 @@
 export SQLITE_DB="downloads.db"
 export SQLITE_TABLE="downloads"
 
+# export RSYNC_PATH=""
+export RSYNC_SERVER="home"
+
 # tmux aliases
 alias t='tmux attach || tmux new-session'
 alias ta='tmux attach -t'
