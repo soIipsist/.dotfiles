@@ -116,7 +116,7 @@ setopt prompt_subst
 ORANGE="%F{208}"
 ROYAL_BLUE="%F{69}"
 
-if id -nG "$USER" | grep -qw "sudo"; then
+if id -nG "$USER" | grep -Eq '\bsudo\b|\badmin\b'; then
     # Royal blue for sudoers
     PROMPT='$ROYAL_BLUE%n@%m $ORANGE%1~%{$reset_color%} ${vcs_info_msg_0_} % '
 else

@@ -33,7 +33,7 @@ parse_git_branch() {
 }
 
 if [ "$color_prompt" = yes ]; then
-    if id -nG "$USER" | grep -qw "sudo"; then
+    if id -nG "$USER" | grep -Eq '\bsudo\b|\badmin\b'; then
         PS1="${BLUE}\u@\h ${ORANGE}\W ${GREEN}\$(parse_git_branch)${RESET} \$ "
     else
         PS1="${ORANGE}\u@\h ${BLUE}\W ${GREEN}\$(parse_git_branch)${RESET} \$ "
