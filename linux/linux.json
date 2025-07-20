@@ -23,5 +23,6 @@
   "pip_packages": ["yt-dlp"],
   "scripts_directory": "$HOME/scripts",
   "venv_path": "$HOME/venv",
-  "install_homebrew": true
+  "install_homebrew": true,
+  "install_zoxide": true
 }
