@@ -65,7 +65,7 @@ parse_git_branch() {
 }
 
 if [ "$color_prompt" = yes ]; then
-    if sudo -n -l -U "$USER" >/dev/null 2>&1; then
+    if id -nG "$USER" | grep -qw "sudo"; then
         PS1="${BLUE}\u@\h ${ORANGE}\W ${GREEN}\$(parse_git_branch)${RESET} \$ "
     else
         PS1="${ORANGE}\u@\h ${BLUE}\W ${GREEN}\$(parse_git_branch)${RESET} \$ "
