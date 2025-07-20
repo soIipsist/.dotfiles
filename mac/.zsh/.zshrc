@@ -106,11 +106,12 @@ zstyle ':completion:*' menu select=2
 # git
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' formats ' (%b)'
+zstyle ':vcs_info:git:*' formats '%F{10}(%b)%f'
 
 autoload -Uz vcs_info
 autoload -U colors && colors
 
-function precmd() {
+precmd() {
     vcs_info
 }
 
@@ -120,10 +121,10 @@ ROYAL_BLUE="%F{69}"
 
 if sudo -l -U "$USER" >/dev/null 2>&1; then
     # Royal blue for sudoers
-    PROMPT="$ROYAL_BLUE%n@%m $ORANGE%~%{$reset_color%} % "
+    PROMPT='$ROYAL_BLUE%n@%m $ORANGE%1~%{$reset_color%} ${vcs_info_msg_0_} % '
 else
     # ORANGE for non-sudoers
-    PROMPT="$ORANGE%n@%m $ROYAL_BLUE%~%{$reset_color%} % "
+    PROMPT='$ORANGE%n@%m $ROYAL_BLUE%1~%{$reset_color%} ${vcs_info_msg_0_} % '
 fi
 
 if [ -f ~/.zsh_aliases ]; then

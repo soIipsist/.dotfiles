@@ -50,16 +50,28 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+# Colors
+ORANGE='\[\e[38;5;208m\]' # Bright orange
+BLUE='\[\e[38;5;69m\]'    # Royal blue
+GREEN='\[\e[38;5;10m\]'   # Light green (ANSI 10)
+RESET='\[\e[0m\]'
+
+parse_git_branch() {
+    local branch
+    branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    if [ -n "$branch" ]; then
+        echo "($branch)"
+    fi
+}
+
 if [ "$color_prompt" = yes ]; then
-    if id -nG "$USER" | grep -qw sudo; then
-        # Blue prompt for sudoers
-        PS1='${debian_chroot:+($debian_chroot)}\[\033[01;34m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    if sudo -l -U "$USER" &>/dev/null; then
+        PS1="${BLUE}\u@\h ${ORANGE}\W ${GREEN}\$(parse_git_branch)${RESET} \$ "
     else
-        # "Orange" prompt for non-sudoers (use yellow as closest ANSI color)
-        PS1='${debian_chroot:+($debian_chroot)}\[\033[01;33m\]\u@\h\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '
+        PS1="${ORANGE}\u@\h ${BLUE}\W ${GREEN}\$(parse_git_branch)${RESET} \$ "
     fi
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='\u@\h:\w\$ '
 fi
 unset color_prompt force_color_prompt
 

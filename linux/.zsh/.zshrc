@@ -75,13 +75,26 @@ zstyle ':completion:*' menu select=2
 
 # prompt
 autoload -Uz vcs_info
-precmd() {
+autoload -U colors && colors
+
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git:*' formats '%F{10}(%b)%f'
+
+function precmd() {
     vcs_info
 }
-zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:git:*' formats '(%b)'
 
-export PROMPT="%(?.%F{211}●.%F{red}●%f) %F{211}%1~%f ${vcs_info_msg_0_} "
+setopt prompt_subst
+ORANGE="%F{208}"
+ROYAL_BLUE="%F{69}"
+
+if sudo -l -U "$USER" >/dev/null 2>&1; then
+    # Royal blue for sudoers
+    PROMPT='$ROYAL_BLUE%n@%m $ORANGE%1~%{$reset_color%} ${vcs_info_msg_0_} % '
+else
+    # ORANGE for non-sudoers
+    PROMPT='$ORANGE%n@%m $ROYAL_BLUE%1~%{$reset_color%} ${vcs_info_msg_0_} % '
+fi
 
 # aliases
 alias python="python3"
