@@ -41,9 +41,6 @@ export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 
 export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
 
-# useful paths
-export GIT_HOME="$HOME/repos/soIipsist"
-
 # history
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE="2000"

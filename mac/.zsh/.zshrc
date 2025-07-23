@@ -67,9 +67,6 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 export PATH="$HOME/platform-tools/:$PATH"
 
-# useful paths
-export GIT_HOME="$HOME/repos/soIipsist"
-
 # history
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE="2000"
