@@ -1,4 +1,4 @@
-# useful paths
+# useful environment variables
 export GIT_HOME="$HOME/repos/soIipsist"
 # export RSYNC_PATH=""
 export RSYNC_SERVER="home"
@@ -34,6 +34,21 @@ alias ta='tmux attach -t'
 alias tn='tmux new-session'
 alias tl='tmux list-sessions'
 alias tk='tmux kill-server'
+
+function git_pull_all() {
+    local base_dir="${GIT_HOME:-.}"
+
+    echo "Running git pull in each subdirectory of: $base_dir"
+
+    find "$base_dir" -mindepth 1 -maxdepth 1 -type d | while read -r dir; do
+        if [ -d "$dir/.git" ]; then
+            echo ">>> Pulling in $dir"
+            git -C "$dir" pull
+        else
+            echo "Skipping $dir — not a git repository."
+        fi
+    done
+}
 
 function rsync_push() {
     local local_path="$1"

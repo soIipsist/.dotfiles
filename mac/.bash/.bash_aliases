@@ -1,15 +1,32 @@
+# useful environment variables
+export GIT_HOME="$HOME/repos/soIipsist"
+# export RSYNC_PATH=""
+export RSYNC_SERVER="home"
+
+# sqlite variables
+export SQLITE_DB="downloads.db"
+export SQLITE_TABLE="downloads"
+
 alias python='python3'
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 alias ps='ps aux --sort=-%mem | head'
 
-# sqlite variables
-export SQLITE_DB="downloads.db"
-export SQLITE_TABLE="downloads"
+git_pull_all() {
+    local base_dir="${GIT_HOME:-.}"
 
-# export RSYNC_PATH=""
-export RSYNC_SERVER="home"
+    echo "Running git pull in each subdirectory of: $base_dir"
+
+    find "$base_dir" -mindepth 1 -maxdepth 1 -type d | while read -r dir; do
+        if [ -d "$dir/.git" ]; then
+            echo ">>> Pulling in $dir"
+            git -C "$dir" pull
+        else
+            echo "Skipping $dir — not a git repository."
+        fi
+    done
+}
 
 sqliteq() {
     run_venv_script "sqlite.py" "$@"
