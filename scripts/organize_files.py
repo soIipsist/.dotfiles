@@ -28,7 +28,7 @@ def get_exif_year(file_path: Path) -> str | None:
                 text=True,
             )
             year = result.stdout.strip()
-            if year:
+            if year and year.isdigit() and len(year) == 4:
                 return year
         except Exception:
             continue
