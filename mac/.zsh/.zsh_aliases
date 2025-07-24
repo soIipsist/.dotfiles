@@ -89,3 +89,7 @@ function rsync_pull() {
 function sqliteq() {
     run_venv_script "sqlite.py" "$@"
 }
+
+function organize_files() {
+    run_venv_script "organize_files.py" "$@"
+}
