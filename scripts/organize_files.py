@@ -5,20 +5,35 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 from argparse import ArgumentParser
+import mimetypes
 
 
-def get_exif_year(file_path):
-    try:
-        result = subprocess.run(
-            ["exiftool", "-s3", "-DateTimeOriginal", "-d", "%Y", str(file_path)],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            text=True,
-        )
-        year = result.stdout.strip()
-        return year if year else None
-    except Exception:
+def get_exif_year(file_path: Path) -> str | None:
+    mime_type, _ = mimetypes.guess_type(file_path)
+    if mime_type is None:
         return None
+
+    if mime_type.startswith("video"):
+        tags = ["MediaCreateDate", "TrackCreateDate", "CreateDate"]
+    elif mime_type.startswith("image"):
+        tags = ["DateTimeOriginal", "CreateDate"]
+    else:
+        return None
+
+    for tag in tags:
+        try:
+            result = subprocess.run(
+                ["exiftool", "-s3", f"-{tag}", "-d", "%Y", str(file_path)],
+                capture_output=True,
+                text=True,
+            )
+            year = result.stdout.strip()
+            if year:
+                return year
+        except Exception:
+            continue
+
+    return None
 
 
 def get_modification_year(file_path):
