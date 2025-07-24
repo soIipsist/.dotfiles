@@ -28,10 +28,6 @@ git_pull_all() {
     done
 }
 
-sqliteq() {
-    run_venv_script "sqlite.py" "$@"
-}
-
 rsync_push() {
     local local_path="$1"
     local remote_path="${2:-$RSYNC_PATH}"
@@ -66,4 +62,13 @@ rsync_pull() {
     rsync -avz --progress \
         "${server_alias}:${remote_path}" \
         "${local_path}"
+}
+
+# venv scripts
+sqliteq() {
+    run_venv_script "sqlite.py" "$@"
+}
+
+organize_files() {
+    run_venv_script "organize_files.py" "$@"
 }

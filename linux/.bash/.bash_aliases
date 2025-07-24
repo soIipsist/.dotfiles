@@ -38,10 +38,6 @@ git_pull_all() {
     done
 }
 
-sqliteq() {
-    run_venv_script "sqlite.py" "$@"
-}
-
 mnt_vfat() {
     if [ $# -ne 2 ]; then
         echo "Usage: mnt_vfat <device> <mount_point>"
@@ -181,4 +177,13 @@ rsync_pull() {
     rsync -avz --progress \
         "${server_alias}:${remote_path}" \
         "${local_path}"
+}
+
+# venv scripts
+sqliteq() {
+    run_venv_script "sqlite.py" "$@"
+}
+
+organize_files() {
+    run_venv_script "organize_files.py" "$@"
 }

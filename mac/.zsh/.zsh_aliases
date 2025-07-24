@@ -86,6 +86,8 @@ function rsync_pull() {
         "${local_path}"
 }
 
+# venv scripts
+
 function sqliteq() {
     run_venv_script "sqlite.py" "$@"
 }
