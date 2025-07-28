@@ -124,23 +124,23 @@ sedit() {
 }
 
 ssrestart() {
-    local service="$1"
+    local service_name="$1"
 
-    if [[ -z "$service" ]]; then
+    if [[ -z "$service_name" ]]; then
         echo "Usage: ssrestart <service-name>"
         return 1
     fi
 
-    if [[ ! -f "$service" ]]; then
-        service="$GIT_DOTFILES_DIRECTORY/linux/.services/services/$service.conf"
+    if [[ ! -f "$service_name" ]]; then
+        service_name="$GIT_DOTFILES_DIRECTORY/linux/.services/services/$service_name.conf"
     fi
 
-    if [[ ! -f "$service" ]]; then
-        echo "Error: Config file not found: $service"
+    if [[ ! -f "$service_name" ]]; then
+        echo "Error: Config file not found: $service_name"
         return 1
     fi
 
-    source /usr/local/bin/restart_service "$service"
+    source /usr/local/bin/restart_service "$service_name"
 }
 
 rsync_push() {
