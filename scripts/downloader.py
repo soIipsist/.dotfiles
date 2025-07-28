@@ -247,7 +247,9 @@ class Download(SQLiteItem):
     def downloader(self, downloader):
         self._downloader = downloader
 
-    def set_download_status_query(self, status: DownloadStatus):
+    def set_download_status_query(
+        self, status: DownloadStatus, error_message: str = None
+    ):
         self.download_status = status
         logger.info(f"Setting download status: {str(status)}")
 
@@ -262,7 +264,9 @@ class Download(SQLiteItem):
             logger.info(log_message)
         else:
             data = self.as_dict()
-            logger.error(f"An unexpected error has occured! \n{pp.pformat(data)} ")
+            logger.error(
+                f"An unexpected error has occured: {error_message}! \n{pp.pformat(data)} "
+            )
 
         filter_condition = f"url = {self.url} AND downloader = {self.downloader.downloader_type} AND output_path = {self.output_path}"
         self.update(filter_condition)
@@ -502,6 +506,7 @@ class Downloader(SQLiteItem):
                 for result in result_iter:
                     entry_url = result.get("entry_url", download.url)
                     status_code = result.get("status", 1)
+                    error_message = result.get("error")
                     entry_filename = result.get("entry_filename")
 
                     if entry_filename:
@@ -518,11 +523,11 @@ class Downloader(SQLiteItem):
 
                     if status_code == 1:
                         child_download.set_download_status_query(
-                            DownloadStatus.INTERRUPTED
+                            DownloadStatus.INTERRUPTED, error_message
                         )
                     else:
                         child_download.set_download_status_query(
-                            DownloadStatus.COMPLETED
+                            DownloadStatus.COMPLETED, error_message
                         )
 
                     download_results.append(result)
