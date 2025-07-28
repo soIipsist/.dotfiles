@@ -194,7 +194,10 @@ class Download(SQLiteItem):
 
     @property
     def output_path(self):
-        return self.get_output_path()
+
+        if not self._output_path:
+            self._output_path = self.get_output_path()
+        return self._output_path
 
     @output_path.setter
     def output_path(self, output_path: str):
@@ -642,7 +645,8 @@ def download_all_cmd(
         print(f"Total downloads ({len(downloads)}):")
 
         for d in downloads:
-            print(d.as_dict())
+            pp.pprint(d.as_dict())
+        downloads = []
     else:
         download = Download.parse_download_string(
             url, downloader_type, output_directory, output_filename
