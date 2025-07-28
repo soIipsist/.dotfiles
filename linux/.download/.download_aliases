@@ -1,7 +1,7 @@
 # downloader options
-export DOWNLOADS_PATH="$HOME/videos/downloads.txt"
+export DOWNLOADS_PATH="$HOME/downloads/downloads.txt"
 export DOWNLOADS_DB_PATH="$HOME/scripts/downloads.db"
-export DOWNLOADS_OUTPUT_DIR="$HOME/videos"
+export DOWNLOADS_OUTPUT_DIR="$HOME/downloads"
 
 download() {
     run_venv_script "downloader.py" download "$@"
