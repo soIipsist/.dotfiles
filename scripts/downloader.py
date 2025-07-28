@@ -264,9 +264,7 @@ class Download(SQLiteItem):
             data = self.as_dict()
             logger.error(f"An unexpected error has occured! \n{pp.pformat(data)} ")
 
-        filter_condition = (
-            f"url = {self.url} AND downloader = {self.downloader.downloader_type}"
-        )
+        filter_condition = f"url = {self.url} AND downloader = {self.downloader.downloader_type} AND output_path = {self.output_path}"
         self.update(filter_condition)
 
     def get_output_path(self):
