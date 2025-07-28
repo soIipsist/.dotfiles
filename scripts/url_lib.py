@@ -1,5 +1,6 @@
 import argparse
 import os
+import subprocess
 import urllib3
 from urllib.parse import urlparse
 from pathlib import Path
@@ -43,7 +44,13 @@ def download(
 
             print(f"Downloaded: {url} → {output_path}")
             response.release_conn()
-
+        except KeyboardInterrupt as e:
+            print("User interrupted the download.")
+            result["status"] = 1
+            result["error"] = str(e)
+        except subprocess.CalledProcessError as e:
+            result["status"] = 1
+            result["error"] = str(e)
         except Exception as e:
             error = f"Error downloading {url}: {e}"
             print(error)

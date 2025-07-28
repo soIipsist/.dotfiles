@@ -23,6 +23,10 @@ def download(urls: list, output_directory: str = None):
             proc = subprocess.run(cmd, capture_output=True, text=True, check=True)
             result["stdout"] = proc.stdout
             result["stderr"] = proc.stderr
+        except KeyboardInterrupt as e:
+            print("User interrupted the download.")
+            result["status"] = 1
+            result["error"] = str(e)
         except subprocess.CalledProcessError as e:
             result["status"] = 1
             result["error"] = str(e)
