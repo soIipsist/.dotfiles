@@ -112,6 +112,7 @@ fi
 export PATH="/opt/homebrew/bin:/usr/local/bin:$HOME/platform-tools:$PATH"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+export PATH="/Library/TeX/texbin:$PATH"
 
 eval "$(zoxide init bash)"
 
