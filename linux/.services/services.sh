@@ -5,6 +5,9 @@ source_services_directory="$SCRIPT_DIR/services"
 dest_services_directory="/etc/systemd/system/"
 dest_config_directory="/etc/default/"
 
+group="service_group"
+sudo addgroup $group
+
 copy() {
     file="$1"
     dest_directory="$2"
@@ -17,7 +20,7 @@ copy() {
     sudo cp -f "$file" "$dest_directory/$filename"
 
     # chmod files
-    sudo chmod 644 "$dest_directory/$filename"
+    sudo chmod 664 "$dest_directory/$filename"
     echo "Copied $filename to $dest_directory."
 }
 
@@ -36,8 +39,8 @@ for file in "$source_services_directory"/*.service; do
 
     # Recreate log files with correct ownership and permissions
     sudo touch "$log_file" "$err_file"
-    sudo chown $(whoami):$(whoami) "$log_file" "$err_file"
-    sudo chmod 644 "$log_file" "$err_file"
+    sudo chown $(whoami):$group "$log_file" "$err_file"
+    sudo chmod 664 "$log_file" "$err_file"
 
     echo "Created log files for $service_base in $log_dir."
 done
@@ -53,8 +56,8 @@ for file in "$source_services_directory"/*.conf; do
     if [ -n "$state_file" ]; then
         sudo mkdir -p "$(dirname "$state_file")"
         sudo touch "$state_file"
-        sudo chown "$(whoami):$(whoami)" "$state_file"
-        sudo chmod 644 "$state_file"
+        sudo chown "$(whoami):$group" "$state_file"
+        sudo chmod 664 "$state_file"
         echo "Created state file $state_file"
     fi
 
