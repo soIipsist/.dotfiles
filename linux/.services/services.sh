@@ -21,6 +21,7 @@ copy() {
 
     # chmod files
     sudo chmod 664 "$dest_directory/$filename"
+    sudo chown $(whoami):$group "$dest_directory/$filename"
     echo "Copied $filename to $dest_directory."
 }
 
@@ -56,10 +57,11 @@ for file in "$source_services_directory"/*.conf; do
     if [ -n "$state_file" ]; then
         sudo mkdir -p "$(dirname "$state_file")"
         sudo touch "$state_file"
-        sudo chown "$(whoami):$group" "$state_file"
-        sudo chmod 664 "$state_file"
+
         echo "Created state file $state_file"
     fi
+    sudo chown "$(whoami):$group" "$state_file"
+    sudo chmod 664 "$state_file"
 
     copy "$temp_file" "$dest_config_directory" "$filename"
     rm "$temp_file"
