@@ -31,12 +31,14 @@ for file in "$source_services_directory"/*.service; do
     service_name="$(basename "$file")"
     service_base="${service_name%.service}"
 
-    log_dir="/tmp/logs"
+    log_dir="srv/shared/tmp"
     log_file="$log_dir/${service_base}.log"
     err_file="$log_dir/${service_base}.err"
 
     # Create log directory if it doesn't exist
     mkdir -p "$log_dir"
+    sudo chown root:$group "$log_dir"
+    sudo chmod 2775 "$log_dir"
 
     # Recreate log files with correct ownership and permissions
     sudo touch "$log_file" "$err_file"
