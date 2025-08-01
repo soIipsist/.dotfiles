@@ -569,6 +569,20 @@ default_downloaders = [
         "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
+        "ytdlp_video_4",
+        os.path.join(script_directory, "video_options_4.json"),
+        "ytdlp",
+        "download",
+        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
+    ),
+    Downloader(
+        "ytdlp_video_5",
+        os.path.join(script_directory, "video_options_5.json"),
+        "ytdlp",
+        "download",
+        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
+    ),
+    Downloader(
         "ytdlp_audio",
         os.path.join(script_directory, "audio_options.json"),
         "ytdlp",
