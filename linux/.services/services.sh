@@ -5,7 +5,7 @@ source_services_directory="$SCRIPT_DIR/services"
 dest_services_directory="/etc/systemd/system/"
 dest_config_directory="/etc/default/"
 
-group="service_group"
+group="shared_group"
 sudo addgroup $group
 
 copy() {
