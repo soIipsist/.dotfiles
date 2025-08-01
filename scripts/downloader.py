@@ -628,7 +628,11 @@ def downloaders_cmd(
         d.upsert()
     elif action == "delete":
         d.delete()
+    elif action == "reset":
+        Downloader.insert_all(default_downloaders)
+        print("Successfully generated default downloaders.")
     else:  # list downloaders
+
         logger.info(f"Fetching downloaders from file {database_path}.")
 
         if downloader_type:
@@ -718,7 +722,11 @@ if __name__ == "__main__":
     # downloader cmd
     downloader_cmd = subparsers.add_parser("downloaders", help="List downloaders")
     downloader_cmd.add_argument(
-        "action", type=str, choices=["add", "delete", "list"], default="list", nargs="?"
+        "action",
+        type=str,
+        choices=["add", "delete", "list", "reset"],
+        default="list",
+        nargs="?",
     )
     downloader_cmd.add_argument(
         "-t", "--downloader_type", type=str, default="ytdlp_video"
