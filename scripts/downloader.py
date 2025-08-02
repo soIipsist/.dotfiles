@@ -60,7 +60,10 @@ class ColoredFormatter(logging.Formatter):
         return super().format(record)
 
 
-def setup_logger(name="downloader", log_dir="/srv/shared/tmp", level=logging.INFO):
+def setup_logger(name="downloader", log_dir_name="/tmp", level=logging.INFO):
+    downloads_dir = os.environ.get("DOWNLOADS_DIRECTORY", "/")
+    log_dir = os.path.join(downloads_dir, log_dir_name)
+
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
