@@ -41,7 +41,7 @@ check_required_file() {
 
     if [ ! -f "$file_path" ]; then
         echo "Required file not found: $file_path"
-        exit 1
+        touch "$file_path"
     fi
 
     if [ "$clean" -eq 1 ]; then
