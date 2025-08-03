@@ -7,8 +7,6 @@ ExecStart=/usr/bin/bash -lc /usr/local/bin/download_watcher
 Restart=always
 User=solipsist
 Group=shared_group
-StandardOutput=append:/srv/shared/tmp/download_watcher.log
-StandardError=append:/srv/shared/tmp/download_watcher.err
 EnvironmentFile=/etc/default/download_watcher.conf
 
 [Install]
