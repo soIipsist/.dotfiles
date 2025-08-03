@@ -190,6 +190,13 @@ class TestDownloader(TestBase):
 
         print("PLAYLIST COUNTS", playlist_counts)
 
+    def test_from_dict(self):
+        d = {"downloader_type": "ytdlp_audio"}
+        downloader = Downloader.from_dict(d)
+        self.assertTrue(isinstance(downloader, Downloader))
+
+        print(downloader)
+
 
 if __name__ == "__main__":
     test_methods = [
@@ -197,6 +204,6 @@ if __name__ == "__main__":
         # TestDownloader.test_get_downloader_func,
         # TestDownloader.test_get_downloader_args,
         # TestDownloader.test_start_downloads,
-        # TestDownloader.test_from_dict
+        TestDownloader.test_from_dict
     ]
     run_test_methods(test_methods)
