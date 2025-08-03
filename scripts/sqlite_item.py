@@ -197,15 +197,20 @@ class SQLiteItem:
         if self.logging and log_message:
             print(log_message)
 
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self, column_names: list = None) -> Dict[str, Any]:
         """Convert the model instance to a dictionary without leading underscores."""
+
+        column_names = self.column_names if not column_names else column_names
+
+        if isinstance(column_names, str):
+            column_names = column_names.split(",")
 
         result = {}
 
-        for c in self.column_names:
-            # print("COLUMN", c)
-            value = getattr(self, c)
-            result[c] = value
+        for column_name in column_names:
+            # print("COLUMN", column_name)
+            value = getattr(self, column_name)
+            result[column_name] = value
             # print("VALUE", value)
 
         return result

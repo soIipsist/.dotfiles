@@ -9,7 +9,7 @@ from enum import Enum
 import sys
 from typing import List, Optional
 from urllib.parse import urlparse
-from sqlite import is_valid_path, is_valid_url
+from sqlite import is_valid_path
 from sqlite_item import SQLiteItem, create_connection
 from sqlite_conn import create_db, download_values, downloader_values
 import logging
@@ -615,6 +615,7 @@ def downloaders_cmd(
     module: str = None,
     func: str = None,
     downloader_args: str = None,
+    filter_keys: str = None,
 ):
     d = Downloader(downloader_type, downloader_path, module, func, downloader_args)
     downloaders = [d]
@@ -644,7 +645,7 @@ def downloaders_cmd(
 
         for downloader in downloaders:
             downloader: Downloader
-            pp.pprint(downloader.as_dict())
+            pp.pprint(downloader.as_dict(filter_keys))
 
 
 def download_all_cmd(
@@ -666,7 +667,8 @@ def download_all_cmd(
         print(f"Total downloads ({len(downloads)}):")
 
         for d in downloads:
-            pp.pprint(d.as_dict())
+            filter_keys = kwargs.get("filter_keys")
+            pp.pprint(d.as_dict(filter_keys))
         downloads = []
     else:
         download = Download.parse_download_string(
@@ -714,6 +716,7 @@ if __name__ == "__main__":
         default=os.environ.get("DOWNLOADS_DIRECTORY"),
         type=str,
     )
+    download_cmd.add_argument("-k", "--filter_keys", type=str, default=None)
 
     download_cmd.add_argument("-f", "--output_filename", default=None, type=str)
 
@@ -737,6 +740,7 @@ if __name__ == "__main__":
     downloader_cmd.add_argument("-f", "--func", type=str, default=None)
     downloader_cmd.add_argument("-m", "--module", type=str, default=None)
     downloader_cmd.add_argument("-a", "--downloader_args", type=str, default=None)
+    downloader_cmd.add_argument("-k", "--filter_keys", type=str, default=None)
 
     downloader_cmd.set_defaults(call=downloaders_cmd)
 
