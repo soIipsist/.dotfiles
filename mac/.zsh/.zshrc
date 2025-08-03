@@ -163,4 +163,4 @@ bindkey -s '^Xo' "cpout\n"          # Ctrl + X followed by O
 bindkey -s ^f "tmux-sessionizer\n"  # Ctrl + F
 
 # zsh suggestions
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff"
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#AFADAD"
