@@ -25,9 +25,9 @@ database_path = os.environ.get(
 
 # environment variables
 # DOWNLOADER="ytdlp"
-# DOWNLOADS_PATH="$HOME/videos/downloads.txt"
+# DOWNLOADS_FILENAME="$HOME/videos/downloads.txt"
 # DOWNLOADS_DB_PATH="$HOME/scripts/downloads.db"
-# DOWNLOADS_OUTPUT_DIR="$HOME/videos"
+# DOWNLOADS_DIRECTORY="$HOME/videos"
 # YTDLP_FORMAT="ytdlp_audio"
 # YTDLP_OPTIONS_PATH="$HOME/scripts/video_options.json"
 # FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
@@ -711,7 +711,7 @@ if __name__ == "__main__":
     download_cmd.add_argument(
         "-o",
         "--output_directory",
-        default=os.environ.get("DOWNLOADS_OUTPUT_DIR"),
+        default=os.environ.get("DOWNLOADS_DIRECTORY"),
         type=str,
     )
 

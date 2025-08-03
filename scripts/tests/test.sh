@@ -1,5 +1,5 @@
 SCRIPTS_DIRECTORY="$HOME/repos"
-DOWNLOADS_PATH="downloads.txt"
+DOWNLOADS_FILENAME="downloads.txt"
 
 download() {
     args=("$@")
@@ -17,4 +17,4 @@ while IFS= read -r line; do
     if [[ -n "$line" ]]; then
         download "$line"
     fi
-done <"$DOWNLOADS_PATH"
+done <"$DOWNLOADS_FILENAME"

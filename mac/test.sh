@@ -41,7 +41,7 @@ download() {
 
 while IFS= read -r line; do
     if [[ -n "$line" ]]; then
-        echo "$(date): Running download on: $line $DOWNLOADS_PATH" >>"$LOG_FILE"
+        echo "$(date): Running download on: $line $DOWNLOADS_FILENAME" >>"$LOG_FILE"
         download "$line"
     fi
 done <<<"$NEW_LINES"
