@@ -215,7 +215,13 @@ class SQLiteItem:
 
         return result
 
-    # @classmethod
-    # def from_dict(cls, data: dict):
-    #     """Initialize model from a dictionary, useful for API responses."""
-    #     return cls(**data)
+    @classmethod
+    def from_dict(cls, data: dict):
+        """Initialize model from a dictionary, useful for API responses."""
+        obj = cls.__new__(cls)
+
+        for key, value in data.items():
+            if hasattr(obj, key):
+                setattr(obj, key, value)
+
+        return obj

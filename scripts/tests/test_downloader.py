@@ -193,9 +193,10 @@ class TestDownloader(TestBase):
 
 if __name__ == "__main__":
     test_methods = [
-        TestDownloader.test_parse_download_string,
+        # TestDownloader.test_parse_download_string,
         # TestDownloader.test_get_downloader_func,
         # TestDownloader.test_get_downloader_args,
         # TestDownloader.test_start_downloads,
+        # TestDownloader.test_from_dict
     ]
     run_test_methods(test_methods)
