@@ -2,7 +2,7 @@
 export DOWNLOADS_DB_PATH="$HOME/scripts/downloads.db"
 export DOWNLOADS_DIRECTORY="/srv/shared"
 export DOWNLOADS_FILENAME="downloads.txt"
-export DOWNLOADER_TYPE="ytdlp_audio"
+export DOWNLOADER_TYPE="ytdlp_video"
 export DOWNLOADER_KEYS="downloader_type,downloader_path"
 export DOWNLOAD_KEYS="url,downloader,download_status"
 
