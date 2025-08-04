@@ -2,39 +2,42 @@
 
 download() {
     SCRIPT_PATH="$SCRIPTS_DIRECTORY/downloader.py"
+    {
+        echo "[$(date)] Starting download for args: $*"
+        if [ ! -f "$SCRIPT_PATH" ]; then
+            echo "Could not find $SCRIPT_PATH."
+            return 1
+        fi
 
-    if [ ! -f "$SCRIPT_PATH" ]; then
-        echo "Could not find $SCRIPT_PATH."
-        return
-    fi
+        if [ -n "$VENV_PATH" ]; then
+            source $VENV_PATH/bin/activate
+        fi
+        echo "TERM=$TERM" >>"$LOG_FILE"
 
-    if [ -n "$VENV_PATH" ]; then
-        source $VENV_PATH/bin/activate
-    fi
-    echo "TERM=$TERM" >>"$LOG_FILE"
+        # start a new tmux session or attach to already existing
+        args=("$@")
 
-    # start a new tmux session or attach to already existing
-    args=("$@")
+        for i in "${!args[@]}"; do
+            args[$i]="${args[$i]//\"/\\\"}"
+        done
 
-    for i in "${!args[@]}"; do
-        args[$i]="${args[$i]//\"/\\\"}"
-    done
+        cmd="python3 \"$SCRIPT_PATH\" \"$args\" -o \"$DOWNLOADS_DIRECTORY\"; bash"
+        echo "[$(date)] Running command: $cmd"
 
-    cmd="python3 \"$SCRIPT_PATH\" \"$args\" -o \"$DOWNLOADS_DIRECTORY\"; bash"
+        if tmux has-session -t downloads 2>/dev/null; then
+            tmux new-window -t downloads -n "dl-$(date +%s)" "$cmd"
+        else
+            echo "Starting detached tmux session." >>"$LOG_FILE"
+            tmux new-session -d -s downloads -n "dl" "$cmd"
+        fi
 
-    if tmux has-session -t downloads 2>/dev/null; then
-        tmux new-window -t downloads -n "dl-$(date +%s)" "$cmd"
-    else
-        echo "Starting detached tmux session." >>"$LOG_FILE"
-        tmux new-session -d -s downloads -n "dl" "$cmd"
-    fi
+        echo "[$(date)] Completed download: $args" >>"$LOG_FILE"
 
-    echo "$(date): Completed download: $args" >>"$LOG_FILE"
-
-    # Deactivate the virtual environment properly
-    if [ -n "$VIRTUAL_ENV" ]; then
-        deactivate
-    fi
+        # Deactivate the virtual environment properly
+        if [ -n "$VIRTUAL_ENV" ]; then
+            deactivate
+        fi
+    } >>"$LOG_FILE" 2>>"$ERR_FILE"
 }
 
 check_required_file() {
