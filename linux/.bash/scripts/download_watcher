@@ -58,15 +58,8 @@ fi
 LOG_DIR="$(dirname "$LOG_FILE")"
 ERR_DIR="$(dirname "$ERR_FILE")"
 
-if [ ! -d "$LOG_DIR" ] || [ ! -w "$LOG_DIR" ]; then
-    echo "Log directory '$LOG_DIR' does not exist or is not writable" >&2
-    exit 1
-fi
-
-if [ ! -d "$ERR_DIR" ] || [ ! -w "$ERR_DIR" ]; then
-    echo "Error log directory '$ERR_DIR' does not exist or is not writable" >&2
-    exit 1
-fi
+mkdir -p "$LOG_DIR"
+mkdir -p "$ERR_DIR"
 
 if [ -z "$DOWNLOADS_FILENAME" ]; then
     DOWNLOADS_FILENAME="downloads.txt"

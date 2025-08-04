@@ -28,3 +28,5 @@ else
 fi
 
 echo "Done. See log: $log_file"
+echo "Restarting service..."
+sudo systemctl restart $service_name
