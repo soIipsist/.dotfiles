@@ -719,7 +719,9 @@ if __name__ == "__main__":
         default=os.environ.get("DOWNLOADS_DIRECTORY"),
         type=str,
     )
-    download_cmd.add_argument("-k", "--filter_keys", type=str, default=None)
+    download_cmd.add_argument(
+        "-k", "--filter_keys", type=str, default=os.environ.get("DOWNLOAD_KEYS")
+    )
 
     download_cmd.add_argument("-f", "--output_filename", default=None, type=str)
 
@@ -743,7 +745,9 @@ if __name__ == "__main__":
     downloader_cmd.add_argument("-f", "--func", type=str, default=None)
     downloader_cmd.add_argument("-m", "--module", type=str, default=None)
     downloader_cmd.add_argument("-a", "--downloader_args", type=str, default=None)
-    downloader_cmd.add_argument("-k", "--filter_keys", type=str, default=None)
+    downloader_cmd.add_argument(
+        "-k", "--filter_keys", type=str, default=os.environ.get("DOWNLOADER_KEYS")
+    )
 
     downloader_cmd.set_defaults(call=downloaders_cmd)
 
