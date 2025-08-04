@@ -3,7 +3,7 @@
 config_file="${1:-}"
 service_name="${config_file##*/}"
 service_name="${service_name%.conf}"
-log_file="/srv/shared/tmp/$service_name.txt"
+log_file="/tmp/$service_name.txt"
 
 if [ -z "$config_file" ] || [ ! -f "$config_file" ]; then
     echo "Usage: $0 /path/to/config_file.conf"
