@@ -20,11 +20,15 @@ download() {
         args[$i]="${args[$i]//\"/\\\"}"
     done
 
+    cmd="python3 \"$SCRIPT_PATH\" \"$args"\ -o \"$DOWNLOADS_DIRECTORY\"; bash"
+
+    echo "$(date): Executing command: $cmd" >>"$LOG_FILE"
+
     if tmux has-session -t downloads 2>/dev/null; then
-        tmux new-window -t downloads -n "dl-$(date +%s)" "python3 \"$SCRIPT_PATH\" \"$args\"; bash"
+        tmux new-window -t downloads -n "dl-$(date +%s)" "$cmd"
     else
         echo "Starting detached tmux session." >>"$LOG_FILE"
-        tmux new-session -d -s downloads -n "dl" "python3 \"$SCRIPT_PATH\" \"$args\"; bash"
+        tmux new-session -d -s downloads -n "dl" "$cmd"
     fi
 
     echo "$(date): Completed download: $args" >>"$LOG_FILE"
