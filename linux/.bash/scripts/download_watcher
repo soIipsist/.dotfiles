@@ -75,7 +75,7 @@ fi
 DOWNLOADS_PATH="${DOWNLOADS_DIRECTORY%/}/$DOWNLOADS_FILENAME"
 
 # Redirect all stdout and stderr
-exec >>"$LOG_FILE" 2>>"$ERR_FILE"
+# exec >>"$LOG_FILE" 2>>"$ERR_FILE"
 
 # ensure files exist
 check_required_file "$DOWNLOADS_PATH" 0
