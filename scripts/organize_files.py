@@ -46,7 +46,9 @@ def get_modification_year(file_path):
 
 def main(source_directory: str, destination_directory: str = None):
     source_path = Path(source_directory)
-    dest_path = Path(destination_directory) if destination_directory else source_path
+    dest_path = (
+        Path(destination_directory) if destination_directory else source_path
+    )  # moves photos to source_directory if not defined
 
     if not source_path.is_dir():
         print(f"Error: Source directory '{source_path}' is not a directory.")

@@ -19,6 +19,7 @@ download_all() {
 
     if [ ! -f "$downloads_path" ]; then
         echo "Downloads path $downloads_path not found."
+        echo "Usage: download_all <downloads_path.txt>"
         return 1
     fi
 
