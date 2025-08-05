@@ -123,6 +123,20 @@ run_venv_script() {
     fi
 }
 
+run_in_tmux_session() {
+    local cmd="$1"
+    local tmux_session_name="${2:-downloads}"
+
+    cmd+="; exec \$SHELL"
+
+    if tmux has-session -t "$tmux_session_name" 2>/dev/null; then
+        tmux new-window -t "$tmux_session_name" -n "$tmux_session_name-$(date +%s)" "$SHELL" -c "$cmd"
+    else
+        echo "Starting detached tmux session."
+        tmux new-session -d -s "$tmux_session_name" -n "$tmux_session_name-$(date +%s)" "$SHELL" -c "$cmd"
+    fi
+}
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.

@@ -97,20 +97,6 @@ fi
 alias python="python3"
 alias cdf='cd "$(find . -type d | fzf)"'
 
-function run_in_tmux_session() {
-    local cmd="$1"
-    local tmux_session_name="${2:-downloads}"
-
-    cmd+="; bash"
-
-    if tmux has-session -t "$tmux_session_name" 2>/dev/null; then
-        tmux new-window -t "$tmux_session_name" -n "dl-$(date +%s)" "$cmd"
-    else
-        echo "Starting detached tmux session."
-        tmux new-session -d -s "$tmux_session_name" -n "dl" "$cmd"
-    fi
-}
-
 function run_venv_script() {
     local SCRIPT_NAME="$1"
     shift
@@ -136,6 +122,20 @@ function run_venv_script() {
 
     if [ -n "$VIRTUAL_ENV" ]; then
         deactivate
+    fi
+}
+
+function run_in_tmux_session() {
+    local cmd="$1"
+    local tmux_session_name="${2:-downloads}"
+
+    cmd+="; exec \$SHELL"
+
+    if tmux has-session -t "$tmux_session_name" 2>/dev/null; then
+        tmux new-window -t "$tmux_session_name" -n "$tmux_session_name-$(date +%s)" "$SHELL" -c "$cmd"
+    else
+        echo "Starting detached tmux session."
+        tmux new-session -d -s "$tmux_session_name" -n "$tmux_session_name-$(date +%s)" "$SHELL" -c "$cmd"
     fi
 }
 

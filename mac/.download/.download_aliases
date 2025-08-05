@@ -24,7 +24,7 @@ download_all() {
 
     while IFS= read -r line; do
         if [[ -n "$line" ]]; then
-            run_in_tmux_session "download \"${line}\""
+            run_in_tmux_session "source $HOME/.zshrc; download \"${line}\""
         fi
     done <"$downloads_path"
 
