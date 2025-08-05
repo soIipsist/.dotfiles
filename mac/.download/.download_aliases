@@ -13,3 +13,19 @@ download() {
 downloaders() {
     run_venv_script "downloader.py" downloaders -t "" "$@"
 }
+
+download_all() {
+    downloads_path="$1"
+
+    if [ ! -f "$downloads_path" ]; then
+        echo "Downloads path $downloads_path not found."
+        return 1
+    fi
+
+    while IFS= read -r line; do
+        if [[ -n "$line" ]]; then
+            run_venv_script "downloader.py" download "$line"
+        fi
+    done <"$downloads_path"
+
+}

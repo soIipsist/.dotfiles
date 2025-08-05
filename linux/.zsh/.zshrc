@@ -97,6 +97,11 @@ fi
 alias python="python3"
 alias cdf='cd "$(find . -type d | fzf)"'
 
+# function run_in_tmux_session() {
+#     cmd="$1"
+
+# }
+
 function run_venv_script() {
     local SCRIPT_NAME="$1"
     shift
