@@ -46,11 +46,11 @@ SCRIPTS_DIRECTORY="$HOME/repos"
 #     fi
 # done <<<"$NEW_LINES"
 
-function rsync_pull() {
-    # rsync_pull <remote_paths>
-    # rsync_pull <remote_paths> [server_alias]
-    # rsync_pull <remote_paths> [local_path]
-    # rsync_pull <remote_paths> [local_path] [server_alias]
+function rsync_pull_all() {
+    # rsync_pull_all <remote_paths>
+    # rsync_pull_all <remote_paths> [server_alias]
+    # rsync_pull_all <remote_paths> [local_path]
+    # rsync_pull_all <remote_paths> [local_path] [server_alias]
 
     if (($# < 1)); then
         echo "Usage: rsync_pull <remote_path1> [remote_path2 ...] [local_dir] [server_alias:$RSYNC_SERVER]"
@@ -109,16 +109,19 @@ function rsync_pull() {
     # echo "REMOTE: ${remote_paths[@]}"
     # echo "LOCAL: $local_dir"
     # echo "SERVER: $server_alias"
+    for i in "${!remote_paths[@]}"; do
+        remote_paths[$i]="${server_alias}:${remote_paths[$i]}"
+    done
     rsync -avz --progress "${remote_paths[@]}" "$local_dir"
 
 }
 
-function rsync_push() {
+function rsync_push_all() {
 
-    # rsync_push <local_paths>
-    # rsync_push <local_paths> [server_alias]
-    # rsync_push <local_paths> [remote_path] [server_alias]
-    # rsync_push <local_paths> [remote_path]
+    # rsync_push_all <local_paths>
+    # rsync_push_all <local_paths> [server_alias]
+    # rsync_push_all <local_paths> [remote_path] [server_alias]
+    # rsync_push_all <local_paths> [remote_path]
 
     if (($# < 1)); then
         echo "Usage: rsync_push <local_path1> [local_path2 ...] <remote_dir> [server_alias:$RSYNC_SERVER]"
@@ -177,13 +180,13 @@ function rsync_push() {
     rsync -avz --progress "${local_paths[@]}" "${server_alias}:${remote_dir}"
 }
 
-# rsync_push file1.txt
-# rsync_push mac.sh test.sh wallpaper.sh .zsh/ ~/server
-# rsync_push mac.sh test.sh wallpaper.sh .zsh/ ~/file3.txt ~/server server
-# rsync_push file1.txt file2.txt file3.txt /server server
-# rsync_push ./file1.txt ~/remote_dir # Uses $RSYNC_SERVER
-# rsync_push ~/file.txt .some_file ~/some
+# rsync_push_all file1.txt
+# rsync_push_all mac.sh test.sh wallpaper.sh .zsh/ ~/server
+# rsync_push_all mac.sh test.sh wallpaper.sh .zsh/ ~/file3.txt ~/server server
+# rsync_push_all file1.txt file2.txt file3.txt /server server
+# rsync_push_all ./file1.txt ~/remote_dir # Uses $RSYNC_SERVER
+# rsync_push_all ~/file.txt .some_file ~/some
 
-# rsync_pull ~/file1.txt ~/file2.txt server
-# rsync_pull '~/file' ~/file3.sh ~/.zsh/ ~/Desktop server2
+# rsync_pull_all ~/file1.txt ~/file2.txt server
+# rsync_pull_all '~/file' ~/file3.sh ~/.zsh/ ~/Desktop server2
 rsync_pull '~/Desktop' ~/red ~/file2.sh ~/Desktop

@@ -143,48 +143,48 @@ ssrestart() {
     source /usr/local/bin/restart_service "$service_name"
 }
 
-# rsync_push() {
-#     local local_path="$1"
-#     local remote_path="${2:-$RSYNC_PATH}"
-#     local server_alias="${3:-$RSYNC_SERVER}"
-
-#     if [[ -z "$local_path" || -z "$server_alias" ]]; then
-#         echo "Usage: rsync_push <local_path> [remote_path] [server_alias]"
-#         return 1
-#     fi
-
-#     if [ -z "$remote_path" ]; then
-#         remote_path="."
-#     fi
-
-#     rsync -avz --progress "$local_path" "${server_alias}:${remote_path}"
-# }
-
-# rsync_pull() {
-#     local remote_path="$1"
-#     local local_path="${2:-$RSYNC_PATH}"
-#     local server_alias="${3:-$RSYNC_SERVER}"
-
-#     if [[ -z "$remote_path" || -z "$server_alias" ]]; then
-#         echo "Usage: rsync_pull <remote_path> [local_path] [server_alias]"
-#         return 1
-#     fi
-
-#     if [ -z "$local_path" ]; then
-#         local_path="."
-#     fi
-
-#     rsync -avz --progress \
-#         "${server_alias}:${remote_path}" \
-#         "${local_path}"
-# }
-
 rsync_push() {
+    local local_path="$1"
+    local remote_path="${2:-$RSYNC_PATH}"
+    local server_alias="${3:-$RSYNC_SERVER}"
 
-    # rsync_push <local_paths>
-    # rsync_push <local_paths> [server_alias]
-    # rsync_push <local_paths> [remote_path] [server_alias]
-    # rsync_push <local_paths> [remote_path]
+    if [[ -z "$local_path" || -z "$server_alias" ]]; then
+        echo "Usage: rsync_push <local_path> [remote_path] [server_alias]"
+        return 1
+    fi
+
+    if [ -z "$remote_path" ]; then
+        remote_path="."
+    fi
+
+    rsync -avz --progress "$local_path" "${server_alias}:${remote_path}"
+}
+
+rsync_pull() {
+    local remote_path="$1"
+    local local_path="${2:-$RSYNC_PATH}"
+    local server_alias="${3:-$RSYNC_SERVER}"
+
+    if [[ -z "$remote_path" || -z "$server_alias" ]]; then
+        echo "Usage: rsync_pull <remote_path> [local_path] [server_alias]"
+        return 1
+    fi
+
+    if [ -z "$local_path" ]; then
+        local_path="."
+    fi
+
+    rsync -avz --progress \
+        "${server_alias}:${remote_path}" \
+        "${local_path}"
+}
+
+rsync_push_all() {
+
+    # rsync_push_all <local_paths>
+    # rsync_push_all <local_paths> [server_alias]
+    # rsync_push_all <local_paths> [remote_path] [server_alias]
+    # rsync_push_all <local_paths> [remote_path]
 
     if (($# < 1)); then
         echo "Usage: rsync_push <local_path1> [local_path2 ...] <remote_dir> [server_alias:$RSYNC_SERVER]"
@@ -243,11 +243,11 @@ rsync_push() {
     rsync -avz --progress "${local_paths[@]}" "${server_alias}:${remote_dir}"
 }
 
-rsync_pull() {
-    # rsync_pull <remote_paths>
-    # rsync_pull <remote_paths> [server_alias]
-    # rsync_pull <remote_paths> [local_path]
-    # rsync_pull <remote_paths> [local_path] [server_alias]
+rsync_pull_all() {
+    # rsync_pull_all <remote_paths>
+    # rsync_pull_all <remote_paths> [server_alias]
+    # rsync_pull_all <remote_paths> [local_path]
+    # rsync_pull_all <remote_paths> [local_path] [server_alias]
 
     if (($# < 1)); then
         echo "Usage: rsync_pull <remote_path1> [remote_path2 ...] [local_dir] [server_alias:$RSYNC_SERVER]"
@@ -306,6 +306,9 @@ rsync_pull() {
     # echo "REMOTE: ${remote_paths[@]}"
     # echo "LOCAL: $local_dir"
     # echo "SERVER: $server_alias"
+    for i in "${!remote_paths[@]}"; do
+        remote_paths[$i]="${server_alias}:${remote_paths[$i]}"
+    done
 
     rsync -avz --progress "${remote_paths[@]}" "$local_dir"
 
