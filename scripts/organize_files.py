@@ -129,12 +129,22 @@ def organize_files(
         print(f"Error: Destination directory '{dest_path}' is not a directory.")
         sys.exit(1)
 
-    create_backup(move, source_directory, backup_directory)
+    # print(
+    #     source_directory,
+    #     destination_directory,
+    #     move,
+    #     backup_directory,
+    #     action,
+    #     pattern,
+    #     repl,
+    # )
 
-    if action == "year":
-        organize_by_year(source_path, dest_path, move)
-    else:
-        organize_by_pattern(source_path, dest_path, pattern, repl, move)
+    # create_backup(move, source_directory, backup_directory)
+
+    # if action == "year":
+    #     organize_by_year(source_path, dest_path, move)
+    # else:
+    #     organize_by_pattern(source_path, dest_path, pattern, repl, move)
 
 
 def str_to_bool(string: str):
