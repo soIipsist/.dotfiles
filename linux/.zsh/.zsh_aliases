@@ -286,10 +286,10 @@ function rsync_pull() {
         return 1
     fi
 
-    echo "REMOTE: ${remote_paths[@]}"
-    echo "LOCAL: $local_dir"
-    echo "SERVER: $server_alias"
-    # rsync -avz --progress "${remote_paths[@]}" "$local_dir"
+    # echo "REMOTE: ${remote_paths[@]}"
+    # echo "LOCAL: $local_dir"
+    # echo "SERVER: $server_alias"
+    rsync -avz --progress "${remote_paths[@]}" "$local_dir"
 
 }
 
