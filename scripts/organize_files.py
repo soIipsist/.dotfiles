@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import shutil
 import subprocess
@@ -44,16 +45,49 @@ def get_modification_year(file_path):
         return None
 
 
-def organize_by_pattern(
-    source_directory: str,
-    destination_directory: str = None,
-    pattern: str = None,
-    **args,
+def copy_file_path(
+    file_path: Path, dest_path: Path, move: bool, source_directory: Path
 ):
-    pass
+
+    if move:
+        # shutil.move(file_path, dest_path)
+        print(f"Moved '{file_path}' -> '{dest_path}'")
+
+    else:
+        # shutil.copy2(file_path, dest_path)
+        print(f"Copied '{file_path}' -> '{dest_path}'")
 
 
-def organize_by_year(source_directory: str, destination_directory: str = None, **args):
+def organize_by_pattern(
+    source_directory: Path,
+    destination_directory: Path,
+    pattern: str = None,
+    replacement: str = None,
+    move: bool = None,
+):
+
+    for file_path in source_directory.iterdir():
+        if file_path.is_file():
+            new_file_path = re.sub(pattern, replacement, file_path)
+            print(new_file_path)
+
+            copy_file_path(file_path)
+
+
+def create_backup(move: bool, source_directory: Path, backup_directory: Path):
+
+    if not move:
+        return
+
+    prompt = input("Moving files, would you like to create a backup? (y/n)")
+
+    if prompt.lower() == "y":
+        shutil.copy(source_directory, backup_directory)
+
+
+def organize_by_year(
+    source_directory: Path, destination_directory: Path, move: bool = None
+):
 
     for file_path in source_directory.iterdir():
         if file_path.is_file():
@@ -61,22 +95,15 @@ def organize_by_year(source_directory: str, destination_directory: str = None, *
             if not year:
                 year = get_modification_year(file_path)
 
-            print("FILE PATH", file_path)
-            print("YEAR", year)
-
             if not year:
                 print(f"Warning: Could not determine year for '{file_path}'")
                 continue
 
             target_dir = destination_directory / year
             target_dir.mkdir(parents=True, exist_ok=True)
+            print(f"Created year directory {target_dir}.")
 
-            shutil.copy2(file_path, target_dir)
-            print(f"Copied '{file_path}' -> '{target_dir}/'")
-
-
-def copy_file_path(move: bool = False):
-    pass
+            copy_file_path(file_path, target_dir, move, source_directory)
 
 
 def organize_files(
@@ -84,6 +111,9 @@ def organize_files(
     destination_directory: str = None,
     action: str = None,
     pattern: str = None,
+    repl: str = None,
+    move: bool = False,
+    backup_directory: str = None,
 ):
 
     source_path = Path(source_directory)
@@ -99,10 +129,12 @@ def organize_files(
         print(f"Error: Destination directory '{dest_path}' is not a directory.")
         sys.exit(1)
 
+    create_backup(move, source_directory, backup_directory)
+
     if action == "year":
-        organize_by_year(source_path, dest_path)
+        organize_by_year(source_path, dest_path, move)
     else:
-        organize_by_pattern(source_path, dest_path)
+        organize_by_pattern(source_path, dest_path, pattern, repl, move)
 
 
 def str_to_bool(string: str):
@@ -117,6 +149,9 @@ if __name__ == "__main__":
         "-a", "--action", type=str, default="pattern", choices=["pattern", "year"]
     )
     parser.add_argument("-p", "--pattern", type=str)
+    parser.add_argument("-r", "--repl", type=str)
     parser.add_argument("-m", "--move", type=str_to_bool, default=False)
+    parser.add_argument("-b", "--backup_directory", type=str, default="/tmp")
+
     args = vars(parser.parse_args())
     organize_files(**args)
