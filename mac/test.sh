@@ -184,6 +184,6 @@ function rsync_push() {
 # rsync_push ./file1.txt ~/remote_dir # Uses $RSYNC_SERVER
 # rsync_push ~/file.txt .some_file ~/some
 
-# rsync_pull ~/file1.txt ~/file2.txt '~/Desktop/' server
-rsync_pull '~/file' ~/file3.sh ~/.zsh/ ~/D server2
-# rsync_pull '~/Desktop' ~/red ~/file2.sh ~/Desktop
+# rsync_pull ~/file1.txt ~/file2.txt server
+# rsync_pull '~/file' ~/file3.sh ~/.zsh/ ~/Desktop server2
+rsync_pull '~/Desktop' ~/red ~/file2.sh ~/Desktop
