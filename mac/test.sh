@@ -117,7 +117,7 @@ function rsync_push() {
         echo $second_last
         echo $last_arg
 
-        if [[ -d "$last_arg" || -f "$last_arg" ]]; then # this exists, so it's not remote
+        if [ -e "$last_arg" ]; then # this exists, so it's not remote
             local_paths+=($last_arg)
             local_paths+=($second_last)
 
@@ -126,23 +126,19 @@ function rsync_push() {
                 remote_dir="$last_arg"
             else
                 server_alias="$last_arg"
-
-                if [[ -d "$second_last" || -f "$second_last" ]]; then # this exists, so it's not remote
-                    local_paths+=($second_last)
-                else
-                    remote_dir="$second_last"
-                fi
             fi
+        fi
+
+        if [ -e "$second_last" ]; then # this exists, so it's not remote
+            local_paths+=("$second_last")
+        else
+            remote_dir="$second_last"
         fi
 
         set -- "${@:1:$(($# - 2))}"
 
         echo "$@"
         local_paths+=("$@")
-
-        echo "LOCAL PATHS: ${local_paths[@]}"
-        echo "REMOTE: $remote_dir"
-        echo "SERVER: $server_alias"
 
     fi
 
@@ -151,14 +147,18 @@ function rsync_push() {
         return 1
     fi
 
+    echo "LOCAL PATHS: ${local_paths[@]}"
+    echo "REMOTE: $remote_dir"
+    echo "SERVER: $server_alias"
+
     # Uncomment below to run rsync
     # rsync -avz --progress "${local_paths[@]}" "${server_alias}:${remote_dir}"
 }
 
 # rsync_pull "g.png" "hro" "world.txt"
 # rsync_push file1.txt
-# rsync_push file1.txt file2.txt file3.txt
-rsync_push mac.sh test.sh wallpaper.sh ~/file3.txt ~/server
+# rsync_push mac.sh test.sh wallpaper.sh .zsh/ ~/server
+# rsync_push mac.sh test.sh wallpaper.sh .zsh/ ~/file3.txt ~/server server
 # rsync_push file1.txt file2.txt file3.txt /server server
 # rsync_push ./file1.txt ~/remote_dir # Uses $RSYNC_SERVER
 # rsync_push ~/file.txt .some_file ~/some
