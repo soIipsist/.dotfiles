@@ -47,6 +47,11 @@ SCRIPTS_DIRECTORY="$HOME/repos"
 # done <<<"$NEW_LINES"
 
 function rsync_pull() {
+    # rsync_pull <remote_paths>
+    # rsync_pull <remote_paths> [server_alias]
+    # rsync_pull <remote_paths> [local_path]
+    # rsync_pull <remote_paths> [local_path] [server_alias]
+
     if (($# < 1)); then
         echo "Usage: rsync_pull <remote_path1> [remote_path2 ...] [local_dir] [server_alias:$RSYNC_SERVER]"
         return 1
@@ -58,30 +63,46 @@ function rsync_pull() {
 
     if (($# == 1)); then
         remote_paths=("$1")
-    elif (($# == 2)); then
-        remote_paths=("$1")
-        local_dir="$2"
     else
-        # More than 2 arguments: last = maybe server, second-to-last = local_dir
         local last_arg="${@: -1}"
         local second_last="${@: -2:1}"
 
-        # Check if last arg is a path → it's actually the local_dir, no server_alias
+        echo $last_arg $second_last
+
+        # is remote path or local path
         if [[ "$last_arg" == /* || "$last_arg" == ./* || "$last_arg" == ../* || "$last_arg" == "~/"* || -d "$last_arg" ]]; then
-            local_dir="$last_arg"
-            server_alias="${RSYNC_SERVER:-}"
-            set -- "${@:1:$(($# - 1))}"
+
+            if [ -e "$last_arg" ]; then # this is local
+                local_dir="$last_arg"
+                remote_paths+=("$second_last")
+
+            else # add all remaining args as remote paths
+                remote_paths+=("$last_arg")
+                remote_paths+=("$second_last")
+            fi
         else
-            local_dir="$second_last"
+            # is server alias
             server_alias="$last_arg"
-            set -- "${@:1:$(($# - 2))}"
+
+            if [ -e "$second_last" ]; then # this is local
+                local_dir="$second_last"
+            else # add all remaining args as remote paths
+                remote_paths+=("$second_last")
+            fi
         fi
 
-        remote_paths=("$@")
+        set -- "${@:1:$(($# - 2))}"
+
+        remote_paths+=("$@")
     fi
 
     if [[ -z "$server_alias" ]]; then
         echo "Error: server alias not provided and RSYNC_SERVER is not set."
+        return 1
+    fi
+
+    if [ -z "$remote_paths" ]; then
+        echo "Error: no valid remote paths provided."
         return 1
     fi
 
@@ -91,12 +112,13 @@ function rsync_pull() {
     # rsync -avz --progress "${remote_paths[@]}" "$local_dir"
 
 }
+
 function rsync_push() {
 
-    # rsync_push <local_paths> <server_alias>
-    # rsync_push <local_paths> <remote_path> <server_alias>
-    # rsync_push <local_paths> <remote_path>
     # rsync_push <local_paths>
+    # rsync_push <local_paths> [server_alias]
+    # rsync_push <local_paths> [remote_path] [server_alias]
+    # rsync_push <local_paths> [remote_path]
 
     if (($# < 1)); then
         echo "Usage: rsync_push <local_path1> [local_path2 ...] <remote_dir> [server_alias:$RSYNC_SERVER]"
@@ -110,12 +132,9 @@ function rsync_push() {
     if (($# == 1)); then
         local_paths=("$1")
     else
-        # More than 2 arguments: last = maybe server, second-to-last = remote_dir
+
         local last_arg="${@: -1}"
         local second_last="${@: -2:1}"
-
-        echo $second_last
-        echo $last_arg
 
         if [ -e "$last_arg" ]; then # this exists, so it's not remote
             local_paths+=($last_arg)
@@ -137,7 +156,6 @@ function rsync_push() {
 
         set -- "${@:1:$(($# - 2))}"
 
-        echo "$@"
         local_paths+=("$@")
 
     fi
@@ -147,18 +165,25 @@ function rsync_push() {
         return 1
     fi
 
-    echo "LOCAL PATHS: ${local_paths[@]}"
-    echo "REMOTE: $remote_dir"
-    echo "SERVER: $server_alias"
+    if [ -z "$local_paths" ]; then
+        echo "Error: no valid local paths provided."
+        return 1
+    fi
 
-    # Uncomment below to run rsync
-    # rsync -avz --progress "${local_paths[@]}" "${server_alias}:${remote_dir}"
+    # echo "LOCAL PATHS: ${local_paths[@]}"
+    # echo "REMOTE: $remote_dir"
+    # echo "SERVER: $server_alias"
+
+    rsync -avz --progress "${local_paths[@]}" "${server_alias}:${remote_dir}"
 }
 
-# rsync_pull "g.png" "hro" "world.txt"
 # rsync_push file1.txt
 # rsync_push mac.sh test.sh wallpaper.sh .zsh/ ~/server
 # rsync_push mac.sh test.sh wallpaper.sh .zsh/ ~/file3.txt ~/server server
 # rsync_push file1.txt file2.txt file3.txt /server server
 # rsync_push ./file1.txt ~/remote_dir # Uses $RSYNC_SERVER
 # rsync_push ~/file.txt .some_file ~/some
+
+# rsync_pull ~/file1.txt ~/file2.txt '~/Desktop/' server
+rsync_pull '~/file' ~/file3.sh ~/.zsh/ ~/D server2
+# rsync_pull '~/Desktop' ~/red ~/file2.sh ~/Desktop
