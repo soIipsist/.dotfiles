@@ -143,6 +143,11 @@ run_in_tmux_session() {
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 # aliases
+
+if [ -f ~/.rsync_aliases ]; then
+    . ~/.rsync_aliases
+fi
+
 if [ -f ~/.ytdlp_aliases ]; then
     . ~/.ytdlp_aliases
 fi

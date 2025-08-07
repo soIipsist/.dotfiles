@@ -139,15 +139,21 @@ function run_in_tmux_session() {
     fi
 }
 
-if [ -f ~/.zsh_aliases ]; then
-    . ~/.zsh_aliases
+# aliases
+if [ -f ~/.rsync_aliases ]; then
+    . ~/.rsync_aliases
 fi
+
 if [ -f ~/.ytdlp_aliases ]; then
     . ~/.ytdlp_aliases
 fi
 
 if [ -f ~/.download_aliases ]; then
     . ~/.download_aliases
+fi
+
+if [ -f ~/.zsh_aliases ]; then
+    . ~/.zsh_aliases
 fi
 
 # key bindings

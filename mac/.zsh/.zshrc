@@ -140,6 +140,10 @@ if [ -f ~/.zsh_aliases ]; then
     . ~/.zsh_aliases
 fi
 
+if [ -f ~/.rsync_aliases ]; then
+    . ~/.rsync_aliases
+fi
+
 if [ -f ~/.ytdlp_aliases ]; then
     . ~/.ytdlp_aliases
 fi

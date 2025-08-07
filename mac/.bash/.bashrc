@@ -108,6 +108,10 @@ if [ -f ~/.ytdlp_aliases ]; then
     . ~/.ytdlp_aliases
 fi
 
+if [ -f ~/.rsync_aliases ]; then
+    . ~/.rsync_aliases
+fi
+
 if [ -f ~/.download_aliases ]; then
     . ~/.download_aliases
 fi
