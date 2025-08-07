@@ -99,68 +99,94 @@ rsync_push_all() {
 }
 
 rsync_pull_all() {
-    # rsync_pull_all <remote_paths>
-    # rsync_pull_all <remote_paths> [server_alias]
-    # rsync_pull_all <remote_paths> [local_path]
-    # rsync_pull_all <remote_paths> [local_path] [server_alias]
+    args=("$@")
+    length=${#args[@]}
+
+    index=0
+    last_arg=""
+    second_last_arg=""
+
+    server_alias="$RSYNC_SERVER"
+    local_dir="."
+    remote_paths=()
+
+    usage_msg="Usage: rsync_pull_all <remote_path> [lremote_path_1 ...] [local_dir] [server_alias:$RSYNC_SERVER]"
 
     if (($# < 1)); then
-        echo "Usage: rsync_pull <remote_path1> [remote_path2 ...] [local_dir] [server_alias:$RSYNC_SERVER]"
+        echo "$usage_msg"
         return 1
     fi
 
-    local server_alias="$RSYNC_SERVER"
-    local local_dir="."
-    local remote_paths=()
+    for arg in "${args[@]}"; do
+        idx_length=$((length - 1))
 
-    if (($# == 1)); then
-        remote_paths=("$1")
-    else
-        local last_arg="${@: -1}"
-        local second_last="${@: -2:1}"
+        is_path=0
+        is_remote=1
 
-        echo $last_arg $second_last
-
-        # is remote path or local path
-        if [[ "$last_arg" == /* || "$last_arg" == ./* || "$last_arg" == ../* || "$last_arg" == "~/"* || -d "$last_arg" ]]; then
-
-            if [ -e "$last_arg" ]; then # this is local
-                local_dir="$last_arg"
-                remote_paths+=("$second_last")
-
-            else # add all remaining args as remote paths
-                remote_paths+=("$last_arg")
-                remote_paths+=("$second_last")
-            fi
-        else
-            # is server alias
-            server_alias="$last_arg"
-
-            if [ -e "$second_last" ]; then # this is local
-                local_dir="$second_last"
-            else # add all remaining args as remote paths
-                remote_paths+=("$second_last")
-            fi
+        # check if arg is a path
+        if [[ "$arg" == /* || "$arg" == ./* || "$arg" == ../* || "$arg" == "~/"* || -d "$arg" || "$arg" == "~" ]]; then
+            is_path=1
         fi
 
-        set -- "${@:1:$(($# - 2))}"
+        if [ "$index" -eq $((idx_length - 1)) ]; then
+            second_last_arg="$arg"
 
-        remote_paths+=("$@")
-    fi
+            if [ -n "$second_last_arg" ]; then
+                if [[ "$is_path" -eq 1 ]]; then
+
+                    if [ -e "$arg" ]; then # is local dir
+                        local_dir="$second_last_arg"
+                    else # add to remote paths
+                        remote_paths+=("$second_last_arg")
+                    fi
+                else
+                    echo "Error: invalid paths provided."
+                    return 1
+                fi
+            fi
+        elif [ "$index" -eq "$idx_length" ]; then
+            last_arg="$arg"
+
+            # check if last arg is a path or a server alias
+
+            if [ -n "$last_arg" ]; then
+                if [[ "$is_path" -eq 1 ]]; then
+
+                    if [ -e "$arg" ]; then # is local dir
+                        local_dir="$last_arg"
+                    else # add to remote paths
+                        remote_paths+=("$last_arg")
+                    fi
+                else
+                    server_alias="$last_arg"
+                fi
+            fi
+
+        else
+            remote_paths+=("$arg")
+        fi
+
+        ((index++))
+    done
 
     if [[ -z "$server_alias" ]]; then
         echo "Error: server alias not provided and RSYNC_SERVER is not set."
         return 1
     fi
 
-    if [ -z "$remote_paths" ]; then
-        echo "Error: no valid remote paths provided."
+    if [ ${#remote_paths[@]} -eq 0 ]; then
+        echo "Error: no remote paths provided."
         return 1
     fi
 
-    # echo "REMOTE: ${remote_paths[@]}"
-    # echo "LOCAL: $local_dir"
-    # echo "SERVER: $server_alias"
+    rsync_paths=()
+    for path in "${remote_paths[@]}"; do
+        rsync_paths+=("${server_alias}:${path}")
+    done
+
+    # echo "SERVER" $server_alias
+    # echo "LOCAL" $local_dir
+    # echo "REMOTE" "${rsync_paths[@]}"
 
     rsync -avz --progress "${remote_paths[@]}" "$local_dir"
 }
