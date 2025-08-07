@@ -191,4 +191,4 @@ function rsync_push_all() {
 
 # rsync_pull_all ~/file1.txt ~/file2.txt server
 # rsync_pull_all '~/file' ~/file3.sh ~/.zsh/ ~/Desktop server2
-rsync_pull_all '~/Desktop' ~/red ~/file2.sh ~/Desktop
+# rsync_pull_all '~/Desktop' ~/red ~/file2.sh ~/Desktop

@@ -117,7 +117,7 @@ rsync_pull_all() {
 # rsync_pull_all server
 
 # rsync_pull_all "~/file.txt" "~/file3.txt" "~/file4.txt" ~/Desktop
-rsync_pull_all "test.sh" "~/file3.txt" "~/file4.txt" '~/Desktop' '~/Desktop' serve
+# rsync_pull_all "test.sh" "~/file3.txt" "~/file4.txt" '~/Desktop' '~/Desktop' serve
 # rsync_pull_all
 
 # rsync_pull_all "/file.txt" "nsna" nsnaa "goodbye" "hello" "fafa" "worlgagado"

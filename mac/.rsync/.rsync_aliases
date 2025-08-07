@@ -99,16 +99,16 @@ rsync_push_all() {
 }
 
 rsync_pull_all() {
-    args=("$@")
-    length=${#args[@]}
+    local args=("$@")
+    local length=${#args[@]}
 
-    index=0
-    last_arg=""
-    second_last_arg=""
+    local index=0
+    local last_arg=""
+    local second_last_arg=""
 
-    server_alias="$RSYNC_SERVER"
-    local_dir="."
-    remote_paths=()
+    local server_alias="$RSYNC_SERVER"
+    local local_dir="."
+    local remote_paths=()
 
     usage_msg="Usage: rsync_pull_all <remote_path> [lremote_path_1 ...] [local_dir] [server_alias:$RSYNC_SERVER]"
 
@@ -175,18 +175,15 @@ rsync_pull_all() {
     fi
 
     if [ ${#remote_paths[@]} -eq 0 ]; then
-        echo "Error: no remote paths provided."
         return 1
+        echo "Error: no remote paths provided."
     fi
 
-    rsync_paths=()
-    for path in "${remote_paths[@]}"; do
-        rsync_paths+=("${server_alias}:${path}")
-    done
+    rsync_paths=($(printf '%s\n' "${remote_paths[@]/#/${server_alias}:}"))
 
     # echo "SERVER" $server_alias
     # echo "LOCAL" $local_dir
-    # echo "REMOTE" "${rsync_paths[@]}"
+    # echo "REMOTE" "$rsync_paths"
 
-    rsync -avz --progress "${remote_paths[@]}" "$local_dir"
+    rsync -avz --progress "${rsync_paths[@]}" "$local_dir"
 }

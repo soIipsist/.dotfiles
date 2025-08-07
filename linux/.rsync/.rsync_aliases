@@ -184,9 +184,9 @@ rsync_pull_all() {
         rsync_paths+=("${server_alias}:${path}")
     done
 
-    # echo "SERVER" $server_alias
-    # echo "LOCAL" $local_dir
-    # echo "REMOTE" "${rsync_paths[@]}"
+    echo "SERVER" $server_alias
+    echo "LOCAL" $local_dir
+    echo "REMOTE" "${rsync_paths[@]}"
 
-    rsync -avz --progress "${remote_paths[@]}" "$local_dir"
+    # rsync -avz --progress "${remote_paths[@]}" "$local_dir"
 }
