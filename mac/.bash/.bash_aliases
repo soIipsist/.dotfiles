@@ -191,12 +191,8 @@ rsync_pull_all() {
     # echo "REMOTE: ${remote_paths[@]}"
     # echo "LOCAL: $local_dir"
     # echo "SERVER: $server_alias"
-    for i in "${!remote_paths[@]}"; do
-        remote_paths[$i]="${server_alias}:${remote_paths[$i]}"
-    done
 
     rsync -avz --progress "${remote_paths[@]}" "$local_dir"
-
 }
 
 # venv scripts

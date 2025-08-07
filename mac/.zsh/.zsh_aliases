@@ -166,7 +166,7 @@ function rsync_pull_all() {
     local remote_paths=()
 
     if (($# == 1)); then
-        remote_paths=("$1")
+        remote_paths=("$server_alias:$1")
     else
         local last_arg="${@: -1}"
         local second_last="${@: -2:1}"
@@ -178,11 +178,11 @@ function rsync_pull_all() {
 
             if [ -e "$last_arg" ]; then # this is local
                 local_dir="$last_arg"
-                remote_paths+=("$second_last")
+                remote_paths+=("$server_alias:$second_last")
 
             else # add all remaining args as remote paths
-                remote_paths+=("$last_arg")
-                remote_paths+=("$second_last")
+                remote_paths+=("$server_alias:$last_arg")
+                remote_paths+=("$server_alias:$second_last")
             fi
         else
             # is server alias
@@ -191,13 +191,17 @@ function rsync_pull_all() {
             if [ -e "$second_last" ]; then # this is local
                 local_dir="$second_last"
             else # add all remaining args as remote paths
-                remote_paths+=("$second_last")
+                remote_paths+=("$server_alias:$second_last")
             fi
         fi
 
         set -- "${@:1:$(($# - 2))}"
 
-        remote_paths+=("$@")
+        temp_paths=("$@")
+        for path in "${temp_paths[@]}"; do
+            echo PATH $path
+            remote_paths+=("$server_alias:$path")
+        done
     fi
 
     if [[ -z "$server_alias" ]]; then
@@ -210,15 +214,11 @@ function rsync_pull_all() {
         return 1
     fi
 
-    # echo "REMOTE: ${remote_paths[@]}"
-    # echo "LOCAL: $local_dir"
-    # echo "SERVER: $server_alias"
-    for i in "${!remote_paths[@]}"; do
-        remote_paths[$i]="${server_alias}:${remote_paths[$i]}"
-    done
+    echo "LOCAL: $local_dir"
+    echo "SERVER: $server_alias"
+    echo "REMOTE: ${remote_paths[@]}"
 
-    rsync -avz --progress "${remote_paths[@]}" "$local_dir"
-
+    # rsync -avz --progress "${rsync_paths[@]}" "$local_dir"
 }
 
 # venv scripts

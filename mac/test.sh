@@ -106,13 +106,15 @@ function rsync_pull_all() {
         return 1
     fi
 
-    # echo "REMOTE: ${remote_paths[@]}"
+    rsync_paths=()
+    for path in ${remote_paths[@]}; do
+        rsync_paths+=("${server_alias}:${path}")
+    done
     # echo "LOCAL: $local_dir"
     # echo "SERVER: $server_alias"
-    for i in "${!remote_paths[@]}"; do
-        remote_paths[$i]="${server_alias}:${remote_paths[$i]}"
-    done
-    rsync -avz --progress "${remote_paths[@]}" "$local_dir"
+    # echo "REMOTE: ${rsync_paths[@]}"
+
+    rsync -avz --progress "${rsync_paths[@]}" "$local_dir"
 
 }
 
@@ -189,4 +191,4 @@ function rsync_push_all() {
 
 # rsync_pull_all ~/file1.txt ~/file2.txt server
 # rsync_pull_all '~/file' ~/file3.sh ~/.zsh/ ~/Desktop server2
-rsync_pull '~/Desktop' ~/red ~/file2.sh ~/Desktop
+rsync_pull_all '~/Desktop' ~/red ~/file2.sh ~/Desktop
