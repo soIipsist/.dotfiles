@@ -1,7 +1,5 @@
 # useful environment variables
 export GIT_HOME="$HOME/repos/soIipsist"
-# export RSYNC_PATH=""
-export RSYNC_SERVER="home"
 
 # VSCode variables
 export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/vscode-workspaces/.workspaces"

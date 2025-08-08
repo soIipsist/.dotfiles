@@ -1,3 +1,6 @@
+# export RSYNC_PATH=""
+export RSYNC_SERVER="home"
+
 rsync_push() {
     local local_path="$1"
     local remote_path="${2:-$RSYNC_PATH}"

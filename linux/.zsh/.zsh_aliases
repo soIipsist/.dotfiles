@@ -1,7 +1,5 @@
 # useful environment variables
 export GIT_HOME="$HOME/repos/soIipsist"
-# export RSYNC_PATH=""
-export RSYNC_SERVER="home"
 
 # sqlite variables
 export SQLITE_DB="downloads.db"
