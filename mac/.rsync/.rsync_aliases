@@ -46,40 +46,68 @@ rsync_push_all() {
         return 1
     fi
 
+    local args=("$@")
+    local length=${#args[@]}
+
+    local index=0
+    local last_arg=""
+    local second_last_arg=""
+
     local server_alias="$RSYNC_SERVER"
     local remote_dir="."
     local local_paths=()
 
-    if (($# == 1)); then
-        local_paths=("$1")
-    else
+    for arg in "${args[@]}"; do
+        idx_length=$((length - 1))
 
-        local last_arg="${@: -1}"
-        local second_last="${@: -2:1}"
+        is_path=0
+        is_remote=1
 
-        if [ -e "$last_arg" ]; then # this exists, so it's not remote
-            local_paths+=($last_arg)
-            local_paths+=($second_last)
+        # check if arg is a path
+        if [[ "$arg" == /* || "$arg" == ./* || "$arg" == ../* || "$arg" == "~/"* || -e "$arg" || "$arg" == "~" ]]; then
+            is_path=1
+        fi
 
-        else # this is remote or server alias
-            if [[ "$last_arg" == /* || "$last_arg" == ./* || "$last_arg" == ../* || "$last_arg" == "~/"* || -d "$last_arg" || "$last_arg" == "~" ]]; then
-                remote_dir="$last_arg"
-            else
-                server_alias="$last_arg"
+        if [ "$index" -eq $((idx_length - 1)) ]; then
+            second_last_arg="$arg"
+
+            if [ -n "$second_last_arg" ]; then
+                if [[ "$is_path" -eq 1 ]]; then
+
+                    if [ -e "$arg" ]; then # add to local paths
+                        local_paths+=("$second_last_arg")
+                    else # is remote dir
+                        remote_dir="$second_last_arg"
+                    fi
+                else
+                    echo "Error: invalid paths provided."
+                    return 1
+                fi
             fi
-        fi
+        elif [ "$index" -eq "$idx_length" ]; then
+            last_arg="$arg"
 
-        if [ -e "$second_last" ]; then # this exists, so it's not remote
-            local_paths+=("$second_last")
+            # check if last arg is a path or a server alias
+
+            if [ -n "$last_arg" ]; then
+                if [[ "$is_path" -eq 1 ]]; then
+
+                    if [ -e "$arg" ]; then # add to local paths
+                        local_paths+=("$last_arg")
+                    else # is remote dir
+                        remote_dir="$last_arg"
+                    fi
+                else
+                    server_alias="$last_arg"
+                fi
+            fi
+
         else
-            remote_dir="$second_last"
+            local_paths+=("$arg")
         fi
 
-        set -- "${@:1:$(($# - 2))}"
-
-        local_paths+=("$@")
-
-    fi
+        ((index++))
+    done
 
     if [[ -z "$server_alias" ]]; then
         echo "Error: server alias not provided and RSYNC_SERVER is not set."
