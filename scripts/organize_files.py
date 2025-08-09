@@ -139,12 +139,12 @@ def organize_files(
     #     repl,
     # )
 
-    # create_backup(move, source_directory, backup_directory)
+    create_backup(move, source_directory, backup_directory)
 
-    # if action == "year":
-    #     organize_by_year(source_path, dest_path, move)
-    # else:
-    #     organize_by_pattern(source_path, dest_path, pattern, repl, move)
+    if action == "year":
+        organize_by_year(source_path, dest_path, move)
+    else:
+        organize_by_pattern(source_path, dest_path, pattern, repl, move)
 
 
 def str_to_bool(string: str):

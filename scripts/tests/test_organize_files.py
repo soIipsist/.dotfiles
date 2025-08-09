@@ -1,4 +1,9 @@
 from scripts.tests.test_base import TestBase, run_test_methods
+from scripts.organize_files import *
+import os
+
+videos_directory = os.path.join(os.getcwd(), "videos")
+photos_directory = os.path.join(os.getcwd(), "photos")
 
 
 class TestOrganize(TestBase):
@@ -6,7 +11,7 @@ class TestOrganize(TestBase):
         super().setUp()
 
     def test_get_exif_year(self):
-        pass
+        get_exif_year()
 
     def test_get_modification_year(self):
         pass
