@@ -1,5 +1,27 @@
 # export RSYNC_PATH=""
 export RSYNC_SERVER="home"
+export RSYNC_LOG_PATH="/tmp/rsync.log"
+export RSYNC_LOGS=0
+export RSYNC_PROGRESS_FLAG=1
+export RSYNC_SIZE_ONLY=1
+
+get_rsync_cmd() {
+    local -a cmd=(rsync -avz --progress)
+
+    if [ "$RSYNC_LOGS" -eq 1 ]; then
+        cmd+=(--log-file="$RSYNC_LOG_PATH")
+    fi
+
+    if [ "$RSYNC_PROGRESS_FLAG" -eq 1 ]; then
+        cmd+=(--info=progress2)
+    fi
+
+    if [ "$RSYNC_SIZE_ONLY" -eq 1 ]; then
+        cmd+=(--size-only)
+    fi
+
+    echo "${cmd[@]}"
+}
 
 rsync_push() {
     local local_path="$1"
@@ -15,7 +37,8 @@ rsync_push() {
         remote_path="."
     fi
 
-    rsync -avz --progress "$local_path" "${server_alias}:${remote_path}"
+    local -a rsync_cmd=($(get_rsync_cmd))
+    "${rsync_cmd[@]}" "$local_path" "${server_alias}:${remote_path}"
 }
 
 rsync_pull() {
@@ -32,7 +55,8 @@ rsync_pull() {
         local_path="."
     fi
 
-    rsync -avz --progress \
+    local -a rsync_cmd=($(get_rsync_cmd))
+    "${rsync_cmd[@]}" --info=progress2 \
         "${server_alias}:${remote_path}" \
         "${local_path}"
 }
@@ -126,7 +150,8 @@ rsync_push_all() {
     # echo "REMOTE: $remote_dir"
     # echo "SERVER: $server_alias"
 
-    rsync -avz --progress "${local_paths[@]}" "${server_alias}:${remote_dir}"
+    local -a rsync_cmd=($(get_rsync_cmd))
+    "${rsync_cmd[@]}" "${local_paths[@]}" "${server_alias}:${remote_dir}"
 }
 
 rsync_pull_all() {
@@ -216,5 +241,6 @@ rsync_pull_all() {
     # echo "LOCAL" $local_dir
     # echo "REMOTE" "$rsync_paths"
 
-    rsync -avz --progress "${rsync_paths[@]}" "$local_dir"
+    local -a rsync_cmd=($(get_rsync_cmd))
+    "${rsync_cmd[@]}" "${rsync_paths[@]}" "$local_dir"
 }
