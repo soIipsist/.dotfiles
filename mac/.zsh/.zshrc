@@ -144,6 +144,10 @@ if [ -f ~/.rsync_aliases ]; then
     . ~/.rsync_aliases
 fi
 
+if [ -f ~/.fzf_aliases ]; then
+    . ~/.fzf_aliases
+fi
+
 if [ -f ~/.ytdlp_aliases ]; then
     . ~/.ytdlp_aliases
 fi

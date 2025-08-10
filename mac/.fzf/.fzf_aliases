@@ -1,0 +1,8 @@
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
+  --bind 'ctrl-x:execute(
+    printf \"Delete {+}? [y/N] \";
+    read ans;
+    case \$ans in
+      [Yy]) rm -rf {+} ;;
+    esac
+  )+reload(find .)'"
