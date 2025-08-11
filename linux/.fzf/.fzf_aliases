@@ -38,3 +38,25 @@ fzfc() {
     ;;
   esac
 }
+
+fzfh() {
+  local history_path="${1:-$HISTFILE}"
+
+  if [ ! -f "$history_path" ]; then
+    echo "History file not found: $history_path" >&2
+    return 1
+  fi
+
+  local selection
+  # Use fzf to select a line from history file
+  selection=$(cat "$history_path" | fzf --height=40% --border --prompt="History> ")
+
+  if [ -z "$selection" ]; then
+    echo "No selection made." >&2
+    return 1
+  fi
+
+  if [ -n "$ZSH_VERSION" ]; then
+    print -z -- "$selection"
+  fi
+}
