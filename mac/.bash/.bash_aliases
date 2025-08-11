@@ -1,5 +1,6 @@
 # useful environment variables
 export GIT_HOME="$HOME/repos/soIipsist"
+export DEFAULT_EDITOR="vscode"
 
 # sqlite variables
 export SQLITE_DB="downloads.db"
