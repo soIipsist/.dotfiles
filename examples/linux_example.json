@@ -18,7 +18,10 @@
     "file",
     "git",
     "ffmpeg",
-    "python3.12-venv"
+    "python3.12-venv",
+    "xclip",
+    "ripgrep",
+    "bat"
   ],
   "pip_packages": ["yt-dlp"],
   "dotfiles": [],

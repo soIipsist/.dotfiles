@@ -7,6 +7,11 @@ export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
     esac
   )+reload(find .)'"
 
+FZF_CLIP_CMD="pbcopy"
+
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
+  --bind \"enter:execute-silent(echo -n {+} | $FZF_CLIP_CMD)+accept\""
+
 # open fzf in code mode
 fzfc() {
     local cwd="${1:-.}"

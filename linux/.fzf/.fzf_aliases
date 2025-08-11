@@ -7,6 +7,11 @@ export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
     esac
   )+reload(find .)'"
 
+FZF_CLIP_CMD="xclip -selection clipboard"
+
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
+  --bind \"enter:execute-silent(echo -n {+} | $FZF_CLIP_CMD)+accept\""
+
 # open fzf in code mode
 fzfc() {
   local cwd="${1:-.}"
@@ -14,7 +19,7 @@ fzfc() {
   local default_editor="${DEFAULT_EDITOR:-vscode}"
 
   selection=$(rg --glob '!.git/*' \
-    --column --hidden --line-number --no-heading --color=always "" "$cwd" | fzf --ansi --tiebreak=length --delimiter=: --preview='bat --style=numbers --color=always --highlight-line {2} {1}')
+    --column --hidden --line-number --no-heading --color=always "" "$cwd" | fzf --ansi --tiebreak=length --delimiter=: --preview='batcat --style=numbers --color=always --highlight-line {2} {1}')
 
   [ -z "$selection" ] && return 1
 
