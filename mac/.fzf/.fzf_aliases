@@ -6,6 +6,40 @@ fi
 
 FZF_CLIP_CMD="pbcopy"
 
+export FZF_DEFAULT_OPTS="--color=query:#ff8700"
+
+# open fzf in edit mode
+fzfe() {
+    local selection
+    selection=$(
+        find . -type f -o -type d | fzf \
+            --multi \
+            --bind "ctrl-s:toggle+down" \
+            --bind "ctrl-x:execute(
+        sh -c '
+          echo -n \"Delete selected files? (y/n): \";
+          read -r answer < /dev/tty;
+          if [[ \$answer == [Yy]* ]]; then
+            for f in \"\$@\"; do
+              rm -rf -- \"\$f\" || echo \"Failed to delete \$f\";
+            done
+            echo \"Deletion complete.\";
+          else
+            echo \"Aborted deletion.\";
+          fi
+        ' sh {+}
+      )+reload(find . -type f -o -type d)"
+    )
+
+    if [[ -n $selection ]]; then
+        if [[ -f $selection ]]; then
+            z "$(dirname "$selection")"
+        else
+            z "$selection"
+        fi
+    fi
+}
+
 # open fzf in code mode
 fzfc() {
     local cwd="${1:-.}"
@@ -43,7 +77,7 @@ fzfh() {
 
     local selection
     # Use fzf to select a line from history file
-    selection=$(cat "$history_path" | fzf --height=40% --border --prompt="History> ")
+    selection=$(cat "$history_path" | fzf --height=60% --border --prompt="History> ")
 
     if [ -z "$selection" ]; then
         echo "No selection made." >&2

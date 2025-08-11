@@ -6,9 +6,6 @@ fi
 
 FZF_CLIP_CMD="xclip -selection clipboard"
 
-export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
-  --bind \"enter:execute-silent(echo -n {+} | $FZF_CLIP_CMD)+accept\""
-
 # open fzf in code mode
 fzfc() {
   local cwd="${1:-.}"
