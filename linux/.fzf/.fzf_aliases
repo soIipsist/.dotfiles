@@ -1,11 +1,8 @@
-export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
-  --bind 'ctrl-x:execute(
-    printf \"Delete {+}? [y/N] \";
-    read ans;
-    case \$ans in
-      [Yy]) rm -rf {+} ;;
-    esac
-  )+reload(find .)'"
+if [ -n "$ZSH_VERSION" ]; then
+  source <(fzf --zsh)
+else
+  eval "$(fzf --bash)"
+fi
 
 FZF_CLIP_CMD="xclip -selection clipboard"
 
