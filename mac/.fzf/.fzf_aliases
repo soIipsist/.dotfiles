@@ -6,3 +6,30 @@ export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
       [Yy]) rm -rf {+} ;;
     esac
   )+reload(find .)'"
+
+# open fzf in code mode
+fzfc() {
+    local cwd="${1:-.}"
+    local selection file line
+    local default_editor="${DEFAULT_EDITOR:-vscode}"
+
+    selection=$(rg --glob '!.git/*' \
+        --column --hidden --line-number --no-heading --color=always "" "$cwd" | fzf --ansi --tiebreak=length --delimiter=: --preview='bat --style=numbers --color=always --highlight-line {2} {1}')
+
+    [ -z "$selection" ] && return 1
+
+    file=$(echo "$selection" | cut -d: -f1)
+    line=$(echo "$selection" | cut -d: -f2)
+
+    case "$default_editor" in
+    vscode | code)
+        code -g "$file:$line"
+        ;;
+    vim)
+        vim "+${line}" "$file"
+        ;;
+    *)
+        nano "+${line}" "$file"
+        ;;
+    esac
+}
