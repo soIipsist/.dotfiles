@@ -61,10 +61,22 @@ def create_backup(source_directory: Path, backup_directory: str = None):
     return dest
 
 
+def get_directory_as_path(directory: str):
+    if isinstance(directory, str):
+        directory = Path(directory)
+
+    if not directory.is_dir():
+        print(f"Error: '{directory}' is not a directory.")
+        sys.exit(1)
+
+    return directory
+
+
 def organize_by_year(
     source_directory: Path, destination_directory: Path, move: bool = None
 ):
 
+    new_files = []
     for file_path in source_directory.iterdir():
         if file_path.is_file():
             year = get_exif_year(file_path)
@@ -76,16 +88,22 @@ def organize_by_year(
                 continue
 
             target_dir = destination_directory / year
+
+            if not target_dir.exists():
+                print(f"Created year directory {target_dir}.")
             target_dir.mkdir(parents=True, exist_ok=True)
-            print(f"Created year directory {target_dir}.")
 
             if move:
-                # shutil.move(file_path, dest_path)
+                dest_path = shutil.move(file_path, target_dir)
                 print(f"Moved '{file_path}' -> '{target_dir}'")
 
             else:
-                # shutil.copy2(file_path, dest_path)
+                dest_path = shutil.copy2(file_path, target_dir)
                 print(f"Copied '{file_path}' -> '{target_dir}'")
+
+            new_files.append(dest_path)
+
+    return new_files
 
 
 def organize_by_pattern(
@@ -95,32 +113,27 @@ def organize_by_pattern(
     repl: str,
     move: bool = False,
 ):
+    new_files = []
 
     for file_path in source_directory.iterdir():
         if file_path.is_file():
             new_stem = re.sub(pattern, repl, file_path.stem, flags=re.IGNORECASE)
             new_name = f"{new_stem}{file_path.suffix}"
             dest_path = destination_directory / new_name
-            print(dest_path)
+
+            destination_directory.mkdir(parents=True, exist_ok=True)
 
             if move:
-                # shutil.move(file_path, dest_path)
+                dest_path = shutil.move(file_path, dest_path)
                 print(f"Moved '{file_path}' -> '{dest_path}'")
 
             else:
-                # shutil.copy2(file_path, dest_path)
+                dest_path = shutil.copy2(file_path, dest_path)
                 print(f"Copied '{file_path}' -> '{dest_path}'")
 
+            new_files.append(dest_path)
 
-def get_directory_as_path(self, directory: str):
-    if isinstance(directory, str):
-        directory = Path(directory)
-
-    if not directory.is_dir():
-        print(f"Error: '{directory}' is not a directory.")
-        sys.exit(1)
-
-    return directory
+    return new_files
 
 
 def organize_files(
@@ -139,39 +152,34 @@ def organize_files(
     source_directory = get_directory_as_path(source_directory)
     destination_directory = get_directory_as_path(destination_directory)
 
-    # print(
-    #     source_directory,
-    #     destination_directory,
-    #     move,
-    #     backup_directory,
-    #     action,
-    #     pattern,
-    #     repl,
-    # )
-
     create_backup(source_directory, backup_directory)
 
+    new_files = []
+
     if action == "year":
-        organize_by_year(source_directory, destination_directory, move)
+        new_files = organize_by_year(source_directory, destination_directory, move)
     elif action == "episodes":
         pattern = r".*?(S\d{2}E\d{2}|\d{1,5}).*"  # pattern for episodes
         repl = r"\1"
-        organize_by_pattern(
+        new_files = organize_by_pattern(
             source_directory, destination_directory, pattern, repl, move
         )
     elif action == "music":
         pattern = r"^(.*)$"
 
         if not repl:
-            repl = input("Track prefix:")
+            prefix = input("Track prefix:")
+            repl = f"{prefix} \\1"
 
-        organize_by_pattern(
+        new_files = organize_by_pattern(
             source_directory, destination_directory, pattern, repl, move
         )
     else:
-        organize_by_pattern(
+        new_files = organize_by_pattern(
             source_directory, destination_directory, pattern, repl, move
         )
+
+    return new_files
 
 
 def str_to_bool(string: str):

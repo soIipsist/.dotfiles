@@ -24,11 +24,15 @@ def get_directory_as_path_test(directory: str):
 
 videos_directory = os.path.join(os.getcwd(), "videos")
 photos_directory = os.path.join(os.getcwd(), "photos")
+out_directory = os.path.join(photos_directory, "out")
 
-source_directory = get_directory_as_path_test(photos_directory)
-destination_directory = None
+source_directory = photos_directory
+destination_directory = out_directory
+
 if not destination_directory:
     destination_directory = source_directory
+
+source_directory = get_directory_as_path_test(source_directory)
 destination_directory = get_directory_as_path_test(destination_directory)
 
 backup_directory = "/tmp"
@@ -85,10 +89,15 @@ class TestOrganize(TestBase):
         pattern = r"^(.*)$"
         repl = r"Linkin Park - \1"
 
-        organize_by_pattern(source_directory, destination_directory, pattern, repl)
+        new_files = organize_by_pattern(
+            source_directory, destination_directory, pattern, repl
+        )
 
     def test_organize_by_year(self):
         organize_by_year(source_directory, destination_directory)
+
+    def test_organize_files(self):
+        action = "music"
 
 
 if __name__ == "__main__":
@@ -97,6 +106,7 @@ if __name__ == "__main__":
         # TestOrganize.test_get_modification_year,
         # TestOrganize.test_create_backup,
         # TestOrganize.test_organize_by_pattern,
-        TestOrganize.test_organize_by_year,
+        # TestOrganize.test_organize_by_year,
+        TestOrganize.test_organize_files,
     ]
     run_test_methods(test_methods)
