@@ -34,7 +34,7 @@ if not destination_directory:
 
 source_directory = get_directory_as_path_test(source_directory)
 destination_directory = get_directory_as_path_test(destination_directory)
-
+move = False
 backup_directory = "/tmp"
 
 
@@ -79,24 +79,25 @@ class TestOrganize(TestBase):
         else:
             self.assertIsNotNone(backup_path)
 
+    def test_organize_by_year(self):
+        organize_by_year(source_directory, destination_directory)
+
     def test_organize_by_pattern(self):
 
-        # pattern for episodes
-        pattern = r".*?(S\d{2}E\d{2}|\d{1,5}).*"
-        repl = r"\1"
+        action = "pattern"
 
         # pattern for music
         pattern = r"^(.*)$"
         repl = r"Linkin Park - \1"
 
-        new_files = organize_by_pattern(
-            source_directory, destination_directory, pattern, repl
+        new_files = organize_files(
+            source_directory, destination_directory, action, pattern, repl, move
         )
 
-    def test_organize_by_year(self):
-        organize_by_year(source_directory, destination_directory)
+    def test_organize_episodes(self):
+        action = "episodes"
 
-    def test_organize_files(self):
+    def test_organize_music(self):
         action = "music"
 
 
@@ -105,8 +106,7 @@ if __name__ == "__main__":
         # TestOrganize.test_get_exif_year,
         # TestOrganize.test_get_modification_year,
         # TestOrganize.test_create_backup,
-        # TestOrganize.test_organize_by_pattern,
+        TestOrganize.test_organize_by_pattern,
         # TestOrganize.test_organize_by_year,
-        TestOrganize.test_organize_files,
     ]
     run_test_methods(test_methods)

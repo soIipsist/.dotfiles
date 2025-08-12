@@ -169,7 +169,10 @@ def organize_files(
 
         if not repl:
             prefix = input("Track prefix:")
-            repl = f"{prefix} \\1"
+            if prefix:
+                repl = f"{prefix} \\1"
+            else:
+                repl = r"\1"
 
         new_files = organize_by_pattern(
             source_directory, destination_directory, pattern, repl, move
