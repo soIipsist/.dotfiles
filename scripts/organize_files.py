@@ -65,13 +65,15 @@ def organize_by_pattern(
     replacement: str = None,
     move: bool = None,
 ):
+    if isinstance(source_directory, str):
+        pass
 
     for file_path in source_directory.iterdir():
         if file_path.is_file():
             new_file_path = re.sub(pattern, replacement, file_path)
             print(new_file_path)
 
-            copy_file_path(file_path)
+            # copy_file_path(file_path)
 
 
 def create_backup(move: bool, source_directory: Path, backup_directory: Path):
@@ -106,6 +108,17 @@ def organize_by_year(
             copy_file_path(file_path, target_dir, move, source_directory)
 
 
+def get_directory_as_path(self, directory: str):
+    if isinstance(directory, str):
+        directory = Path(directory)
+
+    if not directory.is_dir():
+        print(f"Error: '{directory}' is not a directory.")
+        sys.exit(1)
+
+    return directory
+
+
 def organize_files(
     source_directory: str,
     destination_directory: str = None,
@@ -116,18 +129,11 @@ def organize_files(
     backup_directory: str = None,
 ):
 
-    source_path = Path(source_directory)
-    dest_path = (
-        Path(destination_directory) if destination_directory else source_path
-    )  # moves photos to source_directory if not defined
+    if not destination_directory:
+        destination_directory = source_directory
 
-    if not source_path.is_dir():
-        print(f"Error: Source directory '{source_path}' is not a directory.")
-        sys.exit(1)
-
-    if not dest_path.is_dir():
-        print(f"Error: Destination directory '{dest_path}' is not a directory.")
-        sys.exit(1)
+    source_directory = get_directory_as_path(source_directory)
+    destination_directory = get_directory_as_path(destination_directory)
 
     # print(
     #     source_directory,
@@ -142,9 +148,11 @@ def organize_files(
     create_backup(move, source_directory, backup_directory)
 
     if action == "year":
-        organize_by_year(source_path, dest_path, move)
+        organize_by_year(source_directory, destination_directory, move)
     else:
-        organize_by_pattern(source_path, dest_path, pattern, repl, move)
+        organize_by_pattern(
+            source_directory, destination_directory, pattern, repl, move
+        )
 
 
 def str_to_bool(string: str):
