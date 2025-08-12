@@ -22,6 +22,17 @@ def get_directory_as_path_test(directory: str):
     return directory
 
 
+def delete_dir_contents(directory: Path):
+    if isinstance(directory, str):
+        directory = Path(directory)
+
+    for item in directory.iterdir():
+        if item.is_dir():
+            shutil.rmtree(item)
+        else:
+            item.unlink()
+
+
 videos_directory = os.path.join(os.getcwd(), "videos")
 photos_directory = os.path.join(os.getcwd(), "photos")
 out_directory = os.path.join(photos_directory, "out")
@@ -34,8 +45,8 @@ if not destination_directory:
 
 source_directory = get_directory_as_path_test(source_directory)
 destination_directory = get_directory_as_path_test(destination_directory)
-move = False
 backup_directory = "/tmp"
+move = False
 
 
 class TestOrganize(TestBase):
@@ -79,26 +90,47 @@ class TestOrganize(TestBase):
         else:
             self.assertIsNotNone(backup_path)
 
-    def test_organize_by_year(self):
-        organize_by_year(source_directory, destination_directory)
+    def test_organize_files(self):
+        # action = "music"
+        # action = "pattern"
+        # action = "year"
+        action = "episodes"
+        prefix = None
 
-    def test_organize_by_pattern(self):
+        # empty output directory
+        delete_dir_contents(out_directory)
 
-        action = "pattern"
-
-        # pattern for music
-        pattern = r"^(.*)$"
-        repl = r"Linkin Park - \1"
+        # try custom pattern
+        if action == "pattern":
+            pattern = r"^(.*)$"
+            prefix = "Linkin Park -"
+            repl = f"{prefix} \\1"
 
         new_files = organize_files(
             source_directory, destination_directory, action, pattern, repl, move
         )
+        destination_directory = str(destination_directory)
+        source_directory = str(source_directory)
 
-    def test_organize_episodes(self):
-        action = "episodes"
+        self.assertTrue(os.path.exists(source_directory))
+        self.assertTrue(os.path.exists(destination_directory))
 
-    def test_organize_music(self):
-        action = "music"
+        for file in new_files:
+
+            if isinstance(file, Path):
+                file = str(file)
+
+            self.assertTrue(os.path.exists(file))
+
+            if action == "music" and prefix is not None:
+                self.assertTrue(file.startswith(prefix))
+
+            source_path = os.path.join(source_directory, file)
+            print("SOURCE:", source_path)
+            if move:  # original file should not exist
+                self.assertFalse(os.path.exists(source_path))
+            else:  # original should still exist
+                self.assertTrue(os.path.exists(source_path))
 
 
 if __name__ == "__main__":
@@ -106,7 +138,6 @@ if __name__ == "__main__":
         # TestOrganize.test_get_exif_year,
         # TestOrganize.test_get_modification_year,
         # TestOrganize.test_create_backup,
-        TestOrganize.test_organize_by_pattern,
-        # TestOrganize.test_organize_by_year,
+        TestOrganize.test_organize_files,
     ]
     run_test_methods(test_methods)
