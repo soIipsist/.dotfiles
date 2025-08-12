@@ -76,15 +76,20 @@ def organize_by_pattern(
             # copy_file_path(file_path)
 
 
-def create_backup(move: bool, source_directory: Path, backup_directory: Path):
+def create_backup(source_directory: Path, backup_directory: str = None):
 
-    if not move:
+    dest = None
+
+    if not backup_directory:
         return
 
-    prompt = input("Moving files, would you like to create a backup? (y/n)")
+    try:
+        print(f"Creating backup at {backup_directory}")
+        dest = shutil.copytree(source_directory, backup_directory, dirs_exist_ok=True)
+    except Exception as e:
+        print(e)
 
-    if prompt.lower() == "y":
-        shutil.copy(source_directory, backup_directory)
+    return dest
 
 
 def organize_by_year(
@@ -145,7 +150,7 @@ def organize_files(
     #     repl,
     # )
 
-    create_backup(move, source_directory, backup_directory)
+    create_backup(source_directory, backup_directory)
 
     if action == "year":
         organize_by_year(source_directory, destination_directory, move)

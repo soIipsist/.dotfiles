@@ -62,6 +62,17 @@ class TestOrganize(TestBase):
         print(year)
         self.assertTrue(len(year) == 4)
 
+    def test_create_backup(self):
+
+        source_directory = photos_directory
+        backup_directory = "/Users/p/Desktop"
+        backup_path = create_backup(source_directory, backup_directory)
+
+        if backup_directory is None:
+            self.assertTrue(backup_path is None)
+        else:
+            self.assertIsNotNone(backup_path)
+
     def test_organize_by_pattern(self):
 
         organize_by_pattern()
@@ -74,7 +85,8 @@ if __name__ == "__main__":
     test_methods = [
         # TestOrganize.test_get_exif_year,
         # TestOrganize.test_get_modification_year,
+        TestOrganize.test_create_backup,
         # TestOrganize.test_organize_by_pattern,
-        TestOrganize.test_organize_by_year,
+        # TestOrganize.test_organize_by_year,
     ]
     run_test_methods(test_methods)
