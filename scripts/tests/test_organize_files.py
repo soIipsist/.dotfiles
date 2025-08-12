@@ -15,7 +15,7 @@ from scripts.organize_files import *
 import os
 
 
-def get_directory_as_path_test(self, directory: str):
+def get_directory_as_path_test(directory: str):
     if isinstance(directory, str):
         directory = Path(directory)
 
@@ -25,10 +25,12 @@ def get_directory_as_path_test(self, directory: str):
 videos_directory = os.path.join(os.getcwd(), "videos")
 photos_directory = os.path.join(os.getcwd(), "photos")
 
-source_directory = photos_directory
-destination_directory = os.path.join(
-    "~",
-)
+source_directory = get_directory_as_path_test(photos_directory)
+destination_directory = None
+if not destination_directory:
+    destination_directory = source_directory
+destination_directory = get_directory_as_path_test(destination_directory)
+
 backup_directory = "/tmp"
 
 
@@ -65,7 +67,7 @@ class TestOrganize(TestBase):
     def test_create_backup(self):
 
         source_directory = photos_directory
-        backup_directory = "/Users/p/Desktop"
+        backup_directory = "/tmp/photos"
         backup_path = create_backup(source_directory, backup_directory)
 
         if backup_directory is None:
@@ -75,18 +77,26 @@ class TestOrganize(TestBase):
 
     def test_organize_by_pattern(self):
 
-        organize_by_pattern()
+        # pattern for episodes
+        pattern = r".*?(S\d{2}E\d{2}|\d{1,5}).*"
+        repl = r"\1"
+
+        # pattern for music
+        pattern = r"^(.*)$"
+        repl = r"Linkin Park - \1"
+
+        organize_by_pattern(source_directory, destination_directory, pattern, repl)
 
     def test_organize_by_year(self):
-        pass
+        organize_by_year(source_directory, destination_directory)
 
 
 if __name__ == "__main__":
     test_methods = [
         # TestOrganize.test_get_exif_year,
         # TestOrganize.test_get_modification_year,
-        TestOrganize.test_create_backup,
+        # TestOrganize.test_create_backup,
         # TestOrganize.test_organize_by_pattern,
-        # TestOrganize.test_organize_by_year,
+        TestOrganize.test_organize_by_year,
     ]
     run_test_methods(test_methods)

@@ -45,37 +45,6 @@ def get_modification_year(file_path):
         return None
 
 
-def copy_file_path(
-    file_path: Path, dest_path: Path, move: bool, source_directory: Path
-):
-
-    if move:
-        # shutil.move(file_path, dest_path)
-        print(f"Moved '{file_path}' -> '{dest_path}'")
-
-    else:
-        # shutil.copy2(file_path, dest_path)
-        print(f"Copied '{file_path}' -> '{dest_path}'")
-
-
-def organize_by_pattern(
-    source_directory: Path,
-    destination_directory: Path,
-    pattern: str = None,
-    replacement: str = None,
-    move: bool = None,
-):
-    if isinstance(source_directory, str):
-        pass
-
-    for file_path in source_directory.iterdir():
-        if file_path.is_file():
-            new_file_path = re.sub(pattern, replacement, file_path)
-            print(new_file_path)
-
-            # copy_file_path(file_path)
-
-
 def create_backup(source_directory: Path, backup_directory: str = None):
 
     dest = None
@@ -110,7 +79,37 @@ def organize_by_year(
             target_dir.mkdir(parents=True, exist_ok=True)
             print(f"Created year directory {target_dir}.")
 
-            copy_file_path(file_path, target_dir, move, source_directory)
+            if move:
+                # shutil.move(file_path, dest_path)
+                print(f"Moved '{file_path}' -> '{target_dir}'")
+
+            else:
+                # shutil.copy2(file_path, dest_path)
+                print(f"Copied '{file_path}' -> '{target_dir}'")
+
+
+def organize_by_pattern(
+    source_directory: Path,
+    destination_directory: Path,
+    pattern: str,
+    repl: str,
+    move: bool = False,
+):
+
+    for file_path in source_directory.iterdir():
+        if file_path.is_file():
+            new_stem = re.sub(pattern, repl, file_path.stem, flags=re.IGNORECASE)
+            new_name = f"{new_stem}{file_path.suffix}"
+            dest_path = destination_directory / new_name
+            print(dest_path)
+
+            if move:
+                # shutil.move(file_path, dest_path)
+                print(f"Moved '{file_path}' -> '{dest_path}'")
+
+            else:
+                # shutil.copy2(file_path, dest_path)
+                print(f"Copied '{file_path}' -> '{dest_path}'")
 
 
 def get_directory_as_path(self, directory: str):
@@ -154,6 +153,21 @@ def organize_files(
 
     if action == "year":
         organize_by_year(source_directory, destination_directory, move)
+    elif action == "episodes":
+        pattern = r".*?(S\d{2}E\d{2}|\d{1,5}).*"  # pattern for episodes
+        repl = r"\1"
+        organize_by_pattern(
+            source_directory, destination_directory, pattern, repl, move
+        )
+    elif action == "music":
+        pattern = r"^(.*)$"
+
+        if not repl:
+            repl = input("Track prefix:")
+
+        organize_by_pattern(
+            source_directory, destination_directory, pattern, repl, move
+        )
     else:
         organize_by_pattern(
             source_directory, destination_directory, pattern, repl, move
@@ -169,7 +183,11 @@ if __name__ == "__main__":
     parser.add_argument("source_directory", type=str)
     parser.add_argument("destination_directory", default=None, nargs="?")
     parser.add_argument(
-        "-a", "--action", type=str, default="pattern", choices=["pattern", "year"]
+        "-a",
+        "--action",
+        type=str,
+        default="pattern",
+        choices=["pattern", "episodes", "music", "year"],
     )
     parser.add_argument("-p", "--pattern", type=str)
     parser.add_argument("-r", "--repl", type=str)
