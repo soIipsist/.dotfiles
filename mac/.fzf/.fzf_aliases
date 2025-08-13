@@ -86,5 +86,7 @@ fzfh() {
 
     if [ -n "$ZSH_VERSION" ]; then
         print -z -- "$selection"
+    else
+        history -s "$selection"
     fi
 }
