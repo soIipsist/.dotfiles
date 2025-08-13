@@ -93,9 +93,11 @@ class TestOrganize(TestBase):
     def test_organize_files(self):
         # action = "music"
         # action = "pattern"
-        # action = "year"
-        action = "episodes"
+        action = "year"
+        # action = "episodes"
         prefix = None
+        pattern = None
+        repl = None
 
         # empty output directory
         delete_dir_contents(out_directory)
@@ -106,31 +108,29 @@ class TestOrganize(TestBase):
             prefix = "Linkin Park -"
             repl = f"{prefix} \\1"
 
-        new_files = organize_files(
+        old_files, new_files = organize_files(
             source_directory, destination_directory, action, pattern, repl, move
         )
-        destination_directory = str(destination_directory)
-        source_directory = str(source_directory)
 
         self.assertTrue(os.path.exists(source_directory))
         self.assertTrue(os.path.exists(destination_directory))
+        self.assertTrue(len(old_files) == len(new_files))
 
-        for file in new_files:
+        for old_file, new_file in zip(old_files, new_files):
 
-            if isinstance(file, Path):
-                file = str(file)
+            if isinstance(new_file, Path):
+                new_file = str(new_file)
 
-            self.assertTrue(os.path.exists(file))
+            self.assertTrue(os.path.exists(new_file))
 
-            if action == "music" and prefix is not None:
-                self.assertTrue(file.startswith(prefix))
+            if (action == "music" or action == "pattern") and prefix:
+                print("Prefix", prefix)
+                self.assertTrue(os.path.basename(new_file).startswith(prefix))
 
-            source_path = os.path.join(source_directory, file)
-            print("SOURCE:", source_path)
-            if move:  # original file should not exist
-                self.assertFalse(os.path.exists(source_path))
-            else:  # original should still exist
-                self.assertTrue(os.path.exists(source_path))
+            if move:
+                self.assertFalse(os.path.exists(old_file))
+            else:
+                self.assertTrue(os.path.exists(old_file))
 
 
 if __name__ == "__main__":

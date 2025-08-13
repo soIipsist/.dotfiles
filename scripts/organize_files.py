@@ -76,9 +76,12 @@ def organize_by_year(
     source_directory: Path, destination_directory: Path, move: bool = None
 ):
 
+    old_files = []
     new_files = []
+
     for file_path in source_directory.iterdir():
         if file_path.is_file():
+            old_files.append(file_path)
             year = get_exif_year(file_path)
             if not year:
                 year = get_modification_year(file_path)
@@ -103,7 +106,7 @@ def organize_by_year(
 
             new_files.append(dest_path)
 
-    return new_files
+    return old_files, new_files
 
 
 def organize_by_pattern(
@@ -113,10 +116,12 @@ def organize_by_pattern(
     repl: str,
     move: bool = False,
 ):
+    old_files = []
     new_files = []
 
     for file_path in source_directory.iterdir():
         if file_path.is_file():
+            old_files.append(file_path)
             new_stem = re.sub(pattern, repl, file_path.stem, flags=re.IGNORECASE)
             new_name = f"{new_stem}{file_path.suffix}"
             dest_path = destination_directory / new_name
@@ -133,7 +138,7 @@ def organize_by_pattern(
 
             new_files.append(dest_path)
 
-    return new_files
+    return old_files, new_files
 
 
 def organize_files(
@@ -155,34 +160,37 @@ def organize_files(
     create_backup(source_directory, backup_directory)
 
     new_files = []
+    old_files = []
 
     if action == "year":
-        new_files = organize_by_year(source_directory, destination_directory, move)
+        old_files, new_files = organize_by_year(
+            source_directory, destination_directory, move
+        )
     elif action == "episodes":
         pattern = r".*?(S\d{2}E\d{2}|\d{1,5}).*"  # pattern for episodes
         repl = r"\1"
-        new_files = organize_by_pattern(
+        old_files, new_files = organize_by_pattern(
             source_directory, destination_directory, pattern, repl, move
         )
     elif action == "music":
         pattern = r"^(.*)$"
 
         if not repl:
-            prefix = input("Track prefix:")
+            prefix = input("Track prefix: ")
             if prefix:
-                repl = f"{prefix} \\1"
+                repl = f"{prefix}\\1"
             else:
                 repl = r"\1"
 
-        new_files = organize_by_pattern(
+        old_files, new_files = organize_by_pattern(
             source_directory, destination_directory, pattern, repl, move
         )
     else:
-        new_files = organize_by_pattern(
+        old_files, new_files = organize_by_pattern(
             source_directory, destination_directory, pattern, repl, move
         )
 
-    return new_files
+    return old_files, new_files
 
 
 def str_to_bool(string: str):
