@@ -103,6 +103,13 @@ run_in_tmux_session() {
         tmux new-session -d -s "$tmux_session_name" -n "$tmux_session_name-$(date +%s)" "$SHELL" -c "$cmd"
     fi
 }
+
+# Add Homebrew and custom tools to PATH
+export PATH="/opt/homebrew/bin:/usr/local/bin:$HOME/platform-tools:$PATH"
+export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+export PATH="/Library/TeX/texbin:$PATH"
+
 # aliases
 if [ -f ~/.ytdlp_aliases ]; then
     . ~/.ytdlp_aliases
@@ -128,12 +135,6 @@ fi
 if [ -f /opt/homebrew/etc/bash_completion ]; then
     source /opt/homebrew/etc/bash_completion
 fi
-
-# Add Homebrew and custom tools to PATH
-export PATH="/opt/homebrew/bin:/usr/local/bin:$HOME/platform-tools:$PATH"
-export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
-export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-export PATH="/Library/TeX/texbin:$PATH"
 
 eval "$(zoxide init bash)"
 

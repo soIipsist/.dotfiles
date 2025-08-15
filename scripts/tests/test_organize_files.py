@@ -93,8 +93,8 @@ class TestOrganize(TestBase):
     def test_organize_files(self):
         # action = "music"
         # action = "pattern"
-        action = "year"
-        # action = "episodes"
+        # action = "year"
+        action = "episodes"
         prefix = None
         pattern = None
         repl = None
