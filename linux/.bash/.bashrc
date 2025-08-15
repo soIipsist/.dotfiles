@@ -178,5 +178,11 @@ fi
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 eval "$(zoxide init bash)"
 
+if [ -n "$ZSH_VERSION" ]; then
+    source <(fzf --zsh)
+else
+    eval "$(fzf --bash)"
+fi
+
 bind 'set show-all-if-ambiguous on'
 bind 'TAB:menu-complete'
