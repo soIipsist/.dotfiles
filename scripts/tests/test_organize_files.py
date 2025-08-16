@@ -65,11 +65,19 @@ source_directory = get_directory_as_path_test(source_directory)
 destination_directory = get_directory_as_path_test(destination_directory)
 backup_directory = os.path.join(photos_directory, "backup")
 move = True
+dry_run = True
+pattern = r"^(.*)$"
+repl = r"\1"
 
 
 class TestOrganize(TestBase):
     def setUp(self) -> None:
         super().setUp()
+        # empty output directory
+        delete_dir_contents(out_directory)
+
+        # move the files from backup to photo dir
+        copy_dir_contents(backup_directory, photos_directory)
 
     def get_random_path(self, directory: str = photos_directory):
         all_paths = []
@@ -117,12 +125,6 @@ class TestOrganize(TestBase):
         pattern = None
         repl = None
 
-        # empty output directory
-        delete_dir_contents(out_directory)
-
-        # move the files from backup to photo dir
-        copy_dir_contents(backup_directory, photos_directory)
-
         # try custom pattern
         if action == "pattern":
             pattern = r"^(.*)$"
@@ -130,7 +132,13 @@ class TestOrganize(TestBase):
             repl = f"{prefix} \\1"
 
         old_files, new_files = organize_files(
-            source_directory, destination_directory, action, pattern, repl, move
+            source_directory,
+            destination_directory,
+            action,
+            pattern,
+            repl,
+            move,
+            dry_run,
         )
 
         self.assertTrue(os.path.exists(source_directory))
@@ -153,12 +161,26 @@ class TestOrganize(TestBase):
             else:
                 self.assertTrue(os.path.exists(old_file))
 
+    def test_move_files(self):
+        old_files, new_files = organize_by_pattern(
+            source_directory, destination_directory, pattern, repl
+        )
+        print(source_directory, destination_directory)
+        old_files, new_files = move_files(old_files, new_files, move, dry_run)
+
+        for old_file, new_file in zip(old_files, new_files):
+            self.assertTrue(os.path.exists(old_file))
+
+            if not dry_run:
+                self.assertTrue(os.path.exists(new_file))
+
 
 if __name__ == "__main__":
     test_methods = [
         # TestOrganize.test_get_exif_year,
         # TestOrganize.test_get_modification_year,
         # TestOrganize.test_create_backup,
-        TestOrganize.test_organize_files,
+        # TestOrganize.test_organize_files,
+        TestOrganize.test_move_files,
     ]
     run_test_methods(test_methods)

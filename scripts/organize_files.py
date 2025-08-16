@@ -7,6 +7,9 @@ from pathlib import Path
 from datetime import datetime
 from argparse import ArgumentParser
 import mimetypes
+from logger import setup_logger
+
+logger = setup_logger("organize")
 
 
 def get_exif_year(file_path: Path) -> str | None:
@@ -77,8 +80,8 @@ def move_files(old_files: list, new_files: list, move: bool, dry_run: bool):
     for old_file, new_file in zip(old_files, new_files):
         action = "Moving" if move else "Copying"
 
-        print(f"{action} '{old_file}' -> '{new_file}'")
-        print(f"{action} '{old_file}' -> '{new_file}'")
+        logger.info(f"{action} '{old_file}' -> '{new_file}'")
+        logger.info(f"{action} '{old_file}' -> '{new_file}'")
 
         if not dry_run:  # move only if dry run is false
             new_file.parent.mkdir(parents=True, exist_ok=True)  # ensure folder exists
@@ -87,6 +90,8 @@ def move_files(old_files: list, new_files: list, move: bool, dry_run: bool):
                 shutil.move(old_file, new_file)
             else:
                 shutil.copy2(old_file, new_file)
+
+    return old_files, new_files
 
 
 def organize_by_year(source_directory: Path, destination_directory: Path):
