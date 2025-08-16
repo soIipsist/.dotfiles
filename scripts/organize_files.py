@@ -72,6 +72,10 @@ def get_directory_as_path(directory: str):
     return directory
 
 
+# def move_files(old_files: list, new_files: list, move: bool, confirm: bool):
+#     pass
+
+
 def organize_by_year(
     source_directory: Path, destination_directory: Path, move: bool = None
 ):
@@ -81,7 +85,6 @@ def organize_by_year(
 
     for file_path in source_directory.iterdir():
         if file_path.is_file():
-            old_files.append(file_path)
             year = get_exif_year(file_path)
             if not year:
                 year = get_modification_year(file_path)
@@ -90,6 +93,7 @@ def organize_by_year(
                 print(f"Warning: Could not determine year for '{file_path}'")
                 continue
 
+            old_files.append(file_path)
             target_dir = destination_directory / year
 
             if not target_dir.exists():
@@ -149,6 +153,7 @@ def organize_files(
     repl: str = None,
     move: bool = False,
     backup_directory: str = None,
+    confirm: bool = False,
 ):
 
     if not destination_directory:
@@ -172,11 +177,11 @@ def organize_files(
         old_files, new_files = organize_by_pattern(
             source_directory, destination_directory, pattern, repl, move
         )
-    elif action == "music":
+    elif action == "prefix":
         pattern = r"^(.*)$"
 
         if not repl:
-            prefix = input("Track prefix: ")
+            prefix = input("Prefix: ")
             if prefix:
                 repl = f"{prefix}\\1"
             else:
@@ -205,13 +210,14 @@ if __name__ == "__main__":
         "-a",
         "--action",
         type=str,
-        default="pattern",
-        choices=["pattern", "episodes", "music", "year"],
+        default="year",
+        choices=["pattern", "episodes", "prefix", "year"],
     )
-    parser.add_argument("-p", "--pattern", type=str)
-    parser.add_argument("-r", "--repl", type=str)
+    parser.add_argument("-p", "--pattern", type=str, default=None)
+    parser.add_argument("-r", "--repl", type=str, default=None)
     parser.add_argument("-m", "--move", type=str_to_bool, default=False)
-    parser.add_argument("-b", "--backup_directory", type=str, default="/tmp")
+    parser.add_argument("-b", "--backup_directory", type=str, default=None)
+    parser.add_argument("-c", "--confirm", default=False)
 
     args = vars(parser.parse_args())
     organize_files(**args)

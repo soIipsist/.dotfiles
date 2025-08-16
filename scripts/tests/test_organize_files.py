@@ -33,6 +33,24 @@ def delete_dir_contents(directory: Path):
             item.unlink()
 
 
+def copy_dir_contents(src: Path, dst: Path):
+    if isinstance(src, str):
+        src = Path(src)
+    if isinstance(dst, str):
+        dst = Path(dst)
+
+    if not src.is_dir():
+        raise NotADirectoryError(f"Source is not a directory: {src}")
+    dst.mkdir(parents=True, exist_ok=True)
+
+    for item in src.iterdir():
+        target = dst / item.name
+        if item.is_dir():
+            shutil.copytree(item, target, dirs_exist_ok=True)
+        else:
+            shutil.copy2(item, target)
+
+
 videos_directory = os.path.join(os.getcwd(), "videos")
 photos_directory = os.path.join(os.getcwd(), "photos")
 out_directory = os.path.join(photos_directory, "out")
@@ -45,8 +63,8 @@ if not destination_directory:
 
 source_directory = get_directory_as_path_test(source_directory)
 destination_directory = get_directory_as_path_test(destination_directory)
-backup_directory = "/tmp"
-move = False
+backup_directory = os.path.join(photos_directory, "backup")
+move = True
 
 
 class TestOrganize(TestBase):
@@ -91,16 +109,19 @@ class TestOrganize(TestBase):
             self.assertIsNotNone(backup_path)
 
     def test_organize_files(self):
-        # action = "music"
+        action = "prefix"
         # action = "pattern"
         # action = "year"
-        action = "episodes"
+        # action = "episodes"
         prefix = None
         pattern = None
         repl = None
 
         # empty output directory
         delete_dir_contents(out_directory)
+
+        # move the files from backup to photo dir
+        copy_dir_contents(backup_directory, photos_directory)
 
         # try custom pattern
         if action == "pattern":
@@ -123,7 +144,7 @@ class TestOrganize(TestBase):
 
             self.assertTrue(os.path.exists(new_file))
 
-            if (action == "music" or action == "pattern") and prefix:
+            if (action == "prefix" or action == "pattern") and prefix:
                 print("Prefix", prefix)
                 self.assertTrue(os.path.basename(new_file).startswith(prefix))
 
