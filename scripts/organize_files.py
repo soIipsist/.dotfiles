@@ -72,13 +72,24 @@ def get_directory_as_path(directory: str):
     return directory
 
 
-# def move_files(old_files: list, new_files: list, move: bool, confirm: bool):
-#     pass
+def move_files(old_files: list, new_files: list, move: bool, dry_run: bool):
+
+    for old_file, new_file in zip(old_files, new_files):
+        action = "Moving" if move else "Copying"
+
+        print(f"{action} '{old_file}' -> '{new_file}'")
+        print(f"{action} '{old_file}' -> '{new_file}'")
+
+        if not dry_run:  # move only if dry run is false
+            new_file.parent.mkdir(parents=True, exist_ok=True)  # ensure folder exists
+
+            if move:
+                shutil.move(old_file, new_file)
+            else:
+                shutil.copy2(old_file, new_file)
 
 
-def organize_by_year(
-    source_directory: Path, destination_directory: Path, move: bool = None
-):
+def organize_by_year(source_directory: Path, destination_directory: Path):
 
     old_files = []
     new_files = []
@@ -93,53 +104,32 @@ def organize_by_year(
                 print(f"Warning: Could not determine year for '{file_path}'")
                 continue
 
-            old_files.append(file_path)
             target_dir = destination_directory / year
 
             if not target_dir.exists():
                 print(f"Created year directory {target_dir}.")
-            target_dir.mkdir(parents=True, exist_ok=True)
+                target_dir.mkdir(parents=True, exist_ok=True)
 
-            if move:
-                dest_path = shutil.move(file_path, target_dir)
-                print(f"Moved '{file_path}' -> '{target_dir}'")
-
-            else:
-                dest_path = shutil.copy2(file_path, target_dir)
-                print(f"Copied '{file_path}' -> '{target_dir}'")
-
+            dest_path = target_dir / file_path.name
+            old_files.append(file_path)
             new_files.append(dest_path)
 
     return old_files, new_files
 
 
 def organize_by_pattern(
-    source_directory: Path,
-    destination_directory: Path,
-    pattern: str,
-    repl: str,
-    move: bool = False,
+    source_directory: Path, destination_directory: Path, pattern: str, repl: str
 ):
     old_files = []
     new_files = []
 
     for file_path in source_directory.iterdir():
         if file_path.is_file():
-            old_files.append(file_path)
             new_stem = re.sub(pattern, repl, file_path.stem, flags=re.IGNORECASE)
             new_name = f"{new_stem}{file_path.suffix}"
             dest_path = destination_directory / new_name
 
-            destination_directory.mkdir(parents=True, exist_ok=True)
-
-            if move:
-                dest_path = shutil.move(file_path, dest_path)
-                print(f"Moved '{file_path}' -> '{dest_path}'")
-
-            else:
-                dest_path = shutil.copy2(file_path, dest_path)
-                print(f"Copied '{file_path}' -> '{dest_path}'")
-
+            old_files.append(file_path)
             new_files.append(dest_path)
 
     return old_files, new_files
@@ -153,7 +143,7 @@ def organize_files(
     repl: str = None,
     move: bool = False,
     backup_directory: str = None,
-    confirm: bool = False,
+    dry_run: bool = False,
 ):
 
     if not destination_directory:
@@ -168,14 +158,12 @@ def organize_files(
     old_files = []
 
     if action == "year":
-        old_files, new_files = organize_by_year(
-            source_directory, destination_directory, move
-        )
+        old_files, new_files = organize_by_year(source_directory, destination_directory)
     elif action == "episodes":
         pattern = r".*?(S\d{2}E\d{2}|\d{1,5}).*"  # pattern for episodes
         repl = r"\1"
         old_files, new_files = organize_by_pattern(
-            source_directory, destination_directory, pattern, repl, move
+            source_directory, destination_directory, pattern, repl
         )
     elif action == "prefix":
         pattern = r"^(.*)$"
@@ -188,13 +176,14 @@ def organize_files(
                 repl = r"\1"
 
         old_files, new_files = organize_by_pattern(
-            source_directory, destination_directory, pattern, repl, move
+            source_directory, destination_directory, pattern, repl
         )
     else:
         old_files, new_files = organize_by_pattern(
-            source_directory, destination_directory, pattern, repl, move
+            source_directory, destination_directory, pattern, repl
         )
 
+    move_files(old_files, new_files, move, dry_run)
     return old_files, new_files
 
 
@@ -217,7 +206,7 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--repl", type=str, default=None)
     parser.add_argument("-m", "--move", type=str_to_bool, default=False)
     parser.add_argument("-b", "--backup_directory", type=str, default=None)
-    parser.add_argument("-c", "--confirm", default=False)
+    parser.add_argument("-n", "--dry_run", type=str_to_bool, default=False)
 
     args = vars(parser.parse_args())
     organize_files(**args)
