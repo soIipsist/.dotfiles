@@ -51,7 +51,7 @@ class DownloadStatus(str, Enum):
     INTERRUPTED = "interrupted"
 
 
-logger = setup_logger(name="download")
+logger = setup_logger(name="download", log_dir="/tmp/download")
 logger.disabled = False
 
 
@@ -333,7 +333,7 @@ class Downloader(SQLiteItem):
 
     @downloader_type.setter
     def downloader_type(self, downloader_type):
-        self._downloader_type = downloader_type
+        self._downloader_type = downloader_type or None
 
     @property
     def downloader_path(self):
@@ -561,7 +561,6 @@ def downloaders_cmd(
             d.module = "ytdlp"
         if d.func is None:
             d.func = "download"
-
         d.upsert()
     elif action == "delete":
         d.delete()
