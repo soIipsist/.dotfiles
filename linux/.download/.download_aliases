@@ -33,7 +33,6 @@ download_all() {
     while IFS= read -r line; do
         if [[ -n "$line" ]]; then
             cmd=$(printf '%q ' "${extra_args[@]}")
-            echo "ARGS: $cmd"
             run_in_tmux_session "source $HOME/.zshrc; download \"${line}\" "$cmd""
         fi
     done <"$downloads_path"
