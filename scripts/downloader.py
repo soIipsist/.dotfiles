@@ -9,6 +9,7 @@ from enum import Enum
 import sys
 from typing import List, Optional
 from urllib.parse import urlparse
+from logger import setup_logger
 from sqlite import is_valid_path
 from sqlite_item import SQLiteItem, create_connection
 from sqlite_conn import create_db, download_values, downloader_values
@@ -17,6 +18,8 @@ import argparse
 import inspect
 
 script_directory = os.path.dirname(__file__)
+downloaders_directory = os.path.join(script_directory, "downloaders")
+
 pp = PrettyPrinter(indent=2)
 
 database_path = os.environ.get(
@@ -40,62 +43,6 @@ database_path = os.environ.get(
 db_exists = os.path.exists(database_path)
 db = create_connection(database_path)
 create_db(database_path)
-
-LOG_COLORS = {
-    "DEBUG": "\033[36m",  # Cyan
-    "INFO": "\033[32m",  # Green
-    "WARNING": "\033[33m",  # Yellow
-    "ERROR": "\033[31m",  # Red
-    "CRITICAL": "\033[41m",  # Red background
-    "RESET": "\033[0m",  # Reset to default
-}
-
-
-class ColoredFormatter(logging.Formatter):
-    def format(self, record):
-        levelname = record.levelname
-        color = LOG_COLORS.get(levelname, "")
-        reset = LOG_COLORS["RESET"]
-        record.levelname = f"{color}{levelname}{reset}"
-        return super().format(record)
-
-
-def setup_logger(name="downloader", log_dir_name="/tmp", level=logging.INFO):
-    downloads_dir = os.environ.get("DOWNLOADS_DIRECTORY", "/")
-    log_dir = os.path.join(downloads_dir, log_dir_name)
-
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-
-    log_file = os.path.join(
-        log_dir, f"{name}_{datetime.now().strftime('%Y-%m-%d')}.log"
-    )
-
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
-
-    if not logger.handlers:
-        file_handler = logging.FileHandler(log_file, encoding="utf-8")
-        file_handler.setLevel(level)
-
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(level)
-
-        formatter = logging.Formatter(
-            "[%(asctime)s] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-        )
-
-        file_handler.setFormatter(formatter)
-
-        color_formatter = ColoredFormatter(
-            "[%(asctime)s] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-        )
-        console_handler.setFormatter(color_formatter)
-
-        logger.addHandler(file_handler)
-        logger.addHandler(console_handler)
-
-    return logger
 
 
 class DownloadStatus(str, Enum):
@@ -545,49 +492,35 @@ class Downloader(SQLiteItem):
 default_downloaders = [
     Downloader(
         "ytdlp",
-        os.path.join(script_directory, "video_options_blank.json"),
+        None,
         "ytdlp",
         "download",
         "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
         "ytdlp_video",
-        os.path.join(script_directory, "video_options.json"),
+        os.path.join(downloaders_directory, "video_mp4_best.json"),
         "ytdlp",
         "download",
         "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
-        "ytdlp_video_2",
-        os.path.join(script_directory, "video_options_2.json"),
+        "ytdlp_video_subs",
+        os.path.join(downloaders_directory, "video_mp4_subs.json"),
         "ytdlp",
         "download",
         "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
-        "ytdlp_video_3",
-        os.path.join(script_directory, "video_options_3.json"),
-        "ytdlp",
-        "download",
-        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
-    ),
-    Downloader(
-        "ytdlp_video_4",
-        os.path.join(script_directory, "video_options_4.json"),
-        "ytdlp",
-        "download",
-        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
-    ),
-    Downloader(
-        "ytdlp_video_5",
-        os.path.join(script_directory, "video_options_5.json"),
+        "ytdlp_video_avc1",
+        os.path.join(downloaders_directory, "video_avc1.json"),
         "ytdlp",
         "download",
         "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
     ),
     Downloader(
         "ytdlp_audio",
-        os.path.join(script_directory, "audio_options.json"),
+        os.path.join(downloaders_directory, "audio_mp3_best.json"),
         "ytdlp",
         "download",
         "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
@@ -737,7 +670,7 @@ if __name__ == "__main__":
         nargs="?",
     )
     downloader_cmd.add_argument(
-        "-t", "--downloader_type", type=str, default="ytdlp_video"
+        "-t", "--downloader_type", type=str, default="video_mp4_best"
     )
     downloader_cmd.add_argument(
         "-d", "--downloader_path", type=is_valid_path, default=None

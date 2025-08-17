@@ -116,6 +116,18 @@ class TestOrganize(TestBase):
         else:
             self.assertIsNotNone(backup_path)
 
+    def test_move_files(self):
+        old_files, new_files = organize_by_pattern(
+            source_directory, destination_directory, pattern, repl
+        )
+        old_files, new_files = move_files(old_files, new_files, move, dry_run)
+
+        for old_file, new_file in zip(old_files, new_files):
+            self.assertTrue(os.path.exists(old_file))
+
+            if not dry_run:
+                self.assertTrue(os.path.exists(new_file))
+
     def test_organize_files(self):
         action = "prefix"
         # action = "pattern"
@@ -161,26 +173,13 @@ class TestOrganize(TestBase):
             else:
                 self.assertTrue(os.path.exists(old_file))
 
-    def test_move_files(self):
-        old_files, new_files = organize_by_pattern(
-            source_directory, destination_directory, pattern, repl
-        )
-        print(source_directory, destination_directory)
-        old_files, new_files = move_files(old_files, new_files, move, dry_run)
-
-        for old_file, new_file in zip(old_files, new_files):
-            self.assertTrue(os.path.exists(old_file))
-
-            if not dry_run:
-                self.assertTrue(os.path.exists(new_file))
-
 
 if __name__ == "__main__":
     test_methods = [
         # TestOrganize.test_get_exif_year,
         # TestOrganize.test_get_modification_year,
         # TestOrganize.test_create_backup,
-        # TestOrganize.test_organize_files,
         TestOrganize.test_move_files,
+        # TestOrganize.test_organize_files,
     ]
     run_test_methods(test_methods)

@@ -84,7 +84,8 @@ copy_scripts() {
     return
   fi
 
-  scripts=$(find "$dotfile_scripts_dir" -maxdepth 2 -type f ! -name "*.ps1")
+  scripts=$(find "$dotfile_scripts_dir" -maxdepth 1 -type f ! -name "*.ps1")
+  dirs=$(find "$dotfile_scripts_dir" -maxdepth 1 -type d ! -name "tests")
 
   if [ ! -d "$scripts_directory" ]; then
     mkdir -p "$scripts_directory"
@@ -96,4 +97,8 @@ copy_scripts() {
     echo "Copied $script to $scripts_directory."
   done
 
+  for dir in $dirs; do
+    cp -rf "$dir" "$scripts_directory"
+    echo "Copied $dir to $scripts_directory."
+  done
 }
