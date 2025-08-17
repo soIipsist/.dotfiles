@@ -17,6 +17,13 @@ downloaders() {
 download_all() {
     downloads_path="$1"
 
+    if [ $# -gt 1 ]; then
+        shift # Remove the downloads path
+        extra_args=("$@")
+    else
+        extra_args=()
+    fi
+
     if [ ! -f "$downloads_path" ]; then
         echo "Downloads path $downloads_path not found."
         echo "Usage: download_all <downloads_path.txt>"
@@ -25,7 +32,7 @@ download_all() {
 
     while IFS= read -r line; do
         if [[ -n "$line" ]]; then
-            run_in_tmux_session "source $HOME/.zshrc; download \"${line}\""
+            run_in_tmux_session "source $HOME/.zshrc; download \"${line}\" $(printf '%q ' "${extra_args[@]}")"
         fi
     done <"$downloads_path"
 
