@@ -51,7 +51,8 @@ class DownloadStatus(str, Enum):
     INTERRUPTED = "interrupted"
 
 
-logger = setup_logger(name="download", log_dir="/tmp/download")
+log_dir = os.path.join(os.environ.get("DOWNLOADS_DIRECTORY", os.path.expanduser("~")), "/tmp")
+logger = setup_logger(name="download", log_dir=log_dir)
 logger.disabled = False
 
 
