@@ -51,7 +51,6 @@ def copy_dir_contents(src: Path, dst: Path):
             shutil.copy2(item, target)
 
 
-videos_directory = os.path.join(os.getcwd(), "videos")
 photos_directory = os.path.join(os.getcwd(), "photos")
 out_directory = os.path.join(photos_directory, "out")
 
@@ -142,6 +141,7 @@ class TestOrganize(TestBase):
         prefix = None
         pattern = None
         repl = None
+        backup_directory = None
 
         # try custom pattern
         if action == "pattern":
@@ -169,13 +169,14 @@ class TestOrganize(TestBase):
             if isinstance(new_file, Path):
                 new_file = str(new_file)
 
-            self.assertTrue(os.path.exists(new_file))
+            if not dry_run:
+                self.assertTrue(os.path.exists(new_file))
 
             if (action == "prefix" or action == "pattern") and prefix:
                 print("Prefix", prefix)
                 self.assertTrue(os.path.basename(new_file).startswith(prefix))
 
-            if move:
+            if move and not dry_run:
                 self.assertFalse(os.path.exists(old_file))
             else:
                 self.assertTrue(os.path.exists(old_file))
@@ -186,7 +187,7 @@ if __name__ == "__main__":
         # TestOrganize.test_get_exif_year,
         # TestOrganize.test_get_modification_year,
         # TestOrganize.test_create_backup,
-        # TestOrganize.test_move_files,
-        TestOrganize.test_organize_files,
+        TestOrganize.test_move_files,
+        # TestOrganize.test_organize_files,
     ]
     run_test_methods(test_methods)
