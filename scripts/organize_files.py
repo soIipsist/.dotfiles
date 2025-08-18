@@ -94,7 +94,9 @@ def move_files(old_files: list, new_files: list, move: bool, dry_run: bool):
     return old_files, new_files
 
 
-def organize_by_year(source_directory: Path, destination_directory: Path):
+def organize_by_year(
+    source_directory: Path, destination_directory: Path, dry_run: bool
+):
 
     old_files = []
     new_files = []
@@ -111,7 +113,7 @@ def organize_by_year(source_directory: Path, destination_directory: Path):
 
             target_dir = destination_directory / year
 
-            if not target_dir.exists():
+            if not target_dir.exists() and not dry_run:
                 print(f"Created year directory {target_dir}.")
                 target_dir.mkdir(parents=True, exist_ok=True)
 
@@ -163,7 +165,9 @@ def organize_files(
     old_files = []
 
     if action == "year":
-        old_files, new_files = organize_by_year(source_directory, destination_directory)
+        old_files, new_files = organize_by_year(
+            source_directory, destination_directory, dry_run
+        )
     elif action == "episodes":
         pattern = r".*?(S\d{2}E\d{2}|\d{1,5}).*"  # pattern for episodes
         repl = r"\1"
@@ -198,20 +202,25 @@ def str_to_bool(string: str):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("source_directory", type=str)
+    parser.add_argument("source_directory", type=str, default=os.getcwd(), nargs="?")
     parser.add_argument("destination_directory", default=None, nargs="?")
     parser.add_argument(
         "-a",
         "--action",
         type=str,
-        default="year",
+        default="episodes",
         choices=["pattern", "episodes", "prefix", "year"],
     )
     parser.add_argument("-p", "--pattern", type=str, default=None)
     parser.add_argument("-r", "--repl", type=str, default=None)
     parser.add_argument("-m", "--move", type=str_to_bool, default=False)
     parser.add_argument("-b", "--backup_directory", type=str, default=None)
-    parser.add_argument("-n", "--dry_run", type=str_to_bool, default=False)
+    parser.add_argument("-n", "--dry_run", type=str_to_bool, default=True)
 
     args = vars(parser.parse_args())
     organize_files(**args)
+
+# python organize_files.py (uses cwd)
+# python organize_files.py tests/photos/backup -a year
+# python organize_files.py tests/photos/backup tests/photos/out -a year
+# python organize_files.py tests/photos/backup tests/photos/out -a year -m 1
