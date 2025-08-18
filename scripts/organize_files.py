@@ -48,7 +48,9 @@ def get_modification_year(file_path):
         return None
 
 
-def create_backup(source_directory: Path, backup_directory: str = None):
+def create_backup(
+    source_directory: Path, backup_directory: str = None, dry_run: bool = False
+):
 
     dest = None
 
@@ -56,10 +58,16 @@ def create_backup(source_directory: Path, backup_directory: str = None):
         return
 
     try:
-        print(f"Creating backup at {backup_directory}")
-        dest = shutil.copytree(source_directory, backup_directory, dirs_exist_ok=True)
+        logger.info(f"Creating backup at {backup_directory}")
+
+        if not dry_run:
+            dest = shutil.copytree(
+                source_directory, backup_directory, dirs_exist_ok=True
+            )
+            logger.info(f"Successfully created backup {dest}.")
+
     except Exception as e:
-        print(e)
+        logger.error(f"Exception: {e}")
 
     return dest
 
@@ -69,7 +77,7 @@ def get_directory_as_path(directory: str):
         directory = Path(directory)
 
     if not directory.is_dir():
-        print(f"Error: '{directory}' is not a directory.")
+        logger.error(f"Error: '{directory}' is not a directory.")
         sys.exit(1)
 
     return directory
@@ -80,7 +88,6 @@ def move_files(old_files: list, new_files: list, move: bool, dry_run: bool):
     for old_file, new_file in zip(old_files, new_files):
         action = "Moving" if move else "Copying"
 
-        logger.info(f"{action} '{old_file}' -> '{new_file}'")
         logger.info(f"{action} '{old_file}' -> '{new_file}'")
 
         if not dry_run:  # move only if dry run is false
@@ -108,13 +115,13 @@ def organize_by_year(
                 year = get_modification_year(file_path)
 
             if not year:
-                print(f"Warning: Could not determine year for '{file_path}'")
+                logger.error(f"Warning: Could not determine year for '{file_path}'")
                 continue
 
             target_dir = destination_directory / year
 
             if not target_dir.exists() and not dry_run:
-                print(f"Created year directory {target_dir}.")
+                logger.info(f"Created year directory {target_dir}.")
                 target_dir.mkdir(parents=True, exist_ok=True)
 
             dest_path = target_dir / file_path.name
@@ -159,7 +166,7 @@ def organize_files(
     source_directory = get_directory_as_path(source_directory)
     destination_directory = get_directory_as_path(destination_directory)
 
-    create_backup(source_directory, backup_directory)
+    create_backup(source_directory, backup_directory, dry_run)
 
     new_files = []
     old_files = []
