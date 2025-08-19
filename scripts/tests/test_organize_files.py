@@ -64,7 +64,7 @@ source_directory = get_directory_as_path_test(source_directory)
 destination_directory = get_directory_as_path_test(destination_directory)
 backup_directory = os.path.join(photos_directory, "backup")
 move = True
-dry_run = True
+dry_run = False
 pattern = r"^(.*)$"
 repl = r"\1"
 
@@ -134,7 +134,8 @@ class TestOrganize(TestBase):
                     self.assertTrue(os.path.exists(new_file))
 
     def test_organize_files(self):
-        action = "prefix"
+        # action = "prefix"
+        action = "suffix"
         # action = "pattern"
         # action = "year"
         # action = "episodes"
@@ -187,7 +188,7 @@ if __name__ == "__main__":
         # TestOrganize.test_get_exif_year,
         # TestOrganize.test_get_modification_year,
         # TestOrganize.test_create_backup,
-        TestOrganize.test_move_files,
-        # TestOrganize.test_organize_files,
+        # TestOrganize.test_move_files,
+        TestOrganize.test_organize_files,
     ]
     run_test_methods(test_methods)

@@ -194,6 +194,19 @@ def organize_files(
         old_files, new_files = organize_by_pattern(
             source_directory, destination_directory, pattern, repl
         )
+    elif action == "suffix":
+        pattern = r"^(.*?)(\.[^.]+)?$"
+
+        if not repl:
+            suffix = input("Suffix: ")
+            if suffix:
+                repl = r"\1" + suffix + r"\2"
+            else:
+                repl = r"\1\2"
+
+        old_files, new_files = organize_by_pattern(
+            source_directory, destination_directory, pattern, repl
+        )
     else:
         old_files, new_files = organize_by_pattern(
             source_directory, destination_directory, pattern, repl
@@ -216,13 +229,13 @@ if __name__ == "__main__":
         "--action",
         type=str,
         default="episodes",
-        choices=["pattern", "episodes", "prefix", "year"],
+        choices=["pattern", "episodes", "prefix", "suffix", "year"],
     )
     parser.add_argument("-p", "--pattern", type=str, default=None)
     parser.add_argument("-r", "--repl", type=str, default=None)
     parser.add_argument("-m", "--move", type=str_to_bool, default=False)
     parser.add_argument("-b", "--backup_directory", type=str, default=None)
-    parser.add_argument("-n", "--dry_run", type=str_to_bool, default=True)
+    parser.add_argument("-n", "--dry_run", type=str_to_bool, default=False)
 
     args = vars(parser.parse_args())
     organize_files(**args)
