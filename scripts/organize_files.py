@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 import mimetypes
 from logger import setup_logger
 
-logger = setup_logger("organize")
+logger = setup_logger("organize", log_dir="/tmp/organize")
 
 
 def get_exif_year(file_path: Path) -> str | None:
