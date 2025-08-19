@@ -85,6 +85,9 @@ def get_directory_as_path(directory: str):
 
 def move_files(old_files: list, new_files: list, move: bool, dry_run: bool):
 
+    if dry_run:
+        logger.warning("DRY RUN MODE: No changes will be applied.")
+
     for old_file, new_file in zip(old_files, new_files):
         action = "Moving" if move else "Copying"
 

@@ -96,16 +96,25 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 run_venv_script() {
-    local SCRIPT_NAME="$1"
+    local USE_SUDO=0
+
+    if [ "$1" = "--sudo" ]; then
+        USE_SUDO=1
+        shift
+    fi
+
+    local SCRIPT_PATH="$1"
     shift
 
-    if [ -z "$SCRIPTS_DIRECTORY" ]; then
-        if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
-            GIT_DOTFILES_DIRECTORY="$HOME"
+    if [ ! -f "$SCRIPT_PATH" ]; then # script is only a name
+        if [ -z "$SCRIPTS_DIRECTORY" ]; then
+            if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+                GIT_DOTFILES_DIRECTORY="$HOME"
+            fi
+            SCRIPTS_DIRECTORY="$GIT_DOTFILES_DIRECTORY/scripts"
         fi
-        SCRIPTS_DIRECTORY="$GIT_DOTFILES_DIRECTORY/scripts"
+        SCRIPT_PATH="$SCRIPTS_DIRECTORY/$SCRIPT_PATH"
     fi
-    local SCRIPT_PATH="$SCRIPTS_DIRECTORY/$SCRIPT_NAME"
 
     if [ ! -f "$SCRIPT_PATH" ]; then
         echo "Could not find script: $SCRIPT_PATH"
@@ -116,7 +125,11 @@ run_venv_script() {
         source "$VENV_PATH/bin/activate"
     fi
 
-    python3 "$SCRIPT_PATH" "$@"
+    if [ "$USE_SUDO" -eq 1 ]; then
+        sudo python3 "$SCRIPT_PATH" "$@"
+    else
+        python3 "$SCRIPT_PATH" "$@"
+    fi
 
     if [ -n "$VIRTUAL_ENV" ]; then
         deactivate
