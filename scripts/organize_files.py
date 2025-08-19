@@ -233,9 +233,15 @@ if __name__ == "__main__":
     )
     parser.add_argument("-p", "--pattern", type=str, default=None)
     parser.add_argument("-r", "--repl", type=str, default=None)
-    parser.add_argument("-m", "--move", type=str_to_bool, default=False)
-    parser.add_argument("-b", "--backup_directory", type=str, default=None)
-    parser.add_argument("-n", "--dry_run", type=str_to_bool, default=False)
+    parser.add_argument(
+        "-m", "--move", type=str_to_bool, default=os.environ.get("MOVE_FILES", False)
+    )
+    parser.add_argument(
+        "-b", "--backup_directory", type=str, default=os.environ.get("BACKUP_DIRECTORY")
+    )
+    parser.add_argument(
+        "-n", "--dry_run", type=str_to_bool, default=os.environ.get("DRY_RUN")
+    )
 
     args = vars(parser.parse_args())
     organize_files(**args)

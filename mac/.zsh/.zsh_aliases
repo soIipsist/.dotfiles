@@ -11,6 +11,11 @@ export OLLAMA_MODEL="deepseek-r1:14b"
 export SQLITE_DB="downloads.db"
 export SQLITE_TABLE="downloads"
 
+# organize files variables
+export BACKUP_DIRECTORY="/tmp/backup"
+export DRY_RUN=0
+export MOVE_FILES=0
+
 # aliases
 alias python="python3"
 alias yabais="yabai --start-service"

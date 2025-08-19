@@ -6,6 +6,11 @@ export DEFAULT_EDITOR="nano"
 export SQLITE_DB="downloads.db"
 export SQLITE_TABLE="downloads"
 
+# organize files variables
+export BACKUP_DIRECTORY="/tmp/backup"
+export DRY_RUN=0
+export MOVE_FILES=0
+
 alias python='python3'
 alias ll='ls -alF'
 alias la='ls -A'
