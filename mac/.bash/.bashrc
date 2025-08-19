@@ -93,7 +93,7 @@ run_venv_script() {
     fi
 
     if [ "$USE_SUDO" -eq 1 ]; then
-        sudo python3 "$SCRIPT_PATH" "$@"
+        sudo -E python3 "$SCRIPT_PATH" "$@"
     else
         python3 "$SCRIPT_PATH" "$@"
     fi
