@@ -50,8 +50,8 @@ for file in "$source_services_directory"/*.conf; do
     state_file=$(grep -oP 'STATE_FILE="\K[^"]+' "$temp_file")
 
     if [ -n "$state_file" ]; then
-        sudo mkdir -p "$(dirname "$state_file")"
-        sudo touch "$state_file"
+        mkdir -p "$(dirname "$state_file")"
+        touch "$state_file"
         echo "Created state file $state_file"
     fi
 
