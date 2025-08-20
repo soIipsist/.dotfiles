@@ -84,3 +84,7 @@ fzfh() {
         history -s "$selection"
     fi
 }
+
+fzfg() {
+    # search in github changes
+}
