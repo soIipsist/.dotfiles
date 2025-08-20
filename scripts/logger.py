@@ -1,6 +1,8 @@
 from datetime import datetime
 import logging
 import os
+from pathlib import Path
+import stat
 
 
 LOG_COLORS = {
@@ -24,12 +26,19 @@ class ColoredFormatter(logging.Formatter):
 
 def setup_logger(name="downloader", log_dir="/tmp", level=logging.INFO):
 
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir, exist_ok=True)
+    uid = os.getuid()
 
-    log_file = os.path.join(
-        log_dir, f"{name}_{datetime.now().strftime('%Y-%m-%d')}.log"
-    )
+    # Build per-user tmp path
+    log_dir = Path(log_dir).expanduser().resolve()
+    if log_dir.is_absolute():
+        log_dir = Path(*log_dir.parts[1:])
+    per_user_log_dir = Path("/tmp") / str(uid) / log_dir
+
+    if not per_user_log_dir.exists():
+        per_user_log_dir.mkdir(parents=True, exist_ok=True)
+        os.chmod(per_user_log_dir, 0o700)
+
+    log_file = per_user_log_dir / f"{name}_{datetime.now():%Y-%m-%d}.log"
 
     logger = logging.getLogger(name)
     logger.setLevel(level)
