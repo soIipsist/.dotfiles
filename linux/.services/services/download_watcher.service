@@ -6,7 +6,6 @@ After=network.target
 ExecStart=/usr/bin/bash -lc /usr/local/bin/download_watcher
 Restart=always
 User=solipsist
-Group=shared_group
 EnvironmentFile=/etc/default/download_watcher.conf
 
 [Install]
