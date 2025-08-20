@@ -153,5 +153,10 @@ sqliteq() {
 }
 
 organize_files() {
-    run_venv_script "organize_files.py" "$@"
+    if [ "$1" = "--sudo" ]; then
+        shift
+        run_venv_script --sudo "organize_files.py" "$@"
+    else
+        run_venv_script "organize_files.py" "$@"
+    fi
 }

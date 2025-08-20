@@ -64,7 +64,7 @@ source_directory = get_directory_as_path_test(source_directory)
 destination_directory = get_directory_as_path_test(destination_directory)
 backup_directory = os.path.join(photos_directory, "backup")
 move = True
-dry_run = False
+dry_run = True
 pattern = r"^(.*)$"
 repl = r"\1"
 
