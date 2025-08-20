@@ -204,6 +204,7 @@ bindkey -s '^Xo' "cpout\n"          # Ctrl + X followed by O
 bindkey -s ^f "fzfe\n" # Ctrl + F
 bindkey -s ^s "fzfc\n" # Ctrl + S
 bindkey -s ^h "fzfh\n" # Ctrl + H
+bindkey -s ^g "fzfg\n" # Ctrl + G
 
 # zsh suggestions
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff"
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#AFADAD"

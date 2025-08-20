@@ -86,5 +86,40 @@ fzfh() {
 }
 
 fzfg() {
-    # search in github changes
+    local cwd="${1:-.}"
+    local selection file line
+    local default_editor="${DEFAULT_EDITOR:-code}" # fallback to VS Code
+
+    cd "$cwd" || return
+
+    # get changed files (staged, unstaged, untracked)
+    selection=$(git status --porcelain | fzf --ansi --preview '
+        file=$(echo {} | awk "{print \$2}")
+        if [ -n "$file" ] && [ -f "$file" ]; then
+            git diff --color=always -- "$file" || bat --style=numbers --color=always "$file"
+        fi
+    ')
+
+    [ -z "$selection" ] && return
+
+    file=$(echo "$selection" | awk '{print $2}')
+
+    first_line=$(git diff --unified=0 -- "$file" | grep -m1 '^@@' | sed -E 's/^@@ -[0-9,]+ \+([0-9]+).*/\1/')
+
+    if [ -z "$first_line" ]; then
+        first_line=1
+    fi
+
+    # open the file in editor
+    case "$default_editor" in
+    vscode | code)
+        code -g "$file:$first_line"
+        ;;
+    vim)
+        vim "+${$first_line}" "$file"
+        ;;
+    *)
+        nano "+${$first_line}" "$file"
+        ;;
+    esac
 }
