@@ -43,8 +43,8 @@ done
 for file in "$source_services_directory"/*.conf; do
 
     filename="$(basename "$file")"
-    temp_file="$(mktemp)"
     export UID
+    temp_file="$(mktemp)"
     envsubst <"$file" >"$temp_file"
 
     state_file=$(grep -oP 'STATE_FILE="\K[^"]+' "$temp_file")
