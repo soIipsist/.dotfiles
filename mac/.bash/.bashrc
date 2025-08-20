@@ -160,3 +160,8 @@ fi
 # Improve tab completion
 bind 'set show-all-if-ambiguous on'
 bind 'TAB:menu-complete'
+
+# fzf bindings
+bind -x '"\C-h":fzfh'
+bind -x '"\C-f":fzfe'
+bind -x '"\C-s":fzfc'
