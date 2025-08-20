@@ -199,7 +199,11 @@ bindkey '^a' sesh-sessions          # Ctrl + A
 bindkey '^Xr' repeat-last-command   # Ctrl + X followed by R
 bindkey '^Xc' copy-line-to-keyboard # Ctrl + X followed by C
 bindkey -s '^Xo' "cpout\n"          # Ctrl + X followed by O
-bindkey -s ^f "tmux-sessionizer\n"  # Ctrl + F
+
+# fzf bindings
+bindkey -s ^f "fzfe\n" # Ctrl + F
+bindkey -s ^s "fzfc\n" # Ctrl + S
+bindkey -s ^h "fzfh\n" # Ctrl + H
 
 # zsh suggestions
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff"
