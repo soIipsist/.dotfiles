@@ -5,7 +5,7 @@ source_services_directory="$SCRIPT_DIR/services"
 dest_services_directory="/etc/systemd/system/"
 dest_config_directory="/etc/default/"
 
-UID=$(id -u)
+uid=$(id -u)
 
 copy() {
     file="$1"
@@ -26,7 +26,7 @@ for file in "$source_services_directory"/*.service; do
     service_name="$(basename "$file")"
     service_base="${service_name%.service}"
 
-    log_dir="/tmp/${UID}/${service_base}"
+    log_dir="/tmp/${uid}/${service_base}"
     log_file="$log_dir/${service_base}.log"
     err_file="$log_dir/${service_base}.err"
 
@@ -34,7 +34,7 @@ for file in "$source_services_directory"/*.service; do
     chmod 700 "$log_dir"
 
     touch "$log_file" "$err_file"
-    chown $UID:$UID "$log_file" "$err_file"
+    chown $uid:$uid "$log_file" "$err_file"
     chmod 600 "$log_file" "$err_file"
 
     echo "Created log files for $service_base in $log_dir."
@@ -43,7 +43,7 @@ done
 for file in "$source_services_directory"/*.conf; do
 
     filename="$(basename "$file")"
-    export UID
+    export uid
     temp_file="$(mktemp)"
     envsubst <"$file" >"$temp_file"
 
