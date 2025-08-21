@@ -164,5 +164,5 @@ bind 'TAB:menu-complete'
 # fzf bindings
 bind -x '"\C-h":fzfh'
 bind -x '"\C-f":fzfe'
-bind -x '"\C-s":fzfc'
+bind -x '"\C-p":fzfc'
 bind -x '"\C-g":fzfg'
