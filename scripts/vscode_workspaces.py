@@ -4,11 +4,20 @@ from pprint import pprint
 from argparse import ArgumentParser
 import json
 import subprocess
+import warnings
 
 # default workspace variables
-workspace_directory = os.environ.get(
-    "VSCODE_WORKSPACE_DIRECTORY", os.path.join(os.getcwd(), ".workspaces")
-)
+workspace_directory = os.environ.get("VSCODE_WORKSPACE_DIRECTORY")
+
+if workspace_directory is None or not os.path.exists(workspace_directory):
+    fallback_directory = os.path.join(os.getcwd(), ".workspaces")
+    warnings.warn(
+        f"Default workspace directory is not set or does not exist. "
+        f"Using '{fallback_directory}' instead.",
+        UserWarning,
+    )
+    workspace_directory = fallback_directory
+
 project_directory = os.environ.get(
     "VSCODE_PROJECT_DIRECTORY", os.path.dirname(os.path.dirname(workspace_directory))
 )

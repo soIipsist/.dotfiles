@@ -2,6 +2,10 @@
 export GIT_HOME="$HOME/repos/soIipsist"
 export DEFAULT_EDITOR="vscode"
 
+# VSCode variables
+export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/vscode-workspaces/.workspaces"
+export VSCODE_PROJECT_DIRECTORY="$GIT_HOME"
+
 # sqlite variables
 export SQLITE_DB="downloads.db"
 export SQLITE_TABLE="downloads"
@@ -44,4 +48,8 @@ organize_files() {
     else
         run_venv_script "organize_files.py" "$@"
     fi
+}
+
+vscode() {
+    run_venv_script "vscode_workspaces.py" "$@"
 }
