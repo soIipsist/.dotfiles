@@ -244,6 +244,5 @@ if __name__ == "__main__":
 
             for k, v in args.items():
                 if k not in sig_params and k != "command" and hasattr(workspace, k):
-                    print(k, v)
                     setattr(workspace, k, v)
             func(**f_args)

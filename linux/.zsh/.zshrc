@@ -202,7 +202,7 @@ bindkey -s '^Xo' "cpout\n"          # Ctrl + X followed by O
 
 # fzf bindings
 bindkey -s ^f "fzfe\n" # Ctrl + F
-bindkey -s ^s "fzfc\n" # Ctrl + S
+bindkey -s ^p "fzfc\n" # Ctrl + P
 bindkey -s ^h "fzfh\n" # Ctrl + H
 bindkey -s ^g "fzfg\n" # Ctrl + G
 
