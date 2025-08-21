@@ -142,6 +142,10 @@ class Workspace:
             pprint(workspaces)
 
     def open(self):
+
+        if not os.path.exists(self.workspace_path):
+            raise FileNotFoundError(f"Workspace path not found: {self.workspace_path}")
+
         try:
             subprocess.run(["code", self.workspace_path], check=True)
         except subprocess.CalledProcessError as e:
@@ -231,19 +235,15 @@ if __name__ == "__main__":
         workspace.list_workspaces()
     else:
         func = cmd_dict.get(command)
-        # argparse already gave us a namespace -> dict
-        func_args = {k: v for k, v in args.items() if k not in ["command"]}
-
         if func:
-            call_args = inspect.signature(func).parameters.keys()
+            sig_params = inspect.signature(func).parameters
 
-            f_args = {}
+            f_args = {
+                k: v for k, v in args.items() if k in sig_params and k != "command"
+            }
 
-            for k, v in func_args.items():
-                if k in call_args:
-                    f_args.update({k: v})
-                else:
-                    if hasattr(workspace, k):
-                        setattr(workspace, k, v)
-
+            for k, v in args.items():
+                if k not in sig_params and k != "command" and hasattr(workspace, k):
+                    print(k, v)
+                    setattr(workspace, k, v)
             func(**f_args)
