@@ -9,7 +9,7 @@ def str_to_bool(string: str):
     return string in ["1", "true", True]
 
 
-def is_valid_shell_path(path: str):
+def get_default_shell_path(path: str):
     if not os.path.exists(path):
         home_directory = os.path.expanduser("~")
 
@@ -20,7 +20,7 @@ def is_valid_shell_path(path: str):
         elif path == "fish":
             return os.path.join(home_directory, ".config", "fish", "config.fish")
         else:
-            raise EnvironmentError(f"Unsupported shell: {default_shell_path}")
+            raise EnvironmentError(f"Unsupported shell: {shell_path}")
 
     return path
 
@@ -45,9 +45,11 @@ def get_appended_value(key: str, value: str) -> str:
 
 
 def set_environment_variables(
-    environment_variables: list, default_shell_path: str = None, append: bool = False
+    environment_variables: list, shell_path: str = None, append: bool = False
 ):
     """Sets environment variables based on default shell path."""
+
+    shell_path = get_default_shell_path(shell_path)
 
     for var in environment_variables:
         var: str
@@ -63,7 +65,7 @@ def set_environment_variables(
             else:
                 # Modify shell configuration files for macOS or Linux
 
-                with open(default_shell_path, "a") as f:
+                with open(shell_path, "a") as f:
                     f.write(f'\nexport {key}="{value}"\n')
 
             os.environ[key] = f"{value}"
@@ -77,16 +79,14 @@ def set_environment_variables(
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("environment_variables", nargs="+")
-    parser.add_argument(
-        "-s", "--default_shell_path", default="bash", type=is_valid_shell_path
-    )
+    parser.add_argument("-s", "--shell_path", default="bash", type=str)
     parser.add_argument(
         "-a", "--append", type=str_to_bool, default=False, choices=bool_choices
     )
     args = vars(parser.parse_args())
 
     environment_variables = args.get("environment_variables")
-    default_shell_path = args.get("default_shell_path")
+    shell_path = args.get("shell_path")
     append = args.get("append")
 
-    set_environment_variables(environment_variables, default_shell_path, append)
+    set_environment_variables(environment_variables, shell_path, append)
