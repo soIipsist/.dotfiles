@@ -73,3 +73,7 @@ function organize_files() {
 function vscode() {
     run_venv_script "vscode_workspaces.py" "$@"
 }
+
+function set_env() {
+    run_venv_script "set_env.py" "$@"
+}

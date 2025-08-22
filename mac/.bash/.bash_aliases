@@ -53,3 +53,7 @@ organize_files() {
 vscode() {
     run_venv_script "vscode_workspaces.py" "$@"
 }
+
+set_env() {
+    run_venv_script "set_env.py" "$@"
+}

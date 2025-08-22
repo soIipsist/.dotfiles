@@ -44,20 +44,18 @@ def get_appended_value(key: str, value: str) -> str:
     return value
 
 
-def set_environment_variables(
-    environment_variables: list, shell_path: str = None, append: bool = False
-):
-    """Sets environment variables based on default shell path."""
+def get_value(key: str, value: str, action: str):
+    if action == "append":
+        value = get_appended_value(key, value)
+    elif action == "unset":
+        value = None
 
-    shell_path = get_default_shell_path(shell_path)
+    return value
 
-    for var in environment_variables:
-        var: str
 
-        key, value = var.split("=", 1)
-        value = get_appended_value(key, value) if append else value
+def set_environment_variable(key: str, value: str, shell_path: str):
 
-        print(f"Setting environment variable {key}: {value}")
+    if value:  # set
 
         try:
             if os.name == "nt":
@@ -69,11 +67,47 @@ def set_environment_variables(
                     f.write(f'\nexport {key}="{value}"\n')
 
             os.environ[key] = f"{value}"
+            print(f"Setting environment variable {key}: {value}")
+            print(f"Added '{value}' as an environment variable.")
 
         except Exception as e:
             print(f"An error occurred while setting the environment variable: {e}")
+    else:
+        try:
+            if os.name == "nt":
+                subprocess.run(["setx", key, ""], check=True)
+            else:
+                with open(shell_path, "r") as f:
+                    lines = f.readlines()
 
-        print(f"Added '{value}' as an environment variable.")
+                with open(shell_path, "w") as f:
+                    for line in lines:
+                        if line.strip().startswith(f"export {key}="):
+                            f.write("\n")  # replace with blank line
+                        else:
+                            f.write(line)
+
+            # Remove from current process
+            os.environ.pop(key, None)
+            print(f"[-] Unset environment variable {key}")
+
+        except Exception as e:
+            print(f"[!] Error unsetting environment variable: {e}")
+
+
+def set_environment_variables(
+    environment_variables: list, shell_path: str, action: str
+):
+    """Sets environment variables based on default shell path."""
+
+    shell_path = get_default_shell_path(shell_path)
+
+    for var in environment_variables:
+        var: str
+
+        key, value = var.split("=", 1)
+        value = get_value(key, value, action)
+        set_environment_variable(key, value, shell_path)
 
 
 if __name__ == "__main__":
@@ -81,12 +115,15 @@ if __name__ == "__main__":
     parser.add_argument("environment_variables", nargs="+")
     parser.add_argument("-s", "--shell_path", default="bash", type=str)
     parser.add_argument(
-        "-a", "--append", type=str_to_bool, default=False, choices=bool_choices
+        "-a",
+        "--action",
+        default="set",
+        choices=["append", "unset", "set"],
     )
     args = vars(parser.parse_args())
 
     environment_variables = args.get("environment_variables")
     shell_path = args.get("shell_path")
-    append = args.get("append")
+    action = args.get("action")
 
-    set_environment_variables(environment_variables, shell_path, append)
+    set_environment_variables(environment_variables, shell_path, action)

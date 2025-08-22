@@ -160,3 +160,7 @@ organize_files() {
         run_venv_script "organize_files.py" "$@"
     fi
 }
+
+set_env() {
+    run_venv_script "set_env.py" "$@"
+}

@@ -163,3 +163,7 @@ function organize_files() {
         run_venv_script "organize_files.py" "$@"
     fi
 }
+
+function set_env() {
+    run_venv_script "set_env.py" "$@"
+}
