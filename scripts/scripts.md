@@ -6,10 +6,17 @@
 
 This script allows you to modify existing environment variables or add new ones. It automatically updates the appropriate dotfiles for your chosen shell (e.g., Bash, Zsh, etc.).
 
-The `-a` or `--append` flag allows you to add a new value to an existing environment variable without overwriting its current contents. This is particularly useful for updating variables like PATH, where multiple values need to coexist.
+#### Actions
 
-```python
-python set_env.py key=value, key2=value2 -s "bash" -a 1
+- **Set**: Add or replace environment variables.  
+- **Unset**: Remove environment variables (line replaced with a blank line to preserve structure).  
+- **Append**: Add new values to an existing variable without overwriting (useful for `PATH`).  
+
+#### Usage
+
+```bash
+python set_env.py KEY=VALUE, KEY2=VALUE2 -s SHELL -a ACTION
+
 ```
 
 You need to source files after for the changes to reflect:
