@@ -10,7 +10,7 @@ export VSCODE_PROJECT_DIRECTORY="$GIT_HOME"
 export OLLAMA_MODEL="deepseek-r1:14b"
 
 # sqlite variables
-export SQLITE_DB="downloads.db"
+export SQLITE_DB="$SCRIPTS_DIRECTORY/downloads.db"
 export SQLITE_TABLE="downloads"
 
 # set_env variables

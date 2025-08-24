@@ -3,7 +3,7 @@ export GIT_HOME="$HOME/repos/soIipsist"
 export DEFAULT_EDITOR="nano"
 
 # sqlite variables
-export SQLITE_DB="downloads.db"
+export SQLITE_DB="$SCRIPTS_DIRECTORY/downloads.db"
 export SQLITE_TABLE="downloads"
 
 # set_env variables

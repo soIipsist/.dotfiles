@@ -7,7 +7,7 @@ export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/vscode-workspaces/.workspaces"
 export VSCODE_PROJECT_DIRECTORY="$GIT_HOME"
 
 # sqlite variables
-export SQLITE_DB="downloads.db"
+export SQLITE_DB="$SCRIPTS_DIRECTORY/downloads.db"
 export SQLITE_TABLE="downloads"
 
 # set_env variables
