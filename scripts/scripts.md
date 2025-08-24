@@ -96,7 +96,7 @@ It supports moving or copying files, automatic backups, and customizable renamin
 
 #### Organize methods
 
-- 📂 **Organize by year**  
+- **Organize by year**  
   - Extracts the year from EXIF metadata (for photos) or file modification date.  
   - Files are grouped into subfolders by year.  
 
