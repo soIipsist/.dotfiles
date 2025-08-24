@@ -89,6 +89,37 @@ It can be used both as a standalone CLI tool or imported as a utility module.
 python sqlite.py --database_path mydb.sqlite --table_name downloads --action select
 ```
 
+### organize_files.py - organize files
+
+A Python utility for organizing files into structured folders based on **year**, **patterns**, or **custom rules**.  
+It supports moving or copying files, automatic backups, and customizable renaming via regex patterns.
+
+#### Organize methods
+
+- 📂 **Organize by year**  
+  - Extracts the year from EXIF metadata (for photos) or file modification date.  
+  - Files are grouped into subfolders by year.  
+
+- **Organize episodes**  
+  - Detects episode numbers or `SxxExx` patterns in filenames.  
+  - Renames files to clean episode-style names (e.g., `Episode 001.mp4` → `001.mp4`, `Game of Thrones S01E01.mkv` → `S01E01.mkv`).  
+
+- **Add prefix or suffix**  
+  - Adds a prefix to audio tracks (e.g., `Track 01.mp3` → `AlbumName - Track 01.mp3`).  
+  - Prompts for a prefix if none is provided.  
+
+- **Custom patterns**  
+  - Provide your own regex `pattern` and `replacement` to rename files however you like.  
+
+```bash
+
+python organize_files.py /path/to/source /path/to/destination --action year
+python organize_files.py /path/to/shows /path/to/episodes --action episodes
+python organize_files.py /path/to/music /path/to/albums --action prefix --move
+python organize_files.py /path/to/downloads /path/to/sorted \
+    --action pattern --pattern "^(.*)$" --repl "prefix - \\1"
+```
+
 ## Powershell
 
 ### Get-OEM-Key.ps1 - retrieve original OEM key
