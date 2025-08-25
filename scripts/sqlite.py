@@ -177,7 +177,7 @@ def insert_items(
 
     try:
         column_names = (
-            get_column_names(conn.cursor, table_name)
+            get_column_names(conn.cursor(), table_name)
             if column_names is None
             else column_names
         )
@@ -214,11 +214,8 @@ def update_items(
 
     try:
 
-        if not column_names:
-            column_names = objects.keys()
-
         column_names = (
-            get_column_names(conn.cursor, table_name)
+            get_column_names(conn.cursor(), table_name)
             if column_names is None
             else column_names
         )
@@ -572,7 +569,7 @@ if __name__ == "__main__":
         choices=["select", "delete", "insert", "delete_all"],
         default="select",
     )
-    parser.add_argument("-c", "--column_names", nargs="?", default=[])
+    parser.add_argument("-c", "--column_names", nargs="?", default=None)
     parser.add_argument("-f", "--filter_condition", type=str, default=None)
     parser.add_argument("-o", "--object", default=None, type=parse_kv)
     parser.add_argument(
@@ -592,7 +589,7 @@ if __name__ == "__main__":
     action_map = {
         "select": lambda: select_items(conn, args.table_name, args.filter_condition),
         "insert": lambda: insert_items(
-            conn, args.table_name, args.object, args.column_names
+            conn, args.table_name, [args.object], args.column_names
         ),
         "delete": lambda: delete_items(conn, args.table_name, args.filter_condition),
         "delete_all": lambda: delete_items(conn, args.table_name, None),
