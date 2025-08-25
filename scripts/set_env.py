@@ -42,11 +42,13 @@ def get_appended_value(key: str, value: str) -> str:
 
     separator = ";" if os.name == "nt" else ":"
 
-    if existing_value:
-        if value not in existing_value.split(separator):
-            return f"{existing_value.rstrip(separator)}{separator}{value}"
-        return existing_value
-    return value
+    # Split existing values, ignore empty entries
+    parts = [v for v in existing_value.split(separator) if v]
+
+    if value not in parts:
+        parts.append(value)
+
+    return separator.join(parts)
 
 
 def get_value(key: str, value: str, action: str):
