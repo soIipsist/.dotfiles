@@ -10,6 +10,10 @@ export VSCODE_PROJECT_DIRECTORY="$GIT_HOME"
 export SQLITE_DB="downloads.db"
 export SQLITE_TABLE="downloads"
 
+# set_env variables
+export ENV_SKIP_CONFIRM=0
+export ENV_DEFAULT_ACTION="set"
+
 # organize files variables
 export BACKUP_DIRECTORY="/tmp/backup"
 export DRY_RUN=0

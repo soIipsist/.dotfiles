@@ -39,7 +39,6 @@ def get_appended_value(key: str, value: str) -> str:
         raise ValueError("Value to append cannot be None or empty.")
 
     existing_value = os.environ.get(key)
-
     separator = ";" if os.name == "nt" else ":"
 
     # Split existing values, ignore empty entries
@@ -147,7 +146,7 @@ def set_environment_variables(
 
         if not skip_confirmation:
             prompt = input(
-                f"Performing {action} on {var} ({shell_path}). Are you sure? (Y/y)"
+                f"Performing {action} on {var} ({shell_path}). Are you sure? [Y/n]"
             )
             if prompt.lower() == "y":
                 set_environment_variable(key, value, shell_path)
@@ -168,13 +167,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "-a",
         "--action",
-        default="set",
+        default=os.environ.get("ENV_DEFAULT_ACTION", "set"),
         choices=["append", "unset", "set"],
     )
     parser.add_argument(
         "-y",
         "--yes",
-        action="store_true",
+        type=str_to_bool,
+        default=os.environ.get("ENV_SKIP_CONFIRM", False),
         help="Skip confirmation prompts and assume 'yes'",
     )
     args = vars(parser.parse_args())
