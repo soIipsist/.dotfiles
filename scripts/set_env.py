@@ -66,18 +66,39 @@ def set_environment_variable(key: str, value: str, shell_path: str):
             if os.name == "nt":
                 subprocess.run(["setx", key, value], check=True)
             else:
-                # Modify shell configuration files for macOS or Linux
+                lines = []
+                new_line = f'export {key}="{value}"\n'
+                replaced = False
 
-                with open(shell_path, "a") as f:
-                    f.write(f'\nexport {key}="{value}"')
+                with open(shell_path, "r") as f:
+                    lines = f.readlines()
+
+                for i, line in enumerate(lines):
+                    stripped = line.strip()
+                    # match lines like 'export KEY=' or 'KEY='
+                    if stripped.startswith(f"export {key}=") or stripped.startswith(
+                        f"{key}="
+                    ):
+                        lines[i] = new_line
+                        replaced = True
+                        break
+
+                if not replaced:
+                    # append at end if not found
+                    if lines and not lines[-1].endswith("\n"):
+                        lines[-1] += "\n"
+                    lines.append(new_line)
+
+                with open(shell_path, "w") as f:
+                    f.writelines(lines)
 
             os.environ[key] = f"{value}"
             print(f"Setting environment variable {key}: {value}")
-            print(f"Added '{value}' as an environment variable.")
 
         except Exception as e:
             print(f"An error occurred while setting the environment variable: {e}")
-    else:  # if value is None, it means unset the variable
+    else:
+        # if value is None, it means unset the variable
 
         try:
             if os.name == "nt":
@@ -88,8 +109,11 @@ def set_environment_variable(key: str, value: str, shell_path: str):
 
                 with open(shell_path, "w") as f:
                     for line in lines:
-                        if line.strip().startswith(f"export {key}="):
-                            f.write("\n")  # replace with blank line
+                        stripped = line.strip()
+                        if stripped.startswith(f"export {key}=") or stripped.startswith(
+                            f"{key}="
+                        ):
+                            f.write("")  # replace with empty line
                         else:
                             f.write(line)
 
