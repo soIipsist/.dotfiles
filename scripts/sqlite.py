@@ -548,6 +548,15 @@ def get_filter_condition(filter_condition: str, default_params: list = None):
     )
 
 
+def parse_kv(arg: str) -> dict:
+    try:
+        return dict(pair.split("=", 1) for pair in arg.split(","))
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+            "Object must be in key=value,key2=value2 format"
+        )
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -560,10 +569,12 @@ if __name__ == "__main__":
         "-a",
         "--action",
         type=str,
-        choices=["select", "delete", "delete_all"],
+        choices=["select", "delete", "insert", "delete_all"],
         default="select",
     )
+    parser.add_argument("-c", "--column_names", nargs="?", default=[])
     parser.add_argument("-f", "--filter_condition", type=str, default=None)
+    parser.add_argument("-o", "--object", default=None, type=parse_kv)
     parser.add_argument(
         "-t",
         "--table_name",
@@ -573,10 +584,16 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    if not os.path.exists(args.database_path):
+        raise FileNotFoundError("Database path does not exist.")
+
     conn = create_connection(args.database_path)
 
     action_map = {
         "select": lambda: select_items(conn, args.table_name, args.filter_condition),
+        "insert": lambda: insert_items(
+            conn, args.table_name, args.object, args.column_names
+        ),
         "delete": lambda: delete_items(conn, args.table_name, args.filter_condition),
         "delete_all": lambda: delete_items(conn, args.table_name, None),
     }

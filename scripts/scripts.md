@@ -44,7 +44,13 @@ source ~/.bashrc
 Download a single YouTube video using `yt-dlp`:
 
 ```bash
-python downloader.py -t ytdlp_video "https://youtu.be/OlEqHXRrcpc"
+python downloader.py -t ytdlp_audio "https://youtu.be/OlEqHXRrcpc" # downloads the video in mp3 format
+```
+
+Download an image using `wget`:
+
+```bash
+python downloader.py -t wget "some_image_url" -f "filename.jpg" -o ~/Desktop
 ```
 
 ### ytdlp.py - download youtube videos
@@ -72,6 +78,15 @@ options:
   -f FILE_PATH, --file_path FILE_PATH              File path in git repository.
   -b BFG_DIRECTORY, --bfg_directory BFG_DIRECTORY  bfg.jar path. If not specified, base directory will be used by default.
   -v BFG_VERSION, --bfg_version BFG_VERSION        Downloads the specified version of bfg if the relevant bfg.jar file is not already present.
+```
+
+### sqlite.py - perform sqlite operations
+
+A lightweight Python script to perform basic SQLite operations (select, insert, delete) with convenience functions for sanitization, validation, and mapping results to objects.  
+It can be used both as a standalone CLI tool or imported as a utility module.
+
+```bash
+python sqlite.py --database_path mydb.sqlite --table_name downloads --action select
 ```
 
 ## Powershell
