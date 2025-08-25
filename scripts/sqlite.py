@@ -584,8 +584,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if not os.path.exists(args.database_path):
-        raise FileNotFoundError("Database path does not exist.")
+    # if not os.path.exists(args.database_path):
+    #     raise FileNotFoundError("Database path does not exist.")
 
     conn = create_connection(args.database_path)
 
