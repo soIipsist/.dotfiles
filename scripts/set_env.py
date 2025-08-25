@@ -9,20 +9,25 @@ def str_to_bool(string: str):
     return string in ["1", "true", True]
 
 
-def get_default_shell_path(path: str):
-    if not os.path.exists(path):
-        home_directory = os.path.expanduser("~")
+def get_default_shell_path(path: str) -> str:
+    shell_map = {
+        "/bin/bash": "bash",
+        "/bin/zsh": "zsh",
+        "/usr/bin/fish": "fish",
+    }
 
-        if path == "bash":
-            return os.path.join(home_directory, ".bashrc")
-        elif path == "zsh":
-            return os.path.join(home_directory, ".zshrc")
-        elif path == "fish":
-            return os.path.join(home_directory, ".config", "fish", "config.fish")
-        else:
-            raise EnvironmentError(f"Unsupported shell: {shell_path}")
+    rc_files = {
+        "bash": ".bashrc",
+        "zsh": ".zshrc",
+        "fish": os.path.join(".config", "fish", "config.fish"),
+    }
 
-    return path
+    shell_path = shell_map.get(path, path)
+
+    if not os.path.exists(shell_path) and shell_path in rc_files:
+        return os.path.join(os.path.expanduser("~"), rc_files[shell_path])
+
+    return shell_path
 
 
 def get_appended_value(key: str, value: str) -> str:
@@ -55,7 +60,7 @@ def get_value(key: str, value: str, action: str):
 
 def set_environment_variable(key: str, value: str, shell_path: str):
 
-    if value:  # set
+    if value:
 
         try:
             if os.name == "nt":
@@ -64,7 +69,7 @@ def set_environment_variable(key: str, value: str, shell_path: str):
                 # Modify shell configuration files for macOS or Linux
 
                 with open(shell_path, "a") as f:
-                    f.write(f'\nexport {key}="{value}"\n')
+                    f.write(f'\nexport {key}="{value}"')
 
             os.environ[key] = f"{value}"
             print(f"Setting environment variable {key}: {value}")
@@ -72,7 +77,8 @@ def set_environment_variable(key: str, value: str, shell_path: str):
 
         except Exception as e:
             print(f"An error occurred while setting the environment variable: {e}")
-    else:
+    else:  # if value is None, it means unset the variable
+
         try:
             if os.name == "nt":
                 subprocess.run(["setx", key, ""], check=True)
@@ -89,14 +95,14 @@ def set_environment_variable(key: str, value: str, shell_path: str):
 
             # Remove from current process
             os.environ.pop(key, None)
-            print(f"[-] Unset environment variable {key}")
+            print(f"[-] Unset environment variable {key} in {shell_path}")
 
         except Exception as e:
             print(f"[!] Error unsetting environment variable: {e}")
 
 
 def set_environment_variables(
-    environment_variables: list, shell_path: str, action: str
+    environment_variables: list, shell_path: str, action: str, skip_confirmation=None
 ):
     """Sets environment variables based on default shell path."""
 
@@ -105,25 +111,53 @@ def set_environment_variables(
     for var in environment_variables:
         var: str
 
-        key, value = var.split("=", 1)
+        parts = var.split("=", 1)
+        key, value = (parts[0], parts[1]) if len(parts) > 1 else (parts[0], None)
         value = get_value(key, value, action)
-        set_environment_variable(key, value, shell_path)
+
+        initial_action = action
+        if value is None:
+            action = "unset"
+
+        if not skip_confirmation:
+            prompt = input(
+                f"Performing {action} on {var} ({shell_path}). Are you sure? (Y/y)"
+            )
+            if prompt.lower() == "y":
+                set_environment_variable(key, value, shell_path)
+            else:
+                print(f"Cancelled {action} for {var}.")
+        else:
+            set_environment_variable(key, value, shell_path)
+
+        action = initial_action
 
 
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("environment_variables", nargs="+")
-    parser.add_argument("-s", "--shell_path", default="bash", type=str)
+    parser.add_argument(
+        "-s", "--shell_path", default=os.environ.get("SHELL", "bash"), type=str
+    )
     parser.add_argument(
         "-a",
         "--action",
         default="set",
         choices=["append", "unset", "set"],
     )
+    parser.add_argument(
+        "-y",
+        "--yes",
+        action="store_true",
+        help="Skip confirmation prompts and assume 'yes'",
+    )
     args = vars(parser.parse_args())
 
     environment_variables = args.get("environment_variables")
     shell_path = args.get("shell_path")
     action = args.get("action")
+    skip_confirmation = args.get("yes")
 
-    set_environment_variables(environment_variables, shell_path, action)
+    set_environment_variables(
+        environment_variables, shell_path, action, skip_confirmation
+    )
