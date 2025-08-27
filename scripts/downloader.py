@@ -535,6 +535,13 @@ default_downloaders = [
     Downloader(
         "urllib", None, "url_lib", "download", "url, output_directory, output_filename"
     ),
+    Downloader(
+        "ytdlp_channel",
+        None,
+        "ytdlp_channel",
+        "download",
+        "url",
+    ),
 ]
 
 if not db_exists:

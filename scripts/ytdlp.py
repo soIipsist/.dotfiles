@@ -249,12 +249,7 @@ def get_entry_filename(entry: dict):
     return filename
 
 
-def get_channel_info(channel_id_or_url: str):
-    url = (
-        f"https://www.youtube.com/{channel_id_or_url}/videos"
-        if not channel_id_or_url.startswith("https")
-        else channel_id_or_url
-    )
+def extract_ytdlp_info(url: str):
     options = {
         "extract_flat": True,
         "skip_download": True,
@@ -265,6 +260,16 @@ def get_channel_info(channel_id_or_url: str):
     except Exception as e:
         print(e)
 
+    return results
+
+
+def get_channel_info(channel_id_or_url: str):
+    url = (
+        f"https://www.youtube.com/{channel_id_or_url}/videos"
+        if not channel_id_or_url.startswith("https")
+        else channel_id_or_url
+    )
+    results = extract_ytdlp_info(url)
     return results
 
 

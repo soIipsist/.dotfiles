@@ -34,7 +34,7 @@ function sesh-sessions() {
 }
 
 # PATH variable
-export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 export PATH="/usr/local/ffmpeg/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
