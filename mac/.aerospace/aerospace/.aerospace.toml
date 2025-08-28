@@ -132,7 +132,8 @@ alt-b = ["exec-and-forget open -a 'Google Chrome'"]# Browser
 alt-f = ["exec-and-forget open -a 'Finder'"] # Finder
 alt-d = ["exec-and-forget open -a 'Discord'"] # DMs
 alt-e = ["exec-and-forget open -a 'Epic Games Launcher'"]
-
+alt-u = ["exec-and-forget sh -c \"if ! pgrep -x \\\"UnrealEditor\\\" > /dev/null; then open -a 'Epic Games Launcher'; else osascript -e \\\"tell application \\\\\\\"UnrealEditor\\\\\\\" to activate\\\"; fi\""
+]
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-shift-0 = 'fullscreen'
 alt-shift-1 = 'move-node-to-workspace 1'
@@ -192,6 +193,10 @@ run = ['move-node-to-workspace 5']
 
 [[on-window-detected]]
 if.app-id = 'com.epicgames.EpicGamesLauncher'
+run = ['move-node-to-workspace 4']
+
+[[on-window-detected]]
+if.app-id = 'com.epicgames.UnrealEditor'
 run = ['move-node-to-workspace 4']
 
 [[on-window-detected]]

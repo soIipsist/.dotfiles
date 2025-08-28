@@ -1,7 +1,9 @@
+import ast
 from collections.abc import Iterable
 from importlib import import_module
 import os
 from pprint import PrettyPrinter
+import re
 import shlex
 import sqlite3
 from datetime import datetime
@@ -68,6 +70,7 @@ class Download(SQLiteItem):
     _output_filename: str = None
     _output_path: str = None
     _source_url: str = None
+    _extra_args: dict = None
 
     @property
     def downloader_path(self):
@@ -81,6 +84,7 @@ class Download(SQLiteItem):
         start_date: str = None,
         output_directory: Optional[str] = None,
         output_filename: Optional[str] = None,
+        extra_args: Optional[str] = None,
     ):
         column_names = [
             "url",
@@ -91,6 +95,7 @@ class Download(SQLiteItem):
             "time_elapsed",
             "output_path",
             "source_url",
+            "extra_args",
         ]
         super().__init__(download_values, column_names, db_path=database_path)
         self.url = url
@@ -99,10 +104,38 @@ class Download(SQLiteItem):
         self.output_directory = output_directory
         self.output_filename = output_filename
         self.start_date = start_date
+        self.extra_args = extra_args
 
         self.table_name = "downloads"
         self.conjunction_type = "OR"
         self.filter_condition = f"url = {self.url}"
+
+    @property
+    def extra_args(self):
+        return self._extra_args
+
+    @extra_args.setter
+    def extra_args(self, extra_args: str):
+        self._extra_args = self.get_extra_args(extra_args)
+
+    def get_extra_args(self, extra_args: str):
+        args = {}
+
+        if isinstance(extra_args, dict):
+            return extra_args
+
+        parts = re.split(r",(?![^\[]*\])", extra_args)
+
+        for part in parts:
+            if "=" in part:
+                key, value = part.split("=", 1)
+                key, value = key.strip(), value.strip()
+                try:
+                    parsed_value = ast.literal_eval(value)
+                except Exception:
+                    parsed_value = value
+                args[key] = parsed_value
+        return args
 
     @property
     def source_url(self):
@@ -663,6 +696,7 @@ if __name__ == "__main__":
     )
 
     download_cmd.add_argument("-f", "--output_filename", default=None, type=str)
+    download_cmd.add_argument("-e", "--extra_args", default=None, type=str)
 
     download_cmd.set_defaults(call=download_all_cmd)
 

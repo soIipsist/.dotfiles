@@ -10,6 +10,7 @@ download_values = [
     "time_elapsed text",
     "output_path text",
     "source_url text",
+    "extra_args text",
     "PRIMARY KEY (url, output_path)",
 ]
 

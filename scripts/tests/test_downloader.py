@@ -70,6 +70,18 @@ class TestDownloader(TestBase):
         if output_directory and os.path.exists(output_directory):
             shutil.rmtree(output_directory)
 
+    def test_get_extra_args(self):
+        keys = ["output_directory", "hello"]
+        values = ["hi", "[1,2,3]"]
+        extra_args = ""
+        for k, v in zip(keys, values):
+            extra_args += f"{k}={v},"
+
+        download = Download(url=wget_urls, extra_args=extra_args)
+        extra_args = download.get_extra_args(extra_args)
+        self.assertTrue(isinstance(extra_args, dict))
+        print(extra_args)
+
     def test_parse_download_string(self):
         downloads_path = "downloads.txt"
         self.assertTrue(os.path.exists(downloads_path), "Missing downloads.txt file")
@@ -204,6 +216,7 @@ if __name__ == "__main__":
         # TestDownloader.test_get_downloader_func,
         # TestDownloader.test_get_downloader_args,
         # TestDownloader.test_start_downloads,
-        TestDownloader.test_from_dict
+        # TestDownloader.test_from_dict
+        TestDownloader.test_get_extra_args
     ]
     run_test_methods(test_methods)
