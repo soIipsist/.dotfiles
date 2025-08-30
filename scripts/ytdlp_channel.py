@@ -21,5 +21,4 @@ if __name__ == "__main__":
     parser.add_argument("channel_id", type=str)
 
     args = parser.parse_args()
-
     download(args.channel_id)
