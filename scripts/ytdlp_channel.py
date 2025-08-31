@@ -6,7 +6,6 @@ pp = PrettyPrinter(indent=2)
 
 
 def download(channel_id: str):
-
     results = get_channel_info(channel_id)
     video_urls = [
         f"https://www.youtube.com/watch?v={entry['id']}" for entry in results["entries"]
@@ -19,6 +18,7 @@ def download(channel_id: str):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("channel_id", type=str)
+    parser.add_argument("-d", "--downloader", choices=[], default="ytdlp")
 
     args = parser.parse_args()
     download(args.channel_id)
