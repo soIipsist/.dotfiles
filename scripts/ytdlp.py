@@ -146,6 +146,8 @@ def get_options(
     postprocessor_args: list = None,
     output_directory=None,
     output_filename=None,
+    sleep_interval: str = None,
+    max_sleep_interval: str = None,
 ):
 
     ytdlp_format = get_ytdlp_format(ytdlp_format)
@@ -169,6 +171,12 @@ def get_options(
         options, ytdlp_format, prefix, output_directory, output_filename
     )
     options["outtmpl"] = outtmpl
+
+    if sleep_interval:
+        options["sleep_interval"] = sleep_interval
+
+    if max_sleep_interval:
+        options["max_sleep_interval"] = max_sleep_interval
 
     if not update_options:
         return options
@@ -285,6 +293,8 @@ def download(
     removed_args: list = None,
     output_directory=None,
     output_filename=None,
+    sleep_interval: str = None,
+    max_sleep_interval: str = None,
 ):
     print("Downloading with yt-dlp...")
     options = get_options(
@@ -297,6 +307,8 @@ def download(
         postprocessor_args,
         output_directory,
         output_filename,
+        sleep_interval,
+        max_sleep_interval,
     )
 
     urls = get_urls(urls, removed_args)

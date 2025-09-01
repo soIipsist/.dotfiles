@@ -1,10 +1,13 @@
 from ytdlp import get_channel_info, download
 from argparse import ArgumentParser
 from pprint import PrettyPrinter
-
 from downloader import Downloader, Download
 
 pp = PrettyPrinter(indent=2)
+
+downloader_names = [
+    downloader.downloader_type for downloader in Downloader().select_all()
+]
 
 
 def download(
@@ -37,13 +40,16 @@ def download(
         )
         for video_url in video_urls
     ]
+
     downloader.start_downloads(downloads)
 
 
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("channel_id", type=str)
-    parser.add_argument("-d", "--downloader", default="ytdlp")
+    parser.add_argument(
+        "-d", "--downloader", default="ytdlp_video", choices=downloader_names
+    )
     parser.add_argument("-i", "--sleep_interval", default=None)
     parser.add_argument("-m", "--max_sleep_interval", default=None)
 
