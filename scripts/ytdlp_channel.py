@@ -2,10 +2,14 @@ from ytdlp import get_channel_info
 from argparse import ArgumentParser
 from pprint import PrettyPrinter
 
+from downloader import Downloader
+
+downloaders = Downloader().select_all()
 pp = PrettyPrinter(indent=2)
+pp.pprint(downloaders)
 
 
-def download(channel_id: str):
+def download(channel_id: str, downloader: str = "ytdlp"):
     results = get_channel_info(channel_id)
     video_urls = [
         f"https://www.youtube.com/watch?v={entry['id']}" for entry in results["entries"]

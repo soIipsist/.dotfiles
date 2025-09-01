@@ -118,10 +118,10 @@ class Download(SQLiteItem):
     def extra_args(self, extra_args: str):
         self._extra_args = self.get_extra_args(extra_args)
 
-    def get_extra_args(self, extra_args: str):
+    def get_extra_args(self, extra_args: str = None):
         args = {}
 
-        if isinstance(extra_args, dict):
+        if isinstance(extra_args, dict) or not extra_args:
             return extra_args
 
         parts = re.split(r",(?![^\[]*\])", extra_args)
@@ -432,7 +432,6 @@ class Downloader(SQLiteItem):
             return args_dict
 
         keys = [key.strip() for key in self.downloader_args.split(",")]
-
         func_keys = {
             k.strip(): v.strip()
             for k, v in (key.split("=", 1) for key in keys if "=" in key)
@@ -456,6 +455,11 @@ class Downloader(SQLiteItem):
                     elif args_val and args_val.lower() == "true":
                         args_val = True
                     args_dict[param] = args_val
+
+            extra_args = download.extra_args
+
+            if param in extra_args:
+                args_dict[param] = extra_args.get(param)
 
         return args_dict
 

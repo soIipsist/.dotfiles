@@ -10,6 +10,7 @@ parent_directory = current_file.parents[2]
 os.sys.path.insert(0, str(parent_directory))
 
 from ytdlp import download as ytdlp_download
+from ytdlp_channel import download as ytdlp_download_channel
 from downloader import (
     Downloader,
     Download,
@@ -167,6 +168,24 @@ class TestDownloader(TestBase):
                 # positional arg
                 value = getattr(download, arg, arg)
 
+    def test_get_downloader_with_extra_args(self):
+        downloader_args = (
+            "url, output_directory=red, ytdlp_format=ytdl, update_options=url"
+        )
+        downloader = Downloader(
+            downloader_type, downloader_path, module, func, downloader_args
+        )
+        download = Download(
+            url=playlist_urls[0],
+            downloader=downloader,
+            extra_args="update_options=True, some_arg='hell', some_arg2='hh'",
+        )
+        output_downloader_args = downloader.get_downloader_args(
+            download, ytdlp_download_channel
+        )
+
+        print(output_downloader_args)
+
     def test_start_downloads(self):
         downloads = [
             Download(
@@ -213,8 +232,9 @@ class TestDownloader(TestBase):
 if __name__ == "__main__":
     test_methods = [
         # TestDownloader.test_parse_download_string,
-        TestDownloader.test_get_downloader_func,
+        # TestDownloader.test_get_downloader_func,
         # TestDownloader.test_get_downloader_args,
+        TestDownloader.test_get_downloader_with_extra_args,
         # TestDownloader.test_start_downloads,
         # TestDownloader.test_from_dict
         # TestDownloader.test_get_extra_args
