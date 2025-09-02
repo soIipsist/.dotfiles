@@ -1,10 +1,13 @@
+#!/usr/bin/env python
+# PYTHON_ARGCOMPLETE_OK
+
+import argcomplete
 import ast
 from collections.abc import Iterable
 from importlib import import_module
 import os
 from pprint import PrettyPrinter
 import re
-import shlex
 import sqlite3
 from datetime import datetime
 from enum import Enum
@@ -15,7 +18,6 @@ from logger import setup_logger
 from sqlite import is_valid_path
 from sqlite_item import SQLiteItem, create_connection
 from sqlite_conn import create_db, download_values, downloader_values
-import logging
 import argparse
 import inspect
 
@@ -588,6 +590,9 @@ if not db_exists:
     Downloader.insert_all(default_downloaders)
     print("Successfully generated default downloaders.")
 
+downloader_names = [
+    downloader.downloader_type for downloader in Downloader().select_all()
+]
 # argparse commands
 
 
@@ -723,7 +728,11 @@ if __name__ == "__main__":
         nargs="?",
     )
     downloader_cmd.add_argument(
-        "-t", "--downloader_type", type=str, default="video_mp4_best"
+        "-t",
+        "--downloader_type",
+        type=str,
+        default="video_mp4_best",
+        choices=downloader_names,
     )
     downloader_cmd.add_argument(
         "-d", "--downloader_path", type=is_valid_path, default=None
@@ -736,7 +745,7 @@ if __name__ == "__main__":
     )
 
     downloader_cmd.set_defaults(call=downloaders_cmd)
-
+    argcomplete.autocomplete(parser)
     args = vars(parser.parse_args())
     call = args.get("call")
     args.pop("command")

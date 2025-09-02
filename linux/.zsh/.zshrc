@@ -61,6 +61,9 @@ export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins/"
 autoload -U compinit
 compinit
 
+autoload -U bashcompinit
+bashcompinit
+
 # initialize zoxide
 if which zoxide &>/dev/null; then
     source <(zoxide init zsh)

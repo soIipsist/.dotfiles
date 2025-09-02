@@ -1,14 +1,10 @@
 import os
-from ytdlp import get_channel_info, download
+from ytdlp import get_channel_info, download, downloader_names
 from argparse import ArgumentParser
 from pprint import PrettyPrinter
 from downloader import Downloader, Download
 
 pp = PrettyPrinter(indent=2)
-
-downloader_names = [
-    downloader.downloader_type for downloader in Downloader().select_all()
-]
 
 
 def download(
