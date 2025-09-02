@@ -40,6 +40,7 @@ export PATH="/usr/local/ffmpeg/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/lib/python3.13/site-packages:$PATH"
+export PATH="/home/linuxbrew/.linuxbrew/lib/python3.13/site-packages"
 
 export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
 
