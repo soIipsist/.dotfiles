@@ -39,7 +39,7 @@ export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 export PATH="/usr/local/ffmpeg/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.local/lib/python3.13/site-packages"
+export PATH="$HOME/.local/lib/python3.13/site-packages:$PATH"
 
 export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
 
