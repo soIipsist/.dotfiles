@@ -458,7 +458,8 @@ class Downloader(SQLiteItem):
 
             extra_args = download.extra_args
 
-            if param in extra_args:
+            if extra_args and param in extra_args:
+                logger.info(f"Extra arguments: \n{extra_args}")
                 args_dict[param] = extra_args.get(param)
 
         return args_dict
@@ -481,6 +482,8 @@ class Downloader(SQLiteItem):
 
                 func = downloader.get_function()
                 downloader_args = downloader.get_downloader_args(download, func)
+                logger.info(f"Downloader args: \n{downloader_args}")
+
                 result_iter = func(**downloader_args)
 
                 if isinstance(result_iter, (str, dict)):
@@ -632,6 +635,7 @@ def download_all_cmd(
     downloader_type: str = None,
     output_directory: str = None,
     output_filename: str = None,
+    extra_args: str = None,
     **kwargs,
 ):
 
@@ -639,7 +643,11 @@ def download_all_cmd(
 
     if not url:
         download_status = kwargs.get("download_status")
-        download = Download(downloader=downloader_type, download_status=download_status)
+        download = Download(
+            downloader=downloader_type,
+            download_status=download_status,
+            extra_args=extra_args,
+        )
         downloads = download.filter_by()
 
         logger.info(f"Fetching downloads from file {database_path}.")
@@ -654,6 +662,7 @@ def download_all_cmd(
             url, downloader_type, output_directory, output_filename
         )
         if download is not None:
+            download.extra_args = extra_args
             downloads.append(download)
 
     Downloader.start_downloads(downloads)
