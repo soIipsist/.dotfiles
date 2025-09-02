@@ -154,7 +154,7 @@ export PATH=/opt/homebrew/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/local/bin:/
 export PATH="/usr/local/ffmpeg/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/lib/python3.13/site-packages:$PATH"
-export PATH="/home/linuxbrew/.linuxbrew/lib/python3.13/site-packages"
+export PATH="/home/linuxbrew/.linuxbrew/lib/python3.13/site-packages:$PATH"
 
 export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
 
