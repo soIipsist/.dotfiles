@@ -1,5 +1,4 @@
 adb-wrapper @ git+https://github.com/soIipsist/adb-wrapper@eddb725363bd939c470dc0bc10421626e2f9ecb0
-argcomplete==3.6.2
 certifi==2025.1.31
 cffi==1.17.1
 charset-normalizer==3.4.1

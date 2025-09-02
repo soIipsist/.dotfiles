@@ -1,7 +1,6 @@
 {
   "dotfiles": [".bash"],
   "apt_packages": [],
-  "pip_packages": ["argcomplete"],
   "scripts_directory": "$HOME/scripts",
   "venv_path": "$HOME/venv",
   "install_homebrew": true,

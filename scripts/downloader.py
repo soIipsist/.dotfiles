@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# PYTHON_ARGCOMPLETE_OK
-
-import argcomplete
 import ast
 from collections.abc import Iterable
 from importlib import import_module
@@ -693,6 +689,7 @@ if __name__ == "__main__":
         "-t",
         "--downloader_type",
         default=os.environ.get("DOWNLOADER_TYPE", "ytdlp_video"),
+        choices=downloader_names,
         type=str,
     )
 
@@ -745,7 +742,6 @@ if __name__ == "__main__":
     )
 
     downloader_cmd.set_defaults(call=downloaders_cmd)
-    argcomplete.autocomplete(parser)
     args = vars(parser.parse_args())
     call = args.get("call")
     args.pop("command")

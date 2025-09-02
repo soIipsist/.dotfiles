@@ -38,5 +38,3 @@ download_all() {
     done <"$downloads_path"
 
 }
-
-eval "$(register-python-argcomplete $HOME/scripts/downloader.py)"
