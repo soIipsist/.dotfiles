@@ -38,6 +38,7 @@ export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 export PATH="/usr/local/ffmpeg/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
 
