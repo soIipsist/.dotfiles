@@ -6,8 +6,6 @@ export DOWNLOADER_TYPE="ytdlp_video"
 export DOWNLOADER_KEYS="downloader_type,downloader_path"
 export DOWNLOAD_KEYS="url,downloader,download_status"
 
-eval "$(register-python-argcomplete $HOME/scripts/downloader.py)"
-
 download() {
     run_venv_script "downloader.py" download "$@"
 }
@@ -40,3 +38,5 @@ download_all() {
     done <"$downloads_path"
 
 }
+
+eval "$(register-python-argcomplete $HOME/scripts/downloader.py)"

@@ -100,6 +100,7 @@
   "[Tokyo Night Gogh]": {}
 
 },
-  "workbench.colorTheme": "$VSCODE_COLOR_THEME"
+  "workbench.colorTheme": "$VSCODE_COLOR_THEME",
+  "terminal.integrated.fontSize": $VSCODE_TERMINAL_FONT_SIZE
 
 }
