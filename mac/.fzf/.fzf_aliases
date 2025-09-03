@@ -91,11 +91,13 @@ fzfg() {
     local default_editor="${DEFAULT_EDITOR:-code}"
 
     cd "$cwd" || return
+    local repo_root
+    repo_root=$(git rev-parse --show-toplevel) || return
 
     selection=$(git status --porcelain | fzf --ansi --preview '
         file=$(echo {} | cut -c4- | sed "s/.* -> //" | sed "s/^\"//; s/\"$//")
-        if [ -n "$file" ] && [ -f "$file" ]; then
-            git diff --color=always -- "$file" || bat --style=numbers --color=always "$file"
+        if [ -n "$file" ] && [ -f "'"$repo_root"'/$file" ]; then
+            git -C "'"$repo_root"'" diff --color=always -- "$file" || bat --style=numbers --color=always "'"$repo_root"'/$file"
         fi
     ')
 
@@ -103,7 +105,9 @@ fzfg() {
 
     file=$(echo "$selection" | cut -c4- | sed 's/.* -> //' | sed 's/^"//; s/"$//')
 
-    first_line=$(git diff --unified=0 -- "$file" | grep -m1 '^@@' | sed -E 's/^@@ -[0-9,]+ \+([0-9]+).*/\1/')
+    file="$repo_root/$file"
+
+    first_line=$(git -C "$repo_root" diff --unified=0 -- "$file" | grep -m1 '^@@' | sed -E 's/^@@ -[0-9,]+ \+([0-9]+).*/\1/')
     [ -z "$first_line" ] && first_line=1
 
     case "$default_editor" in
