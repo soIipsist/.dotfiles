@@ -3,7 +3,8 @@
 config_file="${1:-}"
 service_name="${config_file##*/}"
 service_name="${service_name%.conf}"
-log_file="/tmp/$service_name.txt"
+uid=$(id -u)
+log_file="/tmp/$uid/$service_name.txt"
 
 if [ -z "$config_file" ] || [ ! -f "$config_file" ]; then
     echo "Usage: $0 /path/to/config_file.conf"
@@ -17,6 +18,7 @@ env >>"$log_file"
 
 filename="$(basename "$config_file")"
 dest_conf="/etc/default/$filename"
+export uid
 
 if envsubst <"$config_file" >"$dest_conf"; then
     echo "✔ $filename generated at $dest_conf" >>"$log_file"
