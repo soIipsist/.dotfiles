@@ -4,7 +4,8 @@ config_file="${1:-}"
 service_name="${config_file##*/}"
 service_name="${service_name%.conf}"
 uid=$(id -u)
-log_file="/tmp/$uid/$service_name.txt"
+log_file="/tmp/$uid/$service_name/$service_name.txt"
+mkdir -p "$(dirname "$log_file")"
 
 if [ -z "$config_file" ] || [ ! -f "$config_file" ]; then
     echo "Usage: $0 /path/to/config_file.conf"
