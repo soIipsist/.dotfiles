@@ -1,2 +1,10 @@
 export OLLAMA_MODEL="llama2"
 alias llm="ollama run $OLLAMA_MODEL"
+
+llm_docker() {
+    docker_compose="$GIT_DOTFILES_DIRECTORY/openwebui.yml"
+
+    if [ -f "$docker_compose" ]; then
+        docker compose -f "$docker_compose" up -d
+    fi
+}
