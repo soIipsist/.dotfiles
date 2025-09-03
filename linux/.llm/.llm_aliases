@@ -2,9 +2,38 @@ export OLLAMA_MODEL="llama2"
 alias llm="ollama run $OLLAMA_MODEL"
 
 llm_docker() {
-    docker_compose="$GIT_DOTFILES_DIRECTORY/openwebui.yml"
+    local compose_file="${1:-openwebui.yml}"
+    local action="${2:-up}"
 
-    if [ -f "$docker_compose" ]; then
-        docker compose -f "$docker_compose" up -d
+    if [ ! -f "$compose_file" ]; then
+        echo "Error: Compose file '$compose_file' not found. Navigate to the correct directory or provide a path."
+        return 1
     fi
+
+    # Ensure Docker is running
+    if ! systemctl is-active --quiet docker; then
+        echo "Starting Docker service..."
+        sudo systemctl start docker
+    fi
+
+    case "$action" in
+    up)
+        echo "Starting containers from '$compose_file'..."
+        docker compose -f "$compose_file" up -d
+        ;;
+    down)
+        echo "Stopping containers from '$compose_file'..."
+        docker compose -f "$compose_file" down
+        ;;
+    restart)
+        echo "Restarting containers from '$compose_file'..."
+        docker compose -f "$compose_file" down
+        docker compose -f "$compose_file" up -d
+        ;;
+    *)
+        echo "Unknown action: $action"
+        echo "Usage: llm_docker [compose-file.yml] [up|down|restart]"
+        return 1
+        ;;
+    esac
 }
