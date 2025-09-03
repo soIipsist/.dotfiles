@@ -58,3 +58,4 @@ _download_completions() {
 }
 
 complete -F _download_completions download
+complete -F _download_completions download_all
