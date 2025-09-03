@@ -591,8 +591,6 @@ def get_downloader_names():
     downloader_names = [
         downloader.downloader_type for downloader in Downloader().select_all()
     ]
-    downloader_names.append("")
-    downloader_names.append(None)
     return downloader_names
 
 
@@ -686,6 +684,10 @@ if __name__ == "__main__":
     ]:
         sys.argv.insert(1, "download")
 
+    choices = get_downloader_names()
+    choices.append("")
+    choices.append(None)
+
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -696,7 +698,7 @@ if __name__ == "__main__":
         "-t",
         "--downloader_type",
         default=os.environ.get("DOWNLOADER_TYPE", "ytdlp_video"),
-        choices=get_downloader_names(),
+        choices=choices,
         type=str,
     )
 
@@ -736,7 +738,7 @@ if __name__ == "__main__":
         "--downloader_type",
         type=str,
         default="video_mp4_best",
-        choices=get_downloader_names(),
+        choices=choices,
     )
     downloader_cmd.add_argument(
         "-d", "--downloader_path", type=is_valid_path, default=None

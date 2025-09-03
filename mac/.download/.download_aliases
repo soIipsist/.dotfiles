@@ -40,8 +40,15 @@ download_all() {
 }
 
 _download_completions() {
-    local options=$(python -c "from import code; code.interact(local=locals())")
 
+    if [ -z "$SCRIPTS_DIRECTORY" ]; then
+        if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
+            GIT_DOTFILES_DIRECTORY="$HOME"
+        fi
+        SCRIPTS_DIRECTORY="$GIT_DOTFILES_DIRECTORY/scripts"
+    fi
+
+    local options=$(python -c "import os; from importlib import import_module; os.chdir('$SCRIPTS_DIRECTORY'); module = import_module('downloader'); func = getattr(module, 'get_downloader_names'); downloader_names = func(); print(' '.join(downloader_names));")
     local cur="${COMP_WORDS[COMP_CWORD]}"
     local prev="${COMP_WORDS[COMP_CWORD - 1]}"
 
