@@ -19,16 +19,16 @@ llm_docker() {
     case "$action" in
     up)
         echo "Starting containers from '$compose_file'..."
-        docker compose -f "$compose_file" up -d
+        sudo docker compose -f "$compose_file" up -d
         ;;
     down)
         echo "Stopping containers from '$compose_file'..."
-        docker compose -f "$compose_file" down
+        sudo docker compose -f "$compose_file" down
         ;;
     restart)
         echo "Restarting containers from '$compose_file'..."
-        docker compose -f "$compose_file" down
-        docker compose -f "$compose_file" up -d
+        sudo docker compose -f "$compose_file" down
+        sudo docker compose -f "$compose_file" up -d
         ;;
     *)
         echo "Unknown action: $action"
