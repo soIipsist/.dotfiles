@@ -38,3 +38,16 @@ download_all() {
     done <"$downloads_path"
 
 }
+
+_download_completions() {
+    local options=$(python -c "from import code; code.interact(local=locals())")
+
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local prev="${COMP_WORDS[COMP_CWORD - 1]}"
+
+    if [[ "$prev" == "-t" ]]; then
+        COMPREPLY=($(compgen -W "${options[*]}" -- "$cur"))
+    fi
+}
+
+complete -F _download_completions download

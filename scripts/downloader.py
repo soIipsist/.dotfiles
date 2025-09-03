@@ -586,9 +586,16 @@ if not db_exists:
     Downloader.insert_all(default_downloaders)
     print("Successfully generated default downloaders.")
 
-downloader_names = [
-    downloader.downloader_type for downloader in Downloader().select_all()
-]
+
+def get_downloader_names():
+    downloader_names = [
+        downloader.downloader_type for downloader in Downloader().select_all()
+    ]
+    downloader_names.append("")
+    downloader_names.append(None)
+    return downloader_names
+
+
 # argparse commands
 
 
@@ -689,7 +696,7 @@ if __name__ == "__main__":
         "-t",
         "--downloader_type",
         default=os.environ.get("DOWNLOADER_TYPE", "ytdlp_video"),
-        choices=downloader_names,
+        choices=get_downloader_names(),
         type=str,
     )
 
@@ -729,7 +736,7 @@ if __name__ == "__main__":
         "--downloader_type",
         type=str,
         default="video_mp4_best",
-        choices=downloader_names,
+        choices=get_downloader_names(),
     )
     downloader_cmd.add_argument(
         "-d", "--downloader_path", type=is_valid_path, default=None
