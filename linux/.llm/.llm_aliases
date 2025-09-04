@@ -1,2 +1,2 @@
-export OLLAMA_MODEL="deepseek-r1:14b"
+export OLLAMA_MODEL="llama2"
 alias llm="ollama run $OLLAMA_MODEL"
