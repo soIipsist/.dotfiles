@@ -13,7 +13,7 @@ else
 fi
 
 if [ -z "$KIWIX_PATH" ]; then
-    KIWIX_PATH="/mnt/HOME/kiwix"
+    KIWIX_PATH="/mnt/HOME/wikipedia"
     echo "$(date '+%F %T') [INFO] Defaulting ZIM path to: $KIWIX_PATH" >>"$LOG_PATH"
 else
     echo "$(date '+%F %T') [INFO] Using configured ZIM path: $KIWIX_PATH" >>"$LOG_PATH"
