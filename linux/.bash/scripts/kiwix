@@ -9,7 +9,7 @@ if [ -z "$KIWIX_HOST" ]; then
     KIWIX_HOST=$(hostname -I | awk '{print $1}')
     echo "$(date '+%F %T') [INFO] Using detected LAN IP: $KIWIX_HOST" >>"$LOG_PATH"
 else
-    echo "$(date '+%F %T') [INFO] Using configured host: $KIWIX_HOST" >>"$LOG_PATH"
+    echo "$(date '+%F %T') [INFO] Using configured address: $KIWIX_HOST" >>"$LOG_PATH"
 fi
 
 if [ -z "$KIWIX_PATH" ]; then
@@ -26,6 +26,6 @@ else
     echo "$(date '+%F %T') [INFO] Using configured port: $KIWIX_PORT" >>"$LOG_PATH"
 fi
 
-echo "$(date '+%F %T') [INFO] Starting Kiwix: host=$KIWIX_HOST port=$KIWIX_PORT path=$KIWIX_PATH" >>"$LOG_PATH"
+echo "$(date '+%F %T') [INFO] Starting Kiwix: address=$KIWIX_HOST port=$KIWIX_PORT path=$KIWIX_PATH" >>"$LOG_PATH"
 
-exec /usr/bin/kiwix-serve --port="$KIWIX_PORT" --host="$KIWIX_HOST" "$KIWIX_PATH" >>"$LOG_PATH" 2>&1
+exec /usr/bin/kiwix-serve --port="$KIWIX_PORT" --address="$KIWIX_HOST" "$KIWIX_PATH" >>"$LOG_PATH" 2>&1
