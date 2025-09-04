@@ -3,7 +3,7 @@ Description=Kiwix server
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/bash -lc /usr/local/bin/download_watcher
+ExecStart=/usr/bin/bash -lc /usr/local/bin/kiwix
 Restart=always
 User=solipsist
 EnvironmentFile=/etc/default/kiwix.conf
