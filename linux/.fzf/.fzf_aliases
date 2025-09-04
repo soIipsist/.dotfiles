@@ -27,8 +27,8 @@ fzfe() {
       )+reload(find . -type f -o -type d)"
   )
 
-  if [[ -n $selection ]]; then
-    if [[ -f $selection ]]; then
+  if [ -n $selection ]; then
+    if [ -f $selection ]; then
       z "$(dirname "$selection")"
     else
       z "$selection"
