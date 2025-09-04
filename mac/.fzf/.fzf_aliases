@@ -4,10 +4,14 @@ export FZF_DEFAULT_OPTS="--color=query:#ff8700"
 
 # open fzf in edit mode
 fzfe() {
+    local dir="${1:-.}"
+    dir=$(cd "$dir" && pwd -P)
     local selection
+
     selection=$(
         find . -type f -o -type d | fzf \
             --multi \
+            --bind "ctrl-w:reload(find \"$(dirname "$dir")\" -type f -o -type d)+change-prompt(cwd: $(dirname "$dir") )" \
             --bind "ctrl-s:toggle+down" \
             --bind "ctrl-x:execute(
         sh -c '
