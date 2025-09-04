@@ -1,13 +1,15 @@
-FZF_CLIP_CMD="xclip -selection clipboard"
-
 export FZF_DEFAULT_OPTS="--color=query:#ff8700"
 
 # open fzf in edit mode
 fzfe() {
+  local dir="${1:-.}"
+  dir=$(cd "$dir" && pwd -P)
   local selection
+
   selection=$(
     find . -type f -o -type d | fzf \
       --multi \
+      --bind "ctrl-w:reload(find \"$(dirname "$dir")\" -type f -o -type d)+change-prompt(cwd: $(dirname "$dir") )" \
       --bind "ctrl-s:toggle+down" \
       --bind "ctrl-x:execute(
         sh -c '
@@ -86,40 +88,39 @@ fzfh() {
 }
 
 fzfg() {
-    local cwd="${1:-.}"
-    local selection file line
-    local default_editor="${DEFAULT_EDITOR:-code}" # fallback to VS Code
+  local cwd="${1:-.}"
+  local selection file first_line
+  local default_editor="${DEFAULT_EDITOR:-code}"
 
-    cd "$cwd" || return
+  cd "$cwd" || return
+  local repo_root
+  repo_root=$(git rev-parse --show-toplevel) || return
 
-    # get changed files (staged, unstaged, untracked)
-    selection=$(git status --porcelain | fzf --ansi --preview '
-        file=$(echo {} | awk "{print \$2}")
-        if [ -n "$file" ] && [ -f "$file" ]; then
-            git diff --color=always -- "$file" || bat --style=numbers --color=always "$file"
+  selection=$(git status --porcelain | fzf --ansi --preview '
+        file=$(echo {} | cut -c4- | sed "s/.* -> //" | sed "s/^\"//; s/\"$//")
+        if [ -n "$file" ] && [ -f "'"$repo_root"'/$file" ]; then
+            git -C "'"$repo_root"'" diff --color=always -- "$file" || bat --style=numbers --color=always "'"$repo_root"'/$file"
         fi
     ')
 
-    [ -z "$selection" ] && return
+  [ -z "$selection" ] && return
 
-    file=$(echo "$selection" | awk '{print $2}')
+  file=$(echo "$selection" | cut -c4- | sed 's/.* -> //' | sed 's/^"//; s/"$//')
 
-    first_line=$(git diff --unified=0 -- "$file" | grep -m1 '^@@' | sed -E 's/^@@ -[0-9,]+ \+([0-9]+).*/\1/')
+  file="$repo_root/$file"
 
-    if [ -z "$first_line" ]; then
-        first_line=1
-    fi
+  first_line=$(git -C "$repo_root" diff --unified=0 -- "$file" | grep -m1 '^@@' | sed -E 's/^@@ -[0-9,]+ \+([0-9]+).*/\1/')
+  [ -z "$first_line" ] && first_line=1
 
-    # open the file in editor
-    case "$default_editor" in
-    vscode | code)
-        code -g "$file:$first_line"
-        ;;
-    vim)
-        vim "+${$first_line}" "$file"
-        ;;
-    *)
-        nano "+${$first_line}" "$file"
-        ;;
-    esac
+  case "$default_editor" in
+  vscode | code)
+    code -g "$file:$first_line"
+    ;;
+  vim)
+    vim "+$first_line" "$file"
+    ;;
+  *)
+    nano "+$first_line" "$file"
+    ;;
+  esac
 }
