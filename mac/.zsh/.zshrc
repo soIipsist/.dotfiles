@@ -173,6 +173,10 @@ if [ -f ~/.download_aliases ]; then
     . ~/.download_aliases
 fi
 
+if [ -f ~/.llm_aliases ]; then
+    . ~/.llm_aliases
+fi
+
 # key bindings
 bindkey '^[[1;2D' backward-word # Shift + Left Arrow
 bindkey '^[[1;2C' forward-word  # Shift + Right Arrow

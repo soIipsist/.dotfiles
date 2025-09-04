@@ -1,0 +1,2 @@
+export OLLAMA_MODEL="deepseek-r1:14b"
+alias llm="ollama run $OLLAMA_MODEL"

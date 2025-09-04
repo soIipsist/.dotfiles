@@ -177,6 +177,10 @@ if [ -f ~/.download_aliases ]; then
     . ~/.download_aliases
 fi
 
+if [ -f ~/.llm_aliases ]; then
+    . ~/.llm_aliases
+fi
+
 if [ -f ~/.zsh_aliases ]; then
     . ~/.zsh_aliases
 fi

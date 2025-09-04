@@ -6,9 +6,6 @@ export DEFAULT_EDITOR="vscode"
 export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/vscode-workspaces/.workspaces"
 export VSCODE_PROJECT_DIRECTORY="$GIT_HOME"
 
-# ollama env variables
-export OLLAMA_MODEL="deepseek-r1:14b"
-
 # sqlite variables
 export SQLITE_DB="$SCRIPTS_DIRECTORY/downloads.db"
 export SQLITE_TABLE="downloads"
@@ -35,7 +32,6 @@ alias ios_backup="python3 $GIT_HOME/ios-backup-extractor/extract.py"
 alias adb_transfer="python3 $GIT_HOME/adb-wrapper/examples/transfer.py"
 alias adb_root="python3 $GIT_HOME/adb-wrapper/examples/root.py"
 alias cdf='cd "$(find . -type d | fzf)"'
-alias llm="ollama run $OLLAMA_MODEL"
 
 # tmux aliases
 alias t='tmux attach || tmux new-session'

@@ -141,6 +141,10 @@ if [ -f ~/.download_aliases ]; then
     . ~/.download_aliases
 fi
 
+if [ -f ~/.llm_aliases ]; then
+    . ~/.llm_aliases
+fi
+
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
