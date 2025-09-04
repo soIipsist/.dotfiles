@@ -11,8 +11,8 @@ fzfe() {
       --multi \
       --bind "ctrl-w:reload(find \"$(dirname "$dir")\" -type f -o -type d)+change-prompt(cwd: $(dirname "$dir") )" \
       --bind "ctrl-s:toggle+down" \
-      --bind "ctrl-x:execute(
-        sh -c '
+      --bind 'ctrl-x:execute(
+        bash -c "
           echo -n \"Delete selected files? (y/n): \";
           read -r answer < /dev/tty;
           if [[ \$answer == [Yy]* ]]; then
@@ -23,8 +23,8 @@ fzfe() {
           else
             echo \"Aborted deletion.\";
           fi
-        ' sh {+}
-      )+reload(find . -type f -o -type d)"
+        " bash {+}
+      )+reload(find . \( -type f -o -type d \) )'
   )
 
   if [ -n $selection ]; then
