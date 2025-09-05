@@ -3,9 +3,10 @@ Description=Kiwix server
 After=network.target
 
 [Service]
-ExecStart=
+ExecStart=/usr/bin/bash -lc /usr/local/bin/download_watcher
 Restart=always
 User=solipsist
+EnvironmentFile="/etc/default/kiwix.conf"
 
 [Install]
 WantedBy=multi-user.target
