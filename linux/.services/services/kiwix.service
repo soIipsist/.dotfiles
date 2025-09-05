@@ -1,0 +1,11 @@
+[Unit]
+Description=Kiwix server
+After=network.target
+
+[Service]
+ExecStart=
+Restart=always
+User=solipsist
+
+[Install]
+WantedBy=multi-user.target

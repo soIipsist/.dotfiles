@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ -z "$KIWIX_HOST" ]; then
+    KIWIX_HOST=$(hostname -I | awk '{print $1}')
+fi
+
+/usr/bin/kiwix-serve --port=$KIWIX_PORT --host=$KIWIX_HOST $KIWIX_PATH
