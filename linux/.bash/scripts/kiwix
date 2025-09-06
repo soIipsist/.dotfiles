@@ -2,7 +2,7 @@
 
 uid=$(id -u)
 LOG_DIR="/tmp/$uid/kiwix"
-LOG_PATH="$LOG_DIR/kiwix_$(date '+%F_%H-%M-%S').log"
+LOG_PATH="$LOG_DIR/kiwix_$(date '+%d-%m_%H-%M').log"
 mkdir -p "$LOG_DIR"
 
 if [ -z "$KIWIX_HOST" ]; then
@@ -28,4 +28,4 @@ fi
 
 echo "$(date '+%F %T') [INFO] Starting Kiwix: address=$KIWIX_HOST port=$KIWIX_PORT path=$KIWIX_PATH" >>"$LOG_PATH"
 
-exec /usr/bin/kiwix-serve --port="$KIWIX_PORT" --address="$KIWIX_HOST" "$KIWIX_PATH" >>"$LOG_PATH" 2>&1
+exec /usr/bin/kiwix-serve --port="$KIWIX_PORT" --address="$KIWIX_HOST" --library "$KIWIX_PATH" >>"$LOG_PATH" 2>&1
