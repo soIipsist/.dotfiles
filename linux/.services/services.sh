@@ -6,6 +6,8 @@ dest_services_directory="/etc/systemd/system/"
 dest_config_directory="/etc/default/"
 
 uid=$(id -u)
+group="shared_group"
+sudo addgroup $group
 
 copy() {
     file="$1"
@@ -56,6 +58,8 @@ for file in "$source_services_directory"/*.conf; do
     fi
 
     copy "$temp_file" "$dest_config_directory" "$filename"
+    sudo chown $(whoami):$group "$dest_directory/$filename"
+    sudo chmod 664 "$dest_config_directory/$filename"
     rm "$temp_file"
 
     echo "Generated and copied $filename to $dest_config_directory."
