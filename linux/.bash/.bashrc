@@ -187,6 +187,10 @@ if [ -f ~/.llm_aliases ]; then
     . ~/.llm_aliases
 fi
 
+if [ -f ~/.torrents_aliases ]; then
+    . ~/.torrents_aliases
+fi
+
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi

@@ -181,6 +181,10 @@ if [ -f ~/.llm_aliases ]; then
     . ~/.llm_aliases
 fi
 
+if [ -f ~/.torrents_aliases ]; then
+    . ~/.torrents_aliases
+fi
+
 if [ -f ~/.zsh_aliases ]; then
     . ~/.zsh_aliases
 fi
