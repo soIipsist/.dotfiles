@@ -2,7 +2,7 @@
 
 uid=$(id -u)
 LOG_DIR="/tmp/$uid/kiwix"
-LOG_PATH="$LOG_DIR/kiwix_$(date '+%d-%m_%H-%M').log"
+LOG_PATH="$LOG_DIR/kiwix_$(date '+%d-%m').log"
 mkdir -p "$LOG_DIR"
 
 if [ -z "$KIWIX_HOST" ]; then

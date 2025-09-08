@@ -169,3 +169,35 @@ organize_files() {
 set_env() {
     run_venv_script "set_env.py" "$@"
 }
+
+sudoe() {
+    if (($# == 0)); then
+        echo "Usage: sudoe <command> [args...]"
+        return 1
+    fi
+
+    local cmd=$1
+    shift
+
+    local quoted_args=()
+    for arg in "$@"; do
+        quoted_args+=("$(printf '%q' "$arg")")
+    done
+    local joined_args="${quoted_args[*]}"
+
+    if [[ $(type "$cmd") == *function* ]]; then
+        if [[ -n $ZSH_VERSION ]]; then
+            command sudo -E zsh -ic "source /home/$USER/.zshrc; $cmd $joined_args"
+        else
+            command sudo -E bash -ic "source /home/$USER/.bashrc; $cmd $joined_args"
+        fi
+    elif [[ $(type "$cmd") == *alias* ]]; then
+        if [[ -n $ZSH_VERSION ]]; then
+            command sudo -E zsh -ic "source /home/$USER/.zshrc; $cmd $joined_args"
+        else
+            command sudo -E bash -ic "source /home/$USER/.bashrc; $cmd $joined_args"
+        fi
+    else
+        command sudo "$cmd" "$@"
+    fi
+}
