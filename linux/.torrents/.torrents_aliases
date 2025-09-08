@@ -2,4 +2,9 @@ export TORRENT_SEARCH_URL="https://archive.org/"
 
 torrent() {
 
+    [[ $1 ]] && q="$*" || read -p "Enter Search Query: " q
+
+    echo "$url/$q" | sed 's/ /%20/g'
+
+    # search for metadata stuff
 }
