@@ -28,4 +28,8 @@ fi
 
 echo "$(date '+%F %T') [INFO] Starting Kiwix: address=$KIWIX_HOST port=$KIWIX_PORT path=$KIWIX_PATH" >>"$LOG_PATH"
 
-exec /usr/bin/kiwix-serve --port="$KIWIX_PORT" --address="$KIWIX_HOST" --library "$KIWIX_PATH" >>"$LOG_PATH" 2>&1
+if [[ $file == *.xml ]]; then
+    exec /usr/bin/kiwix-serve --port="$KIWIX_PORT" --address="$KIWIX_HOST" --library "$KIWIX_PATH" >>"$LOG_PATH" 2>&1
+else
+    exec /usr/bin/kiwix-serve --port="$KIWIX_PORT" --address="$KIWIX_HOST" "$KIWIX_PATH" >>"$LOG_PATH" 2>&1
+fi

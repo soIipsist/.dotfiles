@@ -201,3 +201,37 @@ sudoe() {
         command sudo "$cmd" "$@"
     fi
 }
+
+kiwix_manage() {
+    local lib_file="${1:-$KIWIX_PATH}"
+
+    if [[ -z "$lib_file" ]]; then
+        echo "Usage: kiwix_manage <library.xml> [zim files...]"
+        return 1
+    fi
+
+    if [[ "$lib_file" != *.xml ]]; then
+        echo "Error: library file must have a .xml extension"
+        return 1
+    fi
+
+    local zim_files=()
+
+    if (($# > 1)); then
+        shift
+        zim_files=("$@")
+    else
+        local parent_dir
+        parent_dir="$(dirname "$lib_file")"
+        zim_files=("$parent_dir"/*.zim)
+    fi
+
+    for zim in "${zim_files[@]}"; do
+        if [[ -f "$zim" ]]; then
+            echo "Adding $zim to $lib_file"
+            kiwix-manage "$lib_file" add "$zim"
+        else
+            echo "Warning: $zim not found"
+        fi
+    done
+}
