@@ -9,7 +9,7 @@ export SQLITE_TABLE="downloads"
 # set_env variables
 export ENV_SKIP_CONFIRM=0
 export ENV_DEFAULT_ACTION="set"
-export KIWIX_PATH="/mnt/HOME/wikipedia"
+export KIWIX_PATH="/mnt/HOME/wikipedia/library.xml"
 
 # organize files variables
 export BACKUP_DIRECTORY="/tmp/backup"
