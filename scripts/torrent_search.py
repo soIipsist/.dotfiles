@@ -1,5 +1,6 @@
 import argparse
 import os
+import subprocess
 from urllib.parse import urljoin
 import requests
 import re
@@ -26,21 +27,32 @@ def get_pattern(base_url: str, custom_pattern=None):
     return pattern
 
 
-def get_links(base_url: str, query: str, custom_pattern: str = None):
-    url = urljoin(base_url, query)
+def get_search_url(base_url: str, query: str):
+    return base_url + query
 
-    response = requests.get(url)
+
+def get_page(url, q):
+    command = ["wget", "-qO-", f"{url}"]
+    output = subprocess.check_output(command).decode("utf-8")
+    # page = output.replace("+", " ").replace("%", "\\x")
+    return output
+
+
+def get_links(base_url: str, query: str, custom_pattern: str = None):
+
+    url = get_search_url(base_url, query)
+    page = get_page(url, query)
     pattern = get_pattern(base_url, custom_pattern)
-    print("PATT", url)
-    matches = re.findall(pattern, response.text)
+
+    matches = re.findall(pattern, page)
 
     if not matches:
         print("No magnet links found.")
         return
 
-    links = [(match.split("&")[0], match) for match in matches]
+    links = [match for match in matches]
 
-    print(links)
+    return links
 
 
 if __name__ == "__main__":
@@ -49,5 +61,5 @@ if __name__ == "__main__":
     parser.add_argument("-u", "--base_url", default=os.environ.get("TORRENT_URL"))
     parser.add_argument("-c", "--custom_pattern", default=None)
     args = parser.parse_args()
-    links = get_links(args.base_url, args.custom_pattern)
+    links = get_links(args.base_url, args.query, args.custom_pattern)
     pp.pprint(links)
