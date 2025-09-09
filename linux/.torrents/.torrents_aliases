@@ -1,5 +1,9 @@
 # export TORRENT_URL="https://thepiratebay.party/search"
 
+get_torrent_metadata() {
+
+}
+
 torrent() {
     TORRENT_URL="https://thepiratebay.party/search"
 
@@ -7,14 +11,20 @@ torrent() {
     echo "$TORRENT_URL/$q" | sed 's/ /%20/g'
 
     local page="$(wget -qO- "$TORRENT_URL/$q" | sed 's@+@ @g;s@%@\\x@g' | xargs -0 printf "%b")"
-    local list="$(echo "$page" | grep magnet | grep -v '<meta' | sed 's/href="magnet/\nmagnet/g' | grep magnet | cut -d\" -f1 | awk -F\& '{print $2 "|" $1}' | tr "+" " " | sed 's/dn=//g')"
+
+    local magnet_links=()
+    local info_links=()
+
+    info_links="$(echo "$page" | grep '<a href="[^"]*"' | grep '/torrent/' | cut -d'"' -f2)"
+    magnet_links="$(echo "$page" | grep magnet | grep -v '<meta' | sed 's/href="magnet/\nmagnet/g' | grep magnet | cut -d\" -f1 | awk -F\& '{print $2 "|" $1}' | tr "+" " " | sed 's/dn=//g')"
+
     local state_file
 
     state_file=$(mktemp)
     echo 0 >"$state_file"
 
     selection=$(
-        printf '%s\n' "${list[@]}" |
+        printf '%s\n' "${magnet_links[@]}" |
             fzf \
                 --preview-window=down,1,border-top \
                 --preview '
@@ -37,14 +47,11 @@ torrent() {
     TORRENT_INFO_MODE=$(cat "$state_file")
     rm -f "$state_file"
 
-    echo "Final mode: $TORRENT_INFO_MODE"
-
     [[ $selection ]] || return 1
 
     if [[ $TORRENT_INFO_MODE -eq 1 ]]; then
         # info mode, fetch metadata of torrent
-        echo $TORRENT_URL
-        echo "Doing ACTION A on $selection"
+        get_torrent_metadata
     else
         echo "Doing ACTION B on $selection"
     fi
