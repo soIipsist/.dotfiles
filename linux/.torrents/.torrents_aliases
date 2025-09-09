@@ -1,10 +1,15 @@
 export TORRENT_SEARCH_URL="https://archive.org/"
 
+search_results() {
+    url="$1"
+
+}
+
 torrent() {
 
     [[ $1 ]] && q="$*" || read -p "Enter Search Query: " q
 
     echo "$url/$q" | sed 's/ /%20/g'
 
-    # search for metadata stuff
+    # fetch metadata of a given torrent url (description, file sizes, hash)
 }
