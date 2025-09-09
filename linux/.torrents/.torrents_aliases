@@ -1,4 +1,4 @@
-export TORRENT_SEARCH_URL="https://archive.org/"
+export TORRENT_URL="https://archive.org/"
 
 search_results() {
     url="$1"
