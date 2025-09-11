@@ -16,10 +16,10 @@ get_torrent_metadata() {
 
     comments=$(
         echo "$page" |
-            sed -n '/<div id="comment-/,/<div id="footer">/p' |
-            grep -E 'class="byline"|class="comment"' -A1 |
-            grep -vE 'class="byline"|class="comment"' |
-            sed -E 's/<[^>]+>//g; s/&nbsp;//g; s/^[[:space:]]+//; s/[[:space:]]+$//'
+            sed -n '/<div id="comment-[0-9]\+"/,/<\/div>/{
+    /class="byline"/p
+    /class="comment"/,/div>/p
+}' | sed -E 's/<[^>]+>//g; s/&nbsp;/ /g; s/^[[:space:]]+//; s/[[:space:]]+$//'
     )
 
     echo "=============================="
