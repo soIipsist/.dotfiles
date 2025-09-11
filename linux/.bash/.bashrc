@@ -159,8 +159,7 @@ export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/opt/python@3.13/bin:$PATH"
 
 # pass
-export PASSWORD_STORE_DIR="$HOME/repos/soIipsist"
-
+export PASSWORD_STORE_DIR="$HOME/repos/soIipsist/.password-store"
 export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
 
 # Alias definitions.
