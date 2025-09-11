@@ -1,5 +1,6 @@
 # export TORRENT_URL="https://thepiratebay.party/search"
 export TORRENT_DIRECTORY="/mnt/HOME/series"
+export TORRENT_INFO_MODE=1
 
 get_torrent_metadata() {
     torrent_url="$1"
@@ -14,14 +15,6 @@ get_torrent_metadata() {
     type=$(echo "$details" | grep -A1 '<dt>Type:</dt>' | tail -n1 | sed -E 's/<[^>]+>//g')
     info=$(echo "$page" | sed -n '/<div.*class="nfo">/,/<\/div>/p' | sed -E 's/<[^>]+>//g')
 
-    comments=$(
-        echo "$page" |
-            sed -n '/<div id="comment-[0-9]\+"/,/<\/div>/{
-    /class="byline"/p
-    /class="comment"/,/div>/p
-}' | sed -E 's/<[^>]+>//g; s/&nbsp;/ /g; s/^[[:space:]]+//; s/[[:space:]]+$//'
-    )
-
     echo "=============================="
     echo " Torrent Metadata"
     echo "=============================="
@@ -33,18 +26,18 @@ get_torrent_metadata() {
     echo " Info:"
     echo "$info"
     echo "------------------------------"
-    echo " Comments:"
-    echo "$comments"
+    echo "URL:"
+    echo "$torrent_url"
     echo "=============================="
 }
 
 download_torrent() {
-    torrent="$1"
+    magnet="$1"
 
     if [ -z "$TORRENT_DIRECTORY" ]; then
         TORRENT_DIRECTORY="$HOME"
     fi
-    transmission-cli "$torrent" -w "$TORRENT_DIRECTORY"
+    transmission-cli "$magnet" -w "$TORRENT_DIRECTORY"
 }
 
 torrent() {
@@ -64,7 +57,12 @@ torrent() {
     local state_file
 
     state_file=$(mktemp)
-    echo 0 >"$state_file"
+
+    if [ -z "$TORRENT_INFO_MODE" ]; then
+        TORRENT_INFO_MODE=1
+    fi
+
+    echo $TORRENT_INFO_MODE >"$state_file"
 
     selection=$(
         printf '%s\n' "${magnet_links[@]}" |
@@ -95,6 +93,7 @@ torrent() {
     if [[ $TORRENT_INFO_MODE -eq 1 ]]; then
         get_torrent_metadata "$selection"
     else
-        download_torrent "$selection"
+        magnet="$(echo -e "$selection" | cut -d\| -f2)"
+        download_torrent "$magnet"
     fi
 }
