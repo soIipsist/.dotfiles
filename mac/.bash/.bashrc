@@ -124,6 +124,9 @@ export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export PATH="/Library/TeX/texbin:$PATH"
 export PATH="$HOME/Library/Python/$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')/bin:$PATH"
 
+# pass
+export PASSWORD_STORE_DIR="$HOME/repos/soIipsist"
+
 # aliases
 if [ -f ~/.ytdlp_aliases ]; then
     . ~/.ytdlp_aliases

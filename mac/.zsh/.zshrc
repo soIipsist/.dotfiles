@@ -113,6 +113,9 @@ export TERM=xterm-256color
 # tmux
 export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins/"
 
+# pass
+export PASSWORD_STORE_DIR="$HOME/repos/soIipsist"
+
 # enable zsh's autocompletion system
 autoload -U compinit
 compinit
