@@ -1,13 +1,50 @@
 # export TORRENT_URL="https://thepiratebay.party/search"
+export TORRENT_DIRECTORY="/mnt/HOME/series"
 
 get_torrent_metadata() {
-    torrent="$1"
+    torrent_url="$1"
 
+    local page details file_size seeders leechers type info comments
+    page="$(wget -qO- "$torrent_url")"
+    details="$(echo "$page" | sed -n '/<div.*id="details">/,/<\/div>/p')"
+
+    file_size=$(echo "$details" | grep -A1 '<dt>Size:</dt>' | tail -n1 | sed -E 's/<[^>]+>//g')
+    seeders=$(echo "$details" | grep -A1 '<dt>Seeders:</dt>' | tail -n1 | sed -E 's/<[^>]+>//g')
+    leechers=$(echo "$details" | grep -A1 '<dt>Leechers:</dt>' | tail -n1 | sed -E 's/<[^>]+>//g')
+    type=$(echo "$details" | grep -A1 '<dt>Type:</dt>' | tail -n1 | sed -E 's/<[^>]+>//g')
+    info=$(echo "$page" | sed -n '/<div.*class="nfo">/,/<\/div>/p' | sed -E 's/<[^>]+>//g')
+
+    comments=$(
+        echo "$page" |
+            sed -n '/<div id="comment-/,/<div id="footer">/p' |
+            grep -E 'class="byline"|class="comment"' -A1 |
+            grep -vE 'class="byline"|class="comment"' |
+            sed -E 's/<[^>]+>//g; s/&nbsp;//g; s/^[[:space:]]+//; s/[[:space:]]+$//'
+    )
+
+    echo "=============================="
+    echo " Torrent Metadata"
+    echo "=============================="
+    echo " Type     : $type"
+    echo " Size     : $file_size"
+    echo " Seeders  : $seeders"
+    echo " Leechers : $leechers"
+    echo "------------------------------"
+    echo " Info:"
+    echo "$info"
+    echo "------------------------------"
+    echo " Comments:"
+    echo "$comments"
+    echo "=============================="
 }
 
 download_torrent() {
     torrent="$1"
-    transmission-cli "$torrent"
+
+    if [ -z "$TORRENT_DIRECTORY" ]; then
+        TORRENT_DIRECTORY="$HOME"
+    fi
+    transmission-cli "$torrent" -w "$TORRENT_DIRECTORY"
 }
 
 torrent() {
