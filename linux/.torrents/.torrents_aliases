@@ -1,7 +1,13 @@
 # export TORRENT_URL="https://thepiratebay.party/search"
 
 get_torrent_metadata() {
+    torrent="$1"
 
+}
+
+download_torrent() {
+    torrent="$1"
+    transmission-cli "$torrent"
 }
 
 torrent() {
@@ -15,8 +21,8 @@ torrent() {
     local magnet_links=()
     local info_links=()
 
-    info_links="$(echo "$page" | grep '<a href="[^"]*"' | grep '/torrent/' | cut -d'"' -f2)"
-    magnet_links="$(echo "$page" | grep magnet | grep -v '<meta' | sed 's/href="magnet/\nmagnet/g' | grep magnet | cut -d\" -f1 | awk -F\& '{print $2 "|" $1}' | tr "+" " " | sed 's/dn=//g')"
+    info_links=("$(echo "$page" | grep '<a href="[^"]*"' | grep '/torrent/' | cut -d'"' -f2)")
+    magnet_links=("$(echo "$page" | grep magnet | grep -v '<meta' | sed 's/href="magnet/\nmagnet/g' | grep magnet | cut -d\" -f1 | awk -F\& '{print $2 "|" $1}' | tr "+" " " | sed 's/dn=//g')")
 
     local state_file
 
@@ -40,7 +46,7 @@ torrent() {
                 else
                     echo 0 > $state_file
                 fi
-            )+refresh-preview"
+            )+reload(if [[ \$(cat $state_file) -eq 1 ]]; then echo \"${info_links[@]}\"; else echo \"${magnet_links[@]}\"; fi)+refresh-preview"
     )
 
     local TORRENT_INFO_MODE
@@ -50,9 +56,8 @@ torrent() {
     [[ $selection ]] || return 1
 
     if [[ $TORRENT_INFO_MODE -eq 1 ]]; then
-        # info mode, fetch metadata of torrent
-        get_torrent_metadata
+        get_torrent_metadata "$selection"
     else
-        echo "Doing ACTION B on $selection"
+        download_torrent "$selection"
     fi
 }

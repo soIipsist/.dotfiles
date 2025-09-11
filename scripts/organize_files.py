@@ -96,10 +96,13 @@ def move_files(old_files: list, new_files: list, move: bool, dry_run: bool):
         if not dry_run:  # move only if dry run is false
             new_file.parent.mkdir(parents=True, exist_ok=True)  # ensure folder exists
 
-            if move:
-                shutil.move(old_file, new_file)
-            else:
-                shutil.copy2(old_file, new_file)
+            try:
+                if move:
+                    shutil.move(old_file, new_file)
+                else:
+                    shutil.copy2(old_file, new_file)
+            except Exception as e:
+                print(e)
 
     return old_files, new_files
 
