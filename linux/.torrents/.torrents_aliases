@@ -1,5 +1,5 @@
 # export TORRENT_URL="https://thepiratebay.party/search"
-export TORRENT_DIRECTORY="/mnt/HOME/series"
+export TORRENT_DIRECTORY="/srv/shared"
 export TORRENT_INFO_MODE=1
 
 get_torrent_metadata() {
@@ -7,6 +7,12 @@ get_torrent_metadata() {
 
     local page details file_size seeders leechers type info comments
     page="$(wget -qO- "$torrent_url")"
+    page="${page//&gt;/>}"
+    page="${page//&lt;/<}"
+    page="${page//&nbsp;/ }"
+    page="${page//&amp;/&}"
+    page="${page//&quot;/\"}"
+
     details="$(echo "$page" | sed -n '/<div.*id="details">/,/<\/div>/p')"
 
     file_size=$(echo "$details" | grep -A1 '<dt>Size:</dt>' | tail -n1 | sed -E 's/<[^>]+>//g')
@@ -26,8 +32,7 @@ get_torrent_metadata() {
     echo " Info:"
     echo "$info"
     echo "------------------------------"
-    echo "URL:"
-    echo "$torrent_url"
+    echo "URL: $torrent_url"
     echo "=============================="
 }
 
