@@ -64,8 +64,16 @@ torrent() {
 
     echo $TORRENT_INFO_MODE >"$state_file"
 
+    local links=()
+
+    if [[ $TORRENT_INFO_MODE -eq 1 ]]; then
+        links="${info_links[@]}"
+    else
+        links="${magnet_links[@]}"
+    fi
+
     selection=$(
-        printf '%s\n' "${magnet_links[@]}" |
+        printf '%s\n' "${links[@]}" |
             fzf \
                 --preview-window=down,1,border-top \
                 --preview '
