@@ -1,0 +1,4 @@
+ssh_dump() {
+    interface="${1:-any}"
+    sudo tcpdump -i "$interface" '(tcp port 22 or tcp port 2222) and tcp[tcpflags] & tcp-syn != 0'
+}

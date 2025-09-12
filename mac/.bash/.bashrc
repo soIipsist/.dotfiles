@@ -148,6 +148,10 @@ if [ -f ~/.llm_aliases ]; then
     . ~/.llm_aliases
 fi
 
+if [ -f ~/.network_aliases ]; then
+    . ~/.network_aliases
+fi
+
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi

@@ -192,6 +192,10 @@ if [ -f ~/.zsh_aliases ]; then
     . ~/.zsh_aliases
 fi
 
+if [ -f ~/.network_aliases ]; then
+    . ~/.network_aliases
+fi
+
 # key bindings
 bindkey '^[[1;2D' backward-word # Shift + Left Arrow
 bindkey '^[[1;2C' forward-word  # Shift + Right Arrow
