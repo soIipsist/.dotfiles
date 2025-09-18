@@ -39,23 +39,25 @@ fzfe() {
 # open fzf in code mode
 fzfc() {
     local cwd="${1:-.}"
-    local selection file line
+    local selection file line col
     local default_editor="${DEFAULT_EDITOR:-vscode}"
 
     selection=$(rg --glob '!.git/*' \
-        --column --hidden --line-number --no-heading --color=always "" "$cwd" | fzf --ansi --tiebreak=length --delimiter=: --preview='bat --style=numbers --color=always --highlight-line {2} {1}')
+        --column --hidden --line-number --no-heading --color=always "" "$cwd" |
+        fzf --ansi --tiebreak=length --delimiter=: \
+            --preview='bat --style=numbers --color=always --highlight-line {2} {1}')
 
     [ -z "$selection" ] && return 1
 
-    file=$(echo "$selection" | cut -d: -f1)
-    line=$(echo "$selection" | cut -d: -f2)
+    # Safely split file, line, column without interpreting backslashes
+    IFS=: read -r file line col rest <<<"$selection"
 
     case "$default_editor" in
     vscode | code)
-        code -g "$file:$line"
+        code -g "$file:$line:$col"
         ;;
     vim)
-        vim "+${line}" "$file"
+        vim "+call cursor($line, $col)" "$file"
         ;;
     *)
         nano "+${line}" "$file"
