@@ -681,6 +681,7 @@ def download_all_cmd(
             url, downloader_type, output_directory, output_filename
         )
         if download is not None:
+            download.proxy = kwargs.get("proxy")
             download.extra_args = extra_args
             downloads.append(download)
 
