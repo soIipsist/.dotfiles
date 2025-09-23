@@ -148,6 +148,7 @@ def get_options(
     output_filename=None,
     sleep_interval: str = None,
     max_sleep_interval: str = None,
+    proxy: str = None,
 ):
 
     ytdlp_format = get_ytdlp_format(ytdlp_format)
@@ -171,6 +172,9 @@ def get_options(
         options, ytdlp_format, prefix, output_directory, output_filename
     )
     options["outtmpl"] = outtmpl
+
+    if proxy:
+        options["proxy"] = proxy
 
     if sleep_interval:
         options["sleep_interval"] = sleep_interval
@@ -310,6 +314,7 @@ def download(
         output_filename,
         sleep_interval,
         max_sleep_interval,
+        proxy,
     )
 
     urls = get_urls(urls, removed_args)
@@ -469,6 +474,7 @@ if __name__ == "__main__":
             args.output_filename,
             args.sleep_inteval,
             args.max_sleep_interval,
+            args.proxy,
         )
     )
 
