@@ -472,7 +472,7 @@ if __name__ == "__main__":
             args.removed_args,
             args.output_directory,
             args.output_filename,
-            args.sleep_inteval,
+            args.sleep_interval,
             args.max_sleep_interval,
             args.proxy,
         )
