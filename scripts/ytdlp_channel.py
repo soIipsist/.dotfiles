@@ -11,6 +11,7 @@ downloader_names = get_downloader_names()
 def download(
     channel_id: str,
     downloader: str = None,
+    proxy: str = None,
     sleep_interval: str = "2",
     max_sleep_interval: str = "5",
 ):
@@ -36,6 +37,7 @@ def download(
             url=video_url,
             downloader=downloader,
             output_directory=os.environ.get("DOWNLOADS_DIRECTORY"),
+            proxy=proxy,
             extra_args=f"sleep_interval={sleep_interval}, max_sleep_interval={max_sleep_interval}",
         )
         for video_url in video_urls
@@ -55,8 +57,12 @@ if __name__ == "__main__":
     )
     parser.add_argument("-i", "--sleep_interval", default="2")
     parser.add_argument("-m", "--max_sleep_interval", default="5")
-
+    parser.add_argument("-p", "--proxy", default=None)
     args = parser.parse_args()
     download(
-        args.channel_id, args.downloader, args.sleep_interval, args.max_sleep_interval
+        args.channel_id,
+        args.downloader,
+        args.proxy,
+        args.sleep_interval,
+        args.max_sleep_interval,
     )
