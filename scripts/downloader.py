@@ -69,6 +69,7 @@ class Download(SQLiteItem):
     _output_path: str = None
     _source_url: str = None
     _extra_args: dict = None
+    _proxy: str = None
 
     @property
     def downloader_path(self):
@@ -82,6 +83,7 @@ class Download(SQLiteItem):
         start_date: str = None,
         output_directory: Optional[str] = None,
         output_filename: Optional[str] = None,
+        proxy: Optional[str] = None,
         extra_args: Optional[str] = None,
     ):
         column_names = [
@@ -93,6 +95,7 @@ class Download(SQLiteItem):
             "time_elapsed",
             "output_path",
             "source_url",
+            "proxy",
             "extra_args",
         ]
         super().__init__(download_values, column_names, db_path=database_path)
@@ -102,11 +105,20 @@ class Download(SQLiteItem):
         self.output_directory = output_directory
         self.output_filename = output_filename
         self.start_date = start_date
+        self.proxy = proxy
         self.extra_args = extra_args
 
         self.table_name = "downloads"
         self.conjunction_type = "OR"
         self.filter_condition = f"url = {self.url}"
+
+    @property
+    def proxy(self):
+        return self._proxy
+
+    @proxy.setter
+    def proxy(self, proxy: str):
+        self._proxy = proxy
 
     @property
     def extra_args(self):
@@ -415,6 +427,7 @@ class Downloader(SQLiteItem):
         return func
 
     def get_downloader_args(self, download: Download, func):
+        """Passes all Download values to the appropriate download func."""
 
         func_signature = inspect.signature(func)
         func_params = func_signature.parameters
@@ -533,35 +546,35 @@ default_downloaders = [
         None,
         "ytdlp",
         "download",
-        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
+        "url, downloader_path, output_directory=output_directory, output_filename=output_filename, proxy=proxy",
     ),
     Downloader(
         "ytdlp_video",
         os.path.join(downloaders_directory, "video_mp4_best.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
+        "url, downloader_path, output_directory=output_directory, output_filename=output_filename, proxy=proxy",
     ),
     Downloader(
         "ytdlp_video_subs",
         os.path.join(downloaders_directory, "video_mp4_subs.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
+        "url, downloader_path, output_directory=output_directory, output_filename=output_filename, proxy=proxy",
     ),
     Downloader(
         "ytdlp_video_avc1",
         os.path.join(downloaders_directory, "video_avc1.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
+        "url, downloader_path, output_directory=output_directory, output_filename=output_filename, proxy=proxy",
     ),
     Downloader(
         "ytdlp_audio",
         os.path.join(downloaders_directory, "audio_mp3_best.json"),
         "ytdlp",
         "download",
-        "url, downloader_path, output_directory=output_directory, output_filename=output_filename",
+        "url, downloader_path, output_directory=output_directory, output_filename=output_filename, proxy=proxy",
     ),
     Downloader(
         "wget",
@@ -718,7 +731,9 @@ if __name__ == "__main__":
     download_cmd.add_argument(
         "-k", "--filter_keys", type=str, default=os.environ.get("DOWNLOAD_KEYS")
     )
-
+    download_cmd.add_argument(
+        "-p", "--proxy", default=os.environ.get("DOWNLOAD_PROXY"), type=str
+    )
     download_cmd.add_argument("-f", "--output_filename", default=None, type=str)
     download_cmd.add_argument("-e", "--extra_args", default=None, type=str)
 
