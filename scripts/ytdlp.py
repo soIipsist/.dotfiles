@@ -295,6 +295,7 @@ def download(
     output_filename=None,
     sleep_interval: str = None,
     max_sleep_interval: str = None,
+    proxy: str = None,
 ):
     print("Downloading with yt-dlp...")
     options = get_options(
@@ -447,35 +448,27 @@ if __name__ == "__main__":
         type=str_to_bool,
         choices=bool_choices,
     )
+    parser.add_argument("-P", "--proxy", default=None)
     parser.add_argument("-F", "--output_filename", default=None)
+    parser.add_argument("-si", "--sleep_interval", default=None)
+    parser.add_argument("-msi", "--max_sleep_interval", default=None)
 
-    args = vars(parser.parse_args())
-
-    urls = args.get("urls")
-    options_path = args.get("options_path", "")
-    ytdlp_format = args.get("ytdlp_format")
-    custom_format = args.get("custom_format")
-    update_options = args.get("update_options")
-    prefix = args.get("prefix")
-    extension = args.get("extension")
-    postprocessor_args = args.get("postprocessor_args", [])
-    removed_args = args.get("removed_args")
-    output_directory = args.get("output_directory")
-    output_filename = args.get("output_filename")
-
+    args = parser.parse_args()
     results = list(
         download(
-            urls,
-            options_path,
-            ytdlp_format,
-            custom_format,
-            update_options,
-            prefix,
-            extension,
-            postprocessor_args,
-            removed_args,
-            output_directory,
-            output_filename,
+            args.urls,
+            args.options_path,
+            args.ytdlp_format,
+            args.custom_format,
+            args.update_options,
+            args.prefix,
+            args.extension,
+            args.postprocessor_args,
+            args.removed_args,
+            args.output_directory,
+            args.output_filename,
+            args.sleep_inteval,
+            args.max_sleep_interval,
         )
     )
 
