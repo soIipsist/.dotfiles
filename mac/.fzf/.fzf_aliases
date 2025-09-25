@@ -74,8 +74,7 @@ fzfh() {
     fi
 
     local selection
-    # Use fzf to select a line from history file
-    selection=$(cat "$history_path" | fzf --height=60% --border --prompt="History> ")
+    selection=$(awk '!seen[$0]++' "$history_path" | fzf --height=60% --border --prompt="History> ")
 
     if [ -z "$selection" ]; then
         echo "No selection made." >&2
