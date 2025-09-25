@@ -1,5 +1,4 @@
 export FZF_DEFAULT_OPTS="--color=query:#ff8700"
-export FZF_FAVORITES_FILE="${HOME}/.fzf_favorites"
 
 # open fzf in edit mode
 fzfe() {
@@ -67,27 +66,32 @@ fzfc() {
 
 fzfh() {
   local history_path="${1:-$HISTFILE}"
-  local fzf_favorites="${2:-$FZF_FAVORITES_FILE}"
+  local change_header="${2:-1}"
+  local fzf_favorites="${FZF_FAVORITES_FILE:-$HOME/.fzf_aliases}"
 
-  if [ ! -f "$history_path" ]; then
+  if [[ ! -f $history_path ]]; then
     echo "History file not found: $history_path" >&2
     return 1
   fi
 
+  local base_cmd="awk '!seen[\$0]++' \"$history_path\""
   local selection
-  selection=$(
-    awk '!seen[$0]++' "$history_path" |
-      fzf --height=60% --border --prompt="History> " \
-        --header="Press Ctrl-S to save to favorites" \
-        --bind "ctrl-s:execute-silent(echo {} >> $FZF_FAVORITES_FILE)+change-header(✔ Saved to favorites)+reload(awk '!seen[\$0]++' $history_path)"
-  )
 
-  if [ -z "$selection" ]; then
-    echo "No selection made." >&2
-    return 1
+  if [[ $change_header -eq 1 ]]; then
+    selection=$(eval "$base_cmd" | fzf \
+      --height=60% --border --prompt="History> " \
+      --header="Press Ctrl-S to save to favorites" \
+      --bind "ctrl-s:execute-silent(echo {} >> \"$fzf_favorites\")+change-header(✔ Saved to favorites)+reload($base_cmd)")
+  else
+    selection=$(eval "$base_cmd" | fzf --height=60% --border --prompt="History> ")
   fi
 
-  if [ -n "$ZSH_VERSION" ]; then
+  [[ -z $selection ]] && {
+    echo "No selection made." >&2
+    return 1
+  }
+
+  if [[ -n $ZSH_VERSION ]]; then
     print -z -- "$selection"
   else
     history -s "$selection"
@@ -95,7 +99,10 @@ fzfh() {
 }
 
 fzff() {
-  fzfh "$FZF_FAVORITES_FILE"
+  if [ -z "$FZF_FAVORITES_FILE" ]; then
+    FZF_FAVORITES_FILE="$HOME/.fzf_favorites"
+  fi
+  fzfh "$FZF_FAVORITES_FILE" 0
 }
 
 fzfg() {
