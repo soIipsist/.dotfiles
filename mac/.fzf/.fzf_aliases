@@ -79,7 +79,8 @@ fzfh() {
     selection=$(
         awk '!seen[$0]++' "$history_path" |
             fzf --height=60% --border --prompt="History> " \
-                --bind "ctrl-f:execute(echo {} >> $FZF_FAVORITES_FILE)+abort"
+                --header="Press Ctrl-F to save to favorites" \
+                --bind "ctrl-f:execute-silent(echo {} >> $FZF_FAVORITES_FILE)+change-header(✔ Saved to favorites)+reload(awk '!seen[\$0]++' $history_path)"
     )
 
     if [ -z "$selection" ]; then
