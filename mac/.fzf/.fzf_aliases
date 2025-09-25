@@ -1,4 +1,5 @@
 export FZF_DEFAULT_OPTS="--color=query:#ff8700"
+export FZF_FAVORITES_FILE="${HOME}/.fzf_favorites"
 
 # open fzf in edit mode
 fzfe() {
@@ -67,6 +68,7 @@ fzfc() {
 
 fzfh() {
     local history_path="${1:-$HISTFILE}"
+    local fzf_favorites="${2:-$FZF_FAVORITES_FILE}"
 
     if [ ! -f "$history_path" ]; then
         echo "History file not found: $history_path" >&2
@@ -74,7 +76,11 @@ fzfh() {
     fi
 
     local selection
-    selection=$(awk '!seen[$0]++' "$history_path" | fzf --height=60% --border --prompt="History> ")
+    selection=$(
+        awk '!seen[$0]++' "$history_path" |
+            fzf --height=60% --border --prompt="History> " \
+                --bind "ctrl-f:execute(echo {} >> $FZF_FAVORITES_FILE)+abort"
+    )
 
     if [ -z "$selection" ]; then
         echo "No selection made." >&2
