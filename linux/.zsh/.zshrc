@@ -223,42 +223,42 @@ bindkey '^Xr' repeat-last-command   # Ctrl + X followed by R
 bindkey '^Xc' copy-line-to-keyboard # Ctrl + X followed by C
 bindkey -s '^Xo' "cpout\n"          # Ctrl + X followed by O
 
-function run_fzfc {
-    fzfc
-    zle redisplay
-}
+# function run_fzfc {
+#     fzfc
+#     zle redisplay
+# }
 
-function run_fzfe {
-    fzfe
-    zle redisplay
-}
+# function run_fzfe {
+#     fzfe
+#     zle redisplay
+# }
 
-function run_fzff {
-    fzff
-    zle redisplay
-}
+# function run_fzff {
+#     fzff
+#     zle redisplay
+# }
 
-function run_fzfg {
-    fzfg
-    zle redisplay
-}
+# function run_fzfg {
+#     fzfg
+#     zle redisplay
+# }
 
-function run_fzfh {
-    fzfh
-    zle redisplay
-}
+# function run_fzfh {
+#     fzfh
+#     zle redisplay
+# }
 
-zle -N run_fzfc
-zle -N run_fzfe
-zle -N run_fzff
-zle -N run_fzfg
-zle -N run_fzfh
+# zle -N run_fzfc
+# zle -N run_fzfe
+# zle -N run_fzff
+# zle -N run_fzfg
+# zle -N run_fzfh
 
-bindkey '^p' run_fzfc
-bindkey '^f' run_fzfe
-bindkey '^o' run_fzff
-bindkey '^g' run_fzfg
-bindkey '^h' run_fzfh
+bindkey -s '^p' "fzfc\n"
+bindkey -s '^f' "fzfe\n"
+bindkey -s '^o' "fzff\n"
+bindkey -s '^g' "fzfg\n"
+bindkey -s '^h' "fzfh\n"
 
 # zsh suggestions
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#AFADAD"
