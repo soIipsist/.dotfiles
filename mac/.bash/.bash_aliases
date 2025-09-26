@@ -25,6 +25,22 @@ alias la='ls -A'
 alias l='ls -CF'
 alias ps='ps aux --sort=-%mem | head'
 
+# tmux aliases
+alias t='tmux attach || tmux new-session'
+alias ta='tmux attach -t'
+alias tn='tmux new-session'
+alias tl='tmux list-sessions'
+alias tk='tmux kill-server'
+
+# docker aliases
+alias dpl="docker pull"
+alias dlc="docker container ls"
+alias dlca="docker container ls -a"
+alias dli="docker images"
+alias dsc="docker container stop"
+alias drc="docker container rm"
+alias dri="docker image rm"
+
 git_pull_all() {
     local base_dir="${GIT_HOME:-.}"
 

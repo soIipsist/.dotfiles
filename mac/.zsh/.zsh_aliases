@@ -40,6 +40,16 @@ alias tn='tmux new-session'
 alias tl='tmux list-sessions'
 alias tk='tmux kill-server'
 
+# docker aliases
+alias dpl="docker pull"
+alias dlc="docker container ls"
+alias dlca="docker container ls -a"
+alias dli="docker images"
+alias dsc="docker container stop"
+alias drc="docker container rm"
+alias dri="docker image rm"
+
+
 function git_pull_all() {
     local base_dir="${GIT_HOME:-.}"
 

@@ -23,6 +23,15 @@ alias tn='tmux new-session'
 alias tl='tmux list-sessions'
 alias tk='tmux kill-server'
 
+# docker aliases
+alias dpl="docker pull"
+alias dlc="docker container ls"
+alias dlca="docker container ls -a"
+alias dli="docker images"
+alias dsc="docker container stop"
+alias drc="docker container rm"
+alias dri="docker image rm"
+
 # general service control
 alias sstart='sudo systemctl start'
 alias sstop='sudo systemctl stop'
