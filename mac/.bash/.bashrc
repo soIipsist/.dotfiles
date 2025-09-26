@@ -8,7 +8,7 @@ HISTCONTROL=ignoredups:ignorespace
 shopt -s histappend # Append to history file instead of overwriting
 HISTSIZE=1000
 HISTFILESIZE=2000
-export HISTTIMEFORMAT="%F %T "
+# export HISTTIMEFORMAT="%F %T "
 
 # Resize terminal automatically
 shopt -s checkwinsize

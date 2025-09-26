@@ -50,7 +50,7 @@ export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE="2000"
 export SAVEHIST="2000"
-export HISTTIMEFORMAT="%F %T "
+# export HISTTIMEFORMAT="%F %T "
 
 setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY

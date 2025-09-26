@@ -100,7 +100,7 @@ export PATH="$HOME/Library/Python/$(python3 -c 'import sys; print(f"{sys.version
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE="2000"
 export SAVEHIST="2000"
-export HISTTIMEFORMAT="%F %T "
+# export HISTTIMEFORMAT="%F %T "
 
 setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
