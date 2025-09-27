@@ -102,6 +102,12 @@ fzff() {
   if [ -z "$FZF_FAVORITES_FILE" ]; then
     FZF_FAVORITES_FILE="$HOME/.fzf_favorites"
   fi
+
+  if [ ! -f "$FZF_FAVORITES_FILE" ]; then
+    touch "$FZF_FAVORITES_FILE"
+    echo "Created $FZF_FAVORITES_FILE"
+  fi
+
   fzfh "$FZF_FAVORITES_FILE" 0
 }
 
