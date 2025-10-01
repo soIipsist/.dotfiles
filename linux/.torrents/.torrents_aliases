@@ -104,7 +104,7 @@ torrent() {
     [[ $selection ]] || return 1
 
     if [[ $TORRENT_INFO_MODE -eq 1 ]]; then
-        get_torrent_metadata "$selection"
+        get_torrent_metadata "$selection" | less
     else
         magnet="$(echo -e "$selection" | cut -d\| -f2)"
         download_torrent "$magnet"
