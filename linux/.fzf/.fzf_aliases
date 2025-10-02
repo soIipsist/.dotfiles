@@ -1,4 +1,5 @@
 export FZF_DEFAULT_OPTS="--color=query:#ff8700"
+export FZF_FAVORITES="$HOME/.fzf_favorites"
 
 # open fzf in edit mode
 fzfe() {
@@ -67,7 +68,7 @@ fzfc() {
 fzfh() {
   local history_path="${1:-$HISTFILE}"
   local change_header="${2:-1}"
-  local fzf_favorites="${FZF_FAVORITES_FILE:-$HOME/.fzf_aliases}"
+  local fzf_favorites="${FZF_FAVORITES:-$HOME/.fzf_favorites}"
 
   if [[ ! -f $history_path ]]; then
     echo "History file not found: $history_path" >&2
@@ -99,16 +100,16 @@ fzfh() {
 }
 
 fzff() {
-  if [ -z "$FZF_FAVORITES_FILE" ]; then
-    FZF_FAVORITES_FILE="$HOME/.fzf_favorites"
+  if [ -z "$FZF_FAVORITES" ]; then
+    FZF_FAVORITES="$HOME/.fzf_favorites"
   fi
 
-  if [ ! -f "$FZF_FAVORITES_FILE" ]; then
-    touch "$FZF_FAVORITES_FILE"
-    echo "Created $FZF_FAVORITES_FILE"
+  if [ ! -f "$FZF_FAVORITES" ]; then
+    touch "$FZF_FAVORITES"
+    echo "Created $FZF_FAVORITES"
   fi
 
-  fzfh "$FZF_FAVORITES_FILE" 0
+  fzfh "$FZF_FAVORITES" 0
 }
 
 fzfg() {
