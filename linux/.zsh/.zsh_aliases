@@ -1,6 +1,7 @@
 # useful environment variables
 export GIT_HOME="$HOME/repos/soIipsist"
 export DEFAULT_EDITOR="nano"
+export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/vscode-workspaces/.workspaces"
 
 # sqlite variables
 export SQLITE_DB="$SCRIPTS_DIRECTORY/downloads.db"
