@@ -92,7 +92,7 @@ function run_in_tmux_session() {
 # PATH variable
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
-export PATH="$HOME/platform-tools/:$PATH"
+export PATH="$HOME/platform-tools:$PATH"
 export PATH="/Library/TeX/texbin:$PATH"
 export PATH="$HOME/Library/Python/$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')/bin:$PATH"
 
