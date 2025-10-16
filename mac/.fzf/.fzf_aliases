@@ -76,11 +76,12 @@ fzfh() {
         return 1
     fi
 
-    local base_cmd="awk '!seen[\$0]++' \"$history_path\""
+    local base_cmd="awk '!seen[\$0]++ {print}' \"$history_path\""
     local selection
 
     if [[ $change_header -eq 1 ]]; then
         selection=$(eval "$base_cmd" | fzf \
+            --tac \
             --height=60% --border --prompt="History> " \
             --header="Press Ctrl-S to save to favorites" \
             --bind "ctrl-s:execute-silent(echo {} >> \"$fzf_favorites\")+change-header(✔ Saved to favorites)+reload($base_cmd)")
