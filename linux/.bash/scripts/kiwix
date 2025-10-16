@@ -20,7 +20,7 @@ else
 fi
 
 if [ -z "$KIWIX_PORT" ]; then
-    KIWIX_PORT="8080"
+    KIWIX_PORT="8081"
     echo "$(date '+%F %T') [INFO] Defaulting port to: $KIWIX_PORT" >>"$LOG_PATH"
 else
     echo "$(date '+%F %T') [INFO] Using configured port: $KIWIX_PORT" >>"$LOG_PATH"
