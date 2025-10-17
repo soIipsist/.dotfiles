@@ -76,17 +76,23 @@ fzfh() {
         return 1
     fi
 
-    local base_cmd="awk '!seen[\$0]++ {print}' \"$history_path\""
+    local normal_header="Press Ctrl-F to save selected commands to favorites"
+    local saved_header="✔ Saved to favorites"
+
     local selection
 
     if [[ $change_header -eq 1 ]]; then
-        selection=$(eval "$base_cmd" | fzf \
-            --tac \
-            --height=60% --border --prompt="History> " \
-            --header="Press Ctrl-S to save to favorites" \
-            --bind "ctrl-s:execute-silent(echo {} >> \"$fzf_favorites\")+change-header(✔ Saved to favorites)+reload($base_cmd)")
+        selection=$(
+            awk '!seen[$0]++' "$history_path" | fzf \
+                --multi \
+                --tac \
+                --height=60% --border --prompt="History> " \
+                --header="$normal_header" \
+                --bind "ctrl-f:execute-silent(echo {+} >> \"$fzf_favorites\")+transform-header:echo '$saved_header'" \
+                --bind "focus:transform-header:echo '$normal_header'"
+        )
     else
-        selection=$(eval "$base_cmd" | fzf --height=60% --border --prompt="History> ")
+        selection=$(awk '!seen[$0]++' "$history_path" | fzf --multi --tac --height=60% --border --prompt="History> ")
     fi
 
     [[ -z $selection ]] && {
@@ -94,10 +100,13 @@ fzfh() {
         return 1
     }
 
+    local last_cmd
+    last_cmd=$(echo "$selection" | tail -n 1)
+
     if [[ -n $ZSH_VERSION ]]; then
-        print -z -- "$selection"
+        print -z -- "$last_cmd"
     else
-        history -s "$selection"
+        history -s "$last_cmd"
     fi
 }
 
