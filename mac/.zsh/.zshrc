@@ -197,9 +197,9 @@ bindkey '^[[1;5D' kill-word          # Ctrl + D
 bindkey '^[[1;5Q' overwrite-mode     # Ctrl + Q
 bindkey '^[[1;5F' autosuggest-accept # Ctrl + F
 
-bindkey '^[c' c1apitalize-word # Alt + C
-bindkey '^[d' down-case-word   # Alt + D
-bindkey '^[u' up-case-word     # Alt + U
+bindkey '^[c' capitalize-word # Alt + C
+bindkey '^[d' down-case-word  # Alt + D
+bindkey '^[u' up-case-word    # Alt + U
 
 zle -N repeat-last-command
 zle -N copy-line-to-keyboard

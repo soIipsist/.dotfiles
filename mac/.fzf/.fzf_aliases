@@ -96,11 +96,9 @@ fzfh() {
           read -p \"Delete selected commands? (y/N): \" answer < /dev/tty; \
           [[ \"\$answer\" =~ ^[Yy] ]] || exit 0; \
           for cmd in \"\$@\"; do \
-            echo \"\$cmd\" >>/tmp/.fzf_info
-            echo \"HIST: $history_path\" >>/tmp/.fzf_info
-            echo \"CMD=[\$cmd]\" >> /tmp/.fzf_info
-            sed -i 's/"\$cmd\"//g'
-    
+            echo \"CMD: \$cmd\" >> /tmp/.info
+            echo \"SED: sed \"/^\$cmd\$/d\"\" >> /tmp/.info
+            sed \"/^\$cmd\$/d\" \"$history_path\" >> /tmp/.fzf_info
           done' sh {+}
       )+transform-header:echo '$deleted_header'" \
                 --bind "focus:transform-header:echo '$normal_header'"
