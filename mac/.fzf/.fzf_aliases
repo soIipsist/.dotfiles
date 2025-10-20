@@ -98,7 +98,8 @@ fzfh() {
           for cmd in \"\$@\"; do \
             echo \"CMD: \$cmd\" >> /tmp/.info
             echo \"SED: sed \"/^\$cmd\$/d\"\" >> /tmp/.info
-            sed \"/^\$cmd\$/d\" \"$history_path\" >> /tmp/.fzf_info
+            echo \"ARGS: \"\$@\"\" >> /tmp/.info
+            sed "/^\$cmd\$/d" \"$history_path\" > \"$history_path.tmp\" && mv \"$history_path.tmp\" \"$history_path\"
           done' sh {+}
       )+transform-header:echo '$deleted_header'" \
                 --bind "focus:transform-header:echo '$normal_header'"
