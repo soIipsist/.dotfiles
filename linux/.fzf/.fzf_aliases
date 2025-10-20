@@ -90,12 +90,11 @@ fzfh() {
         --header="$normal_header" \
         --bind "ctrl-s:toggle+down" \
         --bind "ctrl-f:execute(
-        bash -c '\
-          echo \"DEBUG: Ctrl-F Args: \$@\" >> /tmp/.info; \
-          for cmd in \"\$@\"; do \
-              echo \"\$cmd\" >> \"$fzf_favorites\" 2>>/tmp/.info || \
-          done' bash {+}
-        )+transform-header(echo '$saved_header')" \
+                    bash -c '\
+                    for cmd in \"\$@\"; do \
+                        echo \"\$cmd\" >> \"$fzf_favorites\" 
+                    done' bash {+}
+                    )+transform-header(echo '$saved_header')" \
         --bind "ctrl-x:execute(
         bash -c '\
           # echo \"DEBUG: \$history_path\" >> /tmp/.info

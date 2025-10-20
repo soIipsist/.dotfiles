@@ -90,7 +90,12 @@ fzfh() {
                 --height=60% --border --prompt="History> " \
                 --header="$normal_header" \
                 --bind "ctrl-s:toggle+down" \
-                --bind "ctrl-f:execute-silent(echo {+} >> \"$fzf_favorites\")+transform-header:echo '$saved_header'" \
+                --bind "ctrl-f:execute(
+                    sh -c '\
+                    for cmd in \"\$@\"; do \
+                        echo \"\$cmd\" >> \"$fzf_favorites\" 
+                    done' sh {+}
+                    )+transform-header(echo '$saved_header')" \
                 --bind "ctrl-x:execute(
         sh -c '\
           read -p \"Delete selected commands? (y/N): \" answer < /dev/tty; \
