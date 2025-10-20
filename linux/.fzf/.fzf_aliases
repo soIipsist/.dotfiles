@@ -89,16 +89,22 @@ fzfh() {
         --height=60% --border --prompt="History> " \
         --header="$normal_header" \
         --bind "ctrl-s:toggle+down" \
-        --bind "ctrl-f:execute-silent(echo {+} >> \"$fzf_favorites\")+transform-header:echo '$saved_header'" \
+        --bind "ctrl-f:execute-silent(
+                    bash -c '\
+                        echo \"DEBUG: Ctrl-F Args: \$@\" >> /tmp/.info.$$; \
+                        for cmd in \"\$@\"; do \
+                            echo \"\$cmd\" >> \"$fzf_favorites\" \
+                        done' bash {+}
+                )+transform-header(echo '$saved_header')" \
         --bind "ctrl-x:execute(
         bash -c '\
-          echo \"DEBUG: \$history_path\" >> /tmp/.info
+          # echo \"DEBUG: \$history_path\" >> /tmp/.info
           read -p \"Delete selected commands? (y/N): \" answer < /dev/tty; \
           [[ \"\$answer\" =~ ^[Yy] ]] || exit 0; \
           for cmd in \"\$@\"; do \
-            echo \"CMD: \$cmd\" >> /tmp/.info
-            echo \"SED: sed \"/^\$cmd\$/d\"\" >> /tmp/.info
-            echo \"ARGS: \"\$@\"\" >> /tmp/.info
+            # echo \"CMD: \$cmd\" >> /tmp/.info
+            # echo \"SED: sed \"/^\$cmd\$/d\"\" >> /tmp/.info
+            # echo \"ARGS: \"\$@\"\" >> /tmp/.info
             grep -Fxv \"\$cmd\" \"$history_path\" > \"$history_path.tmp\" && mv \"$history_path.tmp\" \"$history_path\"
 
           done' bash {+}
