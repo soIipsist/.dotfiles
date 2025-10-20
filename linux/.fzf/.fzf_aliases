@@ -77,6 +77,7 @@ fzfh() {
 
   local normal_header="Press Ctrl-F to save selected commands to favorites"
   local saved_header="✔ Saved to favorites"
+  local deleted_header="✔ Commands deleted"
 
   local selection
 
@@ -87,7 +88,20 @@ fzfh() {
         --tac \
         --height=60% --border --prompt="History> " \
         --header="$normal_header" \
+        --bind "ctrl-s:toggle+down" \
         --bind "ctrl-f:execute-silent(echo {+} >> \"$fzf_favorites\")+transform-header:echo '$saved_header'" \
+        --bind "ctrl-x:execute(
+        sh -c '\
+          read -p \"Delete selected commands? (y/N): \" answer < /dev/tty; \
+          [[ \"\$answer\" =~ ^[Yy] ]] || exit 0; \
+          for cmd in \"\$@\"; do \
+            # echo \"CMD: \$cmd\" >> /tmp/.info
+            # echo \"SED: sed \"/^\$cmd\$/d\"\" >> /tmp/.info
+            # echo \"ARGS: \"\$@\"\" >> /tmp/.info
+            grep -Fxv \"\$cmd\" \"$history_path\" > \"$history_path.tmp\" && mv \"$history_path.tmp\" \"$history_path\"
+
+          done' sh {+}
+      )+transform-header(echo '$deleted_header')+reload(awk '!seen[\$0]++' \"$history_path\")" \
         --bind "focus:transform-header:echo '$normal_header'"
     )
   else
