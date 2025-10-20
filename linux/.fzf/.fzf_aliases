@@ -91,7 +91,8 @@ fzfh() {
         --bind "ctrl-s:toggle+down" \
         --bind "ctrl-f:execute-silent(echo {+} >> \"$fzf_favorites\")+transform-header:echo '$saved_header'" \
         --bind "ctrl-x:execute(
-        sh -c '\
+        bash -c '\
+          echo \"DEBUG: \$history_path\" >> /tmp/.info
           read -p \"Delete selected commands? (y/N): \" answer < /dev/tty; \
           [[ \"\$answer\" =~ ^[Yy] ]] || exit 0; \
           for cmd in \"\$@\"; do \
@@ -100,7 +101,7 @@ fzfh() {
             echo \"ARGS: \"\$@\"\" >> /tmp/.info
             grep -Fxv \"\$cmd\" \"$history_path\" > \"$history_path.tmp\" && mv \"$history_path.tmp\" \"$history_path\"
 
-          done' sh {+}
+          done' bash {+}
       )+transform-header(echo '$deleted_header')+reload(awk '!seen[\$0]++' \"$history_path\")" \
         --bind "focus:transform-header:echo '$normal_header'"
     )
