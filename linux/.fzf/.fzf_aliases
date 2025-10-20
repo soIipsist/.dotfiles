@@ -95,9 +95,9 @@ fzfh() {
           read -p \"Delete selected commands? (y/N): \" answer < /dev/tty; \
           [[ \"\$answer\" =~ ^[Yy] ]] || exit 0; \
           for cmd in \"\$@\"; do \
-            # echo \"CMD: \$cmd\" >> /tmp/.info
-            # echo \"SED: sed \"/^\$cmd\$/d\"\" >> /tmp/.info
-            # echo \"ARGS: \"\$@\"\" >> /tmp/.info
+            echo \"CMD: \$cmd\" >> /tmp/.info
+            echo \"SED: sed \"/^\$cmd\$/d\"\" >> /tmp/.info
+            echo \"ARGS: \"\$@\"\" >> /tmp/.info
             grep -Fxv \"\$cmd\" \"$history_path\" > \"$history_path.tmp\" && mv \"$history_path.tmp\" \"$history_path\"
 
           done' sh {+}
