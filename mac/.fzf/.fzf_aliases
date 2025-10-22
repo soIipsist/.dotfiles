@@ -111,9 +111,9 @@ fzfh() {
                     done' sh {+}
                     )+transform-header(echo '$saved_header')" \
                 --bind "ctrl-x:execute(
-        sh -c '\
-          echo \"Delete selected commands? (y/N): \" >&2; \
-          read answer; \
+        bash -c '\
+          echo -n \"Delete selected commands? (y/N): \" > /dev/tty;
+          read -r answer < /dev/tty;
           [[ \"\$answer\" =~ ^[Yy] ]] || exit 0; \
           for cmd in \"\$@\"; do \
             # echo \"CMD: \$cmd\" >> /tmp/.info
@@ -121,7 +121,7 @@ fzfh() {
             # echo \"ARGS: \"\$@\"\" >> /tmp/.info
             grep -Fxv \"\$cmd\" \"$history_path\" > \"$history_path.tmp\" && mv \"$history_path.tmp\" \"$history_path\"
 
-          done' sh {+}
+          done' bash {+}
       )+transform-header(echo '$deleted_header')+reload(awk '!seen[\$0]++' \"$history_path\")" \
                 --bind "focus:transform-header:echo '$normal_header'"
         )
