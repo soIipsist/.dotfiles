@@ -76,6 +76,19 @@ fzfh() {
         return 1
     fi
 
+    if [[ -n "$BASH_VERSION" ]]; then
+        history -a
+    fi
+
+    if [[ -n "$HISTTIMEFORMAT" && "$change_header" -eq 1 ]]; then
+        new_history_path="/tmp/.fzf_hist"
+        local old_histtime="$HISTTIMEFORMAT"
+        unset HISTTIMEFORMAT
+        history -w "$new_history_path"
+        HISTTIMEFORMAT="$old_histtime"
+        history_path="$new_history_path"
+    fi
+
     local normal_header="Press Ctrl-F to save selected commands to favorites"
     local saved_header="✔ Saved to favorites"
     local deleted_header="✔ Commands deleted"

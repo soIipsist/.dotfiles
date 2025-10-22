@@ -69,10 +69,28 @@ fzfh() {
   local history_path="${1:-$HISTFILE}"
   local change_header="${2:-1}"
   local fzf_favorites="${FZF_FAVORITES:-$HOME/.fzf_favorites}"
+  local new_history_path=""
 
   if [[ ! -f $history_path ]]; then
     echo "History file not found: $history_path" >&2
     return 1
+  fi
+
+  if [[ -n "$BASH_VERSION" ]]; then
+    history -a
+  fi
+
+  if [[ -n "$HISTTIMEFORMAT" ]]; then
+    new_history_path="/tmp/.bash_history"
+    awk '{
+      cmd=""; skip=0
+      for(i=1;i<=NF;i++) {
+        if($i ~ /^[0-9]{4}-/ || $i ~ /^[0-9]{1,2}:/ || $i ~ /^[0-9]+$/ ) skip=1
+        else {cmd=cmd (cmd?" ":"") $i; skip=0}
+      }
+      if(cmd && !seen[cmd]++) print cmd
+    }' "$history_path" >"$new_history_path"
+    history_path="$new_history_path"
   fi
 
   local normal_header="Press Ctrl-F to save selected commands to favorites"
