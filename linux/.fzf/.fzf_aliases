@@ -112,7 +112,8 @@ fzfh() {
         --bind "ctrl-x:execute(
         bash -c '\
           # echo \"DEBUG: \$history_path\" >> /tmp/.info
-          read -p \"Delete selected commands? (y/N): \" answer < /dev/tty; \
+          echo \"Delete selected commands? (y/N): \" >&2; \
+          read answer; \
           [[ \"\$answer\" =~ ^[Yy] ]] || exit 0; \
           for cmd in \"\$@\"; do \
             # echo \"CMD: \$cmd\" >> /tmp/.info
