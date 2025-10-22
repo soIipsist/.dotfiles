@@ -70,6 +70,7 @@ fzfh() {
     local history_path="${1:-$HISTFILE}"
     local change_header="${2:-1}"
     local fzf_favorites="${FZF_FAVORITES:-$HOME/.fzf_favorites}"
+    local new_history_path=""
 
     if [[ ! -f $history_path ]]; then
         echo "History file not found: $history_path" >&2

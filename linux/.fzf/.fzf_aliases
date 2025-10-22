@@ -80,16 +80,12 @@ fzfh() {
     history -a
   fi
 
-  if [[ -n "$HISTTIMEFORMAT" ]]; then
-    new_history_path="/tmp/.bash_history"
-    awk '{
-      cmd=""; skip=0
-      for(i=1;i<=NF;i++) {
-        if($i ~ /^[0-9]{4}-/ || $i ~ /^[0-9]{1,2}:/ || $i ~ /^[0-9]+$/ ) skip=1
-        else {cmd=cmd (cmd?" ":"") $i; skip=0}
-      }
-      if(cmd && !seen[cmd]++) print cmd
-    }' "$history_path" >"$new_history_path"
+  if [[ -n "$HISTTIMEFORMAT" && "$change_header" -eq 1 ]]; then
+    new_history_path="/tmp/.fzf_hist"
+    local old_histtime="$HISTTIMEFORMAT"
+    unset HISTTIMEFORMAT
+    history -w "$new_history_path"
+    HISTTIMEFORMAT="$old_histtime"
     history_path="$new_history_path"
   fi
 
