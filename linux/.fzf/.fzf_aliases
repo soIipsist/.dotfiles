@@ -141,6 +141,10 @@ fzfh() {
   else
     history -s "$last_cmd"
   fi
+
+  if [ -n "$new_history_path" ]; then
+    rm "$new_history_path"
+  fi
 }
 
 fzff() {
