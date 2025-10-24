@@ -1,5 +1,7 @@
 export FZF_DEFAULT_OPTS="--color=query:#ff8700"
 export FZF_FAVORITES="$HOME/.fzf_favorites"
+export FZF_REMEMBER_QUERY=1
+export FZF_QUERY=""
 
 # open fzf in edit mode
 fzfe() {
@@ -70,6 +72,11 @@ fzfh() {
   local change_header="${2:-1}"
   local fzf_favorites="${FZF_FAVORITES:-$HOME/.fzf_favorites}"
   local new_history_path=""
+  local query="${FZF_QUERY:-}"
+
+  if [[ "${FZF_REMEMBER_QUERY:-0}" -eq 0 ]]; then
+    query=""
+  fi
 
   if [[ ! -f $history_path ]]; then
     echo "History file not found: $history_path" >&2
@@ -98,10 +105,13 @@ fzfh() {
   if [[ $change_header -eq 1 ]]; then
     selection=$(
       awk '!seen[$0]++' "$history_path" | fzf \
+        --query="$query" \
+        --print-query \
         --multi \
         --tac \
         --height=60% --border --prompt="History> " \
         --header="$normal_header" \
+        --bind "esc:print-query+abort" \
         --bind "ctrl-s:toggle+down" \
         --bind "ctrl-f:execute(
                     bash -c '\
@@ -129,6 +139,9 @@ fzfh() {
     selection=$(awk '!seen[$0]++' "$history_path" | fzf --multi --tac --height=60% --border --prompt="History> ")
   fi
 
+  FZF_QUERY="$(head -n1 <<<"$selection")"
+  selection="$(tail -n +2 <<<"$selection")"
+
   [[ -z $selection ]] && {
     echo "No selection made." >&2
     return 1
@@ -146,6 +159,11 @@ fzfh() {
   if [ -n "$new_history_path" ]; then
     rm "$new_history_path"
   fi
+
+  if [[ ! "${FZF_REMEMBER_QUERY:-0}" -eq 1 ]]; then
+    FZF_QUERY=""
+  fi
+
 }
 
 fzff() {
