@@ -129,8 +129,8 @@ fzfh() {
             # echo \"CMD: \$cmd\" >> /tmp/.info
             # echo \"SED: sed \"/^\$cmd\$/d\"\" >> /tmp/.info
             # echo \"ARGS: \"\$@\"\" >> /tmp/.info
-            grep -Fxv \"\$cmd\" \"$history_path\" > \"$history_path.tmp\" && mv \"$history_path.tmp\" \"$history_path\"
-
+            grep -Fxv \"\$cmd\" \"$history_path\" > \"$history_path.tmp\" 2>/dev/null || true
+            mv \"$history_path.tmp\" \"$history_path\"
           done' bash {+}
       )+transform-header(echo '$deleted_header')+reload(awk '!seen[\$0]++' \"$history_path\")" \
         --bind "focus:transform-header:echo '$normal_header'"
@@ -151,7 +151,8 @@ fzfh() {
             read -r answer < /dev/tty;
             [[ \"\$answer\" =~ ^[Yy] ]] || exit 0; \
             for cmd in \"\$@\"; do \
-            grep -Fxv \"\$cmd\" \"$history_path\" > \"$history_path.tmp\" && mv \"$history_path.tmp\" \"$history_path\"
+            grep -Fxv \"\$cmd\" \"$history_path\" > \"$history_path.tmp\" 2>/dev/null || true
+            mv \"$history_path.tmp\" \"$history_path\"
             done' bash {+}
         )+transform-header(echo '$deleted_header')+reload(awk '!seen[\$0]++' \"$history_path\")" \
         --bind "focus:transform-header:echo '$normal_header'"
