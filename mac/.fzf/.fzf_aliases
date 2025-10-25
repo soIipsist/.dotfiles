@@ -143,6 +143,7 @@ fzfh() {
                 --print-query \
                 --multi --tac --height=60% --border --prompt="Favorites> " \
                 --bind "esc:print-query+abort" \
+                --bind "ctrl-s:toggle+down" \
                 --bind "ctrl-x:execute(
         bash -c '\
             echo -n \"Delete selected commands? (y/N): \" > /dev/tty;
@@ -152,8 +153,7 @@ fzfh() {
             grep -Fxv \"\$cmd\" \"$history_path\" > \"$history_path.tmp\" && mv \"$history_path.tmp\" \"$history_path\"
             done' bash {+}
         )+transform-header(echo '$deleted_header')+reload(awk '!seen[\$0]++' \"$history_path\")" \
-                --bind "focus:transform-header:echo '$normal_header'" \
-                --bind "ctrl-s:toggle+down"
+                --bind "focus:transform-header:echo '$normal_header'"
         )
     fi
 
