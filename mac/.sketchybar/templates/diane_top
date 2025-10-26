@@ -13,7 +13,7 @@ sketchybar --bar position=top \
 
 sketchybar --default padding_left=8 padding_right=0 \
     background.border_color=$COLOR_DEFAULT \
-    background.border_width=2 \
+    background.border_width=1 \
     background.height=40 \
     background.corner_radius=12 \
     icon.color=$COLOR_DEFAULT \
@@ -34,12 +34,16 @@ sketchybar --add item appicon left \
     --set appicon script="$PLUGIN_DIR/appicon.sh" \
     background.border_width=0 \
     background.height=24 \
+    label.padding_left=10 \
+    label.padding_right=10 \
+    icon.padding_left=10 \
+    label.max_chars=30 \
     icon=$ICON_APPLE \
     click_script="./bin/menus -s 0" \
     --subscribe appicon mouse.clicked window_focus front_app_switched space_change title_change
 
 sketchybar --add item active_workspace left \
-    --set active_workspace padding_left=2 \
+    --set active_workspace padding_left=0 \
     padding_right=8 \
     label.font="$FONT_2" \
     icon.font="$FONT_2" \
@@ -69,6 +73,7 @@ for sid in $workspaces; do
         background.drawing=on \
         background.corner_radius=$SPACE_CORNER_RADIUS \
         width=30 \
+        background.border_width=2 \
         label="$sid" \
         label.align=center \
         label.width=auto \
