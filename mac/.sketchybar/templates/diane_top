@@ -69,7 +69,7 @@ for sid in $workspaces; do
 
     sketchybar --add item space.$sid left \
         --subscribe space.$sid aerospace_workspace_change \
-        --set space.$sid background.color=$COLOR_SECONDARY \
+        --set space.$sid background.color=$COLOR_BACKGROUND \
         background.drawing=on \
         background.corner_radius=$SPACE_CORNER_RADIUS \
         width=30 \

@@ -1,10 +1,11 @@
 #!/bin/bash
+source "$dotfiles_directory/.config/themes/theme.sh"
 
 STATE="$(echo "$INFO" | jq -r '.state')"
 MEDIA="$(echo "$INFO" | jq -r '.title + " - " + .artist')"
 APPLICATION="$(echo "$INFO" | jq -r '.app')"
 
-sketchybar --set media label="$MEDIA" label.font="$FONT_2" icon="􀊖" label="No tracks playing"
+sketchybar --set media label="$MEDIA" label.align=center icon.align=center label.font="$FONT_2" icon="􀊖" label="No tracks playing"
 
 if [ "$STATE" = "playing" ]; then
     sketchybar --set media label="$MEDIA" icon="􀊖"

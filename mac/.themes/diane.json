@@ -7,6 +7,7 @@
   "COLOR_BACKGROUND": "0xe01d2021",
   "COLOR_FOREGROUND": "0xe0fbf1c7",
   "COLOR_DEFAULT": "0xffdddddd",
+  "COLOR_SECONDARY": "0xe0fbf1c7",
   "COLOR_ACCENT": "0xe0d65d0e",
   "COLOR_ACCENT_BRIGHT": "0xe0fe8019",
   "COLOR_BLACK": "0xe04c4f69",
