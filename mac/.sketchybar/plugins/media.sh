@@ -4,12 +4,13 @@ STATE="$(echo "$INFO" | jq -r '.state')"
 MEDIA="$(echo "$INFO" | jq -r '.title + " - " + .artist')"
 APPLICATION="$(echo "$INFO" | jq -r '.app')"
 
+sketchybar --set media label="$MEDIA" label.font="$FONT_2" icon="􀊖" label="No tracks playing"
+
 if [ "$STATE" = "playing" ]; then
     sketchybar --set media label="$MEDIA" icon="􀊖"
 
 elif [ "$STATE" = "paused" ]; then
     sketchybar --set media label="$MEDIA" icon="􀊖"
-fi
 
 # check if Music app is open
 APP_MUSIC_STATE="$(pgrep -x Music)"
