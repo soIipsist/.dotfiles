@@ -190,53 +190,15 @@ sketchybar --add item seperator.r6 right \
     icon.drawing=off \
     label.drawing=off
 
-# sketchybar --add item pip right \
-#     --set pip icon="󰌠 " \
-#     label=" 0" \
-#     script="$PLUGIN_DIR/update.sh" \
-#     background.corner_radius=6 \
-#     update_freq=1000 \
-#     padding_left=4 \
-#     padding_right=8 \
-#     background.border_width=0 \
-#     background.height=24
+# sketchybar --add bracket media_bracket \
+#     --set media_bracket background.color=$COLOR_BACKGROUND \
+#     background.border_color=$COLOR_DEFAULT \
+#     padding_left=24 padding_right=24
 
-# sketchybar --add item brew right \
-#     --set brew icon="􀐛 " \
-#     label=" 0" \
-#     background.corner_radius=6 \
-#     padding_left=4 \
-#     padding_right=4 \
-#     background.border_width=0 \
-#     background.height=24
-
-# sketchybar --add item npm right \
-#     --set npm icon="󰌞 " \
-#     label=" 0" \
-#     background.corner_radius=6 \
-#     padding_left=4 \
-#     padding_right=4 \
-#     background.border_width=0 \
-#     background.height=24
-
-# sketchybar --add item gem right \
-#     --set gem icon="󰴭 " \
-#     label=" 0" \
-#     background.corner_radius=6 \
-#     padding_left=8 \
-#     padding_right=4 \
-#     background.border_width=0 \
-#     background.height=24
-
-sketchybar --add bracket media_bracket \
-    --set media_bracket background.color=$COLOR_BACKGROUND \
-    background.border_color=$COLOR_DEFAULT \
-    padding_left=24 padding_right=24
-
-sketchybar --add item seperator.r7 right \
-    --set seperator.r7 padding_left=4 padding_right=4 \
-    background.drawing=off \
-    icon.drawing=off \
-    label.drawing=off
+# sketchybar --add item seperator.r7 right \
+#     --set seperator.r7 padding_left=4 padding_right=4 \
+#     background.drawing=off \
+#     icon.drawing=off \
+#     label.drawing=off
 
 sketchybar --update
