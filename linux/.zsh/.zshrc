@@ -36,15 +36,14 @@ function sesh-sessions() {
 # PATH variable
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
-export PATH="/usr/local/ffmpeg/bin:$PATH"
+export PATH="/usr/local/ffmpeg/bin:/usr/local/ffmpeg/lib:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/lib/python3.13/site-packages:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/lib/python3.13/site-packages:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/opt/python@3.13/bin:$PATH"
-
-export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
+export PATH="/usr/games:$PATH"
 
 # history
 export HISTFILE="$HOME/.zsh_history"

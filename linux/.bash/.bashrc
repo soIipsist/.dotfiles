@@ -151,16 +151,14 @@ run_in_tmux_session() {
 }
 
 export PATH=/opt/homebrew/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-export PATH="/usr/local/ffmpeg/bin:$PATH"
+export PATH="/usr/local/ffmpeg/bin:/usr/local/ffmpeg/lib:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/lib/python3.13/site-packages:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/lib/python3.13/site-packages:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/opt/python@3.13/bin:$PATH"
-
-# pass
 export PASSWORD_STORE_DIR="$HOME/repos/soIipsist/password-store"
-export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
+export PATH="/usr/games:$PATH"
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
