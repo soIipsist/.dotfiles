@@ -9,6 +9,8 @@ ExecStart=/usr/bin/java -Xmx2G -Xms2G -jar minecraft_server.jar nogui
 Restart=on-failure
 StandardOutput=append:/var/log/minecraft.log
 StandardError=append:/var/log/minecraft.log
+TimeoutStopSec=60
+KillSignal=SIGINT
 
 [Install]
 WantedBy=multi-user.target
