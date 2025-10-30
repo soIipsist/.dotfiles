@@ -1,8 +1,8 @@
 #!/bin/bash
 # Pre-start script for Palworld: generate full ServerSettings.ini
-
+LOG_PATH="/var/log/palworld.log"
 if [ -n "$CONFIG_FILE" ]; then
-    echo "Palworld config file was not found"
+    echo "Palworld config file was not found" >>"$LOG_PATH"
     exit 0
 fi
 
