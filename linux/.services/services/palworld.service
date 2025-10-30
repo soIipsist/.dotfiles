@@ -4,7 +4,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStartPre=/home/steam/PalServer/palworld_setup.sh
+ExecStartPre=/usr/local/bin/palworld_setup.sh
 ExecStart=/home/steam/Steam/steamapps/common/PalServer/PalServer.sh
 User=steam
 WorkingDirectory=/home/steam/Steam/steamapps/common/PalServer
