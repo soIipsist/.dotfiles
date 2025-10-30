@@ -6,7 +6,6 @@ Wants=network-online.target
 [Service]
 ExecStartPre=/home/steam/PalServer/palworld_setup.sh
 ExecStart=/home/steam/Steam/steamapps/common/PalServer/PalServer.sh
-Restart=always
 User=steam
 WorkingDirectory=/home/steam/Steam/steamapps/common/PalServer
 Restart=on-failure
@@ -14,6 +13,7 @@ RestartSec=5
 LimitNOFILE=100000
 StandardOutput=append:/var/log/palworld.log
 StandardError=append:/var/log/palworld.log
+EnvironmentFile=/etc/default/palworld.conf
 
 [Install]
 WantedBy=multi-user.target

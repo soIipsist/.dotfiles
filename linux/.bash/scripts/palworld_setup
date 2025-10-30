@@ -1,10 +1,10 @@
 #!/bin/bash
 # Pre-start script for Palworld: generate full ServerSettings.ini
 
-CONFIG_DIR="/home/steam/Steam/steamapps/common/PalServer/Config"
-CONFIG_FILE="$CONFIG_DIR/ServerSettings.ini"
-
-mkdir -p "$CONFIG_DIR"
+if [ -n "$CONFIG_FILE" ]; then
+    echo "Palworld config file was not found"
+    exit 0
+fi
 
 : "${PALWORLD_PUBLIC_PORT:=8211}"
 : "${PALWORLD_PUBLIC_IP:=}"
@@ -109,9 +109,6 @@ ItemCorruptionMultiplier=1.000000
 )
 EOF
 
-# -----------------------
-# Set ownership and permissions
-# -----------------------
 chown steam:steam "$CONFIG_FILE"
 chmod 600 "$CONFIG_FILE"
 
