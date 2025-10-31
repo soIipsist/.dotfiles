@@ -1,4 +1,5 @@
 #!/bin/bash
+DB="/etc/pihole/gravity.db"
 
 add_group() {
     local name="$1"
