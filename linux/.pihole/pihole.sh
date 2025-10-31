@@ -55,6 +55,29 @@ if [ -n "$PIHOLE_PORT" ]; then
     sudo pihole-FTL --config webserver.port "$PIHOLE_PORT"
 fi
 
+# create groups
+echo ""
+echo "=== Group Setup ==="
+while true; do
+    read -rp "Enter group name (or press Enter to finish): " groupname
+    [[ -z "$groupname" ]] && break
+    read -rp "Enter description for '$groupname': " groupdesc
+    add_group "$groupname" "$groupdesc"
+done
+
+# create client and group association
+echo ""
+echo "=== Client Setup ==="
+while true; do
+    read -rp "Enter client IP or MAC (or press Enter to finish): " client
+    [[ -z "$client" ]] && break
+    read -rp "Enter comment for client '$client': " comment
+    echo "Available groups:"
+    sudo sqlite3 "$DB" "SELECT id, name FROM 'group';"
+    read -rp "Enter group name to assign '$client' to: " groupname
+    add_client_to_group "$client" "$comment" "$groupname"
+done
+
 echo "[+] Reloading Pi-hole..."
 sudo pihole restartdns reload-lists
 echo "[✓] Configuration complete!"
