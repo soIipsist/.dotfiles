@@ -114,10 +114,9 @@ bruteforce_report() {
 
     # include some NO_IP lines if present
     if [[ "$noip_count" -gt 0 ]]; then
-        {
-            printf "\n\n--- LINES WITHOUT AN IPv4 (first 30 shown) ---\n"
-            grep -Eiv "$ip_re" "$tmp" | head -n 30
-        } >>"$report"
+
+        printf "\n\n--- LINES WITHOUT AN IPv4 (first 30 shown) ---\n"
+        grep -Eiv "$ip_re" "$tmp" | head -n 30 >>"$report"
     fi
 
     less -R "$report"
