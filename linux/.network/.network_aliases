@@ -10,65 +10,118 @@ ssh_dump() {
     sudo tcpdump -i "$interface" -w "$outfile_path" -v '(tcp port 22 or tcp port 2222) and tcp[tcpflags] & tcp-syn != 0'
 }
 
-detect_bruteforce() {
+bruteforce_report() {
+    local SAMPLE="${1:-5}"
+    local TOPN="${2:-50}"
     local LOG="/var/log/auth.log"
-    local SAMPLE=5
     local PATTERN='failed password|invalid user|authentication failure|pam:|invalid login|connection reset|did not receive identification|refused connect|authentication error|illegal user'
     local ip_re='([0-9]{1,3}\.){3}[0-9]{1,3}'
 
+    # temp files (local names)
+    local tmp counts report
+    tmp="$(mktemp)" || {
+        echo "mktemp failed"
+        return 1
+    }
+    counts="$(mktemp)" || {
+        rm -f "$tmp"
+        echo "mktemp failed"
+        return 1
+    }
+    report="$(mktemp)" || {
+        rm -f "$tmp" "$counts"
+        echo "mktemp failed"
+        return 1
+    }
+
+    # ensure cleanup when the function returns
+    trap 'rm -f "$tmp" "$counts" "$report"' RETURN
+
     if [[ ! -r "$LOG" ]]; then
-        echo "Cannot read $LOG. Run as root or check the file path." >&2
+        echo "Cannot read $LOG. Run as root (sudo) or check file path." >&2
         return 1
     fi
 
-    echo "Scanning $LOG for patterns..."
-    tmp="$(mktemp)"
-    trap 'rm -f "$tmp"' EXIT
-    grep -Ei "$PATTERN" "$LOG" >"$tmp" || true
+    # collect matching lines (case-insensitive)
+    grep -Ei "$PATTERN" "$LOG" >"$tmp" 2>/dev/null || true
 
     if [[ ! -s "$tmp" ]]; then
-        echo "No matching failed-auth lines found."
+        echo "No matching failed-auth lines found in $LOG."
         return 0
     fi
 
-    echo
-    printf "%-17s %8s %s\n" "IP" "ATTEMPTS" "FIRST_LINE"
-    echo "--------------------------------------------------------------------"
+    # produce sorted ip counts: "count ip"
+    grep -Eo "$ip_re" "$tmp" | sort | uniq -c | sort -nr >"$counts"
 
-    # Use grep -Eo to extract IPv4; some lines may not contain an IP and are handled below
-    while read -r count ip; do
-        # For each IP, show first and last lines (raw), plus sample lines header later
-        first_line="$(grep -F "$ip" "$tmp" | head -n1)"
-        last_line="$(grep -F "$ip" "$tmp" | tail -n1)"
-        printf "%-17s %8s %s\n" "$ip" "$count" "${first_line:--}"
-    done < <(grep -Eo "$ip_re" "$tmp" | sort | uniq -c | sort -nr | awk '{print $1, $2}')
+    # build report header
+    {
+        printf "BRUTE-FORCE / FAILED-AUTH SUMMARY\n"
+        printf "Log: %s\nReport generated: %s\n\n" "$LOG" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+        printf "%-17s %8s  %-20s  %-20s  %s\n" "IP" "ATTEMPTS" "FIRST_LINE" "LAST_LINE" "USERS"
+        printf "%s\n" "----------------------------------------------------------------------------------------------------------------"
+    } >"$report"
 
-    # Report lines without IPv4
-    noip_count="$(grep -Eiv "$ip_re" "$tmp" | wc -l | tr -d '[:space:]')"
+    # append the table rows for top TOPN IPs
+    awk -v tmp="$tmp" -v topn="$TOPN" '
+  {
+    count=$1; ip=$2;
+    printed++
+    if(printed>topn) next
+    # get first and last raw line for this IP
+    cmd = "grep -F \"" ip "\" " tmp " | head -n1"
+    first = ""; last = ""
+    cmd | getline first; close(cmd)
+    cmd = "grep -F \"" ip "\" " tmp " | tail -n1"
+    cmd | getline last; close(cmd)
+
+    # extract candidate usernames for this IP
+    users_cmd = "grep -F \"" ip "\" " tmp " | awk \047{ for(i=1;i<=NF;i++){ if($i==\"for\" && (i+1)<=NF) print $(i+1); if($i==\"user\" && (i+1)<=NF) print $(i+1) }}\047 | sort -u | tr \"\\n\" \",\""
+    users = ""
+    users_cmd | getline users; close(users_cmd)
+    if(users=="") users = "-"
+
+    f = (length(first)>20?substr(first,1,17)\"...\":first)
+    l = (length(last)>20?substr(last,1,17)\"...\":last)
+
+    printf "%-17s %8d  %-20s  %-20s  %s\n", ip, count, f, l, users
+  }
+  ' "$counts" >>"$report"
+
+    # lines without IPv4
+    local noip_count
+    noip_count=$(grep -Eiv "$ip_re" "$tmp" | wc -l | tr -d '[:space:]')
     if [[ "$noip_count" -gt 0 ]]; then
-        printf "%-17s %8s %s\n" "NO_IP" "$noip_count" "-"
+        printf "\n%-17s %8s  %s\n" "NO_IP" "$noip_count" "(lines without an IPv4 address)" >>"$report"
     fi
 
-    # Print sample lines for top IPs (limit to top 20 to avoid huge output)
-    echo
-    echo "Sample lines (up to $SAMPLE per IP) — top IPs first:"
-    echo "--------------------------------------------------------------------"
+    # append sample lines header
+    {
+        printf "\n\nSAMPLE LINES (up to %d per IP) — top IPs first\n" "$SAMPLE"
+        printf "%s\n" "--------------------------------------------------------------------"
+    } >>"$report"
 
-    TOPN=20
-    ip_index=0
-    while read -r _ ip; do
-        ((ip_index++))
-        [[ $ip_index -gt $TOPN ]] && break
-        echo
-        echo "--- $ip ---"
-        grep -F "$ip" "$tmp" | head -n "$SAMPLE"
-    done < <(grep -Eo "$ip_re" "$tmp" | sort | uniq -c | sort -nr | awk '{print $1, $2}')
+    # append sample lines per IP
+    awk -v tmp="$tmp" -v sample="$SAMPLE" -v topn="$TOPN" '
+  {
+    count=$1; ip=$2; n++
+    if(n>topn) next
+    print "\n--- " ip " ---"
+    cmd = "grep -F \"" ip "\" " tmp " | head -n " sample
+    while((cmd | getline line) > 0) {
+      print line
+    }
+    close(cmd)
+  }
+  ' "$counts" >>"$report"
 
+    # optionally include first 30 lines without IPs
     if [[ "$noip_count" -gt 0 ]]; then
-        echo
-        echo "--- LINES WITHOUT AN IPv4 (first 10 shown) ---"
-        grep -Eiv "$ip_re" "$tmp" | head -n 10
+        {
+            printf "\n\n--- LINES WITHOUT AN IPv4 (first 30 shown) ---\n"
+            grep -Eiv "$ip_re" "$tmp" | head -n 30
+        } >>"$report"
     fi
 
-    return 0
+    # display the report in less, returning when less quits
+    less -R "$report"
 }
