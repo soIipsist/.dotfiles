@@ -47,7 +47,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PIHOLE_PORT=""
 
 # copy all blocklists
-sudo cp -f "$SCRIPT_DIR/blocklists" /etc/pihole
+sudo cp -rf "$SCRIPT_DIR/blocklists" /etc/pihole
 sudo chown pihole:pihole /etc/pihole/blocklists
 
 # set default port (80 by default)
@@ -79,5 +79,5 @@ while true; do
 done
 
 echo "[+] Reloading Pi-hole..."
-sudo pihole restartdns reload-lists
+sudo pihole -g
 echo "[✓] Configuration complete!"
