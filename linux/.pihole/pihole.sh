@@ -97,7 +97,8 @@ for file in "/etc/pihole/allowlists"/*; do
     add_list $url
 done
 
-sudo chown pihole:pihole /etc/pihole/blocklists
+sudo chown -R pihole:pihole /etc/pihole/blocklists
+sudo chown -R pihole:pihole /etc/pihole/allowlists
 
 # set default port (80 by default)
 if [ -n "$PIHOLE_PORT" ]; then
