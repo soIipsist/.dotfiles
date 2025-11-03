@@ -10,6 +10,8 @@ from ast import literal_eval
 import re
 from urllib.parse import urlparse
 
+pp = PrettyPrinter(depth=4)
+
 
 def get_callable_args(func, args: dict = None) -> dict:
     """Given a function, return all of its arguments with default values included."""
@@ -108,6 +110,30 @@ def select_items(
         if not mapped_object_type
         else map_sqlite_results_to_objects(results, mapped_object_type, column_names)
     )
+
+
+def view_items(
+    conn: sqlite3.Connection,
+    table_name: str,
+    filter_condition: str = None,
+    mapped_object_type=None,
+    column_names: list = [],
+):
+
+    column_names = (
+        get_column_names(conn.cursor(), table_name)
+        if not column_names
+        else column_names
+    )
+
+    items = select_items(
+        conn, table_name, filter_condition, mapped_object_type, column_names
+    )
+
+    for item in items:
+        item_dict = dict(zip(column_names, item))
+        pp.pprint(item_dict)
+        print("")
 
 
 def sanitize_filter_condition(filter_condition: str):
@@ -573,10 +599,10 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--filter_condition", type=str, default=None)
     parser.add_argument("-o", "--object", default=None, type=parse_kv)
     parser.add_argument(
-        "-t",
-        "--table_name",
+        "table_name",
         type=str,
         default=os.environ.get("SQLITE_TABLE", "downloads"),
+        nargs="?",
     )
 
     args = parser.parse_args()
@@ -587,7 +613,9 @@ if __name__ == "__main__":
     conn = create_connection(args.database_path)
 
     action_map = {
-        "select": lambda: select_items(conn, args.table_name, args.filter_condition),
+        "select": lambda: view_items(
+            conn, args.table_name, args.filter_condition, None, args.column_names
+        ),
         "insert": lambda: insert_items(
             conn, args.table_name, [args.object], args.column_names
         ),
@@ -596,8 +624,6 @@ if __name__ == "__main__":
     }
 
     output = action_map[args.action]()
-
-    pp = PrettyPrinter(indent=2)
 
     print(f"Executing {args.action}...")
     pp.pprint(output)
