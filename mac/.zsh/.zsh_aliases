@@ -3,7 +3,7 @@ export GIT_HOME="$HOME/repos/soIipsist"
 export DEFAULT_EDITOR="vscode"
 
 # VSCode variables
-export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/vscode-workspaces/.workspaces"
+export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/.workspaces"
 export VSCODE_PROJECT_DIRECTORY="$GIT_HOME"
 
 # sqlite variables
@@ -48,7 +48,6 @@ alias dli="docker images"
 alias dsc="docker container stop"
 alias drc="docker container rm"
 alias dri="docker image rm"
-
 
 function git_pull_all() {
     local base_dir="${GIT_HOME:-.}"
