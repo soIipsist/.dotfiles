@@ -44,11 +44,59 @@ add_client_to_group() {
     fi
 }
 
+add_list() {
+    local url="$1"
+    local type="${2:-block}"
+
+    if [ -z "$url" ]; then
+        echo "[!] No URL or domain provided"
+        return 1
+    fi
+
+    if [ "$type" = "block" ]; then
+        if sudo sqlite3 "$DB" "SELECT address FROM adlist WHERE address='$url';" | grep -q "$url"; then
+            echo "[=] Blocklist already exists: $url"
+        else
+            echo "[+] Adding blocklist: $url"
+            sudo sqlite3 "$DB" "INSERT INTO adlist (address, enabled) VALUES ('$url', 1);"
+            sudo pihole -g
+            echo "[✓] Blocklist added and gravity updated"
+        fi
+
+    elif [ "$type" = "allow" ]; then
+        if sudo sqlite3 "$DB" "SELECT domain FROM domainlist WHERE domain='$url' AND type=0;" | grep -q "$url"; then
+            echo "[=] Allowlist already exists: $url"
+        else
+            echo "[+] Adding allowlist: $url"
+            sudo sqlite3 "$DB" "INSERT INTO domainlist (type, domain, enabled) VALUES (0, '$url', 1);"
+            sudo pihole -g
+            echo "[✓] Allowlist added and gravity updated"
+        fi
+
+    else
+        echo "[!] Unknown type: $type. Use 'block' or 'allow'."
+        return 1
+    fi
+}
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PIHOLE_PORT=""
 
-# copy all blocklists
+# copy all blocklists and add them
 sudo cp -rf "$SCRIPT_DIR/blocklists" /etc/pihole
+
+for file in "/etc/pihole/blocklists"/*; do
+    url="file://$file"
+    add_list $url
+done
+
+sudo cp -rf "$SCRIPT_DIR/allowlists" /etc/pihole
+
+for file in "/etc/pihole/allowlists"/*; do
+    url="file://$file"
+    add_list $url
+done
+
 sudo chown pihole:pihole /etc/pihole/blocklists
 
 # set default port (80 by default)
