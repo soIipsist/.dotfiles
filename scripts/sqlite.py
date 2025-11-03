@@ -386,6 +386,15 @@ def delete_items(
         return execute_query(conn, query, params)
 
 
+def delete_items_with_dialog(
+    conn: sqlite3.Connection, table_name: str, filter_condition: str = "id = ?"
+):
+    a = input(f"Are you sure you want to delete records from '{table_name}'? (y/N): ")
+
+    if a.lower() == "y":
+        delete_items(conn, table_name, filter_condition)
+
+
 def execute_query(
     conn: sqlite3.Connection, query: str, parameters: list = None, return_cursor=False
 ):
@@ -619,8 +628,9 @@ if __name__ == "__main__":
         "insert": lambda: insert_items(
             conn, args.table_name, [args.object], args.column_names
         ),
-        "delete": lambda: delete_items(conn, args.table_name, args.filter_condition),
-        "delete_all": lambda: delete_items(conn, args.table_name, None),
+        "delete": lambda: delete_items_with_dialog(
+            conn, args.table_name, args.filter_condition
+        ),
     }
 
     output = action_map[args.action]()
