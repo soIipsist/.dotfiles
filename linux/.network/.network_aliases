@@ -14,7 +14,8 @@ bruteforce_report() {
     local SAMPLE="${1:-5}"
     local TOPN="${2:-50}"
     local LOG="/var/log/auth.log"
-    local REPORT_DIR="/var/log/bruteforce-reports"
+    uid=$(id -u)
+    local REPORT_DIR="/tmp/$uid/bruteforce-reports"
     local REPORT_FILE="$REPORT_DIR/bruteforce_report_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
     local PATTERN='failed password|invalid user|authentication failure|pam:|invalid login|connection reset|did not receive identification|refused connect|authentication error|illegal user'
     local ip_re='([0-9]{1,3}\.){3}[0-9]{1,3}'
