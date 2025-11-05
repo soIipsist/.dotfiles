@@ -65,8 +65,8 @@ export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins/"
 export PASSWORD_STORE_DIR="$HOME/repos/soIipsist/password-store"
 
 # enable zsh's autocompletion system
-autoload -U compinit
-compinit
+autoload -Uz compinit
+compinit -C
 
 autoload -U bashcompinit
 bashcompinit
@@ -85,6 +85,7 @@ autoload -Uz vcs_info
 autoload -U colors && colors
 
 zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:*' check-for-changes false
 zstyle ':vcs_info:git:*' formats '%F{10}(%b)%f'
 
 function precmd() {
