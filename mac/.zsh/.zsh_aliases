@@ -3,7 +3,7 @@ export GIT_HOME="$HOME/repos/soIipsist"
 export DEFAULT_EDITOR="vscode"
 
 # VSCode variables
-export VSCODE_WORKSPACE_DIRECTORY="$GIT_HOME/.workspaces"
+export VSCODE_WORKSPACE_DIRECTORY="$HOME/.workspaces"
 export VSCODE_PROJECT_DIRECTORY="$GIT_HOME"
 
 # sqlite variables

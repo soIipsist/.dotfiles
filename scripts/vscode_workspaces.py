@@ -16,13 +16,7 @@ if workspace_directory is None or not os.path.exists(workspace_directory):
         f"Using '{fallback_directory}' instead.",
         UserWarning,
     )
-    if not os.path.exists(fallback_directory):
-        prompt = f"Fallback workspace directory {fallback_directory} does not exist, would you like to create it? [Y/n]"
-
-        if prompt.lower() == "y":
-            os.makedirs(fallback_directory, exist_ok=True)
-        else:
-            pass
+    os.makedirs(fallback_directory, exist_ok=True)
     workspace_directory = fallback_directory
 
 project_directory = os.environ.get(
