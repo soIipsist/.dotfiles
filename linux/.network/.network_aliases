@@ -1,12 +1,12 @@
-export DUMPS_DIR="$HOME/.dumps"
+export TCPDUMPS_DIR="$HOME/.dumps"
+export UID="${UID:-$(id -u 2>/dev/null || echo 1000)}"
+export REPORT_DIR="/tmp/$UID/reports"
 
 ssh_dump() {
     local interface="${1:-any}"
     local dumps_filename="${2:-ssh_dump.pcap}"
-    local outfile_path="$DUMPS_DIR/$dumps_filename"
-
-    mkdir -p "$DUMPS_DIR"
-
+    local outfile_path="$TCPDUMPS_DIR/$dumps_filename"
+    mkdir -p "$TCPDUMPS_DIR"
     sudo tcpdump -i "$interface" -w "$outfile_path" -v '(tcp port 22 or tcp port 2222) and tcp[tcpflags] & tcp-syn != 0'
 }
 
@@ -14,8 +14,6 @@ report_bruteforce() {
     local SAMPLE="${1:-5}"
     local TOPN="${2:-50}"
     local LOG="/var/log/auth.log"
-    uid=$(id -u)
-    local REPORT_DIR="/tmp/$uid/bruteforce-reports"
     local REPORT_FILE="$REPORT_DIR/bruteforce_report_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
     local PATTERN='failed password|invalid user|authentication failure|pam:|invalid login|connection reset|did not receive identification|refused connect|authentication error|illegal user'
     local ip_re='([0-9]{1,3}\.){3}[0-9]{1,3}'
@@ -124,13 +122,12 @@ report_bruteforce() {
 }
 
 report_fail2ban() {
-    uid=$(id -u)
-    local OUTDIR="/tmp/$uid/bruteforce-reports"
     local REPORT_FILE
-    local TMP_CURR TMP_HIST
+    local TMP_CURR
 
-    mkdir -p "$OUTDIR"
-    REPORT_FILE="$OUTDIR/fail2ban_report_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
+    mkdir -p "$REPORT_DIR"
+    REPORT_FILE="$REPORT_DIR/fail2ban_report_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
+    IP_REPORT_FILE="$REPORT_DIR/fail2ban_ip_report_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
 
     # temp files
     TMP_CURR="$(mktemp)" || return 1
@@ -182,7 +179,7 @@ report_fail2ban() {
         printf "--- HISTORICAL BANS (from fail2ban logs) ---\n" >>"$REPORT_FILE"
 
         if ls /var/log/fail2ban.log* >/dev/null 2>&1; then
-            sudo grep -h --text -- 'Ban ' /var/log/fail2ban.log* 2>/dev/null |
+            IPS=$(sudo grep -h --text -- 'Ban ' /var/log/fail2ban.log* 2>/dev/null |
                 awk '
             match($0, /Ban[[:space:]]+([0-9]{1,3}(\.[0-9]{1,3}){3})/, m) {
                 ip = m[1]
@@ -196,7 +193,42 @@ report_fail2ban() {
                 if (count > 0) printf "\nTotal unique IPs historically banned: %d\n", count
                 else print "  (no 'Ban' entries found in fail2ban logs)"
             }
-        ' >>"$REPORT_FILE"
+        ')
+
+            RECENT_10=$(echo "$IPS" | awk '
+    /^[[:space:]]*[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/ {
+        ts = $1 " " $2
+        ip = $3
+        if (!(ip in seen) || ts > seen[ip]) {
+            seen[ip] = ts
+            lines[ip] = $0
+        }
+    }
+    END {
+        if (length(seen) == 0) {
+            print "  (no '\''Ban'\'' entries found)"
+            exit
+        }
+        # Sort IPs by latest timestamp
+        n = 0
+        for (ip in seen) {
+            order[++n] = ip
+        }
+        # Simple bubble sort by timestamp (descending)
+        for (i = 1; i <= n; i++) {
+            for (j = i + 1; j <= n; j++) {
+                if (seen[order[i]] < seen[order[j]]) {
+                    temp = order[i]; order[i] = order[j]; order[j] = temp
+                }
+            }
+        }
+        printf "\n10 most recent banned IPs:\n"
+        for (i = 1; i <= n && i <= 10; i++) {
+            print lines[order[i]]
+        }
+    }')
+            echo "$IPS" >>"$IP_REPORT_FILE"
+            echo "$RECENT_10" >>"$REPORT_FILE"
         else
             echo "  No fail2ban log files found" >>"$REPORT_FILE"
         fi
