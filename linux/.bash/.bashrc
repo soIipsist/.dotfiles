@@ -159,6 +159,9 @@ export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/opt/python@3.13/bin:$PATH"
 export PASSWORD_STORE_DIR="$HOME/repos/soIipsist/password-store"
 export PATH="/usr/games:$PATH"
+export PATH="/usr/local/go/bin:$PATH"
+export GOBIN=$(go env GOPATH)/bin
+export PATH="$GOBIN:$PATH"
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like

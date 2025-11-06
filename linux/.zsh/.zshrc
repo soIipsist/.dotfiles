@@ -44,6 +44,9 @@ export PATH="/home/linuxbrew/.linuxbrew/lib/python3.13/site-packages:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/opt/python@3.13/bin:$PATH"
 export PATH="/usr/games:$PATH"
+export PATH="/usr/local/go/bin:$PATH"
+export GOBIN=$(go env GOPATH)/bin
+export PATH="$GOBIN:$PATH"
 
 # history
 export HISTFILE="$HOME/.zsh_history"
