@@ -10,7 +10,7 @@ ssh_dump() {
     sudo tcpdump -i "$interface" -w "$outfile_path" -v '(tcp port 22 or tcp port 2222) and tcp[tcpflags] & tcp-syn != 0'
 }
 
-bruteforce_report() {
+report_bruteforce() {
     local SAMPLE="${1:-5}"
     local TOPN="${2:-50}"
     local LOG="/var/log/auth.log"
@@ -123,7 +123,101 @@ bruteforce_report() {
 
 }
 
-bruteforce_summary() {
-    LOGFILE="/var/log/auth.log"
+report_fail2ban() {
+    uid=$(id -u)
+    local OUTDIR="/tmp/$uid/bruteforce-reports"
+    local REPORT_FILE
+    local TMP_CURR TMP_HIST
 
+    mkdir -p "$OUTDIR"
+    REPORT_FILE="$OUTDIR/fail2ban_report_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
+
+    # temp files
+    TMP_CURR="$(mktemp)" || return 1
+    trap 'rm -f "$TMP_CURR"' EXIT
+
+    # report header
+    printf "FAIL2BAN REPORT\nGenerated: %s (UTC)\n\n" "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" >"$REPORT_FILE"
+
+    # currently active bans (always use sudo)
+    {
+        printf "--- CURRENTLY ACTIVE BANS ---\n"
+        if sudo fail2ban-client status >/dev/null 2>&1; then
+            local raw_jails j jlist banned_ips
+            raw_jails="$(sudo fail2ban-client status 2>/dev/null |
+                sed -n 's/.*Jail list:[[:space:]]*//p' |
+                tr '\t' ' ' |
+                sed 's/,/ /g; s/^[[:space:]]*//; s/[[:space:]]*$//' |
+                tr -s ' ' |
+                tr ' ' '\n')"
+
+            if [[ -z "$raw_jails" ]]; then
+                echo "(No active jails found)"
+            else
+                jlist="$(echo "$raw_jails" | tr ',' ' ' | xargs)"
+                for j in $jlist; do
+                    printf "\nJail: %s\n" "$j"
+                    banned_ips="$(sudo fail2ban-client status "$j" 2>/dev/null |
+                        sed -n 's/.*Banned IP list:[[:space:]]*//p' |
+                        tr '\t' ' ' |
+                        sed 's/,/ /g; s/^[[:space:]]*//; s/[[:space:]]*$//' |
+                        tr -s ' ' |
+                        tr ' ' '\n')"
+
+                    if [[ -z "$banned_ips" ]]; then
+                        echo "  (No IPs currently banned)"
+                    else
+                        echo "$banned_ips" | tr ' ' '\n' | sed 's/^/  /'
+                    fi
+                done
+            fi
+        else
+            echo "(fail2ban-client not installed or cannot be run via sudo)"
+        fi
+        printf "\n"
+    } >>"$REPORT_FILE"
+
+    # historical bans from logs (use sudo zgrep or sudo grep)
+    {
+        printf "--- HISTORICAL BANS (from fail2ban logs) ---\n" >>"$REPORT_FILE"
+
+        if ls /var/log/fail2ban.log* >/dev/null 2>&1; then
+            sudo grep -h --text -- 'Ban ' /var/log/fail2ban.log* 2>/dev/null |
+                awk '
+            match($0, /Ban[[:space:]]+([0-9]{1,3}(\.[0-9]{1,3}){3})/, m) {
+                ip = m[1]
+                ts = $1 " " $2
+                printf "  %-20s  %s\n", ts, ip
+                ips[ip] = 1
+            }
+            END {
+                count = 0
+                for (ip in ips) count++
+                if (count > 0) printf "\nTotal unique IPs historically banned: %d\n", count
+                else print "  (no 'Ban' entries found in fail2ban logs)"
+            }
+        ' >>"$REPORT_FILE"
+        else
+            echo "  No fail2ban log files found" >>"$REPORT_FILE"
+        fi
+    }
+
+    # iptables / nftables snapshots (via sudo)
+    {
+        printf "\n--- IPS IN IPTABLES (sample) ---\n"
+        if command -v iptables-save >/dev/null 2>&1; then
+            sudo iptables-save 2>/dev/null | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}' | sort -u | sed 's/^/  /' | head -n 50
+        else
+            echo "  iptables-save not present"
+        fi
+
+        printf "\n--- IPS IN NFTABLES (sample) ---\n"
+        if command -v nft >/dev/null 2>&1; then
+            sudo nft list ruleset 2>/dev/null | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}' | sort -u | sed 's/^/  /' | head -n 50
+        else
+            echo "  nftables not present"
+        fi
+    } >>"$REPORT_FILE"
+
+    echo "Report saved to: $REPORT_FILE"
 }
