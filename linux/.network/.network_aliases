@@ -1,12 +1,12 @@
-export TCPDUMPS_DIR="$HOME/.dumps"
+export TCPDUMP_DIR="$HOME/.tcpdump"
 export UID="${UID:-$(id -u 2>/dev/null || echo 1000)}"
 export REPORT_DIR="/tmp/$UID/reports"
 
 ssh_dump() {
     local interface="${1:-any}"
     local dumps_filename="${2:-ssh_dump.pcap}"
-    local outfile_path="$TCPDUMPS_DIR/$dumps_filename"
-    mkdir -p "$TCPDUMPS_DIR"
+    local outfile_path="$TCPDUMP_DIR/$dumps_filename"
+    mkdir -p "$TCPDUMP_DIR"
     sudo tcpdump -i "$interface" -w "$outfile_path" -v '(tcp port 22 or tcp port 2222) and tcp[tcpflags] & tcp-syn != 0'
 }
 
@@ -113,12 +113,10 @@ report_bruteforce() {
     # include some NO_IP lines if present
     if [[ "$noip_count" -gt 0 ]]; then
 
-        printf "\n\n--- LINES WITHOUT AN IPv4 (first 30 shown) ---\n"
+        printf "\n\n--- LINES WITHOUT AN IPv4 (first 30 shown) ---\n" >>"$REPORT_FILE"
         grep -Eiv "$ip_re" "$tmp" | head -n 30 >>"$REPORT_FILE"
     fi
     echo "Report saved to: $REPORT_FILE"
-    echo "View it with: less $REPORT_FILE"
-
 }
 
 report_fail2ban() {
@@ -252,4 +250,5 @@ report_fail2ban() {
     } >>"$REPORT_FILE"
 
     echo "Report saved to: $REPORT_FILE"
+    echo "IP report saved to : $IP_REPORT_FILE"
 }
