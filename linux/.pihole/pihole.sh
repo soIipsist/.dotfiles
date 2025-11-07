@@ -30,7 +30,7 @@ add_client_to_group() {
 
     if [ -z "$client_id" ]; then
         echo "[+] Adding client '$client' ($comment)"
-        sudo sqlite3 "$DB" "INSERT INTO client (ip, comment, enabled) VALUES ('$client', '$comment', 1);"
+        sudo sqlite3 "$DB" "INSERT INTO client (ip, comment) VALUES ('$client', '$comment');"
         client_id=$(sudo sqlite3 "$DB" "SELECT id FROM client WHERE ip='$client';")
     else
         echo "[=] Client '$client' already exists"
