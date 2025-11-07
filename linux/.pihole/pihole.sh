@@ -36,9 +36,9 @@ add_client_to_group() {
         echo "[=] Client '$client' already exists"
     fi
 
-    if ! sudo sqlite3 "$DB" "SELECT * FROM group_client WHERE group_id=$group_id AND client_id=$client_id;" | grep -q "$group_id"; then
+    if ! sudo sqlite3 "$DB" "SELECT * FROM client_by_group WHERE group_id=$group_id AND client_id=$client_id;" | grep -q "$group_id"; then
         echo "[+] Linking '$client' → group '$groupname'"
-        sudo sqlite3 "$DB" "INSERT INTO group_client (group_id, client_id) VALUES ($group_id, $client_id);"
+        sudo sqlite3 "$DB" "INSERT INTO client_by_group (group_id, client_id) VALUES ($group_id, $client_id);"
     else
         echo "[=] Client '$client' already in group '$groupname'"
     fi
