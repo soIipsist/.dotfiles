@@ -84,13 +84,12 @@ PIHOLE_PORT=""
 
 # copy all blocklists and add them
 sudo cp -rf "$SCRIPT_DIR/blocklists" /etc/pihole
+sudo cp -rf "$SCRIPT_DIR/allowlists" /etc/pihole
 
 for file in "/etc/pihole/blocklists"/*; do
     url="file://$file"
     add_list $url
 done
-
-sudo cp -rf "$SCRIPT_DIR/allowlists" /etc/pihole
 
 for file in "/etc/pihole/allowlists"/*; do
     url="file://$file"
@@ -98,6 +97,7 @@ for file in "/etc/pihole/allowlists"/*; do
 done
 
 sudo chown -R pihole:pihole /etc/pihole/blocklists /etc/pihole/allowlists
+sudo chmod -R a+r /etc/pihole/blocklists /etc/pihole/allowlists
 
 # set default port (80 by default)
 if [ -n "$PIHOLE_PORT" ]; then
