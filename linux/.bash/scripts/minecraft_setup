@@ -1,11 +1,22 @@
 #!/bin/bash
 
 if [ -z "$SERVER_PROPERTIES" ]; then
-    SERVER_PROPERTIES="/home/steam/minecraft_server/server.properties"
+    SERVER_PROPERTIES="$MC_DIR/server.properties"
 fi
 
 if [ -z "$RCON_PORT" ]; then
     RCON_PORT=25575
+fi
+
+if [ -z "$GAME_MODE" ]; then
+    GAME_MODE="survival"
+fi
+
+if [ "$RESTART_WORLD" -eq 1 ]; then
+    find "$MC_DIR" -mindepth 1 -maxdepth 1 ! -name "$JAR" -exec rm -rf {} +
+    touch "$MC_DIR/eula.txt"
+
+    echo "Creating a new world..."
 fi
 
 # If the server.properties file doesn't exist, create it
@@ -21,9 +32,6 @@ EOF
     echo "Created new server.properties with RCON enabled."
     exit 0
 fi
-
-# Backup existing server.properties
-cp "$SERVER_PROPERTIES" "$SERVER_PROPERTIES.bak.$(date +%Y%m%d%H%M%S)"
 
 # Ensure RCON settings are set
 echo "Ensuring RCON settings are configured..."
@@ -47,6 +55,13 @@ if grep -q "^rcon.password=" "$SERVER_PROPERTIES"; then
     sed -i "s/^rcon.password=.*/rcon.password=$RCON_PASSWORD/" "$SERVER_PROPERTIES"
 else
     echo "rcon.password=$RCON_PASSWORD" >>"$SERVER_PROPERTIES"
+fi
+
+# set game mode
+if grep -q "^gamemode=" "$SERVER_PROPERTIES"; then
+    sed -i "s/^gamemode=.*/gamemode=$GAME_MODE/" "$SERVER_PROPERTIES"
+else
+    echo "gamemode=$GAME_MODE" >>"$SERVER_PROPERTIES"
 fi
 
 echo "RCON setup complete."
