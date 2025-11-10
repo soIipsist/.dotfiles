@@ -8,10 +8,6 @@ if [ -z "$RCON_PORT" ]; then
     RCON_PORT=25575
 fi
 
-MCDIR=$(dirname $SERVER_PROPERTIES)
-mkdir -p "$MCDIR"
-cd "$MCDIR" || exit 1
-
 # If the server.properties file doesn't exist, create it
 if [ ! -f "$SERVER_PROPERTIES" ]; then
     echo "server.properties not found, creating a new one..."

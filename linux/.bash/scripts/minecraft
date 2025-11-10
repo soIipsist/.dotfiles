@@ -4,33 +4,31 @@ action="${1:-start}"
 MCDIR="/home/steam/minecraft_server"
 LOGFILE="/var/log/minecraft.log"
 
-cd "$MCDIR" || exit 1
-
 case "$action" in
 start)
-    echo "Starting Minecraft server..." | tee -a "$LOGFILE"
-    exec /usr/bin/java $JAVA_OPTS -jar "$JAR" nogui >>"$LOGFILE" 2>&1
+    echo "Starting Minecraft server..."
+    exec /usr/bin/java $JAVA_OPTS -jar "$JAR" nogui
     ;;
 
 stop)
-    echo "Stopping Minecraft server via RCON..." | tee -a "$LOGFILE"
+    echo "Stopping Minecraft server via RCON..."
     if command -v mcrcon >/dev/null 2>&1; then
         mcrcon -H "$RCON_HOST" -P "$RCON_PORT" -p "$RCON_PASS" "say Server is stopping..." "stop"
     else
-        echo "Error: mcrcon not found in PATH. Install it to enable clean shutdown." | tee -a "$LOGFILE"
+        echo "Error: mcrcon not found in PATH. Install it to enable clean shutdown."
         exit 1
     fi
     ;;
 
 restart)
-    echo "Restarting Minecraft server..." | tee -a "$LOGFILE"
+    echo "Restarting Minecraft server..."
     "$0" stop
     sleep 5
     "$0" start
     ;;
 
 *)
-    echo "Usage: $0 {start|stop|restart}" >&2
+    echo "Usage: $0 {start|stop|restart}"
     exit 1
     ;;
 esac
