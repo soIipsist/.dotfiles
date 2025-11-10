@@ -91,7 +91,7 @@ done
 
 for file in "/etc/pihole/allowlists"/*; do
     url="file://$file"
-    add_list $url
+    add_list $url "allow"
 done
 
 sudo chown -R pihole:pihole /etc/pihole/blocklists /etc/pihole/allowlists
