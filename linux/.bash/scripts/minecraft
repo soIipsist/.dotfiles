@@ -2,12 +2,7 @@
 
 action="${1:-start}"
 MCDIR="/home/steam/minecraft_server"
-JAR="minecraft_server.jar"
-JAVA_OPTS="-Xmx2G -Xms2G"
 LOGFILE="/var/log/minecraft.log"
-RCON_HOST="127.0.0.1"
-RCON_PORT=25575
-RCON_PASS="your_rcon_password"
 
 cd "$MCDIR" || exit 1
 
