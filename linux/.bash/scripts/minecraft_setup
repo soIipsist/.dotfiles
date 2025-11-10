@@ -65,5 +65,7 @@ else
 fi
 
 echo "RCON setup complete."
+echo "  MC directory: $MC_DIR"
 echo "  Port: $RCON_PORT"
 echo "  Password: $RCON_PASSWORD"
+echo "  Game mode: $GAME_MODE"
