@@ -15,7 +15,7 @@ if [ ! -f "$SERVER_PROPERTIES" ]; then
 # Minecraft server properties
 enable-rcon=true
 rcon.port=$RCON_PORT
-rcon.password=$RCON_PASSWORDWORD
+rcon.password=$RCON_PASSWORD
 enable-query=false
 EOF
     echo "Created new server.properties with RCON enabled."
