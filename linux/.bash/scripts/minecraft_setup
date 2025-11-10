@@ -15,7 +15,7 @@ if [ ! -f "$SERVER_PROPERTIES" ]; then
 # Minecraft server properties
 enable-rcon=true
 rcon.port=$RCON_PORT
-rcon.password=$RCON_PASS
+rcon.password=$RCON_PASSWORDWORD
 enable-query=false
 EOF
     echo "Created new server.properties with RCON enabled."
@@ -44,11 +44,11 @@ fi
 
 # rcon.password
 if grep -q "^rcon.password=" "$SERVER_PROPERTIES"; then
-    sed -i "s/^rcon.password=.*/rcon.password=$RCON_PASS/" "$SERVER_PROPERTIES"
+    sed -i "s/^rcon.password=.*/rcon.password=$RCON_PASSWORD/" "$SERVER_PROPERTIES"
 else
-    echo "rcon.password=$RCON_PASS" >>"$SERVER_PROPERTIES"
+    echo "rcon.password=$RCON_PASSWORD" >>"$SERVER_PROPERTIES"
 fi
 
 echo "RCON setup complete."
 echo "  Port: $RCON_PORT"
-echo "  Password: $RCON_PASS"
+echo "  Password: $RCON_PASSWORD"

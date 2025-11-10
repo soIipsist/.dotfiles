@@ -13,7 +13,7 @@ start)
 stop)
     echo "Stopping Minecraft server via RCON..."
     if command -v mcrcon >/dev/null 2>&1; then
-        mcrcon -H "$RCON_HOST" -P "$RCON_PORT" -p "$RCON_PASS" "say Server is stopping..." "stop"
+        mcrcon -H "$RCON_HOST" -P "$RCON_PORT" -p "$RCON_PASSWORD" "say Server is stopping..." "stop"
     else
         echo "Error: mcrcon not found in PATH. Install it to enable clean shutdown."
         exit 1
