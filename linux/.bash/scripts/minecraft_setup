@@ -1,16 +1,21 @@
 #!/bin/bash
 
-MCDIR="/home/steam/minecraft_server"
-PROPERTIES_FILE="$MCDIR/server.properties"
-RCON_PORT=25575
+if [ -z "$SERVER_PROPERTIES" ]; then
+    SERVER_PROPERTIES="/home/steam/minecraft_server/server.properties"
+fi
 
+if [ -z "$RCON_PORT" ]; then
+    RCON_PORT=25575
+fi
+
+MCDIR=$(dirname $SERVER_PROPERTIES)
 mkdir -p "$MCDIR"
 cd "$MCDIR" || exit 1
 
 # If the server.properties file doesn't exist, create it
-if [ ! -f "$PROPERTIES_FILE" ]; then
+if [ ! -f "$SERVER_PROPERTIES" ]; then
     echo "server.properties not found, creating a new one..."
-    cat >"$PROPERTIES_FILE" <<EOF
+    cat >"$SERVER_PROPERTIES" <<EOF
 # Minecraft server properties
 enable-rcon=true
 rcon.port=$RCON_PORT
@@ -22,30 +27,30 @@ EOF
 fi
 
 # Backup existing server.properties
-cp "$PROPERTIES_FILE" "$PROPERTIES_FILE.bak.$(date +%Y%m%d%H%M%S)"
+cp "$SERVER_PROPERTIES" "$SERVER_PROPERTIES.bak.$(date +%Y%m%d%H%M%S)"
 
 # Ensure RCON settings are set
 echo "Ensuring RCON settings are configured..."
 
 # enable-rcon
-if grep -q "^enable-rcon=" "$PROPERTIES_FILE"; then
-    sed -i 's/^enable-rcon=.*/enable-rcon=true/' "$PROPERTIES_FILE"
+if grep -q "^enable-rcon=" "$SERVER_PROPERTIES"; then
+    sed -i 's/^enable-rcon=.*/enable-rcon=true/' "$SERVER_PROPERTIES"
 else
-    echo "enable-rcon=true" >>"$PROPERTIES_FILE"
+    echo "enable-rcon=true" >>"$SERVER_PROPERTIES"
 fi
 
 # rcon.port
-if grep -q "^rcon.port=" "$PROPERTIES_FILE"; then
-    sed -i "s/^rcon.port=.*/rcon.port=$RCON_PORT/" "$PROPERTIES_FILE"
+if grep -q "^rcon.port=" "$SERVER_PROPERTIES"; then
+    sed -i "s/^rcon.port=.*/rcon.port=$RCON_PORT/" "$SERVER_PROPERTIES"
 else
-    echo "rcon.port=$RCON_PORT" >>"$PROPERTIES_FILE"
+    echo "rcon.port=$RCON_PORT" >>"$SERVER_PROPERTIES"
 fi
 
 # rcon.password
-if grep -q "^rcon.password=" "$PROPERTIES_FILE"; then
-    sed -i "s/^rcon.password=.*/rcon.password=$RCON_PASS/" "$PROPERTIES_FILE"
+if grep -q "^rcon.password=" "$SERVER_PROPERTIES"; then
+    sed -i "s/^rcon.password=.*/rcon.password=$RCON_PASS/" "$SERVER_PROPERTIES"
 else
-    echo "rcon.password=$RCON_PASS" >>"$PROPERTIES_FILE"
+    echo "rcon.password=$RCON_PASS" >>"$SERVER_PROPERTIES"
 fi
 
 echo "RCON setup complete."
