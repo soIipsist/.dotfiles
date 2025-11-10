@@ -2034,3 +2034,5 @@
 0.0.0.0 ingest-staging.redd.it
 0.0.0.0 ingest.redd.it
 0.0.0.0 imo.redd.it
+0.0.0.0 old.reddit.com
+0.0.0.0 www.redditstatic.com
