@@ -9,12 +9,9 @@ ExecStartPre=/usr/bin/bash -lc /usr/local/bin/minecraft_setup
 ExecStart=/usr/bin/bash -lc /usr/local/bin/minecraft "start"
 ExecStop=/usr/bin/bash -lc /usr/local/bin/minecraft "stop"
 EnvironmentFile=/etc/default/minecraft.conf
-Restart=on-failure
+Restart=always
 StandardOutput=append:/var/log/minecraft.log
 StandardError=append:/var/log/minecraft.log
-TimeoutStopSec=120
-KillSignal=SIGINT
-SuccessExitStatus=0 1
 
 [Install]
 WantedBy=multi-user.target

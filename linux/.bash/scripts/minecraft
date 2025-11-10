@@ -4,6 +4,14 @@ action="${1:-start}"
 MCDIR="/home/steam/minecraft_server"
 LOGFILE="/var/log/minecraft.log"
 
+if [ -z "$RCON_HOST" ]; then
+    RCON_HOST="127.0.0.1"
+fi
+
+if [ -z "$RCON_PORT" ]; then
+    RCON_PORT=25575
+fi
+
 case "$action" in
 start)
     echo "Starting Minecraft server..."
@@ -14,6 +22,9 @@ stop)
     echo "Stopping Minecraft server via RCON..."
     if command -v mcrcon >/dev/null 2>&1; then
         mcrcon -H "$RCON_HOST" -P "$RCON_PORT" -p "$RCON_PASSWORD" "say Server is stopping..." "stop"
+        while kill -0 $MAINPID 2>/dev/null; do
+            sleep 0.5
+        done
     else
         echo "Error: mcrcon not found in PATH. Install it to enable clean shutdown."
         exit 1
