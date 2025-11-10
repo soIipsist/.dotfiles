@@ -8,6 +8,7 @@ WorkingDirectory=/home/steam/minecraft_server
 ExecStartPre=/usr/bin/bash -lc /usr/local/bin/minecraft_setup
 ExecStart=/usr/bin/bash -lc /usr/local/bin/minecraft "start"
 ExecStop=/usr/bin/bash -lc /usr/local/bin/minecraft "stop"
+EnvironmentFile=/etc/default/minecraft.conf
 Restart=on-failure
 StandardOutput=append:/var/log/minecraft.log
 StandardError=append:/var/log/minecraft.log
