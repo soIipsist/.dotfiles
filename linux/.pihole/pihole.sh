@@ -63,11 +63,11 @@ add_list() {
         fi
 
     elif [ "$type" = "allow" ]; then
-        if sudo sqlite3 "$DB" "SELECT domain FROM domainlist WHERE domain='$url' AND type=0;" | grep -q "$url"; then
+        if sudo sqlite3 "$DB" "SELECT domain FROM domainlist WHERE domain='$url' AND type=1;" | grep -q "$url"; then
             echo "[=] Allowlist already exists: $url"
         else
             echo "[+] Adding allowlist: $url"
-            sudo sqlite3 "$DB" "INSERT INTO domainlist (type, domain, enabled) VALUES (0, '$url', 1);"
+            sudo sqlite3 "$DB" "INSERT INTO domainlist (type, domain, enabled) VALUES (1, '$url', 1);"
             echo "[✓] Allowlist added and gravity updated"
         fi
 
