@@ -59,7 +59,6 @@ add_list() {
         else
             echo "[+] Adding blocklist: $url"
             sudo sqlite3 "$DB" "INSERT INTO adlist (address, enabled) VALUES ('$url', 1);"
-            sudo pihole -g
             echo "[✓] Blocklist added and gravity updated"
         fi
 
@@ -69,7 +68,6 @@ add_list() {
         else
             echo "[+] Adding allowlist: $url"
             sudo sqlite3 "$DB" "INSERT INTO domainlist (type, domain, enabled) VALUES (0, '$url', 1);"
-            sudo pihole -g
             echo "[✓] Allowlist added and gravity updated"
         fi
 
