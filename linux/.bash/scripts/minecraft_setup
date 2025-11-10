@@ -8,14 +8,13 @@ if [ -z "$RCON_PORT" ]; then
     RCON_PORT=25575
 fi
 
-if [ -z "$GAME_MODE" ]; then
+if [ -z "$GAME_MODE" ]; then # game modes: survival, creative, adventure, spectator
     GAME_MODE="survival"
 fi
 
 if [ "$RESTART_WORLD" -eq 1 ]; then
     find "$MC_DIR" -mindepth 1 -maxdepth 1 ! -name "$JAR" -exec rm -rf {} +
-    touch "$MC_DIR/eula.txt"
-
+    echo "eula=true" >>"$MC_DIR/eula.txt"
     echo "Creating a new world..."
 fi
 
@@ -28,6 +27,7 @@ enable-rcon=true
 rcon.port=$RCON_PORT
 rcon.password=$RCON_PASSWORD
 enable-query=false
+gamemode=$GAME_MODE
 EOF
     echo "Created new server.properties with RCON enabled."
     exit 0
