@@ -1,9 +1,41 @@
 #!/bin/bash
 
-action="${1:-start}" # action is start, by default
+action="${1:-start}"
+MCDIR="/home/steam/minecraft_server"
+JAR="minecraft_server.jar"
+JAVA_OPTS="-Xmx2G -Xms2G"
+LOGFILE="/var/log/minecraft.log"
+RCON_HOST="127.0.0.1"
+RCON_PORT=25575
+RCON_PASS="your_rcon_password"
 
-if [ "$action" == "start" ]; then
-    /usr/bin/java -Xmx2G -Xms2G -jar minecraft_server.jar nogui
-else
-    echo ""
-fi
+cd "$MCDIR" || exit 1
+
+case "$action" in
+start)
+    echo "Starting Minecraft server..." | tee -a "$LOGFILE"
+    exec /usr/bin/java $JAVA_OPTS -jar "$JAR" nogui >>"$LOGFILE" 2>&1
+    ;;
+
+stop)
+    echo "Stopping Minecraft server via RCON..." | tee -a "$LOGFILE"
+    if command -v mcrcon >/dev/null 2>&1; then
+        mcrcon -H "$RCON_HOST" -P "$RCON_PORT" -p "$RCON_PASS" "say Server is stopping..." "stop"
+    else
+        echo "Error: mcrcon not found in PATH. Install it to enable clean shutdown." | tee -a "$LOGFILE"
+        exit 1
+    fi
+    ;;
+
+restart)
+    echo "Restarting Minecraft server..." | tee -a "$LOGFILE"
+    "$0" stop
+    sleep 5
+    "$0" start
+    ;;
+
+*)
+    echo "Usage: $0 {start|stop|restart}" >&2
+    exit 1
+    ;;
+esac
