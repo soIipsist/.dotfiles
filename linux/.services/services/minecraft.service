@@ -5,9 +5,9 @@ After=network.target
 [Service]
 User=steam
 WorkingDirectory=/home/steam/minecraft_server
-ExecStartPre=/usr/bin/bash -lc /usr/local/bin/minecraft_setup
-ExecStart=/usr/bin/bash -lc /usr/local/bin/minecraft "start"
-ExecStop=/usr/bin/bash -lc /usr/local/bin/minecraft "stop"
+ExecStartPre=/usr/local/bin/minecraft_setup
+ExecStart=/usr/local/bin/minecraft "start"
+ExecStop=/usr/local/bin/minecraft "stop"
 EnvironmentFile=/etc/default/minecraft.conf
 Restart=always
 StandardOutput=append:/var/log/minecraft.log
