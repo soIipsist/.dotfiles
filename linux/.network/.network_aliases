@@ -324,6 +324,7 @@ vm_init() {
         '  - name: ubuntu' \
         '    sudo: ALL=(ALL) NOPASSWD:ALL' \
         '    plain_text_passwd: ubuntu123' \
+        '    passwd: ubuntu123' \
         '    lock_passwd: false' \
         '    shell: /bin/bash' \
         'chpasswd: { expire: false }' \
