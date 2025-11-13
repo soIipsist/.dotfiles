@@ -285,30 +285,28 @@ vm_init() {
 
     sudo mkdir -p "$CLOUD_DIR"
 
-    cat <<-EOF | sudo tee "${CLOUD_DIR}/meta-data" >/dev/null
-	#cloud-config
-	hostname: $NAME
-	fqdn: $NAME.local
-	users:
-	  - name: ubuntu
-	    sudo: ALL=(ALL) NOPASSWD:ALL
-	    passwd: ubuntu123
-	    lock_passwd: false
-	    shell: /bin/bash
-	chpasswd:
-	  expire: false
-	ssh_pwauth: true
-	packages:
-	  - openssh-server
-	EOF
+    # ---- meta-data (space-safe) ----
+    printf '%s\n' \
+        '#cloud-config' \
+        "hostname: $NAME" \
+        "fqdn: $NAME.local" \
+        'users:' \
+        '  - name: ubuntu' \
+        '    sudo: ALL=(ALL) NOPASSWD:ALL' \
+        '    passwd: ubuntu123' \
+        '    lock_passwd: false' \
+        '    shell: /bin/bash' \
+        'chpasswd: { expire: false }' \
+        'ssh_pwauth: true' \
+        'packages:' \
+        '  - openssh-server' |
+        sudo tee "${CLOUD_DIR}/meta-data" >/dev/null
 
-    cat <<-EOF | sudo tee "${CLOUD_DIR}/user-data" >/dev/null
-	instance-id: $NAME
-	local-hostname: $NAME
-	EOF
-
-    echo "$user_data" | sudo tee "${CLOUD_DIR}/user-data" >/dev/null
-    echo "$meta_data" | sudo tee "${CLOUD_DIR}/meta-data" >/dev/null
+    # ---- user-data ----
+    printf '%s\n' \
+        "instance-id: $NAME" \
+        "local-hostname: $NAME" |
+        sudo tee "${CLOUD_DIR}/user-data" >/dev/null
 
     # 4. build cidata ISO
     sudo apt-get install -y genisoimage

@@ -175,3 +175,4 @@ smb.conf
 /scripts/downloads.db
 /scripts/tests/videos/*
 /scripts/tests/photos/*
+linux/.network/test_vm.sh
