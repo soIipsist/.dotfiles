@@ -253,6 +253,37 @@ report_fail2ban() {
     echo "IP report saved to : $IP_REPORT_FILE"
 }
 
+vm_reset() {
+    # destroy and undefine all VMs (with storage)
+    local vms vm
+
+    vms=$(sudo virsh list --all --name 2>/dev/null) || {
+        echo "No VMs found or virsh failed."
+        return 0
+    }
+
+    [ -z "$vms" ] && return 0
+
+    echo "Cleaning up VMs:"
+    printf '  %s\n' $vms
+
+    while IFS= read -r vm; do
+        [[ -z "$vm" ]] && continue
+
+        echo -n "  → $vm ... "
+        sudo virsh destroy "$vm" >/dev/null 2>&1 && echo "destroyed" || echo "not running"
+
+        if sudo virsh undefine "$vm" --remove-all-storage >/dev/null 2>&1; then
+            echo "    undefine + storage removed"
+        else
+            echo "    undefine failed (maybe already gone)"
+        fi
+
+    done <<<"$vms"
+
+    echo "Cleanup complete."
+}
+
 vm_init() {
     # creates a virtual machine with libvirt (uses ubuntu 24.04 as base image for now)
 
@@ -285,7 +316,6 @@ vm_init() {
 
     sudo mkdir -p "$CLOUD_DIR"
 
-    # ---- meta-data (space-safe) ----
     printf '%s\n' \
         '#cloud-config' \
         "hostname: $NAME" \
@@ -302,7 +332,6 @@ vm_init() {
         '  - openssh-server' |
         sudo tee "${CLOUD_DIR}/user-data" >/dev/null
 
-    # ---- user-data ----
     printf '%s\n' \
         "instance-id: $NAME" \
         "local-hostname: $NAME" |
