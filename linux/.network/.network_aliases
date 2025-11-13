@@ -328,7 +328,7 @@ vm_init() {
         '    lock_passwd: false' \
         '    shell: /bin/bash' \
         'chpasswd: { expire: false }' \
-        'ssh_pwauth: true' \
+        'ssh_pwauth: false' \
         'packages:' \
         '  - transmission-cli' \
         '  - transmission-daemon' \
