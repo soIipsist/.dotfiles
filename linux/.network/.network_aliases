@@ -293,20 +293,20 @@ vm_init() {
         'users:' \
         '  - name: ubuntu' \
         '    sudo: ALL=(ALL) NOPASSWD:ALL' \
-        '    passwd: ubuntu123' \
+        '    plain_text_passwd: ubuntu123' \
         '    lock_passwd: false' \
         '    shell: /bin/bash' \
         'chpasswd: { expire: false }' \
         'ssh_pwauth: true' \
         'packages:' \
         '  - openssh-server' |
-        sudo tee "${CLOUD_DIR}/meta-data" >/dev/null
+        sudo tee "${CLOUD_DIR}/user-data" >/dev/null
 
     # ---- user-data ----
     printf '%s\n' \
         "instance-id: $NAME" \
         "local-hostname: $NAME" |
-        sudo tee "${CLOUD_DIR}/user-data" >/dev/null
+        sudo tee "${CLOUD_DIR}/meta-data" >/dev/null
 
     # 4. build cidata ISO
     sudo apt-get install -y genisoimage
