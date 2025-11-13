@@ -288,8 +288,9 @@ vm_init() {
     # creates a virtual machine with libvirt (uses ubuntu 24.04 as base image for now)
 
     NAME=${1:-ubuntu_vm}
-    VM_IMG=${2:-"https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"}
-    CLEAN_VM=${3:-1}
+    SSH_KEY=${2:-$(cat ~/.ssh/id_ed25519.pub)}
+    VM_IMG=${3:-"https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"}
+    CLEAN_VM=${4:-1}
     IMG="/var/lib/libvirt/images/${NAME}.qcow2"
     CLOUD_DIR="/var/lib/libvirt/cloud-init"
     CLOUD_ISO="${CLOUD_DIR}/cidata.iso"
@@ -325,6 +326,8 @@ vm_init() {
         '    sudo: ALL=(ALL) NOPASSWD:ALL' \
         '    plain_text_passwd: ubuntu123' \
         '    passwd: ubuntu123' \
+        '    ssh-authorized-keys:' \
+        "      - $SSH_KEY" \
         '    lock_passwd: false' \
         '    shell: /bin/bash' \
         'chpasswd: { expire: false }' \
