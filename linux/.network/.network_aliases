@@ -396,3 +396,36 @@ vm_init() {
     echo "SSH command: ssh ubuntu@$IP   (password: ubuntu123)"
 
 }
+
+ufw_open_outbound() {
+    # opens outbound connections (good for VM downloads)
+
+    HOST_IP=$(ip route get 1.1.1.1 2>/dev/null | awk '
+        { for (i=1;i<=NF;i++) if ($i=="src") { print $(i+1); exit } }
+    ')
+    echo "Detected host IP: ${HOST_IP:-<none>}"
+
+    sudo ufw --force reset
+    sudo ufw default deny incoming
+    sudo ufw default deny outgoing
+
+    # allow ssh from host to VM
+    if [ -n "$HOST_IP" ]; then
+        sudo ufw allow from "$HOST_IP" to any port 22 proto tcp
+    else
+        echo "WARNING: Host IP not detected; SSH rule skipped."
+    fi
+
+    # DNS
+    sudo ufw allow out 53
+
+    # HTTP / HTTPS
+    sudo ufw allow out 80/tcp
+    sudo ufw allow out 443/tcp
+
+    # transmission protocol
+    sudo ufw allow out 51413
+
+    sudo ufw --force enable
+    sudo ufw status verbose
+}

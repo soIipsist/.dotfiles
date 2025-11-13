@@ -1,8 +1,6 @@
 {
   "dotfiles": [".bash"],
   "apt_packages": [],
-  "scripts_directory": "$HOME/scripts",
-  "venv_path": "$HOME/venv",
-  "install_homebrew": true,
-  "install_zoxide": true
+  "install_homebrew": false,
+  "install_zoxide": false
 }
