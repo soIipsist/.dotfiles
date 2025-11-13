@@ -329,6 +329,15 @@ vm_init() {
         'chpasswd: { expire: false }' \
         'ssh_pwauth: true' \
         'packages:' \
+        '  - transmission-cli' \
+        '  - transmission-daemon' \
+        '  - net-tools' \
+        '  - iproute2' \
+        '  - wget' \
+        '  - curl' \
+        '  - vim' \
+        '  - less' \
+        '  - file' \
         '  - openssh-server' |
         sudo tee "${CLOUD_DIR}/user-data" >/dev/null
 
