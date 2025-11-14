@@ -1,9 +1,14 @@
 ufw_open_outbound() {
     # opens outbound connections (good for VM downloads)
 
-    HOST_IP=$(ip route get 1.1.1.1 2>/dev/null | awk '
+    if [ -n "$1" ]; then
+        HOST_IP="$1"
+    else
+        HOST_IP=$(ip route get 1.1.1.1 2>/dev/null | awk '
         { for (i=1;i<=NF;i++) if ($i=="src") { print $(i+1); exit } }
     ')
+    fi
+
     echo "Detected host IP: ${HOST_IP:-<none>}"
 
     sudo ufw --force reset
@@ -33,9 +38,14 @@ ufw_open_outbound() {
 }
 
 ufw_restrict() {
-    HOST_IP=$(ip route get 1.1.1.1 2>/dev/null | awk '
+    if [ -n "$1" ]; then
+        HOST_IP="$1"
+    else
+        HOST_IP=$(ip route get 1.1.1.1 2>/dev/null | awk '
         { for (i=1;i<=NF;i++) if ($i=="src") { print $(i+1); exit } }
     ')
+    fi
+
     echo "Detected host IP: ${HOST_IP:-<none>}"
 
     sudo ufw --force reset
