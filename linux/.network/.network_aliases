@@ -300,6 +300,7 @@ vm_init() {
 
     if [ "$CLEAN_VM" = "1" ]; then
         echo "Destroying old VMs..."
+        sudo virsh snapshot-delete "$NAME" --current --children --metadata --disk-only
         sudo virsh destroy "$NAME" 2>/dev/null || true
         sudo virsh undefine "$NAME" --remove-all-storage 2>/dev/null || true
         sudo rm -rf "$CLOUD_DIR" "$IMG"
@@ -389,7 +390,7 @@ vm_init() {
         echo "Debug:"
         sudo virsh domblklist "$NAME"
         echo "Try: sudo virsh console $NAME  (Ctrl+] to exit)"
-        exit 1
+        return 1
     fi
 
     echo "IP found: $IP"
