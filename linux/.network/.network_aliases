@@ -397,12 +397,16 @@ vm_init() {
 
 }
 
+get_private_ip() {
+    ip route get 1.1.1.1 2>/dev/null | awk '
+        { for (i=1;i<=NF;i++) if ($i=="src") { print $(i+1); exit } }
+    '
+}
+
 ufw_open_outbound() {
     # opens outbound connections (good for VM downloads)
 
-    HOST_IP=$(ip route get 1.1.1.1 2>/dev/null | awk '
-        { for (i=1;i<=NF;i++) if ($i=="src") { print $(i+1); exit } }
-    ')
+    HOST_IP=$(get_private_ip)
     echo "Detected host IP: ${HOST_IP:-<none>}"
 
     sudo ufw --force reset
@@ -427,5 +431,26 @@ ufw_open_outbound() {
     sudo ufw allow out 51413
 
     sudo ufw --force enable
+    sudo ufw reload
+    sudo ufw status verbose
+}
+
+ufw_restrict() {
+    HOST_IP=$(get_private_ip)
+    echo "Detected host IP: ${HOST_IP:-<none>}"
+
+    sudo ufw --force reset
+    sudo ufw default deny incoming
+    sudo ufw default deny outgoing
+
+    # Only allow SSH from host, nothing else
+    if [ -n "$HOST_IP" ]; then
+        sudo ufw allow from "$HOST_IP" to any port 22 proto tcp
+    else
+        echo "WARNING: Host IP not detected; SSH rule skipped."
+    fi
+
+    sudo ufw --force enable
+    sudo ufw reload
     sudo ufw status verbose
 }
