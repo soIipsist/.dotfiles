@@ -15,6 +15,15 @@ ufw_open_outbound() {
     sudo ufw default deny incoming
     sudo ufw default deny outgoing
 
+    HOST_GATEWAY=$(ip route | awk '/default/ {print $3}')
+    echo "Detected host NAT gateway: $HOST_GATEWAY"
+
+    # Allow outbound to NAT gateway (required for NAT/internet)
+    if [ -n "$HOST_GATEWAY" ]; then
+        sudo ufw allow out to "$HOST_GATEWAY"
+        sudo ufw allow out proto icmp to "$HOST_GATEWAY"
+    fi
+
     # allow ssh from host to VM
     if [ -n "$HOST_IP" ]; then
         sudo ufw allow from "$HOST_IP" to any port 22 proto tcp
