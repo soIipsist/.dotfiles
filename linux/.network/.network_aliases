@@ -2,6 +2,12 @@ export TCPDUMP_DIR="$HOME/.tcpdump"
 export UID="${UID:-$(id -u 2>/dev/null || echo 1000)}"
 export REPORT_DIR="/tmp/$UID/reports"
 
+get_private_ip() {
+    ip route get 1.1.1.1 2>/dev/null | awk '
+        { for (i=1;i<=NF;i++) if ($i=="src") { print $(i+1); exit } }
+    '
+}
+
 ssh_dump() {
     local interface="${1:-any}"
     local dumps_filename="${2:-ssh_dump.pcap}"
@@ -253,36 +259,36 @@ report_fail2ban() {
     echo "IP report saved to : $IP_REPORT_FILE"
 }
 
-vm_reset() {
-    # destroy and undefine all VMs (with storage)
-    local vms vm
+# vm_reset() {
+#     # destroy and undefine all VMs (with storage)
+#     local vms vm
 
-    vms=$(sudo virsh list --all --name 2>/dev/null) || {
-        echo "No VMs found or virsh failed."
-        return 0
-    }
+#     vms=$(sudo virsh list --all --name 2>/dev/null) || {
+#         echo "No VMs found or virsh failed."
+#         return 0
+#     }
 
-    [ -z "$vms" ] && return 0
+#     [ -z "$vms" ] && return 0
 
-    echo "Cleaning up VMs:"
-    printf '  %s\n' $vms
+#     echo "Cleaning up VMs:"
+#     printf '  %s\n' $vms
 
-    while IFS= read -r vm; do
-        [[ -z "$vm" ]] && continue
+#     while IFS= read -r vm; do
+#         [[ -z "$vm" ]] && continue
 
-        echo -n "  → $vm ... "
-        sudo virsh destroy "$vm" >/dev/null 2>&1 && echo "destroyed" || echo "not running"
+#         echo -n "  → $vm ... "
+#         sudo virsh destroy "$vm" >/dev/null 2>&1 && echo "destroyed" || echo "not running"
 
-        if sudo virsh undefine "$vm" --remove-all-storage >/dev/null 2>&1; then
-            echo "    undefine + storage removed"
-        else
-            echo "    undefine failed (maybe already gone)"
-        fi
+#         if sudo virsh undefine "$vm" --remove-all-storage >/dev/null 2>&1; then
+#             echo "    undefine + storage removed"
+#         else
+#             echo "    undefine failed (maybe already gone)"
+#         fi
 
-    done <<<"$vms"
+#     done <<<"$vms"
 
-    echo "Cleanup complete."
-}
+#     echo "Cleanup complete."
+# }
 
 # vm_init() {
 #     # creates a virtual machine with libvirt (uses ubuntu 24.04 as base image for now)
@@ -397,9 +403,3 @@ vm_reset() {
 #     echo "SSH command: ssh ubuntu@$IP   (password: ubuntu123)"
 
 # }
-
-get_private_ip() {
-    ip route get 1.1.1.1 2>/dev/null | awk '
-        { for (i=1;i<=NF;i++) if ($i=="src") { print $(i+1); exit } }
-    '
-}

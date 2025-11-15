@@ -198,6 +198,10 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+if [ -f ~/.vm_aliases ]; then
+    . ~/.vm_aliases
+fi
+
 if [ -f ~/.network_aliases ]; then
     . ~/.network_aliases
 fi
