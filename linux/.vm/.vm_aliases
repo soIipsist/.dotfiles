@@ -43,13 +43,22 @@ get_qcow() {
         return
         ;;
     *.tar.xz | *.tar.gz | *.tgz)
-        echo "Extracting tar archive → converting first .img to qcow2..."
-        tmp_img=$(sudo mktemp --suffix=.img)
-        sudo tar -xOf "$src" --wildcards '*.img' --occurrence=1 | sudo tee "$tmp_img" >/dev/null
-        sudo qemu-img convert -f raw -O qcow2 "$tmp_img" "$dst"
-        sudo rm -f "$tmp_img"
+        if tar -tf "$src" >/dev/null 2>&1; then
+            echo "Extracting tar archive..."
+            tmp_dir=$(mktemp -d)
+            tar -xf "$src" -C "$tmp_dir"
+            img_file=$(find "$tmp_dir" -type f -name "*.img" | head -n 1)
+            [ -z "$img_file" ] && {
+                echo "No .img found in archive"
+                return 1
+            }
+            sudo qemu-img convert -f raw -O qcow2 "$img_file" "$dst"
+            rm -rf "$tmp_dir"
+        else
+            echo "XZ-compressed raw/QCOW2 → decompressing..."
+            unxz -c "$src" | sudo tee "$dst" >/dev/null
+        fi
         ;;
-
     *.xz | *.img.xz)
         echo "Decompressing .xz → converting to qcow2..."
         tmp_img=$(mktemp --suffix=.img)
