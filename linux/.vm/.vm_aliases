@@ -1,4 +1,4 @@
-export VM_DIR="$HOME/isos"
+export VM_DIR="/var/lib/libvirt/images"
 
 vm_reset() {
     # destroy and undefine all VMs (with storage)
