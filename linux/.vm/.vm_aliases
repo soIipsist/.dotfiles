@@ -47,6 +47,30 @@ vm_reset() {
     echo "Done."
 }
 
+get_qcow() {
+    local DOWNLOADED_IMAGE="$1"
+    local IMG_PATH="$2"
+
+    case "$DOWNLOADED_IMAGE" in
+    *.xz | *.img.xz)
+        echo "Decompressing and converting .xz → qcow2..."
+        unxz -c "$DOWNLOADED_IMAGE" | sudo qemu-img convert -f raw -O qcow2 - "$IMG_PATH"
+        ;;
+    *.img)
+        echo "Converting raw .img → qcow2..."
+        sudo qemu-img convert -f raw -O qcow2 "$DOWNLOADED_IMAGE" "$IMG_PATH"
+        ;;
+    *.qcow2)
+        echo "Moving qcow2 image..."
+        sudo mv "$DOWNLOADED_IMAGE" "$IMG_PATH"
+        ;;
+    *)
+        echo "Copying image as-is (probably already qcow2/iso)..."
+        sudo mv "$DOWNLOADED_IMAGE" "$IMG_PATH"
+        ;;
+    esac
+}
+
 vm_init() {
     # Default parameters
     NAME="ubuntu_vm"
@@ -149,11 +173,15 @@ vm_init() {
 
     # Download remote qcow2 if URL provided
     if [[ "$IMAGE" =~ ^https?:// ]]; then
-        echo "Downloading image..."
-        sudo wget -qO "$IMG" "$IMAGE"
+        echo "Downloading image from URL..."
+        tmp=$(mktemp --suffix=.img.download)
+        sudo wget -q --show-progress -O "$tmp" "$IMAGE"
+        get_qcow "$tmp" "$IMG"
+        sudo rm -f "$tmp"
+
     elif [ -n "$IMAGE" ]; then
-        echo "Copying disk image..."
-        sudo cp "$IMAGE" "$IMG"
+        echo "Using local image: $IMAGE"
+        get_qcow "$IMAGE" "$IMG"
     fi
 
     # Create cloud-init ISO if provided
