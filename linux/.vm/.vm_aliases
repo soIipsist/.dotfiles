@@ -3,26 +3,17 @@ export VM_DIR="/var/lib/libvirt/images"
 vm_reset() {
     local vms=("$@")
     local vm
-    local -A exists
-
-    while IFS= read -r name; do
-        [[ -n "$name" ]] && exists["$name"]=1
-    done < <(sudo virsh list --all --name)
 
     if ((${#vms[@]} == 0)); then
-        vms=("${!exists[@]}")
-        ((${#vms[@]} == 0)) && {
-            echo "No VMs found."
-            return 0
-        }
-        echo "No VMs specified → resetting all ${#vms[@]} VMs"
+        echo "No VMs specified."
+        return 0
     fi
 
     echo "Processing: ${vms[*]}"
     echo
 
     for vm in "${vms[@]}"; do
-        if [[ -z "${exists[$vm]}" ]]; then
+        if [ ! -d "$VM_DIR/$vm" ]; then
             echo "VM '$vm' does not exist → skipping"
             continue
         fi
