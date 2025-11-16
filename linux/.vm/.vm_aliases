@@ -47,12 +47,10 @@ get_qcow() {
 
     *.xz | *.img.xz)
         echo "Decompressing .xz → converting to qcow2..."
-        tmp_img=$(sudo mktemp --suffix=.img)
-        sudo chmod 644 "$tmp_img"
-        sudo chown root:root "$tmp_img"
-        sudo unxz -c "$src" >"$tmp_img"
+        tmp_img=$(mktemp --suffix=.img)
+        unxz -c "$src" >"$tmp_img"
         sudo qemu-img convert -f raw -O qcow2 "$tmp_img" "$dst"
-        sudo rm -f "$tmp_img"
+        rm -f "$tmp_img"
         ;;
 
     *.img)
@@ -175,13 +173,11 @@ vm_init() {
     # Download remote qcow2 if URL provided
     if [[ "$IMAGE" =~ ^https?:// ]]; then
         echo "Downloading image from URL..."
-        tmp_dir=$(sudo mktemp -d)
+        tmp=$(sudo mktemp)
         filename=$(basename "$IMAGE")
-        tmp="$tmp_dir/$filename"
         sudo wget -q --show-progress -O "$tmp" "$IMAGE"
         get_qcow "$tmp" "$IMG"
-        sudo rm -rf "$tmp_dir"
-
+        sudo rm "$tmp"
     elif [ -n "$IMAGE" ]; then
         echo "Using local image: $IMAGE"
         get_qcow "$IMAGE" "$IMG"
