@@ -47,32 +47,25 @@ get_qcow() {
         sudo qemu-img convert -f raw -O qcow2 "$src" "$dst"
         ;;
     *.tar.xz | *.tar.gz | *.tgz)
-        if tar -tf "$src" >/dev/null 2>&1; then
-            echo "Extracting tar archive..."
-            tmp_dir=$(mktemp -d)
-            sudo tar -xf "$src" -C "$tmp_dir"
-            img_file=$(find "$tmp_dir" -type f \( -name "*.img" -o -name "*.raw" \) | head -n 1)
-            [ -z "$img_file" ] && {
-                echo "No .img or .raw file found in archive"
-                rm -rf "$tmp_dir"
-                return 1
-            }
-            echo "Converting $img_file → $dst (qcow2)..."
-            sudo qemu-img convert -f raw -O qcow2 "$img_file" "$dst"
+        echo "Extracting tar archive → converting first .img or .raw to qcow2..."
+        tmp_dir=$(mktemp -d)
+        sudo tar -xf "$src" -C "$tmp_dir"
+        img_file=$(find "$tmp_dir" -type f \( -name "*.img" -o -name "*.raw" \) | head -n 1)
+        [ -z "$img_file" ] && {
+            echo "No .img or .raw file found in archive"
             rm -rf "$tmp_dir"
-        else
-            echo "XZ-compressed raw/QCOW2 → decompressing..."
-            sudo unxz -c "$src" | sudo tee "$dst" >/dev/null
-        fi
+            return 1
+        }
+        sudo qemu-img convert -f raw -O qcow2 "$img_file" "$dst"
+        rm -rf "$tmp_dir"
         ;;
     *.xz | *.img.xz)
         echo "Decompressing .xz → converting to qcow2..."
         tmp_img=$(mktemp --suffix=.img)
-        unxz -c "$src" >"$tmp_img"
+        sudo unxz -c "$src" | sudo tee "$dst" >/dev/null
         sudo qemu-img convert -f raw -O qcow2 "$tmp_img" "$dst"
         rm -f "$tmp_img"
         ;;
-
     *.img)
         echo "Converting raw .img → qcow2..."
         sudo qemu-img convert -f raw -O qcow2 "$src" "$dst"
