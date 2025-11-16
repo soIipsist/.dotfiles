@@ -128,6 +128,10 @@ vm_init() {
             ISO="$2"
             shift
             ;;
+        --graphics)
+            USE_GRAPHICS="$2"
+            shift
+            ;;
         --ssh-key)
             SSH_KEY="$2"
             shift
@@ -219,7 +223,7 @@ vm_init() {
     if [ "$USE_GRAPHICS" = 1 ]; then
         GRAPHICS=(--graphics vnc,listen=127.0.0.1)
     else
-        GRAPHICS_OPT=(--graphics none)
+        GRAPHICS=(--graphics none)
     fi
 
     set -x
