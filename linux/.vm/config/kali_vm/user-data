@@ -1,0 +1,48 @@
+#cloud-config
+hostname: kali_vm
+fqdn: kali_vm.local
+
+users:
+  - name: kali
+    gecos: Kali User
+    primary_group: kali
+    groups: sudo,adm,cdrom,dip,plugdev
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    plain_text_passwd: kali
+    lock_passwd: false
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - YOUR_SSH_PUBLIC_KEY_HERE
+
+growpart:
+  mode: auto
+  devices: ["/"]
+
+resize_rootfs: true
+
+package_update: true
+package_upgrade: true
+packages:
+  - net-tools
+  - iproute2
+  - wget
+  - curl
+  - vim
+  - less
+  - openssh-server
+  - transmission-cli
+  - transmission-daemon
+  - kali-linux-default # optional: full Kali tools
+
+chpasswd:
+  expire: false
+
+ssh_pwauth: false
+disable_root: true
+
+write_files:
+  - path: /etc/motd
+    content: |
+      Welcome to your Kali Linux cloud instance!
+      Login: kali / kali
+      Root login disabled – use 'sudo'

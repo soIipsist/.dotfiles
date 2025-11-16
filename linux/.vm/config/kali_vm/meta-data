@@ -1,0 +1,5 @@
+instance-id: kali_vm_01
+local-hostname: kali_vm
+network-interfaces: |
+  auto eth0
+  iface eth0 inet dhcp

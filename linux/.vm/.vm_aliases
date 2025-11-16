@@ -205,4 +205,24 @@ vm_init() {
         echo "Headless mode. Use: sudo virsh console $NAME"
     fi
 
+    MAC=$(sudo virsh dumpxml "$NAME" | grep -o "mac address='[^']*" | cut -d"'" -f2 | tr '[:upper:]' '[:lower:]')
+    echo "MAC address: $MAC"
+    echo "Waiting for IP (max 90 s)..."
+
+    for i in $(seq 1 90); do
+        IP=$(arp -an | grep -i "$MAC" | awk '{print $2}' | tr -d '()' || true)
+        [ -n "$IP" ] && break
+        sleep 1
+    done
+
+    if [ -z "$IP" ]; then
+        echo "ERROR: No IP after 90 s"
+        echo "Debug:"
+        sudo virsh domblklist "$NAME"
+        echo "Try: sudo virsh console $NAME  (Ctrl+] to exit)"
+        return 1
+    fi
+
+    echo "IP found: $IP"
+    echo "SSH command: ssh ubuntu@$IP   (password: ubuntu123)"
 }
