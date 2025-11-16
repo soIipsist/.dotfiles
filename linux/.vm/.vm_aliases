@@ -1,3 +1,5 @@
+export VM_DIR="$HOME/isos"
+
 vm_reset() {
     # destroy and undefine all VMs (with storage)
     local vms vm
@@ -77,11 +79,6 @@ vm_init() {
             SSH_KEY="$2"
             shift
             ;;
-        --cloud-init)
-            USER_DATA="$(echo "$2" | cut -d: -f1)"
-            META_DATA="$(echo "$2" | cut -d: -f2)"
-            shift
-            ;;
         --no-clean) CLEAN=0 ;;
         *)
             echo "Unknown arg: $1"
@@ -90,6 +87,11 @@ vm_init() {
         esac
         shift
     done
+
+    if [ -z "$NAME" ]; then
+        echo "ERROR: You must provide --name"
+        return 1
+    fi
 
     if [ -z "$IMAGE" ] && [ -z "$ISO" ]; then
         echo "ERROR: You must provide --image or --iso"
@@ -115,6 +117,27 @@ vm_init() {
     elif [ -n "$IMAGE" ]; then
         echo "Copying disk image..."
         sudo cp "$IMAGE" "$IMG"
+    fi
+
+    # Determine USER_DATA and META_DATA from vm name
+    if [ -n "$VM_DIR" ]; then
+        VM_METADATA_DIR="$VM_DIR/$NAME"
+        for file in "$VM_METADATA_DIR"/*; do
+            if [[ "$file" == *.iso && -z "$ISO" ]]; then
+                ISO="$file"
+                echo "Setting iso file to $ISO."
+            fi
+
+            if [[ "$(basename "$file")" == "user-data" ]]; then
+                USER_DATA="$file"
+                echo "Setting user-data file to $USER_DATA."
+            fi
+
+            if [[ "$(basename "$file")" == "meta-data" ]]; then
+                META_DATA="$file"
+                echo "Setting meta-data file to $META_DATA."
+            fi
+        done
     fi
 
     # Create cloud-init ISO if provided
