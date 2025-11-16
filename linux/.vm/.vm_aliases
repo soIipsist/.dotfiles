@@ -40,6 +40,7 @@ get_qcow() {
     *.tar.xz | *.tar.gz | *.tgz)
         echo "Extracting tar archive → converting first .img to qcow2..."
         tmp_img=$(sudo mktemp --suffix=.img)
+        chmod 644 "$tmp_img"
         sudo tar -xOf "$src" --wildcards '*.img' --occurrence=1 >"$tmp_img"
         sudo qemu-img convert -f raw -O qcow2 "$tmp_img" "$dst"
         sudo rm -f "$tmp_img"
@@ -48,6 +49,7 @@ get_qcow() {
     *.xz | *.img.xz)
         echo "Decompressing .xz → converting to qcow2..."
         tmp_img=$(sudo mktemp --suffix=.img)
+        chmod 644 "$tmp_img"
         sudo unxz -c "$src" >"$tmp_img"
         sudo qemu-img convert -f raw -O qcow2 "$tmp_img" "$dst"
         sudo rm -f "$tmp_img"
