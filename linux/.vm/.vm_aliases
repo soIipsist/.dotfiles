@@ -38,24 +38,27 @@ get_qcow() {
     case "$DOWNLOADED_IMAGE" in
     *.tar.xz | *.tar.gz | *.tgz)
         echo "Extracting tar archive → converting first .img to qcow2..."
-        sudo tar -xOf "$DOWNLOADED_IMAGE" --wildcards '*.img' --occurrence=1 |
-            sudo qemu-img convert -f raw -O qcow2 - "$IMG_PATH"
+        # ONE sudo for the entire pipeline
+        sudo bash -c "
+                tar -xOf \"$DOWNLOADED\" --wildcards '*.img' --occurrence=1 | \
+                qemu-img convert -f raw -O qcow2 - \"$IMG_PATH\"
+            "
         ;;
     *.xz | *.img.xz)
-        echo "Decompressing and converting .xz → qcow2..."
-        unxz -c "$DOWNLOADED_IMAGE" | sudo qemu-img convert -f raw -O qcow2 - "$IMG_PATH"
+        echo "Decompressing .xz → converting to qcow2..."
+        sudo bash -c "unxz -c \"$DOWNLOADED\" | qemu-img convert -f raw -O qcow2 - \"$IMG_PATH\""
         ;;
     *.img)
         echo "Converting raw .img → qcow2..."
-        sudo qemu-img convert -f raw -O qcow2 "$DOWNLOADED_IMAGE" "$IMG_PATH"
+        sudo qemu-img convert -f raw -O qcow2 "$DOWNLOADED" "$IMG_PATH"
         ;;
     *.qcow2)
-        echo "Moving qcow2 image..."
-        sudo mv "$DOWNLOADED_IMAGE" "$IMG_PATH"
+        echo "Using existing qcow2..."
+        sudo mv "$DOWNLOADED" "$IMG_PATH"
         ;;
     *)
-        echo "Copying image as-is (probably already qcow2/iso)..."
-        sudo mv "$DOWNLOADED_IMAGE" "$IMG_PATH"
+        echo "Copying image as-is..."
+        sudo mv "$DOWNLOADED" "$IMG_PATH"
         ;;
     esac
 }
