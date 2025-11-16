@@ -22,7 +22,7 @@ packages:
   - openssh-server
   - transmission-cli
   - transmission-daemon
-  - kali-linux-default # optional: full Kali tools
+  - kali-linux-headless
 
 chpasswd: { expire: false }
 ssh_pwauth: false

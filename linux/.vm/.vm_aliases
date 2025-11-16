@@ -42,16 +42,22 @@ get_qcow() {
         sudo cp "$src" "$dst"
         return
         ;;
+    *.raw)
+        echo "Converting raw .raw → qcow2..."
+        sudo qemu-img convert -f raw -O qcow2 "$src" "$dst"
+        ;;
     *.tar.xz | *.tar.gz | *.tgz)
         if tar -tf "$src" >/dev/null 2>&1; then
             echo "Extracting tar archive..."
             tmp_dir=$(mktemp -d)
-            tar -xf "$src" -C "$tmp_dir"
-            img_file=$(find "$tmp_dir" -type f -name "*.img" | head -n 1)
+            sudo tar -xf "$src" -C "$tmp_dir"
+            img_file=$(find "$tmp_dir" -type f \( -name "*.img" -o -name "*.raw" \) | head -n 1)
             [ -z "$img_file" ] && {
-                echo "No .img found in archive"
+                echo "No .img or .raw file found in archive"
+                rm -rf "$tmp_dir"
                 return 1
             }
+            echo "Converting $img_file → $dst (qcow2)..."
             sudo qemu-img convert -f raw -O qcow2 "$img_file" "$dst"
             rm -rf "$tmp_dir"
         else
