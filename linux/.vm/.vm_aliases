@@ -153,7 +153,7 @@ vm_init() {
         sudo cp "$META_DATA" "${CLOUD_DIR}/meta-data"
         sudo genisoimage -output "$CLOUD_ISO" -volid cidata -joliet -rock \
             "${CLOUD_DIR}/user-data" "${CLOUD_DIR}/meta-data"
-        CLOUD_DISK="--disk $CLOUD_ISO,device=cdrom"
+        CLOUD_DISK="--disk $CLOUD_ISO,device=cdrom --import"
     else
         CLOUD_DISK=""
     fi
@@ -187,7 +187,6 @@ vm_init() {
         --network network=default,model=virtio \
         $GRAPHICS \
         --os-variant detect=on \
-        --import \
         --noautoconsole
 
     echo "VM launched."
