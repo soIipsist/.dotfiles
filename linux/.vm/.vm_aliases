@@ -56,7 +56,7 @@ get_qcow() {
             rm -rf "$tmp_dir"
         else
             echo "XZ-compressed raw/QCOW2 → decompressing..."
-            unxz -c "$src" | sudo tee "$dst" >/dev/null
+            sudo unxz -c "$src" | sudo tee "$dst" >/dev/null
         fi
         ;;
     *.xz | *.img.xz)
