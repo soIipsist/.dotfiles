@@ -36,7 +36,7 @@ vm_init() {
     NAME="ubuntu_vm"
     MEMORY=3072
     VCPUS=2
-    DISK_SIZE=20G
+    DISK_SIZE=20
     IMAGE="" # QCOW2 or raw
     ISO=""   # Boot ISO (Windows or Linux installer)
     USER_DATA=""
@@ -153,42 +153,48 @@ vm_init() {
         sudo cp "$META_DATA" "${CLOUD_DIR}/meta-data"
         sudo genisoimage -output "$CLOUD_ISO" -volid cidata -joliet -rock \
             "${CLOUD_DIR}/user-data" "${CLOUD_DIR}/meta-data"
-        CLOUD_DISK="--disk $CLOUD_ISO,device=cdrom --import"
+        CLOUD_DISK=(--disk $CLOUD_ISO,device=cdrom --import)
     else
-        CLOUD_DISK=""
+        CLOUD_DISK=()
     fi
 
-    # Prepare ISO if boot installer is provided
-    if [ -n "$ISO" ]; then
-        INSTALL_ISO="--cdrom $ISO"
-    else
-        INSTALL_ISO=""
-    fi
-
+    GRAPHICS=()
     if [ "$USE_GRAPHICS" = 1 ]; then
-        GRAPHICS="--graphics vnc,listen=127.0.0.1"
+        GRAPHICS=(--graphics vnc,listen=127.0.0.1)
     else
-        GRAPHICS="--graphics none"
+        GRAPHICS_OPT=(--graphics none)
     fi
 
-    if [ -n "$INSTALL_ISO" ]; then
-        CMD="$INSTALL_ISO"
+    set -x
+    if [ -n "$ISO" ]; then
+        # Classic ISO installation
+        sudo virt-install \
+            --name "$NAME" \
+            --memory "$MEMORY" \
+            --vcpus "$VCPUS" \
+            --disk path="$IMG",format=qcow2,bus=virtio,size="$DISK_SIZE" \
+            --cdrom "$ISO" \
+            --boot cdrom,hd \
+            --network network=default,model=virtio "${GRAPHICS[@]}" \
+            --os-variant detect=on \
+            --noautoconsole
     else
-        CMD="$CLOUD_DISK"
+        # Cloud image import
+        sudo virt-install \
+            --name "$NAME" \
+            --memory "$MEMORY" \
+            --vcpus "$VCPUS" \
+            --import \
+            --disk path="$IMG",format=qcow2,bus=virtio \
+            "${CLOUD_DISK[@]}" \
+            --boot hd \
+            --network network=default,model=virtio \
+            "${GRAPHICS[@]}" \
+            --os-variant detect=on \
+            --noautoconsole
     fi
 
-    # Start VM
-    sudo virt-install \
-        --name "$NAME" \
-        --memory "$MEMORY" \
-        --vcpus "$VCPUS" \
-        --disk path="$IMG",format=qcow2,bus=virtio \
-        $CMD \
-        --network network=default,model=virtio \
-        $GRAPHICS \
-        --os-variant detect=on \
-        --noautoconsole
-
+    set +x
     echo "VM launched."
 
     if [ "$USE_GRAPHICS" = 1 ]; then
