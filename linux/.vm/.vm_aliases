@@ -37,6 +37,11 @@ get_qcow() {
     local tmp_img
 
     case "$src" in
+    *cloudimg*.img | *-server-cloudimg-*.img)
+        echo "Cloud image detected → do NOT convert."
+        sudo cp "$src" "$dst"
+        return
+        ;;
     *.tar.xz | *.tar.gz | *.tgz)
         echo "Extracting tar archive → converting first .img to qcow2..."
         tmp_img=$(sudo mktemp --suffix=.img)
@@ -173,8 +178,8 @@ vm_init() {
     # Download remote qcow2 if URL provided
     if [[ "$IMAGE" =~ ^https?:// ]]; then
         echo "Downloading image from URL..."
-        tmp=$(sudo mktemp)
         filename=$(basename "$IMAGE")
+        tmp=$(sudo mktemp --suffix=$filename)
         sudo wget -q --show-progress -O "$tmp" "$IMAGE"
         get_qcow "$tmp" "$IMG"
         sudo rm "$tmp"
