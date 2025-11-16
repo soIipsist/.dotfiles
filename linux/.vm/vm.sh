@@ -1,7 +1,7 @@
 VM_DIR=${VM_DIR:-"/var/lib/libvirt/images"}
 source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-mkdir -p "$VM_DIR"
-cp -rf "$source_dir/config/"* "$VM_DIR"
+sudo mkdir -p "$VM_DIR"
+sudo cp -rf "$source_dir/config/"* "$VM_DIR"
 
 # echo
 # echo "Fix permissions so QEMU can read your ISOs?"
