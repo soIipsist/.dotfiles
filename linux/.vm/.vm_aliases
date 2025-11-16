@@ -1,34 +1,50 @@
 export VM_DIR="/var/lib/libvirt/images"
 
 vm_reset() {
-    # destroy and undefine all VMs (with storage)
-    local vms vm
+    local vms=("$@")
+    local vm
+    local -A exists
 
-    vms=$(sudo virsh list --all --name 2>/dev/null) || {
-        echo "No VMs found or virsh failed."
+    if [ ${#vms[@]} -eq 0 ]; then
+        echo "No VMs specified."
+        return 0
+    fi
+    while IFS= read -r name; do
+        [[ -n "$name" ]] && exists["$name"]=1
+    done < <(sudo virsh list --all --name)
+
+    if ((${#vms[@]} == 0)); then
+        vms=("${!exists[@]}")
+        echo "No VMs specified → resetting ALL running/defined VMs (${#vms[@]} found)"
+    fi
+
+    ((${#vms[@]} == 0)) && {
+        echo "No VMs to reset."
         return 0
     }
 
-    [ -z "$vms" ] && return 0
+    echo "Processing: ${vms[*]}"
+    echo
 
-    echo "Cleaning up VMs:"
-    printf '  %s\n' $vms
-
-    while IFS= read -r vm; do
-        [[ -z "$vm" ]] && continue
-
-        echo -n "  → $vm ... "
-        sudo virsh destroy "$vm" >/dev/null 2>&1 && echo "destroyed" || echo "not running"
-
-        if sudo virsh undefine "$vm" --remove-all-storage >/dev/null 2>&1; then
-            echo "    undefine + storage removed"
-        else
-            echo "    undefine failed (maybe already gone)"
+    for vm in "${vms[@]}"; do
+        if [[ -z "${exists[$vm]}" ]]; then
+            echo "VM '$vm' → does not exist (not in virsh), skipping."
+            continue
         fi
 
-    done <<<"$vms"
+        printf '  • %-20s ' "$vm"
 
-    echo "Cleanup complete."
+        sudo virsh destroy "$vm" &>/dev/null && echo -n "stopped "
+
+        if sudo virsh undefine "$vm" --remove-all-storage --nvram &>/dev/null; then
+            echo "removed"
+        else
+            echo "already gone"
+        fi
+    done
+
+    echo
+    echo "Done."
 }
 
 vm_init() {
