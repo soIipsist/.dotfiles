@@ -36,6 +36,11 @@ get_qcow() {
     local IMG_PATH="$2"
 
     case "$DOWNLOADED_IMAGE" in
+    *.tar.xz | *.tar.gz | *.tgz)
+        echo "Extracting tar archive → converting first .img to qcow2..."
+        sudo tar -xOf "$DOWNLOADED_IMAGE" --wildcards '*.img' --occurrence=1 |
+            sudo qemu-img convert -f raw -O qcow2 - "$IMG_PATH"
+        ;;
     *.xz | *.img.xz)
         echo "Decompressing and converting .xz → qcow2..."
         unxz -c "$DOWNLOADED_IMAGE" | sudo qemu-img convert -f raw -O qcow2 - "$IMG_PATH"
