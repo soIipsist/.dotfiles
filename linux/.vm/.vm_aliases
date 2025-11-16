@@ -171,14 +171,19 @@ vm_init() {
         GRAPHICS="--graphics none"
     fi
 
+    if [ -n "$INSTALL_ISO" ]; then
+        CMD="$INSTALL_ISO"
+    else
+        CMD="$CLOUD_DISK"
+    fi
+
     # Start VM
     sudo virt-install \
         --name "$NAME" \
         --memory "$MEMORY" \
         --vcpus "$VCPUS" \
         --disk path="$IMG",format=qcow2,bus=virtio \
-        $CLOUD_DISK \
-        $INSTALL_ISO \
+        $CMD \
         --network network=default,model=virtio \
         $GRAPHICS \
         --os-variant detect=on \
