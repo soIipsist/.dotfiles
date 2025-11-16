@@ -5,30 +5,16 @@ fqdn: kali_vm.local
 users:
   - name: kali
     sudo: ALL=(ALL) NOPASSWD:ALL
-    plain_text_passwd: kali123
     passwd: kali123
-    ssh-authorized-keys:
-      - $SSH_KEY
     lock_passwd: false
     shell: /bin/bash
-
-packages:
-  - net-tools
-  - iproute2
-  - wget
-  - curl
-  - vim
-  - less
-  - openssh-server
-  - transmission-cli
-  - transmission-daemon
-  - kali-linux-headless
+    ssh-authorized-keys:
+      - $SSH_KEY
 
 chpasswd: { expire: false }
 ssh_pwauth: false
+
 packages:
-  - transmission-cli
-  - transmission-daemon
   - net-tools
   - iproute2
   - wget
@@ -37,3 +23,5 @@ packages:
   - less
   - file
   - openssh-server
+  - transmission-cli
+  - transmission-daemon

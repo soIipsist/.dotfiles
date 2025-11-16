@@ -57,6 +57,7 @@ get_qcow() {
             return 1
         }
         sudo qemu-img convert -f raw -O qcow2 "$img_file" "$dst"
+        ls "$dst"
         rm -rf "$tmp_dir"
         ;;
     *.xz | *.img.xz)
