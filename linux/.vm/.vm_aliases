@@ -174,7 +174,7 @@ vm_init() {
     # Download remote qcow2 if URL provided
     if [[ "$IMAGE" =~ ^https?:// ]]; then
         echo "Downloading image from URL..."
-        tmp=$(mktemp --suffix=.img.download)
+        tmp=$(sudo mktemp --suffix=.img.download)
         sudo wget -q --show-progress -O "$tmp" "$IMAGE"
         get_qcow "$tmp" "$IMG"
         sudo rm -f "$tmp"
