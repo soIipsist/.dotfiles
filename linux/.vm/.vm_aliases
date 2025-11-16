@@ -38,11 +38,8 @@ get_qcow() {
     case "$DOWNLOADED_IMAGE" in
     *.tar.xz | *.tar.gz | *.tgz)
         echo "Extracting tar archive → converting first .img to qcow2..."
-        # ONE sudo for the entire pipeline
-        sudo bash -c "
-                tar -xOf \"$DOWNLOADED\" --wildcards '*.img' --occurrence=1 | \
-                qemu-img convert -f raw -O qcow2 - \"$IMG_PATH\"
-            "
+        sudo tar -xOf "$DOWNLOADED" --wildcards '*.img' --occurrence=1 |
+            sudo qemu-img convert -f raw -O qcow2 - "$IMG_PATH"
         ;;
     *.xz | *.img.xz)
         echo "Decompressing .xz → converting to qcow2..."
