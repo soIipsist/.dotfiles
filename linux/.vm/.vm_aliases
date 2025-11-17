@@ -1,5 +1,9 @@
 export VM_DIR="/var/lib/libvirt/images"
 
+alias vm_list="sudo virsh list --all"
+alias vm_stop="sudo virsh destroy"
+alias vm_start="sudo virsh start"
+
 vm_reset() {
     local vms=("$@")
     local vm
@@ -31,55 +35,64 @@ vm_reset() {
     echo "Done."
 }
 
-get_qcow() {
-    local src="$1"
-    local dst="$2"
-    local tmp_img
+get_raw_image() {
+    local IMAGE="$1"
+    local IMAGE_DEST="$2"
 
-    case "$src" in
+    if [[ "$IMAGE" =~ ^https?:// ]]; then
+        echo "Downloading image from URL..."
+        filename=$(basename "$IMAGE")
+        tmp=$(sudo mktemp --suffix=$filename)
+        sudo wget -q --show-progress -O "$tmp" "$IMAGE"
+        sudo rm "$tmp"
+    elif [ -n "$IMAGE" ]; then
+        echo "Using local image: $IMAGE"
+    fi
+
+    case "$IMAGE" in
     *cloudimg*.img | *-server-cloudimg-*.img)
         echo "Cloud image detected → do NOT convert."
-        sudo cp "$src" "$dst"
+        sudo cp "$IMAGE" "$IMAGE_DEST"
         return
         ;;
     *.raw)
         echo "Converting raw .raw → qcow2..."
-        sudo qemu-img convert -f raw -O qcow2 "$src" "$dst"
+        sudo qemu-img convert -f raw -O qcow2 "$IMAGE" "$IMAGE_DEST"
         ;;
     *.tar.xz | *.tar.gz | *.tgz)
         echo "Extracting tar archive → converting first .img or .raw to qcow2..."
         tmp_dir=$(mktemp -d)
-        sudo tar -xf "$src" -C "$tmp_dir"
+        sudo tar -xf "$IMAGE" -C "$tmp_dir"
         img_file=$(find "$tmp_dir" -type f \( -name "*.img" -o -name "*.raw" \) | head -n 1)
         [ -z "$img_file" ] && {
             echo "No .img or .raw file found in archive"
             rm -rf "$tmp_dir"
             return 1
         }
-        sudo qemu-img convert -f raw -O qcow2 "$img_file" "$dst"
-        ls "$dst"
+        sudo qemu-img convert -f raw -O qcow2 "$img_file" "$IMAGE_DEST"
+        ls "$IMAGE_DEST"
         rm -rf "$tmp_dir"
         ;;
     *.xz | *.img.xz)
         echo "Decompressing .xz → converting to qcow2..."
         tmp_img=$(mktemp --suffix=.img)
-        sudo unxz -c "$src" | sudo tee "$dst" >/dev/null
-        sudo qemu-img convert -f raw -O qcow2 "$tmp_img" "$dst"
+        sudo unxz -c "$IMAGE" | sudo tee "$IMAGE_DEST" >/dev/null
+        sudo qemu-img convert -f raw -O qcow2 "$tmp_img" "$IMAGE_DEST"
         rm -f "$tmp_img"
         ;;
     *.img)
         echo "Converting raw .img → qcow2..."
-        sudo qemu-img convert -f raw -O qcow2 "$src" "$dst"
+        sudo qemu-img convert -f raw -O qcow2 "$IMAGE" "$IMAGE_DEST"
         ;;
 
     *.qcow2)
         echo "Using existing qcow2..."
-        sudo mv "$src" "$dst"
+        sudo mv "$IMAGE" "$IMAGE_DEST"
         ;;
 
     *)
         echo "Copying image as-is..."
-        sudo mv "$src" "$dst"
+        sudo mv "$IMAGE" "$IMAGE_DEST"
         ;;
     esac
 }
@@ -196,30 +209,20 @@ vm_init() {
         return 1
     fi
 
-    IMG="/var/lib/libvirt/images/${NAME}.qcow2"
+    IMG_DEST="/var/lib/libvirt/images/${NAME}.qcow2"
     CLOUD_DIR="/var/lib/libvirt/cloud-init-${NAME}"
     CLOUD_ISO="${CLOUD_DIR}/cidata.iso"
 
     if [ "$CLEAN" = 1 ]; then
         sudo virsh destroy "$NAME" 2>/dev/null || true
         sudo virsh undefine "$NAME" --remove-all-storage 2>/dev/null || true
-        sudo rm -rf "$IMG" "$CLOUD_DIR"
+        sudo rm -rf "$IMG_DEST" "$CLOUD_DIR"
     fi
 
     sudo mkdir -p "$CLOUD_DIR"
 
     # Download remote qcow2 if URL provided
-    if [[ "$IMAGE" =~ ^https?:// ]]; then
-        echo "Downloading image from URL..."
-        filename=$(basename "$IMAGE")
-        tmp=$(sudo mktemp --suffix=$filename)
-        sudo wget -q --show-progress -O "$tmp" "$IMAGE"
-        get_qcow "$tmp" "$IMG"
-        sudo rm "$tmp"
-    elif [ -n "$IMAGE" ]; then
-        echo "Using local image: $IMAGE"
-        get_qcow "$IMAGE" "$IMG"
-    fi
+    get_raw_image "$IMAGE" "$IMG_DEST"
 
     # Create cloud-init ISO if provided
     if [ -n "$USER_DATA" ] && [ -n "$META_DATA" ]; then
@@ -253,7 +256,7 @@ vm_init() {
             --name "$NAME" \
             --memory "$MEMORY" \
             --vcpus "$VCPUS" \
-            --disk path="$IMG",format=qcow2,bus=virtio,size="$DISK_SIZE" \
+            --disk path="$IMG_DEST",format=qcow2,bus=virtio,size="$DISK_SIZE" \
             --cdrom "$ISO" \
             --boot cdrom,hd \
             --network network=default,model=virtio "${GRAPHICS[@]}" \
@@ -266,7 +269,7 @@ vm_init() {
             --memory "$MEMORY" \
             --vcpus "$VCPUS" \
             --import \
-            --disk path="$IMG",format=qcow2,bus=virtio \
+            --disk path="$IMG_DEST",format=qcow2,bus=virtio \
             "${CLOUD_DISK[@]}" \
             --boot hd \
             --network network=default,model=virtio \
