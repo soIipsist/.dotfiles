@@ -97,6 +97,7 @@ vm_init() {
     CLEAN=1
     USE_GRAPHICS=0
     SSH_KEY=""
+    WAIT_FOR_IP=0
 
     # image links:
     # "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
@@ -134,6 +135,10 @@ vm_init() {
             ;;
         --ssh-key)
             SSH_KEY="$2"
+            shift
+            ;;
+        --ip-wait)
+            WAIT_FOR_IP="$2"
             shift
             ;;
         --no-clean) CLEAN=0 ;;
@@ -221,7 +226,7 @@ vm_init() {
 
     GRAPHICS=()
     if [ "$USE_GRAPHICS" = 1 ]; then
-        GRAPHICS=(--graphics vnc,listen=127.0.0.1)
+        GRAPHICS=(--graphics vnc,listen=0.0.0.0)
     else
         GRAPHICS=(--graphics none)
     fi
