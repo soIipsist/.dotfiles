@@ -98,6 +98,7 @@ vm_init() {
     USE_GRAPHICS=0
     SSH_KEY=""
     WAIT_FOR_IP=0
+    XML=""
 
     # image links:
     # "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
@@ -107,6 +108,10 @@ vm_init() {
         case "$1" in
         --name)
             NAME="$2"
+            shift
+            ;;
+        --xml)
+            XML="$2"
             shift
             ;;
         --memory)
@@ -150,8 +155,8 @@ vm_init() {
         shift
     done
 
-    if [ -z "$NAME" ]; then
-        echo "ERROR: You must provide --name"
+    if [ -z "$NAME" ] && [ -z "$XML" ]; then
+        echo "ERROR: You must provide --name or --xml"
         return 1
     fi
 
@@ -162,6 +167,11 @@ vm_init() {
             if [[ "$file" == *.iso && -z "$ISO" ]]; then
                 ISO="$file"
                 echo "Setting iso file to $ISO."
+            fi
+
+            if [[ "$file" == *.xml && -z "$XML" ]]; then
+                XML="$file"
+                echo "Setting xml file to $XML."
             fi
 
             if [[ "$(basename "$file")" == "user-data" ]]; then
@@ -178,6 +188,11 @@ vm_init() {
 
     if [ -z "$IMAGE" ] && [ -z "$ISO" ]; then
         echo "ERROR: You must provide --image or --iso"
+        return 1
+    fi
+
+    if [ -n "$XML" ]; then # xml takes precendence
+        sudo virsh define "$XML"
         return 1
     fi
 
