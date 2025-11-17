@@ -35,10 +35,31 @@ vm_reset() {
     echo "Done."
 }
 
+generate_iso_image() {
+    USER_DATA="$1"
+    META_DATA="$2"
+    CLOUD_DIR="$3"
+    SSH_KEY="$4"
+    CLOUD_ISO="${CLOUD_DIR}/cidata.iso"
+
+    echo "Using cloud-init"
+    sudo cp "$USER_DATA" "${CLOUD_DIR}/user-data"
+
+    if [ -n "$SSH_KEY" ]; then
+        echo "Updating SSH key in user-data"
+        sudo sed -i "/ssh-authorized-keys:/,/^[^ ]/c\    ssh-authorized-keys:\n      - $SSH_KEY" \
+            "${CLOUD_DIR}/user-data"
+    fi
+    sudo cp "$META_DATA" "${CLOUD_DIR}/meta-data"
+    sudo genisoimage -output "$CLOUD_ISO" -volid cidata -joliet -rock \
+        "${CLOUD_DIR}/user-data" "${CLOUD_DIR}/meta-data"
+}
+
 get_raw_image() {
     local IMAGE="$1"
     local IMAGE_DEST="$2"
 
+    # download image from url, if provided
     if [[ "$IMAGE" =~ ^https?:// ]]; then
         echo "Downloading image from URL..."
         filename=$(basename "$IMAGE")
@@ -211,7 +232,6 @@ vm_init() {
 
     IMG_DEST="/var/lib/libvirt/images/${NAME}.qcow2"
     CLOUD_DIR="/var/lib/libvirt/cloud-init-${NAME}"
-    CLOUD_ISO="${CLOUD_DIR}/cidata.iso"
 
     if [ "$CLEAN" = 1 ]; then
         sudo virsh destroy "$NAME" 2>/dev/null || true
@@ -220,26 +240,14 @@ vm_init() {
     fi
 
     sudo mkdir -p "$CLOUD_DIR"
-
-    # Download remote qcow2 if URL provided
     get_raw_image "$IMAGE" "$IMG_DEST"
+
+    CLOUD_DISK=()
 
     # Create cloud-init ISO if provided
     if [ -n "$USER_DATA" ] && [ -n "$META_DATA" ]; then
-        echo "Using cloud-init"
-        sudo cp "$USER_DATA" "${CLOUD_DIR}/user-data"
-
-        if [ -n "$SSH_KEY" ]; then
-            echo "Updating SSH key in user-data"
-            sudo sed -i "/ssh-authorized-keys:/,/^[^ ]/c\    ssh-authorized-keys:\n      - $SSH_KEY" \
-                "${CLOUD_DIR}/user-data"
-        fi
-        sudo cp "$META_DATA" "${CLOUD_DIR}/meta-data"
-        sudo genisoimage -output "$CLOUD_ISO" -volid cidata -joliet -rock \
-            "${CLOUD_DIR}/user-data" "${CLOUD_DIR}/meta-data"
+        generate_iso_image "$USER_DATA" "$META_DATA" "$CLOUD_DIR" "$SSH_KEY"
         CLOUD_DISK=(--disk $CLOUD_ISO,device=cdrom --import)
-    else
-        CLOUD_DISK=()
     fi
 
     GRAPHICS=()
