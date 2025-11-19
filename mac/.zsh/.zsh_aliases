@@ -20,7 +20,6 @@ export DRY_RUN=0
 export MOVE_FILES=0
 
 # aliases
-alias python="python3"
 alias yabais="yabai --start-service"
 alias yabaik="yabai --stop-service"
 alias yabair="yabai --restart-service"

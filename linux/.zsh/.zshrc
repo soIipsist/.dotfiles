@@ -108,7 +108,6 @@ else
 fi
 
 # aliases
-alias python="python3"
 alias cdf='cd "$(find . -type d | fzf)"'
 
 function run_venv_script() {

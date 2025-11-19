@@ -19,7 +19,6 @@ export BACKUP_DIRECTORY="/tmp/backup"
 export DRY_RUN=0
 export MOVE_FILES=0
 
-alias python='python3'
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'

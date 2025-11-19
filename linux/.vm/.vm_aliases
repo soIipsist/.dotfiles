@@ -44,13 +44,13 @@ generate_iso_image() {
 
     echo "Using cloud-init"
     sudo cp "$USER_DATA" "${CLOUD_DIR}/user-data"
+    sudo cp "$META_DATA" "${CLOUD_DIR}/meta-data"
 
     if [ -n "$SSH_KEY" ]; then
         echo "Updating SSH key in user-data"
         sudo sed -i "/ssh-authorized-keys:/,/^[^ ]/c\    ssh-authorized-keys:\n      - $SSH_KEY" \
             "${CLOUD_DIR}/user-data"
     fi
-    sudo cp "$META_DATA" "${CLOUD_DIR}/meta-data"
     sudo genisoimage -output "$CLOUD_ISO" -volid cidata -joliet -rock \
         "${CLOUD_DIR}/user-data" "${CLOUD_DIR}/meta-data"
 }
@@ -58,6 +58,11 @@ generate_iso_image() {
 get_raw_image() {
     local IMAGE="$1"
     local IMAGE_DEST="$2"
+
+    if [ -z "$IMAGE" ]; then
+        echo "No raw images provided."
+        return 1
+    fi
 
     # download image from url, if provided
     if [[ "$IMAGE" =~ ^https?:// ]]; then
@@ -126,13 +131,17 @@ vm_init() {
     DISK_SIZE=20
     IMAGE="" # QCOW2 or raw
     ISO=""   # Boot ISO (Windows or Linux installer)
+    XML=""
     USER_DATA=""
     META_DATA=""
     CLEAN=1
     USE_GRAPHICS=0
     SSH_KEY=""
     WAIT_FOR_IP=0
-    XML=""
+    IMG_DEST="/var/lib/libvirt/images/${NAME}.qcow2"
+    CLOUD_DIR="/var/lib/libvirt/cloud-init-${NAME}"
+    CLOUD_DISK=()
+    GRAPHICS=()
 
     # image links:
     # "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
@@ -225,14 +234,6 @@ vm_init() {
         return 1
     fi
 
-    if [ -n "$XML" ]; then # xml takes precendence
-        sudo virsh define "$XML"
-        return 1
-    fi
-
-    IMG_DEST="/var/lib/libvirt/images/${NAME}.qcow2"
-    CLOUD_DIR="/var/lib/libvirt/cloud-init-${NAME}"
-
     if [ "$CLEAN" = 1 ]; then
         sudo virsh destroy "$NAME" 2>/dev/null || true
         sudo virsh undefine "$NAME" --remove-all-storage 2>/dev/null || true
@@ -242,15 +243,12 @@ vm_init() {
     sudo mkdir -p "$CLOUD_DIR"
     get_raw_image "$IMAGE" "$IMG_DEST"
 
-    CLOUD_DISK=()
-
     # Create cloud-init ISO if provided
     if [ -n "$USER_DATA" ] && [ -n "$META_DATA" ]; then
         generate_iso_image "$USER_DATA" "$META_DATA" "$CLOUD_DIR" "$SSH_KEY"
         CLOUD_DISK=(--disk $CLOUD_ISO,device=cdrom --import)
     fi
 
-    GRAPHICS=()
     if [ "$USE_GRAPHICS" = 1 ]; then
         GRAPHICS=(--graphics vnc,listen=0.0.0.0)
     else
@@ -258,32 +256,36 @@ vm_init() {
     fi
 
     set -x
-    if [ -n "$ISO" ]; then
-        # Classic ISO installation
-        sudo virt-install \
-            --name "$NAME" \
-            --memory "$MEMORY" \
-            --vcpus "$VCPUS" \
-            --disk path="$IMG_DEST",format=qcow2,bus=virtio,size="$DISK_SIZE" \
-            --cdrom "$ISO" \
-            --boot cdrom,hd \
-            --network network=default,model=virtio "${GRAPHICS[@]}" \
-            --os-variant detect=on \
-            --noautoconsole
+    if [ -n "$XML" ]; then
+        sudo virsh define "$XML"
     else
-        # Cloud image import
-        sudo virt-install \
-            --name "$NAME" \
-            --memory "$MEMORY" \
-            --vcpus "$VCPUS" \
-            --import \
-            --disk path="$IMG_DEST",format=qcow2,bus=virtio \
-            "${CLOUD_DISK[@]}" \
-            --boot hd \
-            --network network=default,model=virtio \
-            "${GRAPHICS[@]}" \
-            --os-variant detect=on \
-            --noautoconsole
+        if [ -n "$ISO" ]; then
+            # Classic ISO installation
+            sudo virt-install \
+                --name "$NAME" \
+                --memory "$MEMORY" \
+                --vcpus "$VCPUS" \
+                --disk path="$IMG_DEST",format=qcow2,bus=virtio,size="$DISK_SIZE" \
+                --cdrom "$ISO" \
+                --boot cdrom,hd \
+                --network network=default,model=virtio "${GRAPHICS[@]}" \
+                --os-variant detect=on \
+                --noautoconsole
+        else
+            # Cloud image import
+            sudo virt-install \
+                --name "$NAME" \
+                --memory "$MEMORY" \
+                --vcpus "$VCPUS" \
+                --import \
+                --disk path="$IMG_DEST",format=qcow2,bus=virtio \
+                "${CLOUD_DISK[@]}" \
+                --boot hd \
+                --network network=default,model=virtio \
+                "${GRAPHICS[@]}" \
+                --os-variant detect=on \
+                --noautoconsole
+        fi
     fi
 
     set +x
@@ -295,6 +297,10 @@ vm_init() {
         echo " vncviewer 127.0.0.1:5900"
     else
         echo "Headless mode. Use: sudo virsh console $NAME"
+    fi
+
+    if [ "$WAIT_FOR_IP" = 0 ]; then
+        return 1
     fi
 
     MAC=$(sudo virsh dumpxml "$NAME" | grep -o "mac address='[^']*" | cut -d"'" -f2 | tr '[:upper:]' '[:lower:]')
