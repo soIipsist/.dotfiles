@@ -258,3 +258,25 @@ report_fail2ban() {
     echo "Report saved to: $REPORT_FILE"
     echo "IP report saved to : $IP_REPORT_FILE"
 }
+
+scan_files() {
+    for input in "$@"; do
+        for file in "$input"/* "$input"; do
+            [[ -f "$file" ]] || continue
+
+            echo "=== Scanning: $file ==="
+
+            file "$file"
+            clamscan "$file"
+
+            mimetype=$(file --mime-type -b "$file")
+            if [[ "$mimetype" == video/* ]]; then
+                mediainfo "$file"
+            else
+                echo "Not a video — skipping MediaInfo"
+            fi
+
+            echo
+        done
+    done
+}

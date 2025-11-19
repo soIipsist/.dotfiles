@@ -150,18 +150,13 @@ run_in_tmux_session() {
     fi
 }
 
-export PATH=/opt/homebrew/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+export PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/opt/python@3.13/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/opt/homebrew/opt/postgresql@15/bin:$PATH"
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 export PATH="/usr/local/ffmpeg/bin:/usr/local/ffmpeg/lib:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.local/lib/python3.13/site-packages:$PATH"
-export PATH="/home/linuxbrew/.linuxbrew/lib/python3.13/site-packages:$PATH"
-export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-export PATH="/home/linuxbrew/.linuxbrew/opt/python@3.13/bin:$PATH"
-export PASSWORD_STORE_DIR="$HOME/repos/soIipsist/password-store"
-export PATH="/usr/games:$PATH"
-export PATH="/usr/local/go/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.local/lib/python3.13/site-packages:$PATH"
+export PATH="/usr/games:/usr/local/go/bin:$GOBIN:$PATH"
 export GOBIN=$(go env GOPATH)/bin
-export PATH="$GOBIN:$PATH"
+export LD_LIBRARY_PATH="/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH"
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
