@@ -293,14 +293,25 @@ scan_files() {
 
         case "$method" in
         clamscan)
-            echo "[method=clamscan] done"
+            echo "[method=clamscan]"
             clamscan "$file" --log="$log_path"
             ;;
         vt)
-            echo "[method=vt]VirusTotal Command Line Interface hash lookup"
+            echo "[method=vt]"
             file_id=$(vt scan file "$file" | awk '{print $2}')
-            echo "File ID: $file_id"
-            analysis=$(vt analysis "$file_id")
+
+            while true; do
+                analysis=$(vt analysis "$file_id")
+                status=$(echo "$analysis" | jq -r '.data.attributes.status')
+
+                if [[ "$status" != "queued" ]]; then
+                    break
+                fi
+
+                echo "VT analysis still queued, waiting..."
+                sleep 10
+            done
+
             echo "$analysis"
             echo "$analysis" >>"$log_path"
             ;;
