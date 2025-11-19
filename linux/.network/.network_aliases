@@ -1,6 +1,7 @@
 export TCPDUMP_DIR="$HOME/.tcpdump"
 export UID="${UID:-$(id -u 2>/dev/null || echo 1000)}"
 export REPORT_DIR="/tmp/$UID/reports"
+export SCAN_METHOD="clamscan"
 
 get_private_ip() {
     ip route get 1.1.1.1 2>/dev/null | awk '
@@ -260,23 +261,60 @@ report_fail2ban() {
 }
 
 scan_files() {
-    for input in "$@"; do
-        for file in "$input"/* "$input"; do
-            [[ -f "$file" ]] || continue
+    method="${SCAN_METHOD:-clamscan}"
+    files=()
 
-            echo "=== Scanning: $file ==="
-
-            file "$file"
-            clamscan "$file"
-
-            mimetype=$(file --mime-type -b "$file")
-            if [[ "$mimetype" == video/* ]]; then
-                mediainfo "$file"
-            else
-                echo "Not a video — skipping MediaInfo"
+    while (("$#")); do
+        case "$1" in
+        --method)
+            method="$2"
+            shift 2
+            ;;
+        --method=*)
+            method="${1#--method=}"
+            shift
+            ;;
+        *)
+            # Expand directory now so only one loop is needed later
+            if [[ -d "$1" ]]; then
+                for f in "$1"/*; do
+                    [[ -f "$f" ]] && files+=("$f")
+                done
+            elif [[ -f "$1" ]]; then
+                files+=("$1")
             fi
+            shift
+            ;;
+        esac
+    done
 
-            echo
-        done
+    [[ ${#files[@]} -eq 0 ]] && {
+        echo "No valid files to scan."
+        return 1
+    }
+
+    for file in "${files[@]}"; do
+        echo "=== Scanning: $file ==="
+
+        case "$method" in
+        clamscan)
+            echo "[method=clamscan] done"
+            clamscan "$file"
+            ;;
+
+        mediainfo)
+            echo "[method=mediainfo]"
+            mediainfo "$file"
+            ;;
+
+        vt)
+            echo "[method=vt]VirusTotal Command Line Interface hash lookup"
+            vt scan file "$file"
+            ;;
+        *)
+            echo "[method=$method] Unknown method."
+            ;;
+        esac
+        echo
     done
 }
