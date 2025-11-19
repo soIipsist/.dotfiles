@@ -314,19 +314,22 @@ scan_files() {
             ;;
         vt)
             echo "[method=vt]"
+
             file_id=$(vt scan file "$file" | awk '{print $2}')
+            echo "$file -> $file_id" >>"$log_path"
 
-            while true; do
-                analysis=$(vt analysis "$file_id")
-                vt_status=$(echo "$analysis" | grep -i 'status' | awk '{print $2}')
-
-                if [[ "$vt_status" != "queued" ]]; then
-                    break
-                fi
-            done
-
-            echo "$analysis"
-            echo "$analysis" >>"$log_path"
+            (
+                while true; do
+                    analysis=$(vt analysis "$file_id")
+                    vt_status=$(echo "$analysis" | grep -i 'status' | awk -F': ' '{print $2}' | tr -d '[:space:]')
+                    if [[ "$vt_status" != "queued" ]]; then
+                        echo "$file analysis ready:" >>"$log_path"
+                        echo "$analysis" >>"$log_path"
+                        break
+                    fi
+                    sleep 10
+                done
+            ) &
             ;;
         mediainfo | *)
             echo "[method=mediainfo]"
@@ -335,4 +338,5 @@ scan_files() {
         esac
         echo
     done
+    wait
 }
