@@ -301,7 +301,7 @@ scan_files() {
             file_id=$(vt scan file "$file" | awk '{print $2}')
 
             while true; do
-                analysis=$(vt analysis "$file_id" --format json)
+                analysis=$(vt analysis "$file_id")
                 vt_status=$(echo "$analysis" | grep -i 'status' | awk '{print $2}')
 
                 if [[ "$vt_status" != "queued" ]]; then
