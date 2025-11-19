@@ -260,6 +260,27 @@ report_fail2ban() {
     echo "IP report saved to : $IP_REPORT_FILE"
 }
 
+report_ssh() {
+    local output
+    local REPORT_FILE="$REPORT_DIR/ssh_auth_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
+
+    if command -v journalctl >/dev/null 2>&1; then
+        output=$(journalctl _COMM=sshd | grep "Accepted password\|Accepted publickey" |
+            awk '{for(i=1;i<=NF;i++){if($i=="from"){print $(i+1)}}}' |
+            sort | uniq -c | sort -nr | awk '{printf "%s connections from %s\n",$1,$2}')
+    else
+        LOG_FILE="/var/log/auth.log"
+        [ -f /var/log/secure ] && LOG_FILE="/var/log/secure"
+
+        output=$(grep "Accepted password\|Accepted publickey" "$LOG_FILE" |
+            awk '{for(i=1;i<=NF;i++){if($i=="from"){print $(i+1)}}}' |
+            sort | uniq -c | sort -nr | awk '{printf "%s connections from %s\n",$1,$2}')
+    fi
+
+    echo "Report saved to: $REPORT_FILE"
+    echo "$output" >>"$REPORT_FILE"
+}
+
 scan_files() {
     method="${SCAN_METHOD:-clamscan}"
     files=()
