@@ -263,6 +263,8 @@ report_fail2ban() {
 scan_files() {
     method="${SCAN_METHOD:-clamscan}"
     files=()
+    log_dir="${HOME:-$REPORT_DIR}"
+    log_path="$REPORT_DIR/$method_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
 
     while (("$#")); do
         case "$1" in
@@ -275,14 +277,7 @@ scan_files() {
             shift
             ;;
         *)
-            # Expand directory now so only one loop is needed later
-            if [[ -d "$1" ]]; then
-                for f in "$1"/*; do
-                    [[ -f "$f" ]] && files+=("$f")
-                done
-            elif [[ -f "$1" ]]; then
-                files+=("$1")
-            fi
+            files+=("$1")
             shift
             ;;
         esac
@@ -299,20 +294,17 @@ scan_files() {
         case "$method" in
         clamscan)
             echo "[method=clamscan] done"
-            clamscan "$file"
+            clamscan "$file" --log="$log_path"
             ;;
-
-        mediainfo)
-            echo "[method=mediainfo]"
-            mediainfo "$file"
-            ;;
-
         vt)
             echo "[method=vt]VirusTotal Command Line Interface hash lookup"
-            vt scan file "$file"
+            file_id=$(vt scan file "$file" | awk '{print $2}')
+            analysis=$(vt analysis $file_id)
+            echo "$analysis" >>"$log_path"
             ;;
-        *)
-            echo "[method=$method] Unknown method."
+        mediainfo | *)
+            echo "[method=mediainfo]"
+            mediainfo "$file" --LogFile="$log_path"
             ;;
         esac
         echo
