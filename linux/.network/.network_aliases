@@ -281,6 +281,21 @@ scan_files() {
         esac
     done
 
+    if [[ $method == "vt" ]]; then
+        # expand directories into files
+        expanded_files=()
+        for input in "${files[@]}"; do
+            if [[ -d "$input" ]]; then
+                for f in "$input"/*; do
+                    [[ -f "$f" ]] && expanded_files+=("$f")
+                done
+            else
+                expanded_files+=("$input")
+            fi
+        done
+        files=("${expanded_files[@]}")
+    fi
+
     log_dir="${HOME:-$REPORT_DIR}"
     log_path="$REPORT_DIR/${method}_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
 
