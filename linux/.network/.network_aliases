@@ -264,7 +264,7 @@ scan_files() {
     method="${SCAN_METHOD:-clamscan}"
     files=()
     log_dir="${HOME:-$REPORT_DIR}"
-    log_path="$REPORT_DIR/$method_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
+    log_path="$REPORT_DIR/${method}_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
 
     while (("$#")); do
         case "$1" in
@@ -299,7 +299,9 @@ scan_files() {
         vt)
             echo "[method=vt]VirusTotal Command Line Interface hash lookup"
             file_id=$(vt scan file "$file" | awk '{print $2}')
-            analysis=$(vt analysis $file_id)
+            echo "File ID: $file_id"
+            analysis=$(vt analysis "$file_id")
+            echo "$analysis"
             echo "$analysis" >>"$log_path"
             ;;
         mediainfo | *)
