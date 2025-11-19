@@ -263,8 +263,6 @@ report_fail2ban() {
 scan_files() {
     method="${SCAN_METHOD:-clamscan}"
     files=()
-    log_dir="${HOME:-$REPORT_DIR}"
-    log_path="$REPORT_DIR/${method}_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
 
     while (("$#")); do
         case "$1" in
@@ -282,6 +280,9 @@ scan_files() {
             ;;
         esac
     done
+
+    log_dir="${HOME:-$REPORT_DIR}"
+    log_path="$REPORT_DIR/${method}_$(date -u '+%Y-%m-%dT%H-%M-%SZ').log"
 
     [[ ${#files[@]} -eq 0 ]] && {
         echo "No valid files to scan."
