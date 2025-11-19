@@ -302,9 +302,9 @@ scan_files() {
 
             while true; do
                 analysis=$(vt analysis "$file_id" --format json)
-                status=$(echo "$analysis" | grep -i 'status' | awk '{print $2}')
+                vt_status=$(echo "$analysis" | grep -i 'status' | awk '{print $2}')
 
-                if [[ "$status" != "queued" ]]; then
+                if [[ "$vt_status" != "queued" ]]; then
                     break
                 fi
             done
