@@ -56,8 +56,8 @@ ufw_restrict() {
     sudo ufw allow in from "$HOST_GATEWAY" to any port 22 proto tcp
 
     # block ICMP (no ping)
-    sudo ufw deny out proto icmp
-    sudo ufw deny in proto icmp
+    sudo ufw deny out proto icmp to any
+    sudo ufw deny in proto icmp from any
 
     sudo ufw --force enable
     sudo ufw reload
