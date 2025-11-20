@@ -24,6 +24,11 @@ vm_reset() {
 
         printf '  • %-20s ' "$vm"
         sudo virsh destroy "$vm" &>/dev/null && echo -n "stopped "
+        # remove .qcow2 image
+        IMG_DEST="/var/lib/libvirt/images/${NAME}.qcow2"
+
+        echo "removed $IMG_DEST"
+        sudo rm "$IMG_DEST"
         if sudo virsh undefine "$vm" --remove-all-storage --nvram &>/dev/null; then
             echo "removed"
         else
@@ -36,11 +41,24 @@ vm_reset() {
 }
 
 generate_iso_image() {
-    USER_DATA="$1"
-    META_DATA="$2"
-    CLOUD_DIR="$3"
+    CLOUD_DIR="$1"
+    USER_DATA="$2"
+    META_DATA="$3"
     SSH_KEY="$4"
     CLOUD_ISO="${CLOUD_DIR}/cidata.iso"
+
+    [ -d "$CLOUD_DIR" ] || {
+        echo "Error: directory $CLOUD_DIR not found"
+        return 1
+    }
+    [ -f "$USER_DATA" ] || {
+        echo "Error: user-data file missing: $USER_DATA"
+        return 1
+    }
+    [ -f "$META_DATA" ] || {
+        echo "Error: meta-data file missing: $META_DATA"
+        return 1
+    }
 
     echo "Using cloud-init"
     sudo cp "$USER_DATA" "${CLOUD_DIR}/user-data"
@@ -68,9 +86,9 @@ get_raw_image() {
     if [[ "$IMAGE" =~ ^https?:// ]]; then
         echo "Downloading image from URL..."
         filename=$(basename "$IMAGE")
-        tmp=$(sudo mktemp --suffix=$filename)
+        tmp=$(sudo mktemp --suffix="$filename")
         sudo wget -q --show-progress -O "$tmp" "$IMAGE"
-        sudo rm "$tmp"
+        IMAGE="$tmp"
     elif [ -n "$IMAGE" ]; then
         echo "Using local image: $IMAGE"
     fi
@@ -92,19 +110,25 @@ get_raw_image() {
         img_file=$(find "$tmp_dir" -type f \( -name "*.img" -o -name "*.raw" \) | head -n 1)
         [ -z "$img_file" ] && {
             echo "No .img or .raw file found in archive"
-            rm -rf "$tmp_dir"
+            sudo rm -rf "$tmp_dir"
             return 1
         }
-        sudo qemu-img convert -f raw -O qcow2 "$img_file" "$IMAGE_DEST"
-        ls "$IMAGE_DEST"
-        rm -rf "$tmp_dir"
+
+        if [[ "$img_file" == *.qcow2 ]]; then
+            echo "Archive contains qcow2 → copying"
+            sudo mv "$img_file" "$IMAGE_DEST"
+        else
+            echo "Converting extracted image to qcow2"
+            sudo qemu-img convert -f raw -O qcow2 "$img_file" "$IMAGE_DEST"
+        fi
+        sudo rm -rf "$tmp_dir"
         ;;
     *.xz | *.img.xz)
         echo "Decompressing .xz → converting to qcow2..."
         tmp_img=$(mktemp --suffix=.img)
-        sudo unxz -c "$IMAGE" | sudo tee "$IMAGE_DEST" >/dev/null
+        sudo unxz -c "$IMAGE" | sudo tee "$tmp_img" >/dev/null
         sudo qemu-img convert -f raw -O qcow2 "$tmp_img" "$IMAGE_DEST"
-        rm -f "$tmp_img"
+        sudo rm -f "$tmp_img"
         ;;
     *.img)
         echo "Converting raw .img → qcow2..."
@@ -121,6 +145,8 @@ get_raw_image() {
         sudo mv "$IMAGE" "$IMAGE_DEST"
         ;;
     esac
+
+    sudo rm "$tmp"
 }
 
 vm_init() {
@@ -245,7 +271,7 @@ vm_init() {
 
     # Create cloud-init ISO if provided
     if [ -n "$USER_DATA" ] && [ -n "$META_DATA" ]; then
-        generate_iso_image "$USER_DATA" "$META_DATA" "$CLOUD_DIR" "$SSH_KEY"
+        generate_iso_image "$CLOUD_DIR" "$USER_DATA" "$META_DATA" "$SSH_KEY"
         CLOUD_DISK=(--disk $CLOUD_ISO,device=cdrom --import)
     fi
 
