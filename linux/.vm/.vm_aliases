@@ -261,7 +261,6 @@ vm_init() {
     if [ "$CLEAN" = 1 ]; then
         sudo virsh destroy "$NAME" 2>/dev/null || true
         sudo virsh undefine "$NAME" --remove-all-storage 2>/dev/null || true
-        sudo rm -rf "$IMG_DEST" "$CLOUD_DIR"
     fi
 
     sudo mkdir -p "$CLOUD_DIR"
