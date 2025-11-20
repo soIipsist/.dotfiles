@@ -128,7 +128,7 @@ alt-a = 'workspace A'
 
 alt-t = ["exec-and-forget open -a 'iTerm'"] # Terminal
 alt-c = ["exec-and-forget open -a 'Visual Studio Code'"] # IDE/editor
-alt-b = ["exec-and-forget open -a 'Google Chrome'"]# Browser 
+alt-b = ["exec-and-forget open -a 'Brave Browser'"]# Browser 
 alt-f = ["exec-and-forget open -a 'Finder'"] # Finder
 alt-d = ["exec-and-forget open -a 'Discord'"] # DMs
 alt-e = ["exec-and-forget open -a 'Epic Games Launcher'"]
@@ -180,7 +180,7 @@ if.app-id = 'com.microsoft.VSCode'
 run = ['move-node-to-workspace 2']
 
 [[on-window-detected]]
-if.app-id = 'com.google.Chrome'
+if.app-id = 'com.brave.Browser'
 run = ['move-node-to-workspace 3']
 
 [[on-window-detected]]

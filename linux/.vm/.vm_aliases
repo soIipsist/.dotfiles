@@ -162,8 +162,6 @@ vm_init() {
     USE_GRAPHICS=0
     SSH_KEY=""
     WAIT_FOR_IP=0
-    IMG_DEST="/var/lib/libvirt/images/${NAME}.qcow2"
-    CLOUD_DIR="/var/lib/libvirt/images/${NAME}"
     CLOUD_DISK=()
     GRAPHICS=()
 
@@ -226,6 +224,9 @@ vm_init() {
         echo "ERROR: You must provide --name or --xml"
         return 1
     fi
+
+    IMG_DEST="/var/lib/libvirt/images/${NAME}.qcow2"
+    CLOUD_DIR="/var/lib/libvirt/images/${NAME}"
 
     # Determine USER_DATA and META_DATA from vm name
     if [ -n "$VM_DIR" ]; then
