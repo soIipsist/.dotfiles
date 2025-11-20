@@ -25,7 +25,7 @@ vm_reset() {
         printf '  • %-20s ' "$vm"
         sudo virsh destroy "$vm" &>/dev/null && echo -n "stopped "
         # remove .qcow2 image
-        IMG_DEST="/var/lib/libvirt/images/${NAME}.qcow2"
+        IMG_DEST="/var/lib/libvirt/images/${vm}.qcow2"
 
         echo "removed $IMG_DEST"
         sudo rm "$IMG_DEST"
