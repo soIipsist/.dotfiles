@@ -1,17 +1,24 @@
 #cloud-config
 hostname: ubuntu_vm
 fqdn: ubuntu_vm.local
+
 users:
   - name: ubuntu
     sudo: ALL=(ALL) NOPASSWD:ALL
-    plain_text_passwd: ubuntu123
     passwd: ubuntu123
-    ssh-authorized-keys:
-      - $SSH_KEY
     lock_passwd: false
     shell: /bin/bash
-chpasswd: { expire: false }
+    ssh-authorized-keys:
+      - $SSH_KEY
+
+chpasswd:
+  expire: false
+
 ssh_pwauth: false
+
+package_update: true
+package_upgrade: true
+
 packages:
   - transmission-cli
   - transmission-daemon
@@ -23,3 +30,16 @@ packages:
   - less
   - file
   - openssh-server
+  - git
+
+# Ensure network is up before running commands
+bootcmd:
+  - [cloud-init-per, once, update-system, apt-get, update]
+  - [cloud-init-per, once, upgrade-system, apt-get, "-y", upgrade]
+
+runcmd:
+  - git clone https://github.com/soIipsist/.dotfiles.git
+  - chown -R ubuntu:ubuntu ~/.dotfiles
+  - |
+    cd /home/ubuntu/.dotfiles
+    bash setup.sh .network .ufw .download
