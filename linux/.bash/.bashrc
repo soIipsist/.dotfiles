@@ -201,9 +201,9 @@ if [ -f ~/.network_aliases ]; then
     . ~/.network_aliases
 fi
 
-if [ -f ~/.ufw_aliases ]; then
-    . ~/.ufw_aliases
-fi
+# if [ -f ~/.ufw_aliases ]; then
+#     . ~/.ufw_aliases
+# fi
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile

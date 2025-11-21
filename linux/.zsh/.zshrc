@@ -196,9 +196,9 @@ if [ -f ~/.network_aliases ]; then
     . ~/.network_aliases
 fi
 
-if [ -f ~/.ufw_aliases ]; then
-    . ~/.ufw_aliases
-fi
+# if [ -f ~/.ufw_aliases ]; then
+#     . ~/.ufw_aliases
+# fi
 
 # key bindings
 bindkey '^[[1;2D' backward-word # Shift + Left Arrow
