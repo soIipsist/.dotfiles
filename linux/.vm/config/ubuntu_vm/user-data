@@ -35,6 +35,3 @@ packages:
 runcmd:
   - git clone https://github.com/soIipsist/.dotfiles.git
   - chown -R ubuntu:ubuntu ~/.dotfiles
-  - |
-    cd /home/ubuntu/.dotfiles
-    bash setup.sh .network .ufw .download
