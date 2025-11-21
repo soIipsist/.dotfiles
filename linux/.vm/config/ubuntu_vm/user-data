@@ -5,15 +5,13 @@ fqdn: ubuntu_vm.local
 users:
   - name: ubuntu
     sudo: ALL=(ALL) NOPASSWD:ALL
+    plain_text_passwd: ubuntu123
     passwd: ubuntu123
+    ssh_authorized_keys:
+      - $SSH_KEY
     lock_passwd: false
     shell: /bin/bash
-    ssh-authorized-keys:
-      - $SSH_KEY
-
-chpasswd:
-  expire: false
-
+chpasswd: { expire: false }
 ssh_pwauth: false
 
 package_update: true
@@ -34,4 +32,5 @@ packages:
 
 runcmd:
   - git clone https://github.com/soIipsist/.dotfiles.git
-  - chown -R ubuntu:ubuntu ~/.dotfiles
+  - chown -R ubuntu:ubuntu /home/ubuntu/.dotfiles
+  - bash /home/ubuntu/.dotfiles/setup.sh .network .vm_files .ufw
