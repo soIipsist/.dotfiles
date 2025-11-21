@@ -36,4 +36,4 @@ runcmd:
     sudo -u ubuntu git clone https://github.com/soIipsist/.dotfiles.git /home/ubuntu/.dotfiles
     sudo chown -R ubuntu:ubuntu /home/ubuntu/.dotfiles
     cd /home/ubuntu/.dotfiles
-    sudo -u ubuntu bash setup.sh .network .vm_files .ufw
+    sudo -u ubuntu bash setup.sh .network .vm_files .ufw .torrents

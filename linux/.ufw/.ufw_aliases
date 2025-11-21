@@ -1,45 +1,34 @@
 ufw_open_outbound() {
     # opens outbound connections (good for VM downloads)
-
-    if [ -n "$1" ]; then
-        HOST_IP="$1"
-    else
-        HOST_IP=$(ip route get 1.1.1.1 2>/dev/null | awk '
-        { for (i=1;i<=NF;i++) if ($i=="src") { print $(i+1); exit } }
-    ')
-    fi
-
-    echo "Detected host IP: ${HOST_IP:-<none>}"
-
     sudo ufw --force reset
     sudo ufw default deny incoming
     sudo ufw default deny outgoing
 
-    HOST_GATEWAY=$(ip route | awk '/default/ {print $3}')
+    if [ -n "$1" ]; then
+        HOST_GATEWAY="$1"
+    else
+        HOST_GATEWAY=$(ip route | awk '/default/ {print $3}')
+    fi
+
     echo "Detected host NAT gateway: $HOST_GATEWAY"
 
-    # Allow outbound to NAT gateway (required for NAT/internet)
-    if [ -n "$HOST_GATEWAY" ]; then
-        sudo ufw allow out to "$HOST_GATEWAY"
-        sudo ufw allow out proto icmp to "$HOST_GATEWAY"
-    fi
+    # allow outbound to NAT gateway (required for NAT/internet)
+    sudo ufw allow out to "$HOST_GATEWAY"
+    sudo ufw allow out proto icmp to "$HOST_GATEWAY"
 
     # allow ssh from host to VM
-    if [ -n "$HOST_IP" ]; then
-        sudo ufw allow from "$HOST_IP" to any port 22 proto tcp
-    else
-        echo "WARNING: Host IP not detected; SSH rule skipped."
-    fi
+    sudo ufw allow in from "$HOST_GATEWAY" to any port 22 proto tcp
 
     # DNS
-    sudo ufw allow out 53
+    sudo ufw allow out 53 proto udp
 
     # HTTP / HTTPS
     sudo ufw allow out 80/tcp
     sudo ufw allow out 443/tcp
 
     # transmission protocol
-    sudo ufw allow out 51413
+    sudo ufw allow out 51413/tcp
+    sudo ufw allow out 51413/udp
 
     sudo ufw --force enable
     sudo ufw reload
