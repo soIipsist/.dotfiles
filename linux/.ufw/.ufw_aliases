@@ -12,9 +12,13 @@ ufw_open_outbound() {
 
     echo "Detected host NAT gateway: $HOST_GATEWAY"
 
-    # allow outbound to NAT gateway (required for NAT/internet)
-    sudo ufw allow out to "$HOST_GATEWAY"
-    sudo ufw allow out proto icmp to "$HOST_GATEWAY"
+    # Allow only established/related traffic
+    sudo ufw allow out from any to any state RELATED,ESTABLISHED
+    sudo ufw allow in from any to any state RELATED,ESTABLISHED
+
+    # Outbound to NAT gateway only
+    sudo ufw allow out to "$HOST_GATEWAY" proto tcp comment "gateway for NAT"
+    sudo ufw allow out to "$HOST_GATEWAY" proto udp comment "gateway for NAT"
 
     # allow ssh from host to VM
     sudo ufw allow in from "$HOST_GATEWAY" to any port 22 proto tcp
@@ -37,25 +41,23 @@ ufw_open_outbound() {
 
 ufw_restrict() {
     if [ -n "$1" ]; then
-        HOST_IP="$1"
+        HOST_GATEWAY="$1"
     else
-        HOST_IP=$(ip route get 1.1.1.1 2>/dev/null | awk '
-        { for (i=1;i<=NF;i++) if ($i=="src") { print $(i+1); exit } }
-    ')
+        HOST_GATEWAY=$(ip route | awk '/default/ {print $3}')
     fi
 
-    echo "Detected host IP: ${HOST_IP:-<none>}"
+    echo "Detected host gateway: ${HOST_GATEWAY:-<none>}"
 
     sudo ufw --force reset
     sudo ufw default deny incoming
     sudo ufw default deny outgoing
 
-    # Only allow SSH from host, nothing else
-    if [ -n "$HOST_IP" ]; then
-        sudo ufw allow from "$HOST_IP" to any port 22 proto tcp
-    else
-        echo "WARNING: Host IP not detected; SSH rule skipped."
-    fi
+    # allow SSH
+    sudo ufw allow in from "$HOST_GATEWAY" to any port 22 proto tcp
+
+    # block ICMP (no ping)
+    sudo ufw deny out proto icmp
+    sudo ufw deny in proto icmp
 
     sudo ufw --force enable
     sudo ufw reload
