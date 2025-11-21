@@ -107,7 +107,7 @@ get_raw_image() {
         echo "Extracting tar archive → converting first .img or .raw to qcow2..."
         tmp_dir=$(sudo mktemp -d)
         sudo tar -xf "$IMAGE" -C "$tmp_dir"
-        img_file=$(find "$tmp_dir" -type f \( -name "*.img" -o -name "*.raw" \) | head -n 1)
+        img_file=$(sudo find "$tmp_dir" -type f \( -name "*.img" -o -name "*.raw" \) | head -n 1)
         [ -z "$img_file" ] && {
             echo "No .img or .raw file found in archive"
             sudo rm -rf "$tmp_dir"
