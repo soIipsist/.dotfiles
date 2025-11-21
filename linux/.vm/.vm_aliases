@@ -134,19 +134,19 @@ get_raw_image() {
         echo "Converting raw .img → qcow2..."
         sudo qemu-img convert -f raw -O qcow2 "$IMAGE" "$IMAGE_DEST"
         ;;
-
     *.qcow2)
         echo "Using existing qcow2..."
         sudo mv "$IMAGE" "$IMAGE_DEST"
         ;;
-
     *)
         echo "Copying image as-is..."
         sudo mv "$IMAGE" "$IMAGE_DEST"
         ;;
     esac
 
-    sudo rm "$tmp"
+    if [ -n "$tmp" ]; then
+        sudo rm "$tmp"
+    fi
 }
 
 vm_init() {
@@ -289,12 +289,14 @@ vm_init() {
         GRAPHICS=(--graphics none)
     fi
 
-    set -x
     if [ -n "$XML" ]; then
         sudo virsh define "$XML"
+        echo "Defining from XML $XML."
     else
         if [ -n "$ISO" ]; then
             # Classic ISO installation
+            echo "Performing ISO installation."
+
             sudo virt-install \
                 --name "$NAME" \
                 --memory "$MEMORY" \
@@ -306,6 +308,8 @@ vm_init() {
                 --os-variant $OS \
                 --noautoconsole
         else
+            echo "Performing cloud image installation."
+
             # Cloud image import
             sudo virt-install \
                 --name "$NAME" \
@@ -322,7 +326,6 @@ vm_init() {
         fi
     fi
 
-    set +x
     echo "VM launched."
 
     if [ "$USE_GRAPHICS" = 1 ]; then
