@@ -55,11 +55,28 @@ ufw_restrict() {
     # allow SSH
     sudo ufw allow in from "$HOST_GATEWAY" to any port 22 proto tcp
 
-    # block ICMP (no ping)
-    sudo ufw deny out proto icmp to any
-    sudo ufw deny in proto icmp from any
+    # disable IPV6
+    sudo sed -i 's/IPV6=yes/IPV6=no/' /etc/default/ufw
+
+    # disable ICMP
+    sudo sed -i -E 's/^\s*-A\ ufw-before-input\ -p\ icmp\ --icmp-type.*ACCEPT\s*/#\ \0/g' /etc/ufw/before.rules
+    sudo sed -i -E 's/^\s*-A\ ufw-before-forward\ -p\ icmp\ --icmp-type.*ACCEPT\s*/#\ \0/g' /etc/ufw/before.rules
 
     sudo ufw --force enable
+    sudo ufw reload
+    sudo ufw status verbose
+}
+
+ufw_reset_all() {
+    sudo ufw --force reset
+
+    # enable IPV6
+    sudo sed -i 's/IPV6=no/IPV6=yes/' /etc/default/ufw
+
+    # enable ICMP
+    sudo sed -i -E 's/^#\s*(-A ufw-before-input -p icmp --icmp-type.*ACCEPT)/\1/' /etc/ufw/before.rules
+    sudo sed -i -E 's/^#\s*(-A ufw-before-forward -p icmp --icmp-type.*ACCEPT)/\1/' /etc/ufw/before.rules
+
     sudo ufw reload
     sudo ufw status verbose
 }
