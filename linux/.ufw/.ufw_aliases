@@ -80,3 +80,61 @@ ufw_reset_all() {
     sudo ufw reload
     sudo ufw status verbose
 }
+
+ufw_status() {
+    echo "=== Detecting UFW Mode ==="
+
+    IN_POLICY=$(sudo ufw status | awk '/Default:/ {print $4}')
+    OUT_POLICY=$(sudo ufw status | awk '/Default:/ {print $6}')
+    IPV6=$(grep "^IPV6=" /etc/default/ufw | cut -d= -f2)
+    ICMP_INPUT_DISABLED=$(grep -E '^#\s*-A ufw-before-input -p icmp' /etc/ufw/before.rules >/dev/null && echo yes || echo no)
+    ICMP_FORWARD_DISABLED=$(grep -E '^#\s*-A ufw-before-forward -p icmp' /etc/ufw/before.rules >/dev/null && echo yes || echo no)
+    HOST_GATEWAY=$(ip route | awk '/default/ {print $3}')
+    HAS_SSH_FROM_GATEWAY=$(sudo ufw status numbered | grep -E "ALLOW IN.*22.*$HOST_GATEWAY" >/dev/null && echo yes || echo no)
+    HAS_ESTABLISHED=$(sudo ufw status | grep -E "RELATED,ESTABLISHED" >/dev/null && echo yes || echo no)
+    HAS_HTTP_HTTPS=$(sudo ufw status | grep -E "80/tcp|443/tcp" >/dev/null && echo yes || echo no)
+    HAS_DNS=$(sudo ufw status | grep -E "53.*ALLOW OUT" >/dev/null && echo yes || echo no)
+    HAS_TORRENT=$(sudo ufw status | grep -E "51413" >/dev/null && echo yes || echo no)
+
+    echo "Inbound policy:   $IN_POLICY"
+    echo "Outbound policy:  $OUT_POLICY"
+    echo "IPv6 enabled:     $IPV6"
+    echo "ICMP disabled:    input=$ICMP_INPUT_DISABLED forward=$ICMP_FORWARD_DISABLED"
+    echo "SSH from gateway: $HAS_SSH_FROM_GATEWAY"
+    echo "Has ESTABLISHED:  $HAS_ESTABLISHED"
+    echo "HTTP/HTTPS:       $HAS_HTTP_HTTPS"
+    echo "DNS allowed:      $HAS_DNS"
+    echo "Torrent ports:    $HAS_TORRENT"
+
+    echo
+    echo "=== Determining Mode ==="
+
+    if [ "$IN_POLICY" = "deny" ] &&
+        [ "$OUT_POLICY" = "deny" ] &&
+        [ "$HAS_SSH_FROM_GATEWAY" = "yes" ] &&
+        [ "$HAS_ESTABLISHED" = "no" ] &&
+        [ "$ICMP_INPUT_DISABLED" = "yes" ] &&
+        [ "$IPV6" = "no" ]; then
+        echo "MODE: restrict"
+        return
+    fi
+
+    if [ "$IN_POLICY" = "deny" ] &&
+        [ "$OUT_POLICY" = "deny" ] &&
+        [ "$HAS_ESTABLISHED" = "yes" ] &&
+        [ "$HAS_HTTP_HTTPS" = "yes" ] &&
+        [ "$HAS_DNS" = "yes" ] &&
+        [ "$HAS_TORRENT" = "yes" ]; then
+        echo "MODE: open-outbound"
+        return
+    fi
+
+    if [ "$IPV6" = "yes" ] &&
+        [ "$ICMP_INPUT_DISABLED" = "no" ] &&
+        [ "$IN_POLICY" != "deny" ]; then
+        echo "MODE: reset"
+        return
+    fi
+
+    echo "MODE: custom/unknown"
+}
