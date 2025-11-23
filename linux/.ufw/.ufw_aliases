@@ -96,7 +96,6 @@ ufw_status() {
     ICMP_FORWARD_ENABLED=$(sudo grep -E '^#\s*-A ufw-before-forward -p icmp' /etc/ufw/before.rules >/dev/null && echo no || echo yes)
     HOST_GATEWAY=$(ip route | awk '/default/ {print $3}')
     HAS_SSH_FROM_GATEWAY=$([ -n "$HOST_GATEWAY" ] && echo "$UFW_STATUS" | grep -i 'ALLOW IN' | grep -E '22(/tcp|/udp)?' | grep -F -q "$HOST_GATEWAY" && echo yes || echo no)
-    HAS_ESTABLISHED=$(sudo ufw status | grep -E "RELATED,ESTABLISHED" >/dev/null && echo yes || echo no)
     HAS_HTTP_HTTPS=$(sudo ufw status | grep -E "80/tcp|443/tcp" >/dev/null && echo yes || echo no)
     HAS_DNS=$(sudo ufw status | grep -E "53.*ALLOW OUT" >/dev/null && echo yes || echo no)
 
@@ -105,7 +104,6 @@ ufw_status() {
     echo "IPv6 enabled:     $IPV6"
     echo "ICMP enabled:    input=$ICMP_INPUT_ENABLED forward=$ICMP_FORWARD_ENABLED"
     echo "SSH from gateway: $HAS_SSH_FROM_GATEWAY"
-    echo "Has ESTABLISHED:  $HAS_ESTABLISHED"
     echo "HTTP/HTTPS:       $HAS_HTTP_HTTPS"
     echo "DNS allowed:      $HAS_DNS"
 
@@ -115,7 +113,6 @@ ufw_status() {
     if [ "$IN_POLICY" = "deny" ] &&
         [ "$OUT_POLICY" = "deny" ] &&
         [ "$HAS_SSH_FROM_GATEWAY" = "yes" ] &&
-        [ "$HAS_ESTABLISHED" = "no" ] &&
         [ "$ICMP_INPUT_ENABLED" = "no" ] &&
         [ "$IPV6" = "no" ]; then
         echo "MODE: restrict"
@@ -124,7 +121,6 @@ ufw_status() {
 
     if [ "$IN_POLICY" = "deny" ] &&
         [ "$OUT_POLICY" = "deny" ] &&
-        [ "$HAS_ESTABLISHED" = "yes" ] &&
         [ "$HAS_HTTP_HTTPS" = "yes" ] &&
         [ "$HAS_DNS" = "yes" ]; then
         echo "MODE: open-outbound"
