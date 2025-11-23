@@ -12,10 +12,6 @@ ufw_open_outbound() {
 
     echo "Detected host NAT gateway: $HOST_GATEWAY"
 
-    # Allow only established/related traffic
-    sudo ufw allow out from any to any state RELATED,ESTABLISHED
-    sudo ufw allow in from any to any state RELATED,ESTABLISHED
-
     # Outbound to NAT gateway only
     sudo ufw allow out to "$HOST_GATEWAY" proto tcp comment "gateway for NAT"
     sudo ufw allow out to "$HOST_GATEWAY" proto udp comment "gateway for NAT"
@@ -24,7 +20,7 @@ ufw_open_outbound() {
     sudo ufw allow in from "$HOST_GATEWAY" to any port 22 proto tcp
 
     # DNS
-    sudo ufw allow out 53 proto udp
+    sudo ufw allow out to any port 53 proto udp
 
     # HTTP / HTTPS
     sudo ufw allow out 80/tcp
