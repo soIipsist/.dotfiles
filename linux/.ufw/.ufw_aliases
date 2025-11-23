@@ -84,8 +84,8 @@ ufw_reset_all() {
 ufw_status() {
     echo "=== Detecting UFW Mode ==="
 
-    IN_POLICY=$(sudo ufw status | awk '/Default:/ {print $4}')
-    OUT_POLICY=$(sudo ufw status | awk '/Default:/ {print $6}')
+    IN_POLICY=$(sudo ufw status verbose | awk '/Default:/ {print $4}')
+    OUT_POLICY=$(sudo ufw status verbose | awk '/Default:/ {print $6}')
     IPV6=$(grep "^IPV6=" /etc/default/ufw | cut -d= -f2)
     ICMP_INPUT_ENABLED=$(sudo grep -E '^#\s*-A ufw-before-input -p icmp' /etc/ufw/before.rules >/dev/null && echo no || echo yes)
     ICMP_FORWARD_ENABLED=$(sudo grep -E '^#\s*-A ufw-before-forward -p icmp' /etc/ufw/before.rules >/dev/null && echo no || echo yes)
