@@ -1,16 +1,29 @@
 [Unit]
-Description=Persistent reverse SSH tunnel to Mac
+Description=Smart persistent reverse SSH tunnel
 After=network-online.target mullvad-daemon.service
 Wants=network-online.target
 
+StartLimitIntervalSec=0
+
 [Service]
-User=yourserveruser 
-ExecStart=/usr/bin/autossh -M 0 -N -o "ServerAliveInterval=30" -o "ServerAliveCountMax=3" -o "ExitOnForwardFailure=yes" \
-  -i /home/yourserveruser/.ssh/reverse_tunnel_key \
-  -R 2222:localhost:22 \
-  yourmacuser@100.64.12.34
+Type=simple
+User=solipsist                   
+ExecStart=/usr/local/bin/ssh_tunnel
 Restart=always
 RestartSec=10
+StandardOutput=journal
+StandardError=journal
+EnvironmentFile=/etc/default/ssh_tunnel.conf
+
+# Kill everything if it hangs too long
+TimeoutStartSec=300
+TimeoutStopSec=30
+
+# Security hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=no
 
 [Install]
 WantedBy=multi-user.target
