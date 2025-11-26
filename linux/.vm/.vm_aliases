@@ -153,8 +153,8 @@ vm_init() {
     # Default parameters
     NAME="ubuntu_vm"
     MEMORY=3072
-    VCPUS=2
-    DISK_SIZE=20
+    VCPUS=4
+    DISK_SIZE=80
     IMAGE="" # QCOW2 or raw
     ISO=""   # Boot ISO (Windows or Linux installer)
     XML=""
