@@ -83,6 +83,10 @@ ufw_lockdown() {
 
     sudo ufw allow in from "$HOST_GATEWAY" to any port 22 proto tcp
 
+    # disable ICMP
+    sudo sed -i -E 's/^\s*-A\ ufw-before-input\ -p\ icmp\ --icmp-type.*ACCEPT\s*/#\ \0/g' /etc/ufw/before.rules
+    sudo sed -i -E 's/^\s*-A\ ufw-before-forward\ -p\ icmp\ --icmp-type.*ACCEPT\s*/#\ \0/g' /etc/ufw/before.rules
+
     sudo ufw --force enable
     sudo ufw reload
     sudo ufw status verbose
@@ -155,5 +159,5 @@ ufw_status() {
         return
     fi
 
-    echo "MODE: custom/unknown"
+    echo "MODE: lockdown"
 }
