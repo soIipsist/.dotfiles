@@ -3,6 +3,11 @@ export UID="${UID:-$(id -u 2>/dev/null || echo 1000)}"
 export REPORT_DIR="/tmp/$UID/reports"
 export SCAN_METHOD="clamscan"
 
+whereami() {
+    local target_ip="${1:-$(curl -4s https://ifconfig.co)}"
+    curl -s "https://ipinfo.io/${target_ip}/json" | jq "{ip, city, region, country, org, loc, timezone}"
+}
+
 get_private_ip() {
     ip route get 1.1.1.1 2>/dev/null | awk '
         { for (i=1;i<=NF;i++) if ($i=="src") { print $(i+1); exit } }

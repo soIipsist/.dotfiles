@@ -1,5 +1,10 @@
 export TCPDUMP_DIR="$HOME/.tcpdump"
 
+whereami() {
+    local target_ip="${1:-$(curl -4s https://ifconfig.co)}"
+    curl -s "https://ipinfo.io/${target_ip}/json" | jq "{ip, city, region, country, org, loc, timezone}"
+}
+
 ssh_dump() {
     local interface="${1:-any}"
     local dumps_filename="${2:-ssh_dump.pcap}"
