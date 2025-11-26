@@ -68,6 +68,12 @@ ufw_lockdown() {
     sudo ufw default deny incoming
     sudo ufw default deny outgoing
 
+    if [ -n "$1" ]; then
+        HOST_GATEWAY="$1"
+    else
+        HOST_GATEWAY=$(ip route | awk '/default/ {print $3}')
+    fi
+
     TUN_IF=$(ip route get 8.8.8.8 | awk '{print $5}' | head -1) # auto-detects wg0/tun0
     sudo ufw allow out on "$TUN_IF" from any to any
     sudo ufw allow in on "$TUN_IF" to any port 51413
@@ -75,8 +81,7 @@ ufw_lockdown() {
     sudo ufw allow in on lo
     sudo ufw allow out on lo
 
-    NAT_GW=$(ip route | awk '/192.168.122/ {print $3}')
-    [ -n "$NAT_GW" ] && sudo ufw allow in from "$NAT_GW" to any port 22 proto tcp
+    sudo ufw allow in from "$HOST_GATEWAY" to any port 22 proto tcp
 
     sudo ufw --force enable
     sudo ufw reload
