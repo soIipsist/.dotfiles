@@ -11,15 +11,13 @@ User=solipsist
 ExecStart=/usr/local/bin/ssh_tunnel
 Restart=always
 RestartSec=10
-StandardOutput=journal
-StandardError=journal
+StandardOutput=append:/var/log/ssh_tunnel.log
+StandardError=append:/var/log/ssh_tunnel.log
 EnvironmentFile=/etc/default/ssh_tunnel.conf
 
-# Kill everything if it hangs too long
 TimeoutStartSec=300
 TimeoutStopSec=30
 
-# Security hardening
 NoNewPrivileges=yes
 PrivateTmp=yes
 ProtectSystem=strict

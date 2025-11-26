@@ -2,17 +2,19 @@
 
 set -euo pipefail
 
-if [ -z "$REMOTE_USER" ]; then
-    REMOTE_USER="$USER"
+if [ -z "$REMOTE_SERVER" ]; then
+    REMOTE_SERVER="${REMOTE_USER}@${REMOTE_HOST}"
+
+    if [ -z "$REMOTE_USER" ]; then
+        echo "Remote user not found!"
+    fi
+    if [ -z "$REMOTE_HOST" ]; then
+        echo "Remote host not found!"
+    fi
 fi
 
 if [ -z "$REMOTE_PORT" ]; then
     REMOTE_PORT="2222"
-fi
-
-if [ -z "$REMOTE_HOST" ]; then
-    echo "Remote host not found!"
-    exit 1
 fi
 
 if [ -z "$TUNNEL_KEY" ]; then
@@ -26,7 +28,7 @@ timeout 120 bash -c 'until ping -c1 1.1.1.1 >/dev/null 2>&1; do sleep 2; done'
 echo "[$(date)] Waiting for Mullvad to be connected..."
 timeout 300 bash -c 'while [ "$(mullvad status | head -n1)" != "Connected" ]; do sleep 5; done' || true
 
-echo "[$(date)] Starting persistent reverse tunnel → ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PORT}"
+echo "[$(date)] Starting persistent reverse tunnel → ${REMOTE_SERVER}:${REMOTE_PORT}"
 
 exec autossh -M 0 -N \
     -o "ServerAliveInterval=30" \
@@ -35,4 +37,4 @@ exec autossh -M 0 -N \
     -o "StrictHostKeyChecking=no" \
     -i "$TUNNEL_KEY" \
     -R "${REMOTE_PORT}:localhost:22" \
-    "${REMOTE_USER}@${REMOTE_HOST}"
+    "$REMOTE_SERVER"
