@@ -9,6 +9,7 @@ StartLimitIntervalSec=0
 Type=simple
 User=solipsist                   
 ExecStart=/usr/local/bin/ssh_tunnel
+ExecStartPost=/usr/local/bin/ssh_exclude
 Restart=always
 RestartSec=10
 StandardOutput=append:/var/log/ssh_tunnel.log

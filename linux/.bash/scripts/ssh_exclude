@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+set -euo pipefail
+sleep 4
+sudo mullvad split-tunnel add "$(pgrep -x tailscaled)" 2>/dev/null || true
+sudo mullvad split-tunnel add "$(pgrep -x autossh)" 2>/dev/null || true

@@ -22,12 +22,6 @@ if [ -z "$TUNNEL_KEY" ]; then
     exit 1
 fi
 
-# echo "[$(date)] Waiting for internet..."
-# timeout 120 bash -c 'until ping -c1 1.1.1.1 >/dev/null 2>&1; do sleep 2; done'
-
-# echo "[$(date)] Waiting for Mullvad to be connected..."
-# timeout 300 bash -c 'while [ "$(mullvad status | head -n1)" != "Connected" ]; do sleep 5; done' || true
-
 echo "[$(date)] Starting persistent reverse tunnel → ${REMOTE_SERVER}:${REMOTE_PORT}"
 
 exec autossh -M 0 -N \
