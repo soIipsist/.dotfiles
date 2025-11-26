@@ -8,6 +8,10 @@ if [ -z "$RCON_PORT" ]; then
     RCON_PORT=25575
 fi
 
+if [ -z "$RCON_PASSWORD" ]; then
+    RCON_PASSWORD="password"
+fi
+
 if [ -z "$GAME_MODE" ]; then # game modes: survival, creative, adventure, spectator
     GAME_MODE="survival"
 fi
