@@ -28,8 +28,6 @@
     </hyperv>
     <kvm><hidden state='on'/></kvm>
     <vmport state='off'/>
-    <ioapic driver='kvm'/>
-    <smm state='on'/>
   </features>
 
   <cpu mode='host-passthrough' check='none' migratable='off'/>
@@ -44,23 +42,14 @@
     <emulatorpin cpuset='0-1'/>
   </cputune>
 
-  <clock offset='localtime'>
-    <timer name='hypervclock' present='yes'/>
-    <timer name='tsc' present='yes' mode='native'/>
-    <timer name='hpet' present='no'/>
-  </clock>
-
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
 
-    <controller type='scsi' index='0' model='virtio-scsi'>
-      <driver queues='6'/>
-    </controller>
-
+    <!-- This is the disk config Windows was installed with → guaranteed boot -->
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2' cache='none' io='native' discard='unmap'/>
       <source file='/var/lib/libvirt/images/windows_vm.qcow2'/>
-      <target dev='sda' bus='scsi'/>
+      <target dev='vda' bus='virtio'/>
       <boot order='1'/>
     </disk>
 
@@ -84,13 +73,10 @@
       <model type='bochs' heads='1' primary='yes'/>
     </video>
 
-    <input type='tablet' bus='usb'/>
-
+    <input type='tablet' bus='usb'/>      
     <controller type='usb' index='0' model='qemu-xhci'/>
     <controller type='pci' index='0' model='pcie-root'/>
-    <rng model='virtio'>
-      <backend model='random'>/dev/urandom</backend>
-    </rng>
+    <rng model='virtio'><backend model='random'>/dev/urandom</backend></rng>
     <memballoon model='none'/>
   </devices>
 
