@@ -10,14 +10,14 @@ alias vm_edit="sudo virsh edit"
 vm_update() {
     local vm="$1"
     local source_xml="${2:-/var/lib/libvirt/images/$vm/$vm.xml}"
-    local dest_xml="etc/libvirt/qemu/$vm.xml"
+    local dest_xml="/etc/libvirt/qemu/$vm.xml"
 
     if [ ! -f "$source_xml" ]; then
         echo "No xml specified."
         return 0
     fi
     sudo cp "$source_xml" "$dest_xml"
-    sudo virsh undefine "$vm"
+    sudo virsh undefine --keep-nvram"$vm"
     sudo virsh define "$dest_xml"
 }
 
