@@ -159,7 +159,7 @@
     <tpm model='tpm-crb'>
       <backend type='emulator' version='2.0'/>
     </tpm>
-    <graphics type='vnc' port='-1' autoport='yes' listen='0.0.0.0'>
+    <graphics type='vnc' port='5901' autoport='no' listen='0.0.0.0'>
       <listen type='address' address='0.0.0.0'/>
     </graphics>
     <audio id='1' type='none'/>
