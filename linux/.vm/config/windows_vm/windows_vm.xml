@@ -24,7 +24,7 @@
     </firmware>
     <loader readonly='yes' secure='yes' type='pflash'>/usr/share/OVMF/OVMF_CODE_4M.ms.fd</loader>
     <nvram template='/usr/share/OVMF/OVMF_VARS_4M.ms.fd'>/var/lib/libvirt/qemu/nvram/windows_vm_VARS.fd</nvram>
-    <boot dev='hd'/>
+    <!-- <boot dev='hd'/> -->
   </os>
 
   <features>
