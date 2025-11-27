@@ -17,7 +17,7 @@ vm_update() {
         return 0
     fi
     sudo cp "$source_xml" "$dest_xml"
-    sudo virsh undefine --keep-nvram"$vm"
+    sudo virsh undefine --keep-nvram "$vm"
     sudo virsh define "$dest_xml"
 }
 
