@@ -35,7 +35,6 @@
       <vapic state='on'/>
       <spinlocks state='on' retries='8191'/>
       <vendor_id state='on' value='1234567890ab'/>
-      <ipi state='on'/>
     </hyperv>
     <kvm>
       <hidden state='on'/>
