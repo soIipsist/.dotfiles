@@ -9,7 +9,6 @@
 
   <memory unit='KiB'>16777216</memory>
   <currentMemory unit='KiB'>16777216</currentMemory>
-
   <vcpu placement='static'>8</vcpu>
 
   <memoryBacking>
@@ -35,7 +34,7 @@
       <relaxed state='on'/>
       <vapic state='on'/>
       <spinlocks state='on' retries='8191'/>
-      <vendor_id state='on' value='1234567890ab'/> 
+      <vendor_id state='on' value='1234567890ab'/>
       <frequencies state='on'/>
       <reenlightenment state='on'/>
       <tlbflush state='on'/>
@@ -43,7 +42,8 @@
     </hyperv>
     <kvm>
       <hidden state='on'/>
-    <vmport state='off'/>           
+    </kvm>
+    <vmport state='off'/>
     <ioapic driver='kvm'/>
     <smm state='on'/>
   </features>
@@ -59,7 +59,7 @@
     <vcpupin vcpu='5' cpuset='7'/>
     <vcpupin vcpu='6' cpuset='8'/>
     <vcpupin vcpu='7' cpuset='9'/>
-    <emulatorpin cpuset='0-1'/>    
+    <emulatorpin cpuset='0-1'/>
   </cputune>
 
   <clock offset='localtime'>
@@ -67,7 +67,7 @@
     <timer name='pit' tickpolicy='delay'/>
     <timer name='hpet' present='no'/>
     <timer name='hypervclock' present='yes'/>
-    <timer name='tsc' present='yes' mode='native'/>  
+    <timer name='tsc' present='yes' mode='native'/>
   </clock>
 
   <on_poweroff>destroy</on_poweroff>
@@ -82,7 +82,7 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
 
     <controller type='scsi' index='0' model='virtio-scsi'>
-      <driver queues='8'/>                 
+      <driver queues='8'/>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
     </controller>
 
@@ -112,7 +112,7 @@
     </graphics>
 
     <video>
-      <model type='vga' vram='65536' heads='1' primary='yes'/>  <!-- 64 MiB VRAM -->
+      <model type='vga' vram='65536' heads='1' primary='yes'/>
     </video>
 
     <rng model='virtio'>
@@ -123,7 +123,7 @@
     <controller type='pci' index='0' model='pcie-root'/>
 
     <input type='tablet' bus='usb'/>
-    <input type='keyboard' bus='usb'/>  
+    <input type='keyboard' bus='usb'/>
     <input type='mouse' bus='usb'/>
 
     <tpm model='tpm-crb'>
