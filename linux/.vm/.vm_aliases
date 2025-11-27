@@ -16,8 +16,8 @@ vm_update() {
         echo "No xml specified."
         return 0
     fi
-    sudo cp "$source_xml" "$dest_xml"
     sudo virsh undefine --keep-nvram "$vm"
+    sudo cp "$source_xml" "$dest_xml"
     sudo virsh define "$dest_xml"
 }
 
