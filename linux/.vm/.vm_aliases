@@ -378,7 +378,7 @@ vm_init() {
     echo "SSH command: ssh user@$IP"
 }
 
-vm_win_push() {
+win_push() {
     local file="$1"
     local domain="${2:-windows_vm}"
 
@@ -440,7 +440,7 @@ vm_win_push() {
     echo "Done → $filename uploaded."
 }
 
-vm_win_pull() {
+win_pull() {
     local file="$1"
     local domain="${2:-windows_vm}"
     local outfile="$3"
@@ -464,8 +464,10 @@ vm_win_pull() {
         return 1
     fi
 
-    local stat_cmd="{\"execute\":\"guest-file-stat\",\"arguments\":{\"path\":\"$file\"}}"
-    local stat=$(sudo virsh qemu-agent-command "$domain" "$stat_cmd" 2>/dev/null)
+    local stat=$(
+        sudo virsh qemu-agent-command "$domain" \
+            "{\"execute\":\"guest-file-stat\",\"arguments\":{\"path\":\"$file\"}}"
+    )
 
     local filesize=$(echo "$stat" | jq -r '.return.size // empty')
     if [ -z "$filesize" ]; then
@@ -479,34 +481,26 @@ vm_win_pull() {
 
     : >"$outfile"
 
-    local offset=0
     local chunk_size=65536
 
-    while [ "$offset" -lt "$filesize" ]; do
+    while true; do
+        # Read chunk
+        payload=$(jq -n --argjson fh "$fd" --argjson cnt "$chunk_size" \
+            '{"execute":"guest-file-read","arguments":{"handle":$fh,"count":$cnt}}')
 
-        local read_cmd="{\"execute\":\"guest-file-read\",\"arguments\":{\"handle\":$fd,\"count\":$chunk_size}}"
-        local read_json=$(sudo virsh qemu-agent-command "$domain" "$read_cmd")
+        resp=$(sudo virsh qemu-agent-command "$domain" "$payload" 2>/dev/null)
+        local buf
+        buf=$(echo "$resp" | jq -r '.return["buf-b64"] // empty')
 
-        local b64=$(echo "$read_json" | jq -r '.return."buf-b64"')
-        [ -z "$b64" ] && break
+        [ -z "$buf" ] && break # EOF
 
-        printf "%s" "$b64" | base64 -d >>"$outfile"
-
-        offset=$((offset + chunk_size))
-        [ "$offset" -gt "$filesize" ] && offset="$filesize"
-
-        local percent=$((offset * 100 / filesize))
-        local bar_len=$((percent / 2))
-        local bar=$(printf "%-${bar_len}s" "#" | tr ' ' '#')
-        local spaces=$(printf "%-$((50 - bar_len))s" " ")
-
-        printf "\r[%s%s] %3d%%" "$bar" "$spaces" "$percent"
+        printf "%s" "$buf" | base64 -d >>"$outfile"
     done
 
-    printf "\n"
-
-    sudo virsh qemu-agent-command "$domain" \
-        "{\"execute\":\"guest-file-close\",\"arguments\":{\"handle\":$fd}}" >/dev/null
+    # Close handle
+    payload=$(jq -n --argjson fh "$fd" \
+        '{"execute":"guest-file-close","arguments":{"handle":$fh}}')
+    sudo virsh qemu-agent-command "$domain" "$payload" >/dev/null 2>&1
 
     echo "Done → saved as: $outfile"
 }
