@@ -377,6 +377,7 @@ vm_init() {
     echo "IP found: $IP"
     echo "SSH command: ssh user@$IP"
 }
+
 vm_push() {
     local file="$1"
     local domain="${2:-windows_vm}"
@@ -403,36 +404,36 @@ vm_push() {
     fi
 
     local filesize=$(stat -c%s "$file")
-    local sent=0
+    local offset=0
+    local chunk_size=65536 # 64 KB binary per call
 
     echo "Uploading $filename → $domain (Desktop)"
     echo
 
-    while true; do
-        chunk=$(dd if="$file" bs=65536 count=1 skip=$((sent / 65536)) 2>/dev/null | base64 -w0)
+    while ((offset < filesize)); do
+        chunk=$(dd if="$file" ibs=1 skip=$offset count=$chunk_size 2>/dev/null | base64 -w0)
 
-        [ -z "$chunk" ] && break # End of file
-
+        # JSON-safe encode
         json_b64=$(printf "%s" "$chunk" | jq -Rs .)
 
         sudo virsh qemu-agent-command "$domain" \
             "{\"execute\":\"guest-file-write\",\"arguments\":{\"handle\":$fd,\"buf-b64\":$json_b64}}" >/dev/null
 
-        # Update progress
-        sent=$((sent + 65536))
-        ((sent > filesize)) && sent=$filesize
+        # Move forward by actual bytes read
+        offset=$((offset + chunk_size))
+        ((offset > filesize)) && offset=$filesize
 
-        percent=$((sent * 100 / filesize))
-        bar_len=$((percent / 2))
-        bar=$(printf "%-${bar_len}s" "#" | tr ' ' '#')
-        spaces=$(printf "%-$((50 - bar_len))s" " ")
+        # Progress bar
+        local percent=$((offset * 100 / filesize))
+        local bar_len=$((percent / 2))
+        local bar=$(printf "%-${bar_len}s" "#" | tr ' ' '#')
+        local spaces=$(printf "%-$((50 - bar_len))s" " ")
 
         printf "\r[%s%s] %3d%%" "$bar" "$spaces" "$percent"
     done
 
     printf "\n"
 
-    # Close file handle
     sudo virsh qemu-agent-command "$domain" \
         "{\"execute\":\"guest-file-close\",\"arguments\":{\"handle\":$fd}}" >/dev/null
 
