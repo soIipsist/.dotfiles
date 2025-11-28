@@ -450,7 +450,7 @@ vm_win_pull() {
     [ -z "$file" ] && echo "Usage: vm-pull <C:\\path\\to\\file> [vm-name] [output-file]" && return 1
     [ -z "$outfile" ] && outfile="$(basename "$file")"
 
-    file="C:\\\\Users\\\\$user\\\\Desktop\\\\$filename"
+    file=$(printf "%s" "$file" | jq -Rs .)
 
     # Open file on guest
     local open_cmd="{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$file\",\"mode\":\"rb\"}}"
