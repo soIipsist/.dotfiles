@@ -453,12 +453,12 @@ vm_win_pull() {
     file=$(printf "%s" "$file" | jq -Rs .)
 
     # Open file on guest
-    local open_cmd="{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$file\",\"mode\":\"rb\"}}"
-    local open=$(sudo virsh qemu-agent-command "$domain" "$open_cmd" 2>/dev/null)
+    local open=$(sudo virsh qemu-agent-command "$domain" \
+        "{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$winpath\",\"mode\":\"wb\"}}")
 
     local fd=$(echo "$open" | jq -r '.return')
-    if [ -z "$fd" ] || [ "$fd" = "null" ]; then
-        echo "Failed to open remote file: $file"
+    if [[ "$fd" == "null" || -z "$fd" ]]; then
+        echo "Failed to open remote file"
         return 1
     fi
 
