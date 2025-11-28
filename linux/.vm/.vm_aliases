@@ -444,13 +444,15 @@ vm_win_pull() {
     local file="$1"
     local domain="${2:-windows_vm}"
     local outfile="$3"
+    local directory="${4:-Desktop}"
+
     local user=$(sudo virsh qemu-agent-command "$domain" '{"execute":"guest-get-users"}' \
         2>/dev/null | jq -r '.return[0].user // empty')
 
     [ -z "$file" ] && echo "Usage: vm-pull <C:\\path\\to\\file> [vm-name] [output-file]" && return 1
     [ -z "$outfile" ] && outfile="$(basename "$file")"
 
-    file=$(printf "%s" "$file" | jq -Rs .)
+    file="C:\\\\Users\\\\$user\\\\$directory\\\\$file"
 
     # Open file on guest
     local open=$(sudo virsh qemu-agent-command "$domain" \
