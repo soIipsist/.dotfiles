@@ -170,18 +170,21 @@
     </graphics>
     <audio id='1' type='none'/>
     <video>
-      <model type='bochs' vram='16384' heads='1' primary='yes'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
+      <model type='qxl' ram='65536' vram='65536' vgamem='16384' heads='1' primary='yes'/>
     </video>
     <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </memballoon>
   </devices>
-  <qemu:commandline>
+    <qemu:commandline>
     <qemu:arg value='-device'/>
     <qemu:arg value='isa-debug-exit,iobase=0xf4,iosize=0x04'/>
     <qemu:arg value='-fw_cfg'/>
     <qemu:arg value='name=opt/oobe/BypassNRO,string=true'/>
+    <qemu:arg value='-vga'/>
+    <qemu:arg value='none'/>
+    <qemu:arg value='-device'/>
+    <qemu:arg value='qxl-vga,vgamem_mb=128,max_outputs=1'/>
   </qemu:commandline>
 </domain>
