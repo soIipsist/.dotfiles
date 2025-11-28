@@ -476,7 +476,7 @@ win_pull() {
             "{\"execute\":\"guest-file-seek\",\"arguments\":{\"handle\":$fd,\"offset\":$offset,\"whence\":0}}" >/dev/null
 
         resp=$(sudo virsh qemu-agent-command "$domain" \
-            "{\"execute\":\"guest-file-read\",\"arguments\":{\"handle\":$fd,\"count\":$chunk}}")
+            "{\"execute\":\"guest-file-read\",\"arguments\":{\"handle\":$fd,\"count\":$chunk_size}}")
 
         b64=$(echo "$resp" | jq -r '.return["buf-b64"] // ""')
         count=$(echo "$resp" | jq -r '.return.count')
