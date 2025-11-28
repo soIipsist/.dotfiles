@@ -469,32 +469,27 @@ win_pull() {
 
     : >"$outfile"
 
-    local chunk_size=65536
+    local chunk_size=16777216 # 16 MiB – maximum allowed, fastest
 
     while :; do
-        sudo virsh qemu-agent-command "$domain" \
-            "{\"execute\":\"guest-file-seek\",\"arguments\":{\"handle\":$fd,\"offset\":$offset,\"whence\":0}}" >/dev/null
-
         resp=$(sudo virsh qemu-agent-command "$domain" \
             "{\"execute\":\"guest-file-read\",\"arguments\":{\"handle\":$fd,\"count\":$chunk_size}}")
 
         b64=$(echo "$resp" | jq -r '.return["buf-b64"] // ""')
-        count=$(echo "$resp" | jq -r '.return.count')
-        eof=$(echo "$resp" | jq -r '.return.eof')
+        count=$(echo "$resp" | jq -r '.return.count // 0')
+        eof=$(echo "$resp" | jq -r '.return.eof // false')
 
         printf "%s" "$b64" | base64 -d >>"$outfile"
 
         offset=$((offset + count))
-
-        # Progress
         printf "\rReceived: %'d bytes" "$offset"
 
-        # Stop only on real EOF
         [[ "$eof" == "true" ]] && break
     done
 
     sudo virsh qemu-agent-command "$domain" \
         "{\"execute\":\"guest-file-close\",\"arguments\":{\"handle\":$fd}}" >/dev/null
 
+    echo ""
     echo "Done → $outfile"
 }
