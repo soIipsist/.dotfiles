@@ -441,35 +441,66 @@ vm_push() {
 }
 
 vm_pull() {
-    local file="$1"
+    local winfile="$1"
     local domain="${2:-windows_vm}"
-    [[ -z "$file" ]] && {
-        echo "Usage: vm-pull <filename-on-desktop> [vm-name]"
+    local outfile="$3"
+
+    [ -z "$winfile" ] && echo "Usage: vm-pull <C:\\path\\to\\file> [vm-name] [output-file]" && return 1
+    [ -z "$outfile" ] && outfile="$(basename "$winfile")"
+
+    # Open file on guest
+    local open_cmd="{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$winfile\",\"mode\":\"rb\"}}"
+    local open=$(sudo virsh qemu-agent-command "$domain" "$open_cmd" 2>/dev/null)
+
+    local fd=$(echo "$open" | jq -r '.return')
+    if [ -z "$fd" ] || [ "$fd" = "null" ]; then
+        echo "Failed to open remote file: $winfile"
         return 1
-    }
+    fi
 
-    local user=$(virsh qemu-agent-command "$domain" '{"execute":"guest-get-users"}' 2>/dev/null | jq -r '.return[0].user // empty')
-    [[ -z "$user" ]] && {
-        echo "Error: VM '$domain' not running or guest agent not responding"
+    local stat_cmd="{\"execute\":\"guest-file-stat\",\"arguments\":{\"path\":\"$winfile\"}}"
+    local stat=$(sudo virsh qemu-agent-command "$domain" "$stat_cmd" 2>/dev/null)
+
+    local filesize=$(echo "$stat" | jq -r '.return.size // empty')
+    if [ -z "$filesize" ]; then
+        echo "Failed to stat remote file"
+        sudo virsh qemu-agent-command "$domain" "{\"execute\":\"guest-file-close\",\"arguments\":{\"handle\":$fd}}"
         return 1
-    }
+    fi
 
-    local remote="C:\\Users\\$user\\Desktop\\$file"
+    echo "Downloading $winfile → $outfile"
+    echo
 
-    # Open file for reading
-    local handle=$(sudo virsh qemu-agent-command "$domain" \
-        "{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$remote\",\"mode\":\"rb\"}}")
-    handle=$(echo "$handle" | jq -r '.return // empty')
-    [[ -z "$handle" ]] && {
-        echo "File not found on Windows Desktop: $file"
-        return 1
-    }
+    : >"$outfile"
 
-    sudo virsh qemu-agent-command "$domain" --fd "$handle" \
-        '{"execute":"guest-file-read","arguments":{"count":104857600}}' |
-        jq -r '.return."buf-b64"' | base64 -d >"$file"
+    local offset=0
+    local chunk_size=65536
 
-    sudo virsh qemu-agent-command "$domain" "{\"execute\":\"guest-file-close\",\"arguments\":{\"handle\":$handle}}" >/dev/null
+    while [ "$offset" -lt "$filesize" ]; do
 
-    echo "Received ← $file  ←  $domain  (Desktop)"
+        local read_cmd="{\"execute\":\"guest-file-read\",\"arguments\":{\"handle\":$fd,\"count\":$chunk_size}}"
+        local read_json=$(sudo virsh qemu-agent-command "$domain" "$read_cmd")
+
+        local b64=$(echo "$read_json" | jq -r '.return."buf-b64"')
+        [ -z "$b64" ] && break
+
+        printf "%s" "$b64" | base64 -d >>"$outfile"
+
+        offset=$((offset + chunk_size))
+        [ "$offset" -gt "$filesize" ] && offset="$filesize"
+
+        local percent=$((offset * 100 / filesize))
+        local bar_len=$((percent / 2))
+        local bar=$(printf "%-${bar_len}s" "#" | tr ' ' '#')
+        local spaces=$(printf "%-$((50 - bar_len))s" " ")
+
+        printf "\r[%s%s] %3d%%" "$bar" "$spaces" "$percent"
+    done
+
+    printf "\n"
+
+    sudo virsh qemu-agent-command "$domain" \
+        "{\"execute\":\"guest-file-close\",\"arguments\":{\"handle\":$fd}}" >/dev/null
+
+    echo "Done → saved as: $outfile"
 }
