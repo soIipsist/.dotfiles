@@ -456,7 +456,7 @@ win_pull() {
 
     # Open file on guest
     local open=$(sudo virsh qemu-agent-command "$domain" \
-        "{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$file\",\"mode\":\"wb\"}}")
+        "{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$file\",\"mode\":\"rb\"}}")
 
     local fd=$(echo "$open" | jq -r '.return')
     if [[ "$fd" == "null" || -z "$fd" ]]; then
@@ -472,23 +472,22 @@ win_pull() {
     local chunk_size=65536
 
     while true; do
-        # Read chunk
-        payload=$(jq -n --argjson fh "$fd" --argjson cnt "$chunk_size" \
-            '{"execute":"guest-file-read","arguments":{"handle":$fh,"count":$cnt}}')
+        local resp
+        resp=$(sudo virsh qemu-agent-command "$domain" \
+            "{\"execute\":\"guest-file-read\",\"arguments\":{\"handle\":$fd,\"count\":$chunk_size}}")
 
-        resp=$(sudo virsh qemu-agent-command "$domain" "$payload" 2>/dev/null)
-        local buf
-        buf=$(echo "$resp" | jq -r '.return["buf-b64"] // empty')
+        local b64
+        b64=$(echo "$resp" | jq -r '.return["buf-b64"] // empty')
+        local eof
+        eof=$(echo "$resp" | jq -r '.return.eof')
 
-        [ -z "$buf" ] && break # EOF
+        [[ -z "$b64" && "$eof" == "true" ]] && break
 
-        printf "%s" "$buf" | base64 -d >>"$outfile"
+        [[ -n "$b64" ]] && printf "%s" "$b64" | base64 -d >>"$outfile"
     done
 
-    # Close handle
-    payload=$(jq -n --argjson fh "$fd" \
-        '{"execute":"guest-file-close","arguments":{"handle":$fh}}')
-    sudo virsh qemu-agent-command "$domain" "$payload" >/dev/null 2>&1
+    sudo virsh qemu-agent-command "$domain" \
+        "{\"execute\":\"guest-file-close\",\"arguments\":{\"handle\":$fd}}" >/dev/null
 
-    echo "Done → saved as: $outfile"
+    echo "Done → $outfile"
 }
