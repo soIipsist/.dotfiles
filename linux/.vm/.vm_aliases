@@ -464,18 +464,6 @@ win_pull() {
         return 1
     fi
 
-    local stat=$(
-        sudo virsh qemu-agent-command "$domain" \
-            "{\"execute\":\"guest-file-stat\",\"arguments\":{\"path\":\"$file\"}}"
-    )
-
-    local filesize=$(echo "$stat" | jq -r '.return.size // empty')
-    if [ -z "$filesize" ]; then
-        echo "Failed to stat remote file"
-        sudo virsh qemu-agent-command "$domain" "{\"execute\":\"guest-file-close\",\"arguments\":{\"handle\":$fd}}"
-        return 1
-    fi
-
     echo "Downloading $file → $outfile"
     echo
 
