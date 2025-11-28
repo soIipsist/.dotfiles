@@ -378,7 +378,7 @@ vm_init() {
     echo "SSH command: ssh user@$IP"
 }
 
-vm_push() {
+vm_win_push() {
     local file="$1"
     local domain="${2:-windows_vm}"
 
@@ -440,25 +440,29 @@ vm_push() {
     echo "Done → $filename uploaded."
 }
 
-vm_pull() {
-    local winfile="$1"
+vm_win_pull() {
+    local file="$1"
     local domain="${2:-windows_vm}"
     local outfile="$3"
+    local user=$(sudo virsh qemu-agent-command "$domain" '{"execute":"guest-get-users"}' \
+        2>/dev/null | jq -r '.return[0].user // empty')
 
-    [ -z "$winfile" ] && echo "Usage: vm-pull <C:\\path\\to\\file> [vm-name] [output-file]" && return 1
-    [ -z "$outfile" ] && outfile="$(basename "$winfile")"
+    [ -z "$file" ] && echo "Usage: vm-pull <C:\\path\\to\\file> [vm-name] [output-file]" && return 1
+    [ -z "$outfile" ] && outfile="$(basename "$file")"
+
+    file="C:\\\\Users\\\\$user\\\\Desktop\\\\$filename"
 
     # Open file on guest
-    local open_cmd="{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$winfile\",\"mode\":\"rb\"}}"
+    local open_cmd="{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$file\",\"mode\":\"rb\"}}"
     local open=$(sudo virsh qemu-agent-command "$domain" "$open_cmd" 2>/dev/null)
 
     local fd=$(echo "$open" | jq -r '.return')
     if [ -z "$fd" ] || [ "$fd" = "null" ]; then
-        echo "Failed to open remote file: $winfile"
+        echo "Failed to open remote file: $file"
         return 1
     fi
 
-    local stat_cmd="{\"execute\":\"guest-file-stat\",\"arguments\":{\"path\":\"$winfile\"}}"
+    local stat_cmd="{\"execute\":\"guest-file-stat\",\"arguments\":{\"path\":\"$file\"}}"
     local stat=$(sudo virsh qemu-agent-command "$domain" "$stat_cmd" 2>/dev/null)
 
     local filesize=$(echo "$stat" | jq -r '.return.size // empty')
@@ -468,7 +472,7 @@ vm_pull() {
         return 1
     fi
 
-    echo "Downloading $winfile → $outfile"
+    echo "Downloading $file → $outfile"
     echo
 
     : >"$outfile"
