@@ -377,7 +377,6 @@ vm_init() {
     echo "IP found: $IP"
     echo "SSH command: ssh user@$IP"
 }
-
 vm_push() {
     local file="$1"
     local domain="${2:-windows_vm}"
@@ -385,7 +384,6 @@ vm_push() {
     [ -z "$file" ] && echo "Usage: vm-push <file> [vm-name]" && return 1
     [ ! -f "$file" ] && echo "File not found: $file" && return 1
 
-    # Detect logged-in Windows user
     local user=$(sudo virsh qemu-agent-command "$domain" '{"execute":"guest-get-users"}' \
         2>/dev/null | jq -r '.return[0].user // empty')
 
@@ -396,7 +394,7 @@ vm_push() {
 
     # Open file on VM
     local open=$(sudo virsh qemu-agent-command "$domain" \
-        "{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$winpath\",\"mode\":\"wb\"}}" 2>/dev/null)
+        "{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$winpath\",\"mode\":\"wb\"}}")
 
     local fd=$(echo "$open" | jq -r '.return')
     if [[ "$fd" == "null" || -z "$fd" ]]; then
@@ -410,32 +408,27 @@ vm_push() {
     echo "Uploading $filename → $domain (Desktop)"
     echo
 
-    #
-    # Stream Base64 with fixed-size chunking + JSON-safe encoding
-    #
-    local chunk
-    local chunk_bytes
+    while true; do
+        chunk=$(dd if="$file" bs=65536 count=1 skip=$((sent / 65536)) 2>/dev/null | base64 -w0)
 
-    while IFS= read -r -n 65536 chunk; do
-        # Encode binary -> base64 -> JSON-safe
-        local b64=$(printf "%s" "$chunk" | base64 -w0)
-        local json_b64=$(printf "%s" "$b64" | jq -Rn '$input')
+        [ -z "$chunk" ] && break # End of file
+
+        json_b64=$(printf "%s" "$chunk" | jq -Rs .)
 
         sudo virsh qemu-agent-command "$domain" \
             "{\"execute\":\"guest-file-write\",\"arguments\":{\"handle\":$fd,\"buf-b64\":$json_b64}}" >/dev/null
 
-        # Progress updates
-        chunk_bytes=${#chunk}
-        sent=$((sent + chunk_bytes))
+        # Update progress
+        sent=$((sent + 65536))
         ((sent > filesize)) && sent=$filesize
 
-        local percent=$((sent * 100 / filesize))
-        local bar_len=$((percent / 2))
-        local bar=$(printf "%-${bar_len}s" "#" | tr ' ' '#')
-        local spaces=$(printf "%-$((50 - bar_len))s" " ")
+        percent=$((sent * 100 / filesize))
+        bar_len=$((percent / 2))
+        bar=$(printf "%-${bar_len}s" "#" | tr ' ' '#')
+        spaces=$(printf "%-$((50 - bar_len))s" " ")
 
         printf "\r[%s%s] %3d%%" "$bar" "$spaces" "$percent"
-    done <"$file"
+    done
 
     printf "\n"
 
