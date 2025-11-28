@@ -45,9 +45,10 @@
     <suspend-to-disk enabled='no'/>
   </pm>
   <channel type='unix'>
-  <target type='virtio' name='org.qemu.guest_agent.0'/>
-  <address type='virtio-serial'/>
-</channel>
+      <source mode='bind'/>
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
+      <address type='virtio-serial' controller='0' bus='0' port='1'/>
+    </channel>
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>

@@ -377,3 +377,20 @@ vm_init() {
     echo "IP found: $IP"
     echo "SSH command: ssh user@$IP"
 }
+
+vm_push() {
+    local file="$1"
+    local domain="${2:-windows_vm}"
+    [ -z "$file" ] && echo "Usage: vm-push <file> [vm-name]" && return 1
+    [ ! -f "$file" ] && echo "File not found: $file" && return 1
+
+    local user=$(sudo virsh qemu-agent-command "$domain" '{"execute":"guest-get-users"}' 2>/dev/null | jq -r '.return[0].name // empty')
+    [ -z "$user" ] && echo "VM $domain not running or guest agent missing" && return 1
+
+    local winpath="C:\\Users\\$user\\Desktop\\$(basename "$file")"
+    local fd=$(sudo virsh qemu-agent-command "$domain" "{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$winpath\",\"mode\":\"wb\"}}")
+    fd=${fd//\"/}
+    base64 "$file" | sudo virsh qemu-agent-command "$domain" --fd "$fd" '{"execute":"guest-file-write","arguments":{"buf-b64":""}}' >/dev/null
+    sudo virsh qemu-agent-command "$domain" "{\"execute\":\"guest-file-close\",\"arguments\":{\"handle\":$fd}}"
+    echo "→ $(basename "$file")  →  $domain  (Desktop)"
+}
