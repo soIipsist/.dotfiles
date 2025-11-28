@@ -454,7 +454,7 @@ vm_win_pull() {
 
     # Open file on guest
     local open=$(sudo virsh qemu-agent-command "$domain" \
-        "{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$winpath\",\"mode\":\"wb\"}}")
+        "{\"execute\":\"guest-file-open\",\"arguments\":{\"path\":\"$file\",\"mode\":\"wb\"}}")
 
     local fd=$(echo "$open" | jq -r '.return')
     if [[ "$fd" == "null" || -z "$fd" ]]; then
