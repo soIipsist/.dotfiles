@@ -469,7 +469,7 @@ win_pull() {
 
     : >"$outfile"
 
-    local chunk_size=16777216 # 16 MiB – maximum allowed, fastest
+    local chunk_size=65536
 
     while :; do
         resp=$(sudo virsh qemu-agent-command "$domain" \
