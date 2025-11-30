@@ -70,6 +70,11 @@
     <source network='default'/>
     <model type='virtio'/>
   </interface>
+    <channel type='unix'>
+      <source mode='bind'/>
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
+      <address type='virtio-serial' controller='0' bus='0' port='1'/>
+    </channel>
     <controller type='usb' index='0' model='qemu-xhci' ports='15'>
       <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
     </controller>
