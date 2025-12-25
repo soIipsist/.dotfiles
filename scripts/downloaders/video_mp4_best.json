@@ -1,6 +1,0 @@
-{
-  "format": "bestvideo+bestaudio/best",
-  "progress": true,
-  "ignoreerrors": true,
-  "merge_output_format": "mp4"
-}
