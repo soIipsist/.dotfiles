@@ -255,3 +255,9 @@ kiwix_manage() {
         fi
     done
 }
+
+if [[ -n "$WSL_DISTRO_NAME" ]]; then
+    function vscode() {
+        run_venv_script "vscode_workspaces.py" "$@"
+    }
+fi
