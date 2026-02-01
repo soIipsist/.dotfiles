@@ -129,8 +129,8 @@ export PATH="/Applications/Tailscale.app/Contents/MacOS:$PATH"
 export PASSWORD_STORE_DIR="$HOME/repos/soIipsist/password-store"
 
 # aliases
-if [ -f ~/.ytdlp_aliases ]; then
-    . ~/.ytdlp_aliases
+if [ -f ~/.download_aliases ]; then
+    . ~/.download_aliases
 fi
 
 if [ -f ~/.rsync_aliases ]; then
