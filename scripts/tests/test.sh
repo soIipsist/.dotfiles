@@ -216,5 +216,4 @@ rsync_push_all() {
 
 # rsync_push_all "./test.sh" "~/lo" server
 # rsync_push_all "./test.sh" "/home/solipsist"
-# rsync_push_all "./test.sh" test_ytdlp.py ~/Desktop "/home/solipsist"
-rsync_push_all "test.sh" test_ytdlp.py
+rsync_push_all "test.sh" test_base.py

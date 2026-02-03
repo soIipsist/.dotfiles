@@ -25,44 +25,6 @@ You need to source files after for the changes to reflect:
 source ~/.bashrc
 ```
 
-### downloader.py
-
-`downloader.py` is a flexible, modular download manager for fetching content from various URLs using configurable "downloaders." Each downloader is defined using a JSON metadata file and can call a custom Python function to handle the download. The system supports tracking of downloads in a SQLite database, logging with color-coded output, and optional integration with tools like `yt-dlp`, `wget`, or `urllib`.
-
-#### Features
-
-- Pluggable downloader system (`yt-dlp`, `wget`, `urllib`, or custom)
-- JSON-based metadata configuration per downloader
-- SQLite database logging of downloads (status, timestamps, output path)
-- Command-line interface for managing downloads and downloaders
-- Batch downloads via input text files
-- Environment-variable-driven configuration
-- Color-coded logging to both file and console
-
-#### Quick Start
-
-Download a single YouTube video using `yt-dlp`:
-
-```bash
-python downloader.py -t ytdlp_audio "https://youtu.be/OlEqHXRrcpc" # downloads the video in mp3 format
-```
-
-Download an image using `wget`:
-
-```bash
-python downloader.py -t wget "some_image_url" -f "filename.jpg" -o ~/Desktop
-```
-
-### ytdlp.py - download youtube videos
-
-You can download YouTube videos or videos from other sites using yt-dlp. The process is simplified by including default audio and video options in `.json` format.
-
-```python
-python ytdlp.py "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --ytdlp_format="audio"
-```
-
-**_NOTE:_ In order for this to work, you need to set up [ytdlp](https://github.com/yt-dlp/yt-dlp/wiki/Installation) and [ffmpeg](https://ffmpeg.org/download.html)**
-
 ### bfg_cleaner.py - remove a file's commit history
 
 Using [bfg repo cleaner](https://rtyley.github.io/bfg-repo-cleaner/), you can remove a file's commit history from a repository without a trace.
