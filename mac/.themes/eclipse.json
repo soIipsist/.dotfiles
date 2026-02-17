@@ -105,7 +105,7 @@
   "TMUX_STATUS_STYLE": "fg=colour136,bg=black",
   "TMUX_WINDOW_STATUS_STYLE": "fg=colour244,bg=default",
   "TMUX_WINDOW_STATUS_CURRENT_STYLE": "fg=colour166,bg=default",
-  "TMUX_MESSAGE_STYLE": "fg=yellow bg=red bold",
+  "TMUX_MESSAGE_STYLE": "fg=black bg=red bold",
   "TMUX_STATUS_LEFT_1": "fg=#FFAA00",
   "TMUX_STATUS_LEFT_2": "fg=black",
   "TMUX_STATUS_LEFT_3": "fg=green,bright",

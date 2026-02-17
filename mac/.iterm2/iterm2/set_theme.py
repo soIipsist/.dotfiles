@@ -73,7 +73,7 @@ async def main(connection):
     app = await iterm2.async_get_app(connection)
     session = app.current_window.current_tab.current_session
 
-    profile = await session.async_get_profile()
+    profile = await iterm2.Profile.async_get_default(connection)
     await set_theme(profile)
 
 
