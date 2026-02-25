@@ -26,11 +26,17 @@ if [ ! -e "$YTDLP_PATH" ]; then
 fi
 
 ytdlp_mp3() {
-    udown -t ytdlp_audio "$@"
+    if [[ $# -lt 1 ]]; then
+        return 0
+    fi
+    udown -t ytdlp_audio "$@" --ui 0
 }
 
 ytdlp_mp4() {
-    udown -t ytdlp_video "$@"
+    if [[ $# -lt 1 ]]; then
+        return 0
+    fi
+    udown -t ytdlp_video "$@" --ui 0
 }
 
 get_codec() {
