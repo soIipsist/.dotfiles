@@ -11,8 +11,9 @@ export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 # udown options
 # DOWNLOADER_TYPE=""
 # DOWNLOAD_OP="AND"
-eval "$(register-python-argcomplete --shell zsh udown)"
-
+if command -v register-python-argcomplete >/dev/null 2>&1; then
+    eval "$(register-python-argcomplete --shell zsh udown)"
+fi
 export VENV_PATH="$HOME/venv"
 
 if [ ! -e "$YTDLP_PATH" ]; then
