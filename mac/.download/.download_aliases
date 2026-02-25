@@ -10,9 +10,8 @@ export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 
 # udown options
 # DOWNLOADER_TYPE=""
-# DOWNLOADER_KEYS="downloader_type,downloader_path,downloader_args,module,func"
-# DOWNLOAD_KEYS="url,downloader_type,download_status,output_filename,output_path,progress"
 # DOWNLOAD_OP="AND"
+eval "$(register-python-argcomplete --shell zsh udown)"
 
 export VENV_PATH="$HOME/venv"
 
