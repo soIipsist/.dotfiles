@@ -161,6 +161,10 @@ if [ -f ~/.zsh_aliases ]; then
     . ~/.zsh_aliases
 fi
 
+if [ -f ~/.torrent_aliases ]; then
+    . ~/.torrent_aliases
+fi
+
 if [ -f ~/.rsync_aliases ]; then
     . ~/.rsync_aliases
 fi
