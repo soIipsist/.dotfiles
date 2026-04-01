@@ -33,12 +33,28 @@ function sesh-sessions() {
     }
 }
 
-# PATH variable
-export PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/opt/python@3.13/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/opt/homebrew/opt/postgresql@15/bin:$PATH"
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
-export PATH="/usr/local/ffmpeg/bin:/usr/local/ffmpeg/lib:$PATH"
-export PATH="$HOME/.local/bin:$HOME/.local/lib/python3.13/site-packages:$PATH"
-export PATH="/usr/games:$PATH"
+PATH="/usr/bin:/bin:/usr/sbin:/sbin"
+
+# System-wide local overrides
+PATH="/usr/local/bin:$PATH"
+
+# Linuxbrew
+PATH="/home/linuxbrew/.linuxbrew/opt/sqlite/bin:$PATH"
+PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+
+# Other tools
+PATH="/home/linuxbrew/.linuxbrew/opt/python@3.13/bin:$PATH"
+PATH="/opt/homebrew/bin:$PATH"
+PATH="/opt/homebrew/sbin:$PATH"
+PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+
+# Custom installs
+PATH="/usr/local/ffmpeg/bin:$PATH"
+
+# User space
+PATH="$HOME/.local/bin:$PATH"
+
+export PATH
 
 if command -v go >/dev/null 2>&1; then
     export GOBIN="$(go env GOPATH)/bin"
