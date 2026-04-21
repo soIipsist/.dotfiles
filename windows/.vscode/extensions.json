@@ -13,6 +13,9 @@
     "ionutvmi.path-autocomplete",
     "shd101wyy.markdown-preview-enhanced",
     "kamikillerto.vscode-colorize",
-    "jakob101.RelativePath"
+    "jakob101.RelativePath",
+    "ms-python.black-formatter",
+    "yzhang.markdown-all-in-one",
+    "foxundermoon.shell-format"
   ]
 }
