@@ -8,6 +8,7 @@ from datetime import datetime
 from argparse import ArgumentParser
 import mimetypes
 from logger import setup_logger
+from utils import str_to_bool
 
 logger = setup_logger("organize", log_dir="/organize/logs")
 
@@ -236,10 +237,6 @@ def organize_files(
     return old_files, new_files
 
 
-def str_to_bool(s: str):
-    return str(s).lower() in {"1", "true", "yes", "y", ""}
-
-
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("source_directory", type=str, default=os.getcwd(), nargs="?")
@@ -282,8 +279,8 @@ if __name__ == "__main__":
     )
 
     args = vars(parser.parse_args())
-    # print(args)
-    organize_files(**args)
+    print(args)
+    # organize_files(**args)
 
 # python organize_files.py (uses cwd)
 # python organize_files.py tests/photos/backup -a year
