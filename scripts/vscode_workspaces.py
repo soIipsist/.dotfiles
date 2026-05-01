@@ -6,9 +6,14 @@ import subprocess
 import sys
 
 # default workspace variables
-workspace_directory = os.environ.get(
-    "VSCODE_WORKSPACE_DIRECTORY", os.path.join(os.getcwd(), ".workspaces")
-)
+workspace_directory = os.environ.get("VSCODE_WORKSPACE_DIRECTORY")
+
+if not workspace_directory or not os.path.exists(workspace_directory):
+    workspace_directory = os.path.join(os.getcwd(), ".workspaces")
+    print(
+        f"Default workspace directory was not found! Using fallback directory: {workspace_directory}"
+    )
+    os.makedirs(workspace_directory, exist_ok=True)
 
 
 def overwrite_json_file(json_file, data):
