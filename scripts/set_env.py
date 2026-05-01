@@ -2,8 +2,6 @@ from argparse import ArgumentParser
 import os
 import subprocess
 
-bool_choices = [0, 1, "true", "false", True, False, None]
-
 
 def str_to_bool(string: str):
     return string in ["1", "true", True]
