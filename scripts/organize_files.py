@@ -49,10 +49,16 @@ def get_modification_year(file_path):
 
 
 def create_backup(
-    source_directory: Path, backup_directory: str = None, dry_run: bool = False
+    source_directory: Path,
+    backup_directory: str = None,
+    dry_run: bool = False,
+    backup: bool = False,
 ):
 
     dest = None
+
+    if not backup:
+        return
 
     if not backup_directory:
         return
@@ -167,6 +173,7 @@ def organize_files(
     pattern: str = None,
     repl: str = None,
     move: bool = False,
+    backup: bool = False,
     backup_directory: str = None,
     dry_run: bool = False,
 ):
@@ -177,7 +184,7 @@ def organize_files(
     source_directory = get_directory_as_path(source_directory)
     destination_directory = get_directory_as_path(destination_directory)
 
-    create_backup(source_directory, backup_directory, dry_run)
+    create_backup(source_directory, backup_directory, dry_run, backup)
 
     new_files = []
     old_files = []
@@ -263,12 +270,20 @@ if __name__ == "__main__":
         default=os.environ.get("DRY_RUN", False),
     )
     parser.add_argument(
-        "-b", "--backup_directory", type=str, default=os.environ.get("BACKUP_DIRECTORY")
+        "-b",
+        "--backup",
+        nargs="?",
+        const=True,
+        type=str_to_bool,
+        default=os.environ.get("BACKUP", False),
+    )
+    parser.add_argument(
+        "-d", "--backup_directory", type=str, default=os.environ.get("BACKUP_DIRECTORY")
     )
 
     args = vars(parser.parse_args())
-    print(args)
-    # organize_files(**args)
+    # print(args)
+    organize_files(**args)
 
 # python organize_files.py (uses cwd)
 # python organize_files.py tests/photos/backup -a year
