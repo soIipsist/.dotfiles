@@ -145,6 +145,9 @@ def organize_by_pattern(
     old_files = []
     new_files = []
 
+    logger.info(f"Using pattern: {pattern}")
+    logger.info(f"Repl: {repl}")
+
     for file_path in source_directory.iterdir():
         if file_path.is_file():
             new_stem = re.sub(pattern, repl, file_path.stem, flags=re.IGNORECASE)
@@ -226,8 +229,8 @@ def organize_files(
     return old_files, new_files
 
 
-def str_to_bool(string: str):
-    return string in ["1", "true", True]
+def str_to_bool(s: str):
+    return str(s).lower() in {"1", "true", "yes", "y", ""}
 
 
 if __name__ == "__main__":
@@ -244,17 +247,28 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--pattern", type=str, default=None)
     parser.add_argument("-r", "--repl", type=str, default=None)
     parser.add_argument(
-        "-m", "--move", type=str_to_bool, default=os.environ.get("MOVE_FILES", False)
+        "-m",
+        "--move",
+        nargs="?",
+        const=True,
+        type=str_to_bool,
+        default=os.environ.get("MOVE_FILES", False),
+    )
+    parser.add_argument(
+        "-n",
+        "--dry_run",
+        nargs="?",
+        const=True,
+        type=str_to_bool,
+        default=os.environ.get("DRY_RUN", False),
     )
     parser.add_argument(
         "-b", "--backup_directory", type=str, default=os.environ.get("BACKUP_DIRECTORY")
     )
-    parser.add_argument(
-        "-n", "--dry_run", type=str_to_bool, default=os.environ.get("DRY_RUN")
-    )
 
     args = vars(parser.parse_args())
-    organize_files(**args)
+    print(args)
+    # organize_files(**args)
 
 # python organize_files.py (uses cwd)
 # python organize_files.py tests/photos/backup -a year
