@@ -91,7 +91,9 @@ def move_files(old_files: list, new_files: list, move: bool, dry_run: bool):
     for old_file, new_file in zip(old_files, new_files):
         action = "Moving" if move else "Copying"
 
-        logger.info(f"{action} '{old_file}' -> '{new_file}'")
+        logger.info(
+            f"{action} '{os.path.basename(old_file)}' -> '{os.path.basename(new_file)}'"
+        )
 
         if not dry_run:  # move only if dry run is false
             new_file.parent.mkdir(parents=True, exist_ok=True)  # ensure folder exists
@@ -176,6 +178,8 @@ def organize_files(
 
     new_files = []
     old_files = []
+
+    logger.info(f"Action: {action}")
 
     if action == "year":
         old_files, new_files = organize_by_year(
