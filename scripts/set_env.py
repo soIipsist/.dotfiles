@@ -1,10 +1,7 @@
 from argparse import ArgumentParser
 import os
 import subprocess
-
-
-def str_to_bool(string: str):
-    return string in ["1", "true", True]
+from utils import str_to_bool
 
 
 def get_default_shell_path(path: str) -> str:
