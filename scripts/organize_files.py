@@ -7,10 +7,71 @@ from pathlib import Path
 from datetime import datetime
 from argparse import ArgumentParser
 import mimetypes
+import time
 from logger import setup_logger
 from utils import str_to_bool
 
 logger = setup_logger("organize", log_dir="/organize/logs")
+
+CHUNK_SIZE = 4 * 1024 * 1024
+
+
+def format_bytes(n):
+    for unit in ["B", "KB", "MB", "GB", "TB"]:
+        if n < 1024:
+            return f"{n:.1f}{unit}"
+        n /= 1024
+    return f"{n:.1f}PB"
+
+
+def print_progress(done, total, prefix="", bar_length=30):
+    fraction = done / total if total else 1
+    filled = int(bar_length * fraction)
+    bar = "█" * filled + "-" * (bar_length - filled)
+    percent = int(fraction * 100)
+
+    sys.stdout.write(f"\r{prefix}[{bar}] {percent:3d}% ({done}/{total})")
+    sys.stdout.flush()
+
+    if done == total:
+        print()
+
+
+def print_byte_progress(done, total, start_time, filename="", bar_length=30):
+    fraction = done / total if total else 1
+    filled = int(bar_length * fraction)
+    bar = "█" * filled + "-" * (bar_length - filled)
+    percent = int(fraction * 100)
+
+    elapsed = time.time() - start_time
+    speed = done / elapsed if elapsed > 0 else 0
+
+    sys.stdout.write(
+        f"\r[{bar}] {percent:3d}% "
+        f"{format_bytes(done)}/{format_bytes(total)} "
+        f"({format_bytes(speed)}/s) {filename}"
+    )
+    sys.stdout.flush()
+
+
+def copy2_with_progress(src, dst):
+    total_size = os.path.getsize(src)
+    done = 0
+    start_time = time.time()
+
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+
+    with open(src, "rb") as fsrc, open(dst, "wb") as fdst:
+        while True:
+            chunk = fsrc.read(CHUNK_SIZE)
+            if not chunk:
+                break
+            fdst.write(chunk)
+            done += len(chunk)
+            print_byte_progress(done, total_size, start_time, os.path.basename(src))
+
+    shutil.copystat(src, dst)
+    print()
 
 
 def get_exif_year(file_path: Path) -> str | None:
@@ -90,10 +151,19 @@ def get_directory_as_path(directory: str):
     return directory
 
 
-def move_files(old_files: list, new_files: list, move: bool, dry_run: bool):
+def move_files(
+    old_files: list,
+    new_files: list,
+    move: bool,
+    dry_run: bool,
+    use_chunks: bool = False,
+):
 
     if dry_run:
         logger.warning("DRY RUN MODE: No changes will be applied.")
+
+    total_files = len(old_files)
+    processed_files = 0
 
     for old_file, new_file in zip(old_files, new_files):
         action = "Moving" if move else "Copying"
@@ -106,12 +176,22 @@ def move_files(old_files: list, new_files: list, move: bool, dry_run: bool):
             new_file.parent.mkdir(parents=True, exist_ok=True)  # ensure folder exists
 
             try:
-                if move:
-                    shutil.move(old_file, new_file)
+                if use_chunks:
+                    copy2_with_progress(old_file, new_file)
+                    if move:
+                        os.remove(old_file)
                 else:
-                    shutil.copy2(old_file, new_file)
+                    if move:
+                        shutil.move(old_file, new_file)
+                    else:
+                        shutil.copy2(old_file, new_file)
+
             except Exception as e:
                 print(e)
+
+        if not use_chunks:
+            processed_files += 1
+            print_progress(processed_files, total_files, prefix="Files: ")
 
     return old_files, new_files
 
@@ -184,6 +264,7 @@ def organize_files(
     move: bool = False,
     backup: bool = False,
     backup_directory: str = None,
+    use_chunks: bool = False,
     dry_run: bool = False,
 ):
 
@@ -241,7 +322,7 @@ def organize_files(
             source_directory, destination_directory, pattern, repl
         )
 
-    move_files(old_files, new_files, move, dry_run)
+    move_files(old_files, new_files, move, dry_run, use_chunks)
     return old_files, new_files
 
 
@@ -283,12 +364,20 @@ if __name__ == "__main__":
         default=os.environ.get("BACKUP", False),
     )
     parser.add_argument(
+        "-c",
+        "--use_chunks",
+        nargs="?",
+        const=True,
+        type=str_to_bool,
+        default=os.environ.get("USE_CHUNKS", False),
+    )
+    parser.add_argument(
         "-d", "--backup_directory", type=str, default=os.environ.get("BACKUP_DIRECTORY")
     )
 
     args = vars(parser.parse_args())
-    print(args)
-    # organize_files(**args)
+    # print(args)
+    organize_files(**args)
 
 # python organize_files.py (uses cwd)
 # python organize_files.py tests/photos/backup -a year
