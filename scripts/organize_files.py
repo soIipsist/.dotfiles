@@ -147,7 +147,10 @@ def organize_by_year(
 
 
 def organize_by_pattern(
-    source_directory: Path, destination_directory: Path, pattern: str, repl: str
+    source_directory: Path,
+    destination_directory: Path,
+    pattern: str = None,
+    repl: str = None,
 ):
     old_files = []
     new_files = []
@@ -157,6 +160,11 @@ def organize_by_pattern(
 
     for file_path in source_directory.iterdir():
         if file_path.is_file():
+            if pattern and repl:
+                new_stem = re.sub(pattern, repl, file_path.stem, flags=re.IGNORECASE)
+            else:
+                new_stem = file_path.stem
+
             new_stem = re.sub(pattern, repl, file_path.stem, flags=re.IGNORECASE)
             new_name = f"{new_stem}{file_path.suffix}"
             dest_path = destination_directory / new_name
@@ -246,7 +254,7 @@ if __name__ == "__main__":
         "--action",
         type=str,
         default="episodes",
-        choices=["pattern", "episodes", "prefix", "suffix", "year"],
+        choices=["pattern", "episodes", "prefix", "suffix", "year", "", None],
     )
     parser.add_argument("-p", "--pattern", type=str, default=None)
     parser.add_argument("-r", "--repl", type=str, default=None)
