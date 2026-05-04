@@ -16,6 +16,7 @@ export KIWIX_PATH="/mnt/HOME/wikipedia/library.xml"
 export BACKUP_DIRECTORY="/tmp/backup"
 export BACKUP=0
 export DRY_RUN=0
+export ORGANIZE_ACTION=""
 export USE_CHUNKS=1
 export MOVE_FILES=0
 

@@ -232,7 +232,7 @@ def organize_by_year(
     old_files = []
     new_files = []
 
-    for file_path in source_directory.iterdir():
+    for file_path in source_directory.rglob("*"):
         if file_path.is_file():
             year = get_exif_year(file_path)
             if not year:
@@ -248,7 +248,9 @@ def organize_by_year(
                 logger.info(f"Created year directory {target_dir}.")
                 target_dir.mkdir(parents=True, exist_ok=True)
 
-            dest_path = target_dir / file_path.name
+            rel_path = file_path.relative_to(source_directory)
+            dest_path = target_dir / rel_path
+
             old_files.append(file_path)
             new_files.append(dest_path)
 
@@ -363,7 +365,7 @@ if __name__ == "__main__":
         "-a",
         "--action",
         type=str,
-        default="episodes",
+        default=os.environ.get("ORGANIZE_ACTION"),
         choices=["pattern", "episodes", "prefix", "suffix", "year", "", None],
     )
     parser.add_argument("-p", "--pattern", type=str, default=None)
