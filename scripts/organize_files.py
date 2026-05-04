@@ -24,7 +24,15 @@ def format_bytes(n):
     return f"{n:.1f}PB"
 
 
-def print_progress(done, total, prefix="", bar_length=30):
+def print_progress(
+    done, total, dry_run: bool = False, progress: bool = True, prefix="", bar_length=30
+):
+    if dry_run:
+        return
+
+    if not progress:
+        return
+
     fraction = done / total if total else 1
     filled = int(bar_length * fraction)
     bar = "█" * filled + "-" * (bar_length - filled)
@@ -37,7 +45,21 @@ def print_progress(done, total, prefix="", bar_length=30):
         print()
 
 
-def print_byte_progress(done, total, start_time, filename="", bar_length=30):
+def print_byte_progress(
+    done,
+    total,
+    start_time,
+    filename="",
+    dry_run: bool = False,
+    progress: bool = True,
+    bar_length=30,
+):
+    if dry_run:
+        return
+
+    if not progress:
+        return
+
     fraction = done / total if total else 1
     filled = int(bar_length * fraction)
     bar = "█" * filled + "-" * (bar_length - filled)
@@ -54,7 +76,7 @@ def print_byte_progress(done, total, start_time, filename="", bar_length=30):
     sys.stdout.flush()
 
 
-def copy2_with_progress(src, dst):
+def copy2_with_progress(src, dst, dry_run: bool = False, progress: bool = True):
     total_size = os.path.getsize(src)
     done = 0
     start_time = time.time()
@@ -68,7 +90,9 @@ def copy2_with_progress(src, dst):
                 break
             fdst.write(chunk)
             done += len(chunk)
-            print_byte_progress(done, total_size, start_time, os.path.basename(src))
+            print_byte_progress(
+                done, total_size, start_time, os.path.basename(src), dry_run, progress
+            )
 
     shutil.copystat(src, dst)
     print()
@@ -156,6 +180,7 @@ def move_files(
     new_files: list,
     move: bool,
     dry_run: bool,
+    progress: bool = False,
     use_chunks: bool = False,
 ):
 
@@ -177,7 +202,9 @@ def move_files(
 
             try:
                 if use_chunks:
-                    copy2_with_progress(old_file, new_file)
+                    copy2_with_progress(
+                        old_file, new_file, dry_run=dry_run, progress=progress
+                    )
                     if move:
                         os.remove(old_file)
                 else:
@@ -191,7 +218,9 @@ def move_files(
 
         if not use_chunks:
             processed_files += 1
-            print_progress(processed_files, total_files, prefix="Files: ")
+            print_progress(
+                processed_files, total_files, dry_run, progress, prefix="Files: "
+            )
 
     return old_files, new_files
 
@@ -265,6 +294,7 @@ def organize_files(
     backup: bool = False,
     backup_directory: str = None,
     use_chunks: bool = False,
+    progress: bool = False,
     dry_run: bool = False,
 ):
 
@@ -322,7 +352,7 @@ def organize_files(
             source_directory, destination_directory, pattern, repl
         )
 
-    move_files(old_files, new_files, move, dry_run, use_chunks)
+    move_files(old_files, new_files, move, dry_run, progress, use_chunks)
     return old_files, new_files
 
 
@@ -370,6 +400,13 @@ if __name__ == "__main__":
         const=True,
         type=str_to_bool,
         default=os.environ.get("USE_CHUNKS", False),
+    )
+    parser.add_argument(
+        "--progress",
+        nargs="?",
+        const=True,
+        type=str_to_bool,
+        default=False,
     )
     parser.add_argument(
         "-d", "--backup_directory", type=str, default=os.environ.get("BACKUP_DIRECTORY")
