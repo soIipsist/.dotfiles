@@ -184,6 +184,8 @@ if __name__ == "__main__":
         default=os.environ.get("ENV_SKIP_CONFIRM", False),
         help="Skip confirmation prompts and assume 'yes'",
     )
+    args = parser.parse_args()
 
-    args = vars(parser.parse_args())
-    set_environment_variables(**args)
+    set_environment_variables(
+        args.environment_variables, args.shell_path, args.action, args.yes
+    )
