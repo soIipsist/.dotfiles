@@ -14,7 +14,9 @@ export KIWIX_PATH="/mnt/HOME/wikipedia/library.xml"
 
 # organize files variables
 export BACKUP_DIRECTORY="/tmp/backup"
+export BACKUP=0
 export DRY_RUN=0
+export USE_CHUNKS=1
 export MOVE_FILES=0
 
 alias ll='ls -alF'

@@ -6,7 +6,11 @@
   "dotfiles": [".zsh"],
   "pip_packages": [
     "yt-dlp",
-    "git+https://github.com/soIipsist/adb-wrapper@main"
+    "git+https://github.com/soIipsist/adb-wrapper@main",
+    "iterm2",
+    "requests",
+    "urllib3",
+    "beautifulsoup4"
   ],
   "venv_path": "",
   "git_home": "/Users/p",

@@ -1,5 +1,4 @@
 {
   "scripts_directory": "$HOME/scripts",
-  "venv_path": "$HOME/venv",
-  "pip_packages": ["iterm2", "requests", "urllib3", "beautifulsoup4"]
+  "venv_path": "$HOME/venv"
 }

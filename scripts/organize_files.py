@@ -274,7 +274,6 @@ def organize_by_pattern(
             else:
                 new_stem = file_path.stem
 
-            new_stem = re.sub(pattern, repl, file_path.stem, flags=re.IGNORECASE)
             new_name = f"{new_stem}{file_path.suffix}"
             dest_path = destination_directory / new_name
 
