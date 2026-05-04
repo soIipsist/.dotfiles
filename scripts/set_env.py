@@ -54,6 +54,15 @@ def get_value(key: str, value: str, action: str):
     return value
 
 
+def get_environment_variable(key: str):
+    value = os.environ.get(key)
+
+    if value is None:
+        print(f"{key} is not set")
+    else:
+        print(f"{key}={value}")
+
+
 def set_environment_variable(key: str, value: str, shell_path: str):
 
     if value:
@@ -122,9 +131,15 @@ def set_environment_variable(key: str, value: str, shell_path: str):
 
 
 def set_environment_variables(
-    environment_variables: list, shell_path: str, action: str, skip_confirmation=None
+    environment_variables: list,
+    shell_path: str,
+    action: str = None,
+    skip_confirmation=None,
 ):
     """Sets environment variables based on default shell path."""
+
+    if not action:
+        action = "get"
 
     shell_path = get_default_shell_path(shell_path)
 
@@ -162,23 +177,18 @@ if __name__ == "__main__":
     parser.add_argument(
         "-a",
         "--action",
-        default=os.environ.get("ENV_DEFAULT_ACTION", "set"),
-        choices=["append", "unset", "set"],
+        default=os.environ.get("ENV_DEFAULT_ACTION"),
+        choices=["append", "unset", "set", "get", None, ""],
     )
     parser.add_argument(
         "-y",
         "--yes",
+        nargs="?",
+        const=True,
         type=str_to_bool,
         default=os.environ.get("ENV_SKIP_CONFIRM", False),
         help="Skip confirmation prompts and assume 'yes'",
     )
+
     args = vars(parser.parse_args())
-
-    environment_variables = args.get("environment_variables")
-    shell_path = args.get("shell_path")
-    action = args.get("action")
-    skip_confirmation = args.get("yes")
-
-    set_environment_variables(
-        environment_variables, shell_path, action, skip_confirmation
-    )
+    set_environment_variables(**args)
