@@ -269,7 +269,7 @@ def organize_by_pattern(
     logger.info(f"Using pattern: {pattern}")
     logger.info(f"Repl: {repl}")
 
-    for file_path in source_directory.iterdir():
+    for file_path in source_directory.rglob("*"):
         if file_path.is_file():
             if pattern and repl:
                 new_stem = re.sub(pattern, repl, file_path.stem, flags=re.IGNORECASE)
@@ -277,7 +277,9 @@ def organize_by_pattern(
                 new_stem = file_path.stem
 
             new_name = f"{new_stem}{file_path.suffix}"
-            dest_path = destination_directory / new_name
+
+            rel_path = file_path.relative_to(source_directory)
+            dest_path = destination_directory / rel_path.parent / new_name
 
             old_files.append(file_path)
             new_files.append(dest_path)
