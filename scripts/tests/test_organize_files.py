@@ -57,14 +57,13 @@ out_directory = os.path.join(photos_directory, "out")
 source_directory = photos_directory
 destination_directory = out_directory
 
-if not destination_directory:
-    destination_directory = source_directory
-
 source_directory = get_directory_as_path_test(source_directory)
 destination_directory = get_directory_as_path_test(destination_directory)
 backup_directory = os.path.join(photos_directory, "backup")
 move = True
-dry_run = True
+dry_run = False
+use_chunks = True
+progress = True
 pattern = r"^(.*)$"
 repl = r"\1"
 
@@ -120,7 +119,9 @@ class TestOrganize(TestBase):
         old_files, new_files = organize_by_pattern(
             source_directory, destination_directory, pattern, repl
         )
-        old_files, new_files = move_files(old_files, new_files, move, dry_run)
+        old_files, new_files = move_files(
+            old_files, new_files, move, dry_run, progress, use_chunks
+        )
 
         for old_file, new_file in zip(old_files, new_files):
 
@@ -158,6 +159,8 @@ class TestOrganize(TestBase):
             repl,
             move,
             backup_directory,
+            use_chunks,
+            progress,
             dry_run,
         )
 
@@ -188,7 +191,7 @@ if __name__ == "__main__":
         # TestOrganize.test_get_exif_year,
         # TestOrganize.test_get_modification_year,
         # TestOrganize.test_create_backup,
-        # TestOrganize.test_move_files,
-        TestOrganize.test_organize_files,
+        TestOrganize.test_move_files,
+        # TestOrganize.test_organize_files,
     ]
     run_test_methods(test_methods)
