@@ -175,6 +175,22 @@ def get_directory_as_path(directory: str):
     return directory
 
 
+def diff_paths(old_file: Path, new_file: Path):
+    old_parts = old_file.parts
+    new_parts = new_file.parts
+
+    i = 0
+    for o, n in zip(old_parts, new_parts):
+        if o != n:
+            break
+        i += 1
+
+    old_diff = Path(*old_parts[i:])
+    new_diff = Path(*new_parts[i:])
+
+    return str(old_diff), str(new_diff)
+
+
 def move_files(
     old_files: list,
     new_files: list,
@@ -193,14 +209,9 @@ def move_files(
     for old_file, new_file in zip(old_files, new_files):
         action = "Moving" if move else "Copying"
 
-        if old_file.parent != new_file.parent:
-            src_path = str(old_file.parent / old_file.name)
-            dest_path = str(new_file.parent / new_file.name)
-        else:
-            src_path = old_file.name
-            dest_path = new_file.name
+        src, dst = diff_paths(old_file, new_file)
 
-        logger.info(f"{action} '{src_path}' -> '{dest_path}'")
+        logger.info(f"{action} '{src}' -> '{dst}'")
 
         if not dry_run:  # move only if dry run is false
             new_file.parent.mkdir(parents=True, exist_ok=True)  # ensure folder exists
