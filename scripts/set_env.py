@@ -45,15 +45,6 @@ def get_appended_value(key: str, value: str) -> str:
     return separator.join(parts)
 
 
-def get_value(key: str, value: str, action: str):
-    if action == "append":
-        value = get_appended_value(key, value)
-    elif action == "unset":
-        value = None
-
-    return value
-
-
 def get_environment_variable(key: str):
     value = os.environ.get(key)
 
@@ -148,23 +139,27 @@ def set_environment_variables(
 
         parts = var.split("=", 1)
         key, value = (parts[0], parts[1]) if len(parts) > 1 else (parts[0], None)
-        value = get_value(key, value, action)
+
+        if action == "get":
+            get_environment_variable(key)
+            continue
 
         initial_action = action
+        value = get_appended_value(key, value) if action == "append" else None
+
         if value is None:
             action = "unset"
 
         if not skip_confirmation:
             prompt = input(
-                f"Performing {action} on {var} ({shell_path}). Are you sure? [Y/n]"
+                f"Performing {action} on {var} ({shell_path}). Are you sure? [Y/n] "
             )
-            if prompt.lower() == "y":
-                set_environment_variable(key, value, shell_path)
-            else:
+            if prompt.lower() != "y":
                 print(f"Cancelled {action} for {var}.")
-        else:
-            set_environment_variable(key, value, shell_path)
+                action = initial_action
+                continue
 
+        set_environment_variable(key, value, shell_path)
         action = initial_action
 
 
