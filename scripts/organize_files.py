@@ -193,9 +193,14 @@ def move_files(
     for old_file, new_file in zip(old_files, new_files):
         action = "Moving" if move else "Copying"
 
-        logger.info(
-            f"{action} '{os.path.basename(old_file)}' -> '{os.path.basename(new_file)}'"
-        )
+        if old_file.parent != new_file.parent:
+            src_path = str(old_file.parent / old_file.name)
+            dest_path = str(new_file.parent / new_file.name)
+        else:
+            src_path = old_file.name
+            dest_path = new_file.name
+
+        logger.info(f"{action} '{src_path}' -> '{dest_path}'")
 
         if not dry_run:  # move only if dry run is false
             new_file.parent.mkdir(parents=True, exist_ok=True)  # ensure folder exists
