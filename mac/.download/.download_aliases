@@ -9,8 +9,10 @@ export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 # export YTDLP_OUTPUT_DIRECTORY="$HOME/videos"
 
 # udown options
+export UDOWN_DIR="$HOME/.udown"
 # DOWNLOADER_TYPE=""
 # DOWNLOAD_OP="AND"
+
 if command -v register-python-argcomplete >/dev/null 2>&1; then
     eval "$(register-python-argcomplete --shell zsh udown)"
 fi
