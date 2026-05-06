@@ -16,7 +16,7 @@ download() {
             args[$i]="${args[$i]//\"/\\\"}"
         done
 
-        cmd="udown download \"$args\" -o \"$DOWNLOAD_DIRECTORY\"; bash"
+        cmd="udown download \"$args\" -d \"$DOWNLOAD_DIRECTORY\"; bash"
         echo "[$(date)] Running command: $cmd"
 
         if tmux has-session -t downloads 2>/dev/null; then
