@@ -5,8 +5,8 @@ try:
     import iterm2
 except ImportError:
     print("Warning: python package 'iterm2' is not installed.")
-    iterm2 = None
-    
+    raise SystemExit(0)
+
 import os
 import subprocess
 
