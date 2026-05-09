@@ -176,4 +176,4 @@ smb.conf
 /scripts/tests/videos/*
 /scripts/tests/photos/*
 linux/.network/test_vm.sh
-*/.secret/*
+*/.secret/.secret_aliases*
