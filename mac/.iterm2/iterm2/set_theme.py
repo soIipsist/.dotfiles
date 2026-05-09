@@ -5,7 +5,7 @@ try:
     import iterm2
 except ImportError:
     print("Warning: python package 'iterm2' is not installed.")
-    sys.exit(0)
+    iterm2 = None
     
 import os
 import subprocess
@@ -84,4 +84,6 @@ async def main(connection):
     await set_theme(profile)
 
 
-iterm2.run_until_complete(main)
+if __name__ == "__main__":
+    if iterm2:
+        iterm2.run_until_complete(main)
