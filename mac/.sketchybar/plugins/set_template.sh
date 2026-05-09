@@ -1,25 +1,31 @@
 function set_sketchybar_template() {
-    templates=("$@")
+    templates="$1"
+    COUNTER=0
 
     pkill bottombar
     pkill rightbar
     pkill leftbar
 
     SKETCHYBAR_DIR="$GIT_DOTFILES_DIRECTORY/mac/.sketchybar"
-    sketchybar_config_folders=("sketchybar" "bottombar" "leftbar" "rightbar")
+    sketchybar_config_folders=(sketchybar "bottombar" "leftbar" "rightbar")
     positions=(top bottom left right)
-    COUNTER=1
 
-    for template in "${templates[@]}"; do
-        echo $COUNTER
-        bar_name="${sketchybar_config_folders[$COUNTER]}"
-        position="${positions[$COUNTER]}"
+    for template in $templates; do
 
-        sketchybar_template_path="$SKETCHYBAR_DIR/templates/$template"
         sketchybar_config_folder="$dotfiles_directory/.config/${sketchybar_config_folders[$COUNTER]}"
         sketchybarrc_path="$sketchybar_config_folder/sketchybarrc"
+        sketchybar_template_path="$SKETCHYBAR_DIR/templates/$template"
+        bar_name=$(basename "$sketchybar_config_folder")
+        position="${positions[$COUNTER]}"
+
         mkdir -p "$sketchybar_config_folder"
         echo $'\n'"Setting $bar_name template: $template."
+
+        if [ ! -f "$sketchybar_template_path" ]; then
+            echo "Sketchybar template $sketchybar_template_path does not exist!"
+            COUNTER=$((COUNTER + 1))
+            continue
+        fi
 
         cp -f "$sketchybar_template_path" "$sketchybarrc_path"
         echo "Copied $sketchybar_template_path to $sketchybarrc_path. $dotfiles_directory"
@@ -48,6 +54,7 @@ function set_sketchybar_template() {
         fi
 
         COUNTER=$((COUNTER + 1))
+
     done
 
 }
