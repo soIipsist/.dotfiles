@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-import iterm2
+import sys
+
+try:
+    import iterm2
+except ImportError:
+    print("Warning: python package 'iterm2' is not installed.")
+    sys.exit(0)
+    
 import os
 import subprocess
 
