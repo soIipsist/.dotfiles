@@ -78,9 +78,6 @@ export TERM=xterm-256color
 # tmux
 export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins/"
 
-# pass
-export PASSWORD_STORE_DIR="$HOME/repos/soIipsist/password-store"
-
 # enable zsh's autocompletion system
 autoload -Uz compinit
 compinit -C
@@ -212,9 +209,9 @@ if [ -f ~/.network_aliases ]; then
     . ~/.network_aliases
 fi
 
-# if [ -f ~/.ufw_aliases ]; then
-#     . ~/.ufw_aliases
-# fi
+if [ -f ~/.secret_aliases ]; then
+    . ~/.secret_aliases
+fi
 
 # key bindings
 bindkey '^[[1;2D' backward-word # Shift + Left Arrow

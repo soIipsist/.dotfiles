@@ -125,9 +125,6 @@ export PATH="/Library/TeX/texbin:$PATH"
 export PATH="$HOME/Library/Python/$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')/bin:$PATH"
 export PATH="/Applications/Tailscale.app/Contents/MacOS:$PATH"
 
-# pass
-export PASSWORD_STORE_DIR="$HOME/repos/soIipsist/password-store"
-
 # aliases
 if [ -f ~/.download_aliases ]; then
     . ~/.download_aliases
@@ -151,6 +148,10 @@ fi
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
+fi
+
+if [ -f ~/.secret_aliases ]; then
+    . ~/.secret_aliases
 fi
 
 # Bash completion (Homebrew location on macOS)
