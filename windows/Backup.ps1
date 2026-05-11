@@ -79,12 +79,14 @@ function Start-WindowsBackup {
         if (Test-Path $wslGpg) { $DefaultFolders += $wslGpg }
     }
 
+   
     $folders = if ($BackupFolders.Count -gt 0) {
         $BackupFolders
     } else {
         $DefaultFolders
     }
 
+    Write-Host "Using folders: $folders"
 
     $total = $folders.Count
     $current = 0
