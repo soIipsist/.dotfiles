@@ -3,7 +3,7 @@ function Start-WindowsBackup {
         [string]$BackupPath
     )
 
-    if (-not $BackupPath) {
+    if (-not ($BackupPath)){
         return
     }
 
@@ -46,10 +46,20 @@ function Start-WindowsBackup {
         "/XJ",
         "/COPY:DAT",
         "/DCOPY:T",
+        "/TEE",
         "/LOG:$logFile"
     )
 
-    & robocopy @args
+    # Start Robocopy process
+    $process = Start-Process robocopy -ArgumentList $args -NoNewWindow -PassThru
+
+    # Display indeterminate progress while Robocopy runs
+    while (-not $process.HasExited) {
+        Write-Progress -Activity "Backing up Windows files" -Status "Copying files..." -PercentComplete 50
+        Start-Sleep -Seconds 1
+    }
+
+    Write-Progress -Activity "Backing up Windows files" -Completed
 
     $exitCode = $LASTEXITCODE
 
@@ -61,8 +71,3 @@ function Start-WindowsBackup {
 
     return $destination
 }
-
-<#
-Example usage:
-Start-WindowsBackup -BackupPath "D:\Backups"
-#>
