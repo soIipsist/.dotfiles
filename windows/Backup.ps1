@@ -1,11 +1,8 @@
 function Start-WindowsBackup {
     param(
+        [Parameter(Mandatory = $true)]
         [string]$BackupPath
     )
-
-    if (-not ($BackupPath)){
-        return
-    }
 
     # Validate backup path
     if (-not (Test-Path -Path $BackupPath)) {
@@ -23,51 +20,55 @@ function Start-WindowsBackup {
         return
     }
 
-    # Define source (Windows system drive)
-    $source = "$env:SystemDrive\"
-
     $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-    $destination = Join-Path $BackupPath "WindowsBackup_$timestamp"
+    $destination = Join-Path $BackupPath "UserBackup_$timestamp"
 
     New-Item -ItemType Directory -Path $destination -Force | Out-Null
 
-    Write-Host "Starting backup from $source to $destination"
+    # Export installed applications list
+    $wingetExport = Join-Path $destination "apps.json"
+    winget export -o $wingetExport --accept-source-agreements | Out-Null
 
-    # Use Robocopy for reliability
-    $logFile = Join-Path $destination "backup_log.txt"
-
-    $args = @(
-        $source,
-        $destination,
-        "/MIR",
-        "/Z",
-        "/R:3",
-        "/W:5",
-        "/XJ",
-        "/COPY:DAT",
-        "/DCOPY:T",
-        "/TEE",
-        "/LOG:$logFile"
+    # Folders to back up
+    $folders = @(
+        "$env:USERPROFILE\Desktop",
+        "$env:USERPROFILE\Documents",
+        "$env:USERPROFILE\Downloads",
+        "$env:USERPROFILE\.ssh",
+        "$env:USERPROFILE\.gitconfig",
+        "$env:APPDATA\Code",
+        "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe"
     )
 
-    # Start Robocopy process
-    $process = Start-Process robocopy -ArgumentList $args -NoNewWindow -PassThru
+    $total = $folders.Count
+    $current = 0
 
-    # Display indeterminate progress while Robocopy runs
-    while (-not $process.HasExited) {
-        Write-Progress -Activity "Backing up Windows files" -Status "Copying files..." -PercentComplete 50
-        Start-Sleep -Seconds 1
+    foreach ($folder in $folders) {
+        $current++
+
+        if (-not (Test-Path $folder)) {
+            continue
+        }
+
+        $name = Split-Path $folder -Leaf
+        $target = Join-Path $destination $name
+
+        Write-Progress -Activity "Backing up user files" `
+            -Status "Copying $name" `
+            -PercentComplete (($current / $total) * 100)
+
+        if ((Get-Item $folder) -is [System.IO.DirectoryInfo]) {
+            robocopy $folder $target /E /Z /R:3 /W:5 /XJ /COPY:DAT /DCOPY:T | Out-Null
+        } else {
+            Copy-Item $folder $target -Force
+        }
     }
 
-    Write-Progress -Activity "Backing up Windows files" -Completed
+    Write-Progress -Activity "Backing up user files" -Completed
 
-    $exitCode = $LASTEXITCODE
-
-    if ($exitCode -le 7) {
-        Write-Host "Backup completed successfully with exit code $exitCode"
-    } else {
-        Write-Warning "Backup completed with errors. Exit code: $exitCode (see log: $logFile)"
-    }
+    Write-Host "Backup completed: $destination"
 
     return $destination
 }
+
+ 
