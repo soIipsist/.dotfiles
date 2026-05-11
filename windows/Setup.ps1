@@ -8,6 +8,7 @@ $VariablesPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Variables.ps1"
 $SetupPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Windows-Setup.ps1"
 $ProvidersPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Package-Providers.ps1"
 $PackagesPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Packages.ps1"
+$BackupPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Backup.ps1"
 
 . $HelpersPath
 . $RegistryPath
@@ -16,6 +17,7 @@ $PackagesPath = Join-Path -Path $ScriptRootDirectory -ChildPath "Packages.ps1"
 . $SetupPath
 . $ProvidersPath
 . $PackagesPath
+. $BackupPath
 
 $WindowsDataPath = Join-Path -Path $ScriptRootDirectory -ChildPath "windows.json"
 # $WindowsDataPath = "..\windows\windows_example.json"
@@ -53,6 +55,9 @@ $global:PipPackages = $WindowsData.pip_packages
 
 $global:UninstallPackages = $WindowsData.uninstall_packages
 $global:PackageProviders = $WindowsData.package_providers
+
+# backup
+$global:BackupPath = $WindowsData.backup_path
 
 # power configuration
 $global:DiskTimeoutAC = $WindowsData.disk_timeout_ac
@@ -122,6 +127,7 @@ Set-Windows-Shortcuts -Shortcuts $Shortcuts
 Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
 Remove-Desktop-Shortcuts -RemoveDesktopShortcuts $RemoveDesktopShortcuts
 Remove-Windows-Watermark -RemoveWindowsWatermark $RemoveWindowsWatermark
+Start-WindowsBackup $BackupPath
 
 Write-Host "Setup was completed successfully." -ForegroundColor Green
 Reboot -Reboot $Reboot -RebootTime $RebootTime

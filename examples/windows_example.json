@@ -65,5 +65,6 @@
     "Microsoft.VisualStudioCode"
   ],
   "wsl_packages": ["tmux"],
-  "windows_packages": []
+  "windows_packages": [],
+  "backup_path": "/mnt/e/Backup"
 }

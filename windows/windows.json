@@ -1,5 +1,6 @@
 {
   "dotfiles": [],
   "remove_windows_watermark": true,
-  "uninstall_packages": false
+  "uninstall_packages": false,
+  "backup_path": "Z:/backup"
 }
