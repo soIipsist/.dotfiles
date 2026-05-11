@@ -1,7 +1,10 @@
 function Start-WindowsBackup {
     param(
-        [Parameter(Mandatory = $true)]
-        [string]$BackupPath
+        [string]$BackupPath,
+
+        [string]$OS = "Ubuntu",
+
+        [string]$OS_User = $env:USERNAME
     )
 
     # Validate backup path
@@ -27,18 +30,52 @@ function Start-WindowsBackup {
 
     # Export installed applications list
     $wingetExport = Join-Path $destination "apps.json"
-    winget export -o $wingetExport --accept-source-agreements | Out-Null
 
-    # Folders to back up
-    $folders = @(
+    if (Get-Command winget -ErrorAction SilentlyContinue) {
+        winget export -o $wingetExport --accept-source-agreements | Out-Null
+        Write-Host "Exported installed applications."
+    } else {
+        Write-Warning "winget not found. Skipping app export."
+    }
+
+    $folders = @(       
+
+        # Common user folders
         "$env:USERPROFILE\Desktop",
         "$env:USERPROFILE\Documents",
         "$env:USERPROFILE\Downloads",
+        "$env:USERPROFILE\Pictures",
+        "$env:USERPROFILE\Videos",
+        "$env:USERPROFILE\scoop",
+
+        # SSH / Git
         "$env:USERPROFILE\.ssh",
+        "$env:USERPROFILE\.gpg",
         "$env:USERPROFILE\.gitconfig",
+
+        # VSCode
         "$env:APPDATA\Code",
-        "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe"
+
+        # Windows Terminal
+        "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe",
+
+        # Program Files
+        "$env:ProgramFiles",
+
+        # Program Files x86
+        "${env:ProgramFiles(x86)}",
+
+        # WSL distributions
+        "$env:LOCALAPPDATA\Packages"
     )
+
+    if ($OS_User) {
+        $wslSsh = "\\wsl$\$OS\$OS_User\.ssh"
+        $wslGpg = "\\wsl$\$OS\$OS_User\.gnupg"
+
+        if (Test-Path $wslSsh) { $folders += $wslSsh }
+        if (Test-Path $wslGpg) { $folders += $wslGpg }
+    }
 
     $total = $folders.Count
     $current = 0

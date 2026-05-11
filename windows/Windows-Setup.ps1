@@ -539,5 +539,5 @@ function Remove-Windows-Watermark{
     Write-Host "Setting HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Activation\ActivationInterval value to 0x00000000." -ForegroundColor Yellow
     Write-Host "Setting HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Activation\Manual value to 0x00000001." -ForegroundColor Yellow
     Write-Host "Setting HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Activation\NotificationDisabled value to 0x00000001." -ForegroundColor Yellow
-    Write-Host "Sucessfully removed windows watermark. Restart your machine to see changes." -ForegroundColor Green
+    Write-Host "Successfully removed windows watermark. Restart your machine to see changes." -ForegroundColor Green
 }   
