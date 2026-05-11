@@ -4,7 +4,9 @@ function Start-WindowsBackup {
 
         [string]$OS = "Ubuntu",
 
-        [string]$OS_User = $env:USERNAME
+        [string]$OS_User = $env:USERNAME,
+
+        [array]$BackupFolders = @()
     )
 
     # Validate backup path
@@ -38,7 +40,7 @@ function Start-WindowsBackup {
         Write-Warning "winget not found. Skipping app export."
     }
 
-    $folders = @(       
+    $DefaultFolders = @(       
 
         # Common user folders
         "$env:USERPROFILE\Desktop",
@@ -73,9 +75,16 @@ function Start-WindowsBackup {
         $wslSsh = "\\wsl$\$OS\$OS_User\.ssh"
         $wslGpg = "\\wsl$\$OS\$OS_User\.gnupg"
 
-        if (Test-Path $wslSsh) { $folders += $wslSsh }
-        if (Test-Path $wslGpg) { $folders += $wslGpg }
+        if (Test-Path $wslSsh) { $DefaultFolders += $wslSsh }
+        if (Test-Path $wslGpg) { $DefaultFolders += $wslGpg }
     }
+
+    $folders = if ($BackupFolders.Count -gt 0) {
+        $BackupFolders
+    } else {
+        $DefaultFolders
+    }
+
 
     $total = $folders.Count
     $current = 0

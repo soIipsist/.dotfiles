@@ -19,6 +19,7 @@ Follow these steps to configure your environment:
 
    ```bash
     ./setup.sh <dotfile_folder_1> <dotfile_folder_2>
+   ```
 
 This will automatically configure your environment based on your edits to the configuration file.
 
@@ -73,6 +74,8 @@ These are the valid parameters that can be specified in the `windows.json` file:
 - **`uninstall_packages`**: Whether to uninstall packages (default: `false`).
 - **`reboot`**: Whether to reboot after setup (default: `true`).
 - **`reboot_time`**: System reboot time in seconds (default: `0`).
+- **`backup_path`**: Destination directory for system backup, including key user data folders (Desktop, Documents, Downloads), configuration files (e.g. SSH keys), and selected system/application directories where applicable.
+- **`backup_folders`**: Data backup folders for system backup.
 
 ### Linux (linux.json)
 

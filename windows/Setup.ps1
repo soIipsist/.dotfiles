@@ -58,6 +58,7 @@ $global:PackageProviders = $WindowsData.package_providers
 
 # backup
 $global:BackupPath = $WindowsData.backup_path
+$global:BackupFolders = $WindowsData.backup_folders
 
 # power configuration
 $global:DiskTimeoutAC = $WindowsData.disk_timeout_ac
@@ -127,7 +128,7 @@ Set-Windows-Shortcuts -Shortcuts $Shortcuts
 Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
 Remove-Desktop-Shortcuts -RemoveDesktopShortcuts $RemoveDesktopShortcuts
 Remove-Windows-Watermark -RemoveWindowsWatermark $RemoveWindowsWatermark
-Start-WindowsBackup $BackupPath
+Start-WindowsBackup $BackupPath $BackupFolders
 
 Write-Host "Setup was completed successfully." -ForegroundColor Green
 Reboot -Reboot $Reboot -RebootTime $RebootTime
