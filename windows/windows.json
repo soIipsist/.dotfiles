@@ -2,5 +2,6 @@
   "dotfiles": [],
   "remove_windows_watermark": true,
   "uninstall_packages": false,
-  "backup_path": "Z:/backup"
+  "backup_path": "Z:/backup",
+  "backup_folders": ["\\\\wsl$\\Ubuntu\\home\\p\\.gnupg"]
 }

@@ -80,5 +80,5 @@
   "wsl_packages": ["tmux", "htop"],
   "windows_packages": [],
   "backup_path": "/mnt/e/Backup",
-  "backup_folders": ["\\\\wsl$\\Ubuntu\\p\\.gnupg"]
+  "backup_folders": ["\\\\wsl$\\Ubuntu\\home\\p\\.gnupg"]
 }
