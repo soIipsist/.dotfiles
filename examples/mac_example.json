@@ -3,7 +3,20 @@
   "local_hostname": "solipsist",
   "computer_name": "solipsist",
   "brewfile_path": "",
-  "dotfiles": [".zsh"],
+  "install_homebrew": true,
+  "brew_packages": [
+    "sketchybar"
+  ],
+  "brew_cask_packages": [
+    "discord",
+    "signal",
+    "iterm2",
+    "mullvadvpn",
+    "aerospace",
+    "brave-browser",
+    "ollama"
+  ],
+  "dotfiles": "all",
   "pip_packages": [
     "yt-dlp",
     "git+https://github.com/soIipsist/adb-wrapper@main",
@@ -18,6 +31,6 @@
   "git_username": "soIipsist",
   "git_email": "",
   "default_shell": "zsh",
-  "wallpaper_path": "/Users/p/Desktop/test/wallpaper.jpg",
+  "wallpaper_path": "/Users/p/repos/.dotfiles/wallpapers/diane.jpg",
   "scripts_directory": "/Users/p/Desktop/scripts"
 }
