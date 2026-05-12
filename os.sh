@@ -27,29 +27,51 @@ get_default_shell_path() {
 install_homebrew() {
 
   if [ -z "$1" ] || [ "$1" = false ]; then
-    return
+    return 0
   fi
+
   shell_path=$(get_default_shell_path)
 
   if command -v brew &>/dev/null; then
     echo "Homebrew is already installed."
   else
     echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
 
-  # Ensure Homebrew's path is added to the shell profile if not already present
-  if ! grep -q 'export PATH="/opt/homebrew/bin' "$shell_path"; then
-    echo 'export PATH="/opt/homebrew/bin:$PATH"' >>"$shell_path"
-  fi
-
+  # Detect OS
   os=$(get_os)
-  if [ "$os" == "linux" ]; then
-    if ! grep -q 'brew shellenv' "$shell_path"; then
-      echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >>"$shell_path"
+
+  # Set brew shellenv path dynamically
+  if [ "$os" = "macos" ]; then
+    # Apple Silicon vs Intel
+    if [ -x /opt/homebrew/bin/brew ]; then
+      BREW_PREFIX="/opt/homebrew"
+    else
+      BREW_PREFIX="/usr/local"
     fi
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+    if ! grep -q "brew shellenv" "$shell_path"; then
+      echo "eval \"\$(${BREW_PREFIX}/bin/brew shellenv)\"" >>"$shell_path"
+    fi
+
+    eval "$(${BREW_PREFIX}/bin/brew shellenv)"
+
+  elif [ "$os" = "linux" ]; then
+    BREW_PREFIX="/home/linuxbrew/.linuxbrew"
+
+    if ! grep -q "brew shellenv" "$shell_path"; then
+      echo "eval \"\$(${BREW_PREFIX}/bin/brew shellenv)\"" >>"$shell_path"
+    fi
+
+    eval "$(${BREW_PREFIX}/bin/brew shellenv)"
   fi
+
+  if command -v brew >/dev/null 2>&1; then
+   exec "$SHELL"
+   eval "$(brew shellenv)"
+  fi
+  brew update
 }
 
 set_default_shell() {

@@ -12,9 +12,10 @@
     "signal",
     "iterm2",
     "mullvadvpn",
-    "aerospace",
     "brave-browser",
-    "ollama"
+    "ollama",
+    "visual-studio-code", 
+    "nikitabobko/tap/aerospace"
   ],
   "dotfiles": "all",
   "pip_packages": [
@@ -25,7 +26,7 @@
     "urllib3",
     "beautifulsoup4"
   ],
-  "venv_path": "",
+  "venv_path": "/Users/p/venv",
   "git_home": "/Users/p",
   "git_repos": [],
   "git_username": "soIipsist",
