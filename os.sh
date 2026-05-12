@@ -66,11 +66,7 @@ install_homebrew() {
 
     eval "$(${BREW_PREFIX}/bin/brew shellenv)"
   fi
-
-  if command -v brew >/dev/null 2>&1; then
-   exec "$SHELL"
-   eval "$(brew shellenv)"
-  fi
+  
   brew update
 }
 
