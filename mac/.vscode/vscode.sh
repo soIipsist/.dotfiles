@@ -3,8 +3,11 @@ source "../json.sh"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 extensions_path="$SCRIPT_DIR/vscode/extensions.json"
 
-extensions=$(get_json_value "recommendations" $extensions_path "")
-extensions=""
+extensions=$(get_json_value "recommendations.extensions" $extensions_path "")
+
+if ! command -v code &>/dev/null; then
+    export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+fi
 
 for extension in $extensions; do
     code --install-extension "$extension" --force >&2
