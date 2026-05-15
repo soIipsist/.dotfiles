@@ -24,6 +24,35 @@ get_default_shell_path() {
   esac
 }
 
+install_envsubst() {
+    if command -v envsubst &>/dev/null; then
+        return 0
+    fi
+
+    echo "envsubst not found. Installing gettext..."
+
+    if ! command -v brew &>/dev/null; then
+        echo "Homebrew is required but not installed."
+        return 1
+    fi
+
+    brew install gettext
+
+    # Add gettext to PATH for current session
+    if [ -d "/opt/homebrew/opt/gettext/bin" ]; then
+        export PATH="/opt/homebrew/opt/gettext/bin:$PATH"
+    elif [ -d "/usr/local/opt/gettext/bin" ]; then
+        export PATH="/usr/local/opt/gettext/bin:$PATH"
+    fi
+
+    if ! command -v envsubst &>/dev/null; then
+        echo "Failed to install envsubst."
+        return 1
+    fi
+
+    echo "envsubst installed successfully."
+}
+
 install_homebrew() {
 
   if [ -z "$1" ] || [ "$1" = false ]; then

@@ -1,4 +1,4 @@
 {
-  "install_homebrew": true,
+  "dotfiles": "all",
   "scripts_directory": "/Users/p/Desktop/scripts"
 }

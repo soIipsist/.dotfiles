@@ -48,6 +48,7 @@ dotfiles_scripts_dir="$SCRIPT_DIR/scripts"
 ORIGINAL_SCRIPT_DIR="$SCRIPT_DIR"
 
 install_homebrew "$install_homebrew_flag"
+install_envsubst
 install_from_brewfile "$brewfile_path"
 install_brew_packages "$brew_packages" "$brew_cask_packages"
 set_hostname "$hostname"
