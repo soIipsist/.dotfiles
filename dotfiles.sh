@@ -1,9 +1,5 @@
 get_dotfile_folders() {
-  if [ -z "$1" ]; then
-    dotfile_folders=$(ls -d .* | grep -v '^\.\.$' | grep -v '^\.$')
-  else
-    dotfile_folders=$1
-  fi
+  dotfile_folders=$(ls -d .* | grep -v '^\.\.$' | grep -v '^\.$')
   echo $dotfile_folders
 }
 
@@ -23,6 +19,10 @@ install_dotfiles() {
 
   original_dest="$dotfiles_directory"
 
+  if [ "$dotfile_folders" = "all" ]; then 
+    dotfile_folders=$(get_dotfile_folders)
+  fi
+  
   for folder in $dotfile_folders; do
 
     # Collect .sh scripts

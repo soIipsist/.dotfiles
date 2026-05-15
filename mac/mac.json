@@ -1,5 +1,6 @@
 {
-  "install_homebrew": true,
-  "install_vscode_extensions": true,
+  "dotfiles": "all",
+  "install_homebrew": false,
+  "install_vscode_extensions": false,
   "scripts_directory": "/Users/p/Desktop/scripts"
 }
