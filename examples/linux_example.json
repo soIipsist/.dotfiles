@@ -23,6 +23,7 @@
     "ripgrep",
     "bat"
   ],
+  "install_vscode_extensions": false,
   "pip_packages": ["yt-dlp"],
   "dotfiles": [],
   "wallpaper_path": "",

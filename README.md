@@ -99,6 +99,7 @@ The following parameters are valid for the `linux.json` file:
 - **`scripts_directory`**: If provided, all scripts located in `.dotfiles/scripts` will be copied to this directory.
 - **`install_homebrew`**: Install homebrew to your machine (default: `false`).
 - **`install_zoxide`**: Install zoxide (default: `false`).
+- **`install_vscode_extensions`**: Installs VS Code extensions (default: `false`).
 
 ### macOS (mac.json)
 
@@ -108,6 +109,7 @@ These parameters can be specified in the `mac.json` file:
 - **`local_hostname`**: `LocalHostName` of your PC.
 - **`computer_name`**: `ComputerName`.
 - **`install_homebrew`**: Install homebrew to your machine (default: `false`).
+- **`install_vscode_extensions`**: Installs VS Code extensions (default: `false`).
 - **`brewfile_path`**: Path to the `brewfile` for installing `brew` packages (default: `mac/Brewfile`).
 - **`brew_packages`**: List of `brew` packages to install.
 - **`brew_cask_packages`**: List of `brew` cask packages to install.
