@@ -18,14 +18,11 @@
     "iterm2",
     "mullvadvpn",
     "brave-browser",
-    "ollama",
-    "visual-studio-code",
-    "nikitabobko/tap/aerospace"
+    "ollama"
   ],
-  "dotfiles": "all",
+  "dotfiles": [".aerospace", ".bash", ".zsh", ".sketchybar", ".themes", ".vscode", ".iterm2", ".tmux"],
   "pip_packages": [
     "yt-dlp",
-    "git+https://github.com/soIipsist/adb-wrapper@main",
     "iterm2",
     "requests",
     "urllib3",
@@ -37,6 +34,7 @@
   "git_username": "soIipsist",
   "git_email": "",
   "default_shell": "zsh",
+  "theme": "diane",
   "wallpaper_path": "/Users/p/repos/.dotfiles/wallpapers/diane.jpg",
   "scripts_directory": "/Users/p/Desktop/scripts"
 }
