@@ -1,9 +1,9 @@
 {
   "install_homebrew": false,
-  "install_zoxide": false, 
+  "install_zoxide": false,
   "install_vscode_extensions": false,
   "scripts_directory": "/Users/p/Desktop/scripts",
   "clear_dock": false,
-  "clear_dock_others": false
-
+  "clear_dock_others": false,
+  "theme": "diane"
 }

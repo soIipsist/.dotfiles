@@ -49,7 +49,7 @@ function set_theme() {
   fi
 
   source "$GIT_DOTFILES_DIRECTORY/os.sh"
-  source "$GIT_DOTFILES_DIRECTORY/mac/wallpaper.sh"
+  source "$GIT_DOTFILES_DIRECTORY/mac/defaults.sh"
   source "$GIT_DOTFILES_DIRECTORY/mac/.aerospace/aerospace/set_aerospace.sh"
   source "$GIT_DOTFILES_DIRECTORY/mac/.vscode/vscode/set_vscode_settings.sh"
   source "$GIT_DOTFILES_DIRECTORY/mac/.iterm2/iterm2/set_iterm2.sh"

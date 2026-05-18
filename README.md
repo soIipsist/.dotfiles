@@ -129,7 +129,7 @@ These parameters can be specified in the `mac.json` file:
 - **`scripts`**: List of scripts to be executed in the dotfile subdirectories. If not specified, all scripts will be executed.
 - **`excluded_scripts`**: The scripts specified will not be executed.
 - **`scripts_directory`**: If provided, all scripts located in `.dotfiles/scripts` will be copied to this directory.
-- **`theme`**: You can change the default theme based on your preferences. A `theme.json` file can be used to specify personalized color values. (default: `.themes/main.json`)
+- **`theme`**: You can change the default theme based on your preferences. A `theme.json` file can be used to specify personalized color values.
 
 ### Examples
 
