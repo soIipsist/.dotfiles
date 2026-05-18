@@ -54,49 +54,54 @@ install_envsubst() {
 }
 
 install_homebrew() {
+    if [ -z "$1" ] || [ "$1" = "false" ]; then
+        return 0
+    fi
 
-  if [ -z "$1" ] || [ "$1" = false ]; then
-    return 0
-  fi
+    local shell_rc
+    local brew_bin
+    local brew_prefix
 
-  shell_path=$(get_default_shell_path)
+    shell_rc="$(get_default_shell_path)"
 
-  if command -v brew &>/dev/null; then
-    echo "Homebrew is already installed."
-  else
-    echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  fi
+    # install brew if missing
+    if ! command -v brew >/dev/null 2>&1; then
+        echo "Installing Homebrew..."
 
-  # Detect OS
-  os=$(get_os)
+        NONINTERACTIVE=1 /bin/bash -c \
+            "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
 
-  # Set brew shellenv path dynamically
-  if [ "$os" = "macos" ]; then
-    # Apple Silicon vs Intel
-    if [ -x /opt/homebrew/bin/brew ]; then
-      BREW_PREFIX="/opt/homebrew"
+    # detect brew
+    if [ -x "/opt/homebrew/bin/brew" ]; then
+        brew_bin="/opt/homebrew/bin/brew"
+        brew_prefix="/opt/homebrew"
+
+    elif [ -x "/usr/local/bin/brew" ]; then
+        brew_bin="/usr/local/bin/brew"
+        brew_prefix="/usr/local"
+
+    elif [ -x "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+        brew_bin="/home/linuxbrew/.linuxbrew/bin/brew"
+        brew_prefix="/home/linuxbrew/.linuxbrew"
+
     else
-      BREW_PREFIX="/usr/local"
+        echo "brew not found after install"
+        return 1
     fi
 
-    if ! grep -q "brew shellenv" "$shell_path"; then
-      echo "eval \"\$(${BREW_PREFIX}/bin/brew shellenv)\"" >>"$shell_path"
+    export PATH="$brew_prefix/bin:$brew_prefix/sbin:$PATH"
+
+    if ! grep -q 'brew shellenv' "$shell_rc" 2>/dev/null; then
+        echo "eval \"\$($brew_bin shellenv)\"" >> "$shell_rc"
     fi
 
-    eval "$(${BREW_PREFIX}/bin/brew shellenv)"
+    hash -r
 
-  elif [ "$os" = "linux" ]; then
-    BREW_PREFIX="/home/linuxbrew/.linuxbrew"
+    echo "brew available at:"
+    which brew
 
-    if ! grep -q "brew shellenv" "$shell_path"; then
-      echo "eval \"\$(${BREW_PREFIX}/bin/brew shellenv)\"" >>"$shell_path"
-    fi
-
-    eval "$(${BREW_PREFIX}/bin/brew shellenv)"
-  fi
-  
-  brew update
+    brew update
 }
 
 set_default_shell() {
