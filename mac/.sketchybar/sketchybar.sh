@@ -6,7 +6,8 @@ install_sketchybar(){
     brew tap FelixKratz/formulae
     brew install sketchybar
     brew services start sketchybar
-
+    brew install font-sketchybar-app-font
+    brew install --cask font-fira-code-nerd-font
 }
 
 install_sketchybar

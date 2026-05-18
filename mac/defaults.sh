@@ -50,3 +50,4 @@ set_wallpaper() {
     echo "Set wallpaper to: $wallpaper_path"
 
 }
+

@@ -57,7 +57,12 @@ function set_theme() {
   source "$dotfiles_directory/.config/sketchybar/plugins/set_template.sh"
 
   # get theme.json path
-  theme_path="$dotfiles_directory/.config/themes/$THEME.json"
+  if [[ "$THEME" == *.json ]]; then
+    theme_path="$dotfiles_directory/.config/themes/$THEME"
+  else
+    theme_path="$dotfiles_directory/.config/themes/$THEME.json"
+  fi
+
   export_theme "$theme_path"
 
   # set wallpaper
@@ -82,5 +87,5 @@ function set_theme() {
   set_tmux_env
 
   echo "Theme was changed to $THEME."
-  echo "DOTFILES $dotfiles_directory $GIT_DOTFILES_DIRECTORY"
+  # echo "DOTFILES: $dotfiles_directory $GIT_DOTFILES_DIRECTORY"
 }
