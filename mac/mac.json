@@ -3,7 +3,7 @@
   "install_zoxide": false, 
   "install_vscode_extensions": false,
   "scripts_directory": "/Users/p/Desktop/scripts",
-  "clear_dock": true,
-  "clear_dock_others": true
+  "clear_dock": false,
+  "clear_dock_others": false
 
 }
