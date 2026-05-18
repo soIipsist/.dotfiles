@@ -1,11 +1,4 @@
 {
-  "install_homebrew": false,
-  "install_zoxide": false,
-  "install_vscode_extensions": false,
   "scripts_directory": "/Users/p/Desktop/scripts",
-  "clear_dock": false,
-  "clear_dock_others": false,
-  "autohide_dock": false,
-  "hide_top_bar": true,
-  "enable_sudo_touch_id": true
+  "theme": "eclipse.json"
 }

@@ -11,14 +11,14 @@ import os
 import subprocess
 
 
-def get_env_vars():
-    shell = os.environ.get("SHELL", "/bin/bash")  # Get the current shell
-    result = subprocess.run([shell, "-c", "env"], capture_output=True, text=True)
-    env_vars = {}
-    for line in result.stdout.splitlines():
-        key, _, value = line.partition("=")
-        env_vars[key] = value
-    return env_vars
+# def get_env_vars():
+#     shell = os.environ.get("SHELL", "/bin/bash")  # Get the current shell
+#     result = subprocess.run([shell, "-c", "env"], capture_output=True, text=True)
+#     env_vars = {}
+#     for line in result.stdout.splitlines():
+#         key, _, value = line.partition("=")
+#         env_vars[key] = value
+#     return env_vars
 
 
 async def hex_to_rgb(hex_color: str):
@@ -63,7 +63,7 @@ async def set_theme(profile: iterm2.Profile):
 
     for key, func in iterm2_vars.items():
         # check if environment variable exists
-        env_vars = get_env_vars()
+        env_vars = dict(os.environ)
         iterm_value = env_vars.get(key, None)
 
         if iterm_value:
