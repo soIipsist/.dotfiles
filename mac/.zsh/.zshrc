@@ -7,7 +7,9 @@ if [ -z "$dotfiles_directory" ]; then
 fi
 
 source $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source "$dotfiles_directory/.config/themes/theme.sh"
+
+THEMES_PATH="$dotfiles_directory/.config/themes/theme.sh"
+[ -f "$THEMES_PATH" ] && source "$THEMES_PATH"
 
 function repeat-last-command() {
     BUFFER=$(fc -ln -1)

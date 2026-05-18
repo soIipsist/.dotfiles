@@ -4,6 +4,8 @@
   "computer_name": "solipsist",
   "brewfile_path": "",
   "install_homebrew": true,
+  "install_zoxide": true,
+  "install_vscode_extensions": false,
   "brew_packages": ["sketchybar"],
   "brew_cask_packages": [
     "discord",
@@ -30,7 +32,6 @@
   "git_username": "soIipsist",
   "git_email": "",
   "default_shell": "zsh",
-  "install_vscode_extensions": false,
   "wallpaper_path": "/Users/p/repos/.dotfiles/wallpapers/diane.jpg",
   "scripts_directory": "/Users/p/Desktop/scripts"
 }

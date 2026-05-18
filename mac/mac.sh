@@ -5,19 +5,11 @@ source "../dotfiles.sh"
 source "../git.sh"
 source "wallpaper.sh"
 source "set_theme.sh"
-
-install_from_brewfile() {
-    brewfile_path="$1"
-
-    if [ -z $brewfile_path ]; then
-        return
-    fi
-
-    brew bundle --file $brewfile_path
-}
+source "defaults.sh"
 
 dotfile_args=("$@")
 
+clear_dock_flag=$(get_json_value "clear_dock")
 git_username=$(get_json_value "git_username")
 git_email=$(get_json_value "git_email")
 hostname=$(get_json_value "hostname")
@@ -47,6 +39,8 @@ fi
 
 dotfiles_scripts_dir="$SCRIPT_DIR/scripts"
 ORIGINAL_SCRIPT_DIR="$SCRIPT_DIR"
+
+clear_dock "$clear_dock_flag"
 
 install_homebrew "$install_homebrew_flag"
 install_zoxide "$install_zoxide_flag"
