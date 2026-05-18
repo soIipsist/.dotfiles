@@ -8,6 +8,7 @@
   "install_vscode_extensions": true,
   "clear_dock": true,
   "clear_dock_others": true,
+  "autohide_dock": true,
   "brew_packages": ["sketchybar"],
   "brew_cask_packages": [
     "discord",

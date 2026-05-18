@@ -34,6 +34,15 @@ clear_dock_others() {
     echo "Dock right side cleared."
 }
 
+autohide_dock(){
+    if [ -z "$1" ] || [ "$1" = "false" ]; then
+        return 0
+    fi
+    
+    defaults write com.apple.dock autohide -bool true
+    killall Dock
+}
+
 set_wallpaper() {
 
     wallpaper_path="$1"

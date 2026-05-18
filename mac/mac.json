@@ -5,5 +5,6 @@
   "scripts_directory": "/Users/p/Desktop/scripts",
   "clear_dock": false,
   "clear_dock_others": false,
-  "theme": "eclipse.json"
+  "theme": "eclipse.json",
+  "autohide_dock": true
 }
