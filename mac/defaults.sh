@@ -22,7 +22,17 @@ echo "Dock apps removed."
 
 }
 
+clear_dock_others() {
+    if [ -z "$1" ] || [ "$1" = "false" ]; then
+        return 0
+    fi
 
+    defaults write com.apple.dock persistent-others -array
+    defaults write com.apple.dock show-recents -bool false
+    killall Dock
+
+    echo "Dock right side cleared."
+}
 
 set_wallpaper() {
 

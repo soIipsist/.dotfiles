@@ -7,6 +7,7 @@
   "install_zoxide": true,
   "install_vscode_extensions": true,
   "clear_dock": true,
+  "clear_dock_others": true,
   "brew_packages": ["sketchybar"],
   "brew_cask_packages": [
     "discord",
