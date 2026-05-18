@@ -1,3 +1,15 @@
+install_sketchybar(){
+    if command -v sketchybar &>/dev/null; then
+        return 0
+    fi
+
+    brew tap FelixKratz/formulae
+    brew install sketchybar
+    brew services start sketchybar
+
+}
+
+install_sketchybar
 # copy plugins to /sketchybar/plugins
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source_plugins_directory="$SCRIPT_DIR/plugins"
