@@ -5,7 +5,8 @@
   "brewfile_path": "",
   "install_homebrew": true,
   "install_zoxide": true,
-  "install_vscode_extensions": false,
+  "install_vscode_extensions": true,
+  "clear_dock": true,
   "brew_packages": ["sketchybar"],
   "brew_cask_packages": [
     "discord",

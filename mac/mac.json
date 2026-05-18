@@ -1,6 +1,7 @@
 {
-  "install_homebrew": true,
-  "install_zoxide": true, 
-  "install_vscode_extensions": true,
-  "scripts_directory": "/Users/p/Desktop/scripts"
+  "install_homebrew": false,
+  "install_zoxide": false, 
+  "install_vscode_extensions": false,
+  "scripts_directory": "/Users/p/Desktop/scripts",
+  "clear_dock": true
 }

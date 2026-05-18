@@ -10,6 +10,10 @@ install_from_brewfile() {
 
 clear_dock(){
 
+if [ -z "$1" ] || [ "$1" = "false" ]; then
+        return 0
+fi
+
 defaults write com.apple.dock persistent-apps -array
 defaults write com.apple.dock show-recents -bool false
 killall Dock
@@ -17,6 +21,8 @@ killall Dock
 echo "Dock apps removed."
 
 }
+
+
 
 set_wallpaper() {
 

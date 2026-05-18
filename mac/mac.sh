@@ -3,7 +3,6 @@ source "../json.sh"
 source "../os.sh"
 source "../dotfiles.sh"
 source "../git.sh"
-source "wallpaper.sh"
 source "set_theme.sh"
 source "defaults.sh"
 
