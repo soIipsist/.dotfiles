@@ -1,5 +1,6 @@
 {
   "install_homebrew": true,
+  "install_zoxide": true, 
   "install_vscode_extensions": true,
   "scripts_directory": "/Users/p/Desktop/scripts"
 }

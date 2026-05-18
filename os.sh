@@ -53,6 +53,34 @@ install_envsubst() {
     echo "envsubst installed successfully."
 }
 
+install_zoxide() {
+    if [ -z "$1" ] || [ "$1" = false ]; then
+        return
+    fi
+
+    local os=$(get_os)
+
+    if [ "$os" == "mac" ]; then
+      if ! command -v brew &>/dev/null; then
+        echo "Homebrew is required but not installed."
+        return 1
+      fi
+      
+      brew install zoxide
+      return
+    fi 
+
+    curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+
+    shell_path=$(get_default_shell_path)
+
+    if ! grep -q 'eval "$(zoxide init bash)"' "$shell_path"; then
+        echo 'eval "$(zoxide init bash)"' >>"$shell_path"
+    fi
+
+    sudo mv ~/.local/bin/zoxide /usr/local/bin/
+}
+
 install_homebrew() {
     if [ -z "$1" ] || [ "$1" = "false" ]; then
         return 0

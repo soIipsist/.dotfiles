@@ -37,6 +37,7 @@ brewfile_path=$(get_json_value "brewfile_path")
 theme=$(get_json_value "theme") # main color preset used my default
 wallpaper_path=$(replace_root "$(get_json_value "wallpaper_path")" "$GIT_DOTFILES_DIRECTORY")
 install_homebrew_flag=$(get_json_value "install_homebrew")
+install_zoxide_flag=$(get_json_value "install_zoxide")
 brew_packages=$(get_json_value "brew_packages")
 brew_cask_packages=$(get_json_value "brew_cask_packages")
 
@@ -48,6 +49,7 @@ dotfiles_scripts_dir="$SCRIPT_DIR/scripts"
 ORIGINAL_SCRIPT_DIR="$SCRIPT_DIR"
 
 install_homebrew "$install_homebrew_flag"
+install_zoxide "$install_zoxide_flag"
 install_envsubst
 install_from_brewfile "$brewfile_path"
 install_brew_packages "$brew_packages" "$brew_cask_packages"

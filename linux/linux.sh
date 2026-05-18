@@ -42,21 +42,6 @@ set_lockscreen_and_wallpaper() {
     fi
 }
 
-install_zoxide() {
-    if [ -z "$1" ] || [ "$1" = false ]; then
-        return
-    fi
-
-    curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-
-    shell_path=$(get_default_shell_path)
-
-    if ! grep -q 'eval "$(zoxide init bash)"' "$shell_path"; then
-        echo 'eval "$(zoxide init bash)"' >>"$shell_path"
-    fi
-
-    sudo mv ~/.local/bin/zoxide /usr/local/bin/
-}
 
 dotfile_args=("$@")
 
