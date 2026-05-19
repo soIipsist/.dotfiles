@@ -8,6 +8,7 @@ source "defaults.sh"
 
 dotfile_args=("$@")
 
+backup_path=$(get_json_value "backup_path")
 clear_dock_flag=$(get_json_value "clear_dock")
 clear_dock_others_flag=$(get_json_value "clear_dock_others")
 autohide_dock_flag=$(get_json_value "autohide_dock")
@@ -65,3 +66,4 @@ set_wallpaper "$wallpaper_path"
 set_venv_path "$venv_path"
 install_pip_packages "$venv_path" "${pip_packages[@]}"
 set_theme "$theme"
+perform_backup "$backup_path"

@@ -70,3 +70,25 @@ set_wallpaper() {
 
 }
 
+perform_backup() {
+    local backup_path="$1"
+
+    if [[ -z "$backup_path" ]]; then
+        return 1
+    fi
+
+    echo "Setting Time Machine destination: $backup_path"
+
+    if ! sudo tmutil setdestination "$backup_path"; then
+        echo "Failed to set Time Machine destination."
+        return 1
+    fi
+
+    if ! tmutil destinationinfo | grep -q "Name"; then
+        echo "No valid Time Machine destination detected."
+        return 1
+    fi
+
+    echo "Starting Time Machine backup..."
+    sudo tmutil startbackup --auto
+}

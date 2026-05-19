@@ -6,6 +6,5 @@
   "clear_dock": false,
   "clear_dock_others": false,
   "autohide_dock": true,
-  "hide_top_bar": true,
-  "wallpaper_path": "/Users/p/.dotfiles/wallpapers/Arch Space.jpg"
+  "hide_top_bar": true
 }
