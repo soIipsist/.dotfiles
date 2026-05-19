@@ -51,7 +51,8 @@ hide_top_bar(){
     fi
 
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    osascript "$SCRIPT_DIR/mac/hide_top_bar.scpt" "$1"
+    osascript "$SCRIPT_DIR/hide_top_bar.scpt" "$1"
+    echo "Top bar visibility set to: $1."
 }
 
 set_wallpaper() {
@@ -62,11 +63,9 @@ set_wallpaper() {
         return
     fi
 
-    if [ -z "$GIT_DOTFILES_DIRECTORY" ]; then
-        GIT_DOTFILES_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    fi
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-    osascript "$GIT_DOTFILES_DIRECTORY/mac/wallpaper.scpt" $wallpaper_path
+    osascript "$SCRIPT_DIR/wallpaper.scpt" $wallpaper_path
     echo "Set wallpaper to: $wallpaper_path"
 
 }
