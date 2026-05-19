@@ -120,6 +120,8 @@ These parameters can be specified in the `mac.json` file:
 - **`clear_dock_others`**: Removes all right side apps from dock (folders, stacks, spacers) (default: `false`).
 - **`autohide_dock`**: Hides dock (default: `false`).
 - **`hide_top_bar`**: Hides top menu bar (default: `false`).
+- **`time`**: Set system time (in %H:%M:%S format)
+- **`timezone`**: Set system timezone
 - **`git_home`**: Default `git` home path.
 - **`git_repos`**: List of git repositories to clone.
 - **`git_email`**: Global `git` email.

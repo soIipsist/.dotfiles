@@ -129,3 +129,42 @@ enable_sudo_touch_id() {
 
     echo "Touch ID for sudo enabled."
 }
+
+
+set_time() {
+    local input_time="$1"
+
+    if [[ -z "$input_time" ]]; then
+        return 1
+    fi
+
+    local current_date
+    current_date=$(date "+%m%d")
+
+    local current_year
+    current_year=$(date "+%Y")
+
+    local formatted
+    formatted=$(date -j -f "%H:%M:%S" \
+        "$input_time" "+%H%M%Y.%S")
+
+    if [[ -z "$formatted" ]]; then
+        echo "Invalid time format"
+        return 1
+    fi
+
+    echo "Setting system time to: $input_time"
+    sudo systemsetup -setusingnetworktime off
+
+    sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.timed.plist
+    sudo defaults write /Library/Preferences/com.apple.timezone.auto Active -bool false
+
+    sudo killall timed
+    sudo date "${current_date}${formatted}"
+}
+
+set_timezone(){
+
+    sudo systemsetup -settimezone "GMT+2"
+    sudo sntp -sS time.apple.com
+}

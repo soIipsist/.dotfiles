@@ -8,6 +8,8 @@ source "defaults.sh"
 
 dotfile_args=("$@")
 
+time=$(get_json_value "time")
+timezone=$(get_json_value "timezone")
 backup_path=$(get_json_value "backup_path")
 clear_dock_flag=$(get_json_value "clear_dock")
 clear_dock_others_flag=$(get_json_value "clear_dock_others")
@@ -48,6 +50,7 @@ clear_dock "$clear_dock_flag"
 clear_dock_others "$clear_dock_others_flag"
 autohide_dock "$autohide_dock_flag"
 hide_top_bar "$hide_top_bar_flag"
+set_time "$time"
 enable_sudo_touch_id "$enable_sudo_flag"
 install_homebrew "$install_homebrew_flag"
 install_zoxide "$install_zoxide_flag"

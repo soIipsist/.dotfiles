@@ -12,6 +12,8 @@
   "autohide_dock": true,
   "hide_top_bar": true,
   "brew_packages": ["sketchybar"],
+  "time": "",
+  "timezone": "Europe/Athens",
   "brew_cask_packages": [
     "discord",
     "signal",
@@ -20,14 +22,17 @@
     "brave-browser",
     "ollama"
   ],
-  "dotfiles": [".aerospace", ".bash", ".zsh", ".sketchybar", ".themes", ".vscode", ".iterm2", ".tmux"],
-  "pip_packages": [
-    "yt-dlp",
-    "iterm2",
-    "requests",
-    "urllib3",
-    "beautifulsoup4"
+  "dotfiles": [
+    ".aerospace",
+    ".bash",
+    ".zsh",
+    ".sketchybar",
+    ".themes",
+    ".vscode",
+    ".iterm2",
+    ".tmux"
   ],
+  "pip_packages": ["yt-dlp", "iterm2", "requests", "urllib3", "beautifulsoup4"],
   "venv_path": "/Users/p/venv",
   "git_home": "/Users/p",
   "git_repos": [],
