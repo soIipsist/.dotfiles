@@ -1,5 +1,15 @@
 source "../json.sh"
 
+install_vscode(){
+
+    if command -v code &>/dev/null; then
+        return 0
+    fi
+    brew install --cask visual-studio-code
+
+}
+
+install_vscode
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 extensions_path="$SCRIPT_DIR/vscode/extensions.json"
 
