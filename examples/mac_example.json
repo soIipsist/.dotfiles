@@ -13,7 +13,7 @@
   "hide_top_bar": true,
   "time": "",
   "timezone": "Europe/Athens",
-  "brew_packages": ["sketchybar"],
+  "brew_packages": ["sketchybar", "rsync"],
   "brew_cask_packages": [
     "discord",
     "signal",
@@ -46,7 +46,11 @@
   ],
   "venv_path": "/Users/p/venv",
   "git_home": "/Users/p/repos/soIipsist",
-  "git_repos": [],
+  "git_repos": [
+    "git@github.com:soIipsist/test.git",
+    "git@github.com:soIipsist/goals.git",
+    "git@github.com:soIipsist/udown.git"
+  ],
   "git_username": "soIipsist",
   "git_email": "solipsist14@gmail.com",
   "theme": "diane",

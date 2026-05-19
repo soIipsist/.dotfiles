@@ -47,7 +47,7 @@ install_envsubst() {
 
     if ! command -v envsubst &>/dev/null; then
         echo "Failed to install envsubst."
-        return 1
+        return
     fi
 
     echo "envsubst installed successfully."
@@ -63,7 +63,7 @@ install_zoxide() {
     if [ "$os" == "mac" ]; then
       if ! command -v brew &>/dev/null; then
         echo "Homebrew is required but not installed."
-        return 1
+        return
       fi
       
       brew install zoxide
@@ -175,7 +175,7 @@ set_hostname() {
     sudo hostnamectl set-hostname "$hostname"
   else
     echo "Unsupported OS: $os"
-    return 1
+    return
   fi
 }
 

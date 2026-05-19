@@ -1,8 +1,9 @@
 {
   "scripts_directory": "/Users/p/Desktop/scripts",
   "dotfiles": [],
-  "install_homebrew": true,
-  "install_zoxide": true,
-  "timezone": "Europe/Athens",
-  "theme": "eclipse.json"
+  "git_repos": [
+    "git@github.com:soIipsist/test.git",
+    "git@github.com:soIipsist/goals.git"
+  ],
+  "git_home": "/Users/p/repos/soIipsist"
 }
