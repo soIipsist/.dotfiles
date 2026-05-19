@@ -165,6 +165,10 @@ set_time() {
 
 set_timezone(){
 
-    sudo systemsetup -settimezone "GMT+2"
+    if [[ -z "$1" ]]; then
+        return 1
+    fi
+
+    sudo systemsetup -settimezone "$1"
     sudo sntp -sS time.apple.com
 }

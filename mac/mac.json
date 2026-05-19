@@ -3,7 +3,6 @@
   "dotfiles": [],
   "install_homebrew": true,
   "install_zoxide": true,
-  "time": "11:05:00",
   "timezone": "Europe/Athens",
   "theme": "eclipse.json"
 }
