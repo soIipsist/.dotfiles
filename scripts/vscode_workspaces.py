@@ -9,7 +9,7 @@ import sys
 workspace_directory = os.environ.get("VSCODE_WORKSPACE_DIRECTORY")
 
 if not workspace_directory or not os.path.exists(workspace_directory):
-    workspace_directory = os.path.join(os.getcwd(), ".workspaces")
+    workspace_directory = os.path.join(os.path.expanduser("~"), ".workspaces")
     print(
         f"Default workspace directory was not found! Using fallback directory: {workspace_directory}"
     )

@@ -11,7 +11,7 @@ install_from_brewfile() {
 clear_dock(){
 
 if [ -z "$1" ] || [ "$1" = "false" ]; then
-        return 0
+        return
 fi
 
 defaults write com.apple.dock persistent-apps -array
@@ -24,7 +24,7 @@ echo "Dock apps removed."
 
 clear_dock_others() {
     if [ -z "$1" ] || [ "$1" = "false" ]; then
-        return 0
+        return
     fi
 
     defaults write com.apple.dock persistent-others -array
@@ -36,7 +36,7 @@ clear_dock_others() {
 
 autohide_dock(){
     if [ -z "$1" ] || [ "$1" = "false" ]; then
-        return 0
+        return
     fi
 
     defaults write com.apple.dock autohide -bool true
@@ -47,7 +47,7 @@ autohide_dock(){
 
 hide_top_bar(){
     if [ -z "$1" ]; then
-        return 0
+        return
     fi
 
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -74,19 +74,19 @@ perform_backup() {
     local backup_path="$1"
 
     if [[ -z "$backup_path" ]]; then
-        return 1
+        return
     fi
 
     echo "Setting Time Machine destination: $backup_path"
 
     if ! sudo tmutil setdestination "$backup_path"; then
         echo "Failed to set Time Machine destination."
-        return 1
+        return
     fi
 
     if ! tmutil destinationinfo | grep -q "Name"; then
         echo "No valid Time Machine destination detected."
-        return 1
+        return
     fi
 
     echo "Starting Time Machine backup..."
@@ -96,7 +96,7 @@ perform_backup() {
 enable_sudo_touch_id() {
     
     if [ -z "$1" ] || [ "$1" = "false" ]; then
-        return 0
+        return
     fi
 
     local file="/etc/pam.d/sudo"
@@ -111,7 +111,7 @@ enable_sudo_touch_id() {
         echo "Homebrew is not installed."
         echo "Install it from:"
         echo "https://brew.sh"
-        return 1
+        return
     fi
 
     sudo cp "$file" "$backup"
@@ -119,7 +119,7 @@ enable_sudo_touch_id() {
 
     if sudo grep -q "pam_tid.so" "$file"; then
         echo "Touch ID for sudo is already enabled."
-        return 0
+        return
     fi
 
     sudo awk -v line="$line" '

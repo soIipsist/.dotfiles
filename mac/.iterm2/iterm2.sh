@@ -7,6 +7,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # diff <(sed 's/;$/,/; s/ = /=/' iterm.txt) <(sed 's/;$/,/; s/ = /=/' iterm2.txt)
 
+command -v python3 >/dev/null || brew install python
+defaults write com.googlecode.iterm2 EnablePythonApi -bool true
+killall iTerm2 2>/dev/null || true
+
 source "$dotfiles_directory/.config/themes/theme.sh"
 # activate venv
 source "$GIT_DOTFILES_DIRECTORY/venv/bin/activate"
