@@ -4,6 +4,7 @@ install_aerospace(){
     fi
 
     brew install --cask nikitabobko/tap/aerospace
+    open -a AeroSpace
     echo "aerospace installed successfully."
 }
 
