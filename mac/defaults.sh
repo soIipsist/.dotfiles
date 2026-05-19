@@ -65,7 +65,7 @@ set_wallpaper() {
 
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-    osascript "$SCRIPT_DIR/wallpaper.scpt" $wallpaper_path
+    osascript "$SCRIPT_DIR/wallpaper.scpt" "$wallpaper_path"
     echo "Set wallpaper to: $wallpaper_path"
 
 }
