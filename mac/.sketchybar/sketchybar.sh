@@ -8,6 +8,7 @@ install_sketchybar(){
     brew services start sketchybar
     brew install font-sketchybar-app-font
     brew install --cask font-fira-code-nerd-font
+    brew install --cask sf-symbols
 }
 
 install_sketchybar

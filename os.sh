@@ -119,7 +119,8 @@ install_homebrew() {
     fi
 
     export PATH="$brew_prefix/bin:$brew_prefix/sbin:$PATH"
-
+    eval "$($brew_bin shellenv)"
+    
     if ! grep -q 'brew shellenv' "$shell_rc" 2>/dev/null; then
         echo "eval \"\$($brew_bin shellenv)\"" >> "$shell_rc"
     fi

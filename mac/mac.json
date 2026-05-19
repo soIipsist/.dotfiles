@@ -1,4 +1,7 @@
 {
   "scripts_directory": "/Users/p/Desktop/scripts",
+  "dotfiles": [],
+  "install_homebrew": true,
+  "install_zoxide": true,
   "theme": "eclipse.json"
 }

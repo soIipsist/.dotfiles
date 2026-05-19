@@ -37,7 +37,7 @@ install_zoxide_flag=$(get_json_value "install_zoxide")
 brew_packages=$(get_json_value "brew_packages")
 brew_cask_packages=$(get_json_value "brew_cask_packages")
 
-if [ -n "$dotfile_args" ]; then
+if [ ${#dotfile_args[@]} -gt 0 ]; then
     dotfiles="${dotfile_args[@]}"
 fi
 
