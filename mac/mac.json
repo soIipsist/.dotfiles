@@ -6,5 +6,6 @@
   "clear_dock": false,
   "clear_dock_others": false,
   "theme": "eclipse.json",
-  "autohide_dock": true
+  "autohide_dock": true,
+  "hide_top_bar": false
 }

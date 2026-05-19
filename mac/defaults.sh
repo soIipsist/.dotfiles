@@ -38,9 +38,20 @@ autohide_dock(){
     if [ -z "$1" ] || [ "$1" = "false" ]; then
         return 0
     fi
-    
+
     defaults write com.apple.dock autohide -bool true
     killall Dock
+
+    echo "Autohide dock enabled."
+}
+
+hide_top_bar(){
+    if [ -z "$1" ]; then
+        return 0
+    fi
+
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    osascript "$SCRIPT_DIR/mac/hide_top_bar.scpt" "$1"
 }
 
 set_wallpaper() {

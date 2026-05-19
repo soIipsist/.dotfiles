@@ -11,6 +11,7 @@ dotfile_args=("$@")
 clear_dock_flag=$(get_json_value "clear_dock")
 clear_dock_others_flag=$(get_json_value "clear_dock_others")
 autohide_dock_flag=$(get_json_value "autohide_dock")
+hide_top_bar_flag=$(get_json_value "hide_top_bar")
 git_username=$(get_json_value "git_username")
 git_email=$(get_json_value "git_email")
 hostname=$(get_json_value "hostname")
@@ -44,6 +45,7 @@ ORIGINAL_SCRIPT_DIR="$SCRIPT_DIR"
 clear_dock "$clear_dock_flag"
 clear_dock_others "$clear_dock_others_flag"
 autohide_dock "$autohide_dock_flag"
+hide_top_bar "$hide_top_bar_flag"
 install_homebrew "$install_homebrew_flag"
 install_zoxide "$install_zoxide_flag"
 install_envsubst

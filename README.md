@@ -118,6 +118,8 @@ These parameters can be specified in the `mac.json` file:
 - **`venv_path`**: If set, a virtual environment is created automatically, and all pip packages are installed within it.
 - **`clear_dock`**: Removes macOS apps from dock (default: `false`).
 - **`clear_dock_others`**: Removes all right side apps from dock (folders, stacks, spacers) (default: `false`).
+- **`autohide_dock`**: Hides dock (default: `false`).
+- **`hide_top_bar`**: Hides top menu bar (default: `false`).
 - **`git_home`**: Default `git` home path.
 - **`git_repos`**: List of git repositories to clone.
 - **`git_email`**: Global `git` email.
