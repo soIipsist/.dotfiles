@@ -5,6 +5,7 @@
   "scripts_directory": "/Users/p/Desktop/scripts",
   "clear_dock": false,
   "clear_dock_others": false,
-  "autohide_dock": true,
-  "hide_top_bar": true
+  "autohide_dock": false,
+  "hide_top_bar": true,
+  "enable_sudo_touch_id": true
 }

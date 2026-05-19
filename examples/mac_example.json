@@ -8,6 +8,7 @@
   "install_vscode_extensions": true,
   "clear_dock": true,
   "clear_dock_others": true,
+  "enable_sudo_touch_id": true,
   "autohide_dock": true,
   "hide_top_bar": true,
   "brew_packages": ["sketchybar"],

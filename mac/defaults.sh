@@ -92,3 +92,40 @@ perform_backup() {
     echo "Starting Time Machine backup..."
     sudo tmutil startbackup --auto
 }
+
+enable_sudo_touch_id() {
+    
+    if [ -z "$1" ] || [ "$1" = "false" ]; then
+        return 0
+    fi
+
+    local file="/etc/pam.d/sudo"
+    local line="auth       sufficient     pam_tid.so"
+    local backup="/etc/pam.d/sudo.bak"
+
+    echo "Installing tmux compatibility packages..."
+
+    if command -v brew >/dev/null 2>&1; then
+        brew install pam-reattach
+    else
+        echo "Homebrew is not installed."
+        echo "Install it from:"
+        echo "https://brew.sh"
+        return 1
+    fi
+
+    sudo cp "$file" "$backup"
+    echo "Backup created at $backup"
+
+    if sudo grep -q "pam_tid.so" "$file"; then
+        echo "Touch ID for sudo is already enabled."
+        return 0
+    fi
+
+    sudo awk -v line="$line" '
+        NR==1 {print line}
+        {print}
+    ' "$file" | sudo tee "$file" > /dev/null
+
+    echo "Touch ID for sudo enabled."
+}
