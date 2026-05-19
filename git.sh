@@ -24,12 +24,13 @@ clone_git_repos() {
   fi
 
   if [ -z "$git_home" ]; then
-    git_home=$HOME
+    git_home="$HOME"
   fi
 
-  cd $git_home
+  mkdir -p "$git_home" || return 1
+  cd "$git_home" || return 1
 
   for repo in $git_repos; do
-    git clone $repo
+    git clone "$repo"
   done
 }

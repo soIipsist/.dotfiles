@@ -26,14 +26,14 @@ get_default_shell_path() {
 
 install_envsubst() {
     if command -v envsubst &>/dev/null; then
-        return 0
+        return
     fi
 
     echo "envsubst not found. Installing gettext..."
 
     if ! command -v brew &>/dev/null; then
         echo "Homebrew is required but not installed."
-        return 1
+        return
     fi
 
     brew install gettext
@@ -83,7 +83,7 @@ install_zoxide() {
 
 install_homebrew() {
     if [ -z "$1" ] || [ "$1" = "false" ]; then
-        return 0
+        return
     fi
 
     local shell_rc
@@ -115,7 +115,7 @@ install_homebrew() {
 
     else
         echo "brew not found after install"
-        return 1
+        return
     fi
 
     export PATH="$brew_prefix/bin:$brew_prefix/sbin:$PATH"
