@@ -1,9 +1,4 @@
 {
   "scripts_directory": "/Users/p/Desktop/scripts",
-  "dotfiles": [],
-  "git_repos": [
-    "git@github.com:soIipsist/test.git",
-    "git@github.com:soIipsist/goals.git"
-  ],
-  "git_home": "/Users/p/repos/soIipsist"
+  "dotfiles": []
 }

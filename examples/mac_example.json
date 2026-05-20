@@ -13,14 +13,13 @@
   "hide_top_bar": true,
   "time": "",
   "timezone": "Europe/Athens",
-  "brew_packages": ["sketchybar", "rsync"],
+  "brew_packages": ["sketchybar", "rsync", "bat", "ripgrep"],
   "brew_cask_packages": [
     "discord",
     "signal",
     "iterm2",
     "mullvadvpn",
-    "brave-browser",
-    "ollama"
+    "brave-browser"
   ],
   "dotfiles": [
     ".aerospace",

@@ -176,6 +176,22 @@ if.app-id = 'com.googlecode.iterm2'
 run = ['move-node-to-workspace 1']
 
 [[on-window-detected]]
+if.app-id = 'com.apple.SecurityAgent'
+run = ['move-node-to-workspace 1']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = ['move-node-to-workspace 1']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.Preferences'
+run = ['move-node-to-workspace 1']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.loginwindow'
+run = ['move-node-to-workspace 1']
+
+[[on-window-detected]]
 if.app-id = 'com.microsoft.VSCode'
 run = ['move-node-to-workspace 2']
 
