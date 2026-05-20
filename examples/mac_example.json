@@ -16,6 +16,7 @@
   "brew_packages": ["sketchybar", "rsync", "bat", "ripgrep"],
   "brew_cask_packages": [
     "discord",
+    "docker",
     "signal",
     "iterm2",
     "mullvadvpn",
