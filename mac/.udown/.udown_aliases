@@ -1,0 +1,21 @@
+export UDOWN_DIR="$HOME/.udown"
+# DOWNLOADER_TYPE=""
+# DOWNLOAD_OP="AND"
+
+if command -v register-python-argcomplete >/dev/null 2>&1; then
+    eval "$(register-python-argcomplete --shell zsh udown)"
+fi
+
+ytdlp_mp3() {
+    if [[ $# -lt 1 ]]; then
+        return 0
+    fi
+    udown -t ytdlp_audio "$@" --ui 0
+}
+
+ytdlp_mp4() {
+    if [[ $# -lt 1 ]]; then
+        return 0
+    fi
+    udown -t ytdlp_video "$@" --ui 0
+}

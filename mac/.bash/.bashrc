@@ -130,6 +130,10 @@ if [ -f ~/.download_aliases ]; then
     . ~/.download_aliases
 fi
 
+if [ -f ~/.udown_aliases ]; then
+    . ~/.udown_aliases
+fi
+
 if [ -f ~/.rsync_aliases ]; then
     . ~/.rsync_aliases
 fi

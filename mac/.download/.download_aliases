@@ -8,37 +8,18 @@ export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 # export YTDLP_AUDIO_DIRECTORY="$HOME/mnt/ssd/Music"
 # export YTDLP_OUTPUT_DIRECTORY="$HOME/videos"
 
-# udown options
-export UDOWN_DIR="$HOME/.udown"
-# DOWNLOADER_TYPE=""
-# DOWNLOAD_OP="AND"
-
-if command -v register-python-argcomplete >/dev/null 2>&1; then
-    eval "$(register-python-argcomplete --shell zsh udown)"
-fi
 export VENV_PATH="$HOME/venv"
 
-if [ ! -e "$YTDLP_PATH" ]; then
-    echo "Cloning yt-dlp..."
-    mkdir -p "$(dirname "$YTDLP_PATH")"
-    release_name=$(basename $YTDLP_PATH)
-    curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/$release_name -o "$YTDLP_PATH"
-    chmod a+rx "$YTDLP_PATH"
-fi
-
-ytdlp_mp3() {
-    if [[ $# -lt 1 ]]; then
-        return 0
+clone_ytdlp(){
+    if [ ! -e "$YTDLP_PATH" ]; then
+        echo "Cloning yt-dlp..."
+        mkdir -p "$(dirname "$YTDLP_PATH")"
+        release_name=$(basename $YTDLP_PATH)
+        curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/$release_name -o "$YTDLP_PATH"
+        chmod a+rx "$YTDLP_PATH"
     fi
-    udown -t ytdlp_audio "$@" --ui 0
 }
 
-ytdlp_mp4() {
-    if [[ $# -lt 1 ]]; then
-        return 0
-    fi
-    udown -t ytdlp_video "$@" --ui 0
-}
 
 get_codec() {
     if [ ! -f "$1" ]; then

@@ -188,6 +188,10 @@ if [ -f ~/.download_aliases ]; then
     . ~/.download_aliases
 fi
 
+if [ -f ~/.udown_aliases ]; then
+    . ~/.udown_aliases
+fi
+
 if [ -f ~/.llm_aliases ]; then
     . ~/.llm_aliases
 fi
