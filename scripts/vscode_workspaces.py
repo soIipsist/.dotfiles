@@ -89,7 +89,11 @@ def delete_workspace(workspace_path: str, **args):
 
 
 def list_workspaces(**args):
-    workspaces = os.listdir(workspace_directory)
+    workspaces = [
+        workspace
+        for workspace in os.listdir(workspace_directory)
+        if ".code-workspace" in workspace
+    ]
     pprint(workspaces)
 
 
