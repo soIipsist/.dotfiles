@@ -6,12 +6,13 @@ import subprocess
 import sys
 
 # default workspace variables
-workspace_directory = os.environ.get("VSCODE_WORKSPACE_DIRECTORY")
+workspace_directory = os.environ.get(
+    "VSCODE_WORKSPACE_DIRECTORY", os.path.join(os.path.expanduser("~"), ".workspaces")
+)
 
-if not workspace_directory or not os.path.exists(workspace_directory):
-    workspace_directory = os.path.join(os.path.expanduser("~"), ".workspaces")
+if not os.path.exists(workspace_directory):
     print(
-        f"Default workspace directory was not found! Using fallback directory: {workspace_directory}"
+        f"Default workspace directory was not found! Creating fallback directory: {workspace_directory}"
     )
     os.makedirs(workspace_directory, exist_ok=True)
 
