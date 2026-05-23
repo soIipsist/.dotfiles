@@ -10,5 +10,4 @@ install_ytdlp(){
     fi
 }
 
-
 install_ytdlp
