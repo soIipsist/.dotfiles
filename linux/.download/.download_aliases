@@ -10,7 +10,6 @@ export FFMPEG_OPTS="-protocol_whitelist file,http,https,tcp,tls"
 
 export VENV_PATH="$HOME/venv"
 
-
 get_codec() {
     if [ ! -f "$1" ]; then
         echo "File not found: $1" >&2
