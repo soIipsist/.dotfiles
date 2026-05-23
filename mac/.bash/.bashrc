@@ -120,6 +120,7 @@ run_in_tmux_session() {
 # Add Homebrew and custom tools to PATH
 export PATH="/opt/homebrew/bin:/usr/local/bin:$HOME/platform-tools:$PATH"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export PATH="/Library/TeX/texbin:$PATH"
 export PATH="$HOME/Library/Python/$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')/bin:$PATH"

@@ -94,6 +94,7 @@ function run_in_tmux_session() {
 # PATH variable
 # base system + homebrew
 PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+PATH="$HOME/.local/bin:$PATH"
 
 # brew packages
 PATH="/opt/homebrew/opt/sqlite/bin:$PATH"
