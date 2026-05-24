@@ -15,6 +15,8 @@ install_tmux() {
 }
 
 install_tmux
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 # replace environment variables and copy
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 themes_path="$dotfiles_directory/.config/themes/theme.sh"
