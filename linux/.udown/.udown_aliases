@@ -1,0 +1,19 @@
+# DOWNLOADER_TYPE=""
+# DOWNLOAD_OP="AND"
+
+# udown argcomplete
+[ -f "$HOME/.udown_argcomplete" ] && source "$HOME/.udown_argcomplete"
+
+ytdlp_mp3() {
+    if [[ $# -lt 1 ]]; then
+        return 0
+    fi
+    udown -t ytdlp_audio "$@" --ui 0
+}
+
+ytdlp_mp4() {
+    if [[ $# -lt 1 ]]; then
+        return 0
+    fi
+    udown -t ytdlp_video "$@" --ui 0
+}
