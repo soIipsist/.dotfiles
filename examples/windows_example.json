@@ -7,9 +7,9 @@
   "dotfiles": "all",
   "shortcuts": [
     {
-      "description": "Launch SQLite",
+      "description": "Launch Steam",
       "hotkey": "Ctrl+SHIFT+S",
-      "target_path": "C:/Program Files/DB Browser for SQLite/DB Browser for SQLite.exe"
+      "target_path": "C:/Program Files (x86)/Steam/steam.exe"
     },
     {
       "description": "Launch Word",
@@ -71,7 +71,6 @@
   "pip_packages": [],
   "winget_packages": [
     "Microsoft.PowerToys",
-    "Microsoft.WindowsTerminal",
     "Microsoft.VisualStudioCode",
     "Docker.DockerDesktop",
     "Valve.Steam",
