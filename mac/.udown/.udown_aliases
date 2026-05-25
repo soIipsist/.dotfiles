@@ -1,10 +1,8 @@
-export UDOWN_DIR="$HOME/.udown"
 # DOWNLOADER_TYPE=""
 # DOWNLOAD_OP="AND"
 
-if command -v register-python-argcomplete >/dev/null 2>&1; then
-    eval "$(register-python-argcomplete --shell zsh udown)"
-fi
+# udown argcomplete
+[ -f "$HOME/.udown_argcomplete" ] && source "$HOME/.udown_argcomplete"
 
 ytdlp_mp3() {
     if [[ $# -lt 1 ]]; then

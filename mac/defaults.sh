@@ -151,7 +151,7 @@ enable_sudo_touch_id() {
     } > "$tmp"
 
     sudo mv "$tmp" "$file"
-
+    defaults write com.apple.security.authorization ignoreArd -bool TRUE
     echo "Touch ID + pam-reattach enabled for sudo."
 }
 
