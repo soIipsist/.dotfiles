@@ -94,14 +94,18 @@ perform_backup() {
 }
 
 enable_sudo_touch_id() {
-    
+
     if [ -z "$1" ] || [ "$1" = "false" ]; then
         return
     fi
 
     local file="/etc/pam.d/sudo"
-    local line="auth       sufficient     pam_tid.so"
     local backup="/etc/pam.d/sudo.bak"
+    local tmp
+    tmp=$(mktemp)
+
+    local pam_reattach_line="auth       optional       /opt/homebrew/lib/pam/pam_reattach.so"
+    local pam_tid_line="auth       sufficient     pam_tid.so"
 
     echo "Installing tmux compatibility packages..."
 
@@ -117,17 +121,38 @@ enable_sudo_touch_id() {
     sudo cp "$file" "$backup"
     echo "Backup created at $backup"
 
+    local has_tid=false
+    local has_reattach=false
+
     if sudo grep -q "pam_tid.so" "$file"; then
-        echo "Touch ID for sudo is already enabled."
+        has_tid=true
+    fi
+
+    if sudo grep -q "pam_reattach.so" "$file"; then
+        has_reattach=true
+    fi
+
+    if $has_tid && $has_reattach; then
+        echo "Touch ID + pam-reattach already enabled."
+        rm -f "$tmp"
         return
     fi
 
-    sudo awk -v line="$line" '
-        NR==1 {print line}
-        {print}
-    ' "$file" | sudo tee "$file" > /dev/null
+    {
+        if ! $has_reattach; then
+            echo "$pam_reattach_line"
+        fi
 
-    echo "Touch ID for sudo enabled."
+        if ! $has_tid; then
+            echo "$pam_tid_line"
+        fi
+
+        cat "$file"
+    } > "$tmp"
+
+    sudo mv "$tmp" "$file"
+
+    echo "Touch ID + pam-reattach enabled for sudo."
 }
 
 
