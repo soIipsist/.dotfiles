@@ -1,5 +1,6 @@
 {
   "dotfiles": [".bash"],
+  "scripts_directory": "$HOME/scripts",
   "apt_packages": [],
   "install_homebrew": false,
   "install_zoxide": false
