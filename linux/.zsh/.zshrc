@@ -55,6 +55,7 @@ PATH="/usr/local/ffmpeg/bin:$PATH"
 PATH="$HOME/.local/bin:$PATH"
 
 export PATH
+export VENV_PATH="$HOME/venv"
 
 if command -v go >/dev/null 2>&1; then
     export GOBIN="$(go env GOPATH)/bin"

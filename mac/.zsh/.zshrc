@@ -111,6 +111,8 @@ PATH="$HOME/Library/Python/$PY_VER/bin:$PATH"
 # apps
 PATH="/Applications/Tailscale.app/Contents/MacOS:$PATH"
 export PATH
+export VENV_PATH="$HOME/venv"
+
 
 # history
 export HISTFILE="$HOME/.zsh_history"
