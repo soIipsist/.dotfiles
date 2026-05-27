@@ -3,10 +3,6 @@
 download() {
     {
         echo "[$(date)] Starting download for args: $*"
-
-        if [ -n "$VENV_PATH" ]; then
-            source $VENV_PATH/bin/activate
-        fi
         echo "TERM=$TERM" >>"$LOG_FILE"
 
         # start a new tmux session or attach to already existing
@@ -28,10 +24,6 @@ download() {
 
         echo "[$(date)] Completed download: $args" >>"$LOG_FILE"
 
-        # Deactivate the virtual environment properly
-        if [ -n "$VIRTUAL_ENV" ]; then
-            deactivate
-        fi
     } >>"$LOG_FILE" 2>>"$ERR_FILE"
 }
 
