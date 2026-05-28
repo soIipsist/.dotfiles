@@ -9,8 +9,8 @@ function Start-WindowsBackup {
         return
     }
 
-    $OS = "Ubuntu",
-    $OS_User = $env:USERNAME,
+    $OS = "Ubuntu"
+    $OS_User = $env:USERNAME
 
     if (-not (Test-Path -Path $BackupPath)) {
         Write-Warning "Backup path does not exist or is not accessible: $BackupPath"
