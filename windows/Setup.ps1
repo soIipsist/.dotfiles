@@ -60,6 +60,9 @@ $global:PackageProviders = $WindowsData.package_providers
 $global:BackupPath = $WindowsData.backup_path
 $global:BackupFolders = $WindowsData.backup_folders
 
+# debloat windows
+$global:DebloatWindows = $WindowsData.debloat_windows
+
 # power configuration
 $global:DiskTimeoutAC = $WindowsData.disk_timeout_ac
 $global:DiskTimeoutDC = $WindowsData.disk_timeout_dc
