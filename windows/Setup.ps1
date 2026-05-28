@@ -129,7 +129,7 @@ Set-Environment-Variables -EnvironmentVariables $EnvironmentVariables
 Remove-Desktop-Shortcuts -RemoveDesktopShortcuts $RemoveDesktopShortcuts
 Remove-Windows-Watermark -RemoveWindowsWatermark $RemoveWindowsWatermark
 Start-WindowsBackup $BackupPath -BackupFolders $BackupFolders
-
+Debloat-Windows -DebloatWindows $DebloatWindows
 Write-Host "Setup was completed successfully." -ForegroundColor Green
 Reboot -Reboot $Reboot -RebootTime $RebootTime
 

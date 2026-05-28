@@ -518,6 +518,44 @@ function Set-Windows-Timezone {
     Get-TimeZone
 }
 
+function Debloat-Windows {
+    param(
+        [bool]$DebloatWindows = $false
+    )
+
+    if (-not $DebloatWindows) {
+        return
+    }
+
+    $TempDir = Join-Path $env:TEMP "Win11Debloat"
+    $ZipPath = Join-Path $env:TEMP "Win11Debloat.zip"
+
+    Remove-Item $TempDir -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item $ZipPath -Force -ErrorAction SilentlyContinue
+
+    New-Item -ItemType Directory -Force -Path $TempDir | Out-Null
+
+    $Release = Invoke-RestMethod `
+        "https://api.github.com/repos/Raphire/Win11Debloat/releases/latest"
+
+    Invoke-WebRequest `
+        -Uri $Release.zipball_url `
+        -OutFile $ZipPath
+
+    Expand-Archive `
+        -Path $ZipPath `
+        -DestinationPath $TempDir `
+        -Force
+
+    $ExtractedFolder = Get-ChildItem $TempDir -Directory | Select-Object -First 1
+
+    $ScriptPath = Join-Path `
+        $ExtractedFolder.FullName `
+        "Win11Debloat.ps1"
+
+    & $ScriptPath
+}
+
 function Remove-Windows-Watermark{
     param(
         $RemoveWindowsWatermark = $false

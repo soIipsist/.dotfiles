@@ -76,6 +76,7 @@ These are the valid parameters that can be specified in the `windows.json` file:
 - **`reboot_time`**: System reboot time in seconds (default: `0`).
 - **`backup_path`**: Destination directory for system backup, including key user data folders (Desktop, Documents, Downloads), configuration files (e.g. SSH keys), and selected system/application directories where applicable.
 - **`backup_folders`**: Data backup folders for system backup.
+- **`debloat_windows`**: Debloats Windows with [Win11Debloater](https://github.com/Raphire/Win11Debloat)
 
 ### Linux (linux.json)
 
@@ -120,7 +121,7 @@ These parameters can be specified in the `mac.json` file:
 - **`clear_dock_others`**: Removes all right side apps from dock (folders, stacks, spacers) (default: `false`).
 - **`autohide_dock`**: Hides dock (default: `false`).
 - **`hide_top_bar`**: Hides top menu bar (default: `false`).
-- **`enable_sudo_touch_id`** : Set up Touch ID to authenticate with the sudo command  (default: `false`).
+- **`enable_sudo_touch_id`** : Set up Touch ID to authenticate with the sudo command (default: `false`).
 - **`time`**: Set system time (in %H:%M:%S format)
 - **`timezone`**: Set system timezone
 - **`git_home`**: Default `git` home path.
