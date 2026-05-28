@@ -520,7 +520,7 @@ function Set-Windows-Timezone {
 
 function Debloat-Windows {
     param(
-        [bool]$DebloatWindows = $false
+        $DebloatWindows = $false
     )
 
     if (-not $DebloatWindows) {

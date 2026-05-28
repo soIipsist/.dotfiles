@@ -5,7 +5,7 @@ function Start-WindowsBackup {
         [array]$BackupFolders = @()
     )
 
-    if (-not (Test-Path -Path $BackupPath)) {
+    if (-not $BackupPath) {
         return
     }
 
