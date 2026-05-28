@@ -2,23 +2,15 @@ function Start-WindowsBackup {
     param(
         [string]$BackupPath,
 
-        [string]$OS = "Ubuntu",
-
-        [string]$OS_User = $env:USERNAME,
-
         [array]$BackupFolders = @()
     )
 
-    # Validate backup path
     if (-not (Test-Path -Path $BackupPath)) {
-        try {
-            New-Item -ItemType Directory -Path $BackupPath -Force | Out-Null
-            Write-Host "Created backup directory: $BackupPath"
-        } catch {
-            Write-Warning "Backup path is invalid and could not be created: $BackupPath"
-            return
-        }
+        return
     }
+
+    $OS = "Ubuntu",
+    $OS_User = $env:USERNAME,
 
     if (-not (Test-Path -Path $BackupPath)) {
         Write-Warning "Backup path does not exist or is not accessible: $BackupPath"
