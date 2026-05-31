@@ -50,7 +50,7 @@
   "fonts_directory": "/windows/fonts",
   "timezone": "Syria Standard Time",
   "git_username": "soIipsist",
-  "git_email": "",
+  "git_email": "solipsist14@gmail.com",
   "long_date": "dddd, d MMMM, yyyy",
   "package_providers": "all",
   "uninstall_packages": false,
@@ -65,13 +65,13 @@
     "launchbox",
     "logioptionsplus",
     "signal",
-    "discord"
+    "discord",
+    "tailscale"
   ],
   "scoop_packages": ["main/adb", "aircrack-ng"],
   "pip_packages": [],
   "winget_packages": [
     "Microsoft.PowerToys",
-    "Microsoft.VisualStudioCode",
     "Docker.DockerDesktop",
     "Valve.Steam",
     "EpicGames.EpicGamesLauncher"
