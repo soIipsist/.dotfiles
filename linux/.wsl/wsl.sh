@@ -1,5 +1,5 @@
 if [[ -n "$WSL_DISTRO_NAME" ]]; then
-    echo "copying in WSL"
+    echo "Copying in WSL..."
 else
     skip_dotfiles=true
     return 0

@@ -42,12 +42,6 @@ PATH="/usr/local/bin:$PATH"
 PATH="/home/linuxbrew/.linuxbrew/opt/sqlite/bin:$PATH"
 PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 
-# Other tools
-PATH="/home/linuxbrew/.linuxbrew/opt/python@3.13/bin:$PATH"
-PATH="/opt/homebrew/bin:$PATH"
-PATH="/opt/homebrew/sbin:$PATH"
-PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
-
 # Custom installs
 PATH="/usr/local/ffmpeg/bin:$PATH"
 
