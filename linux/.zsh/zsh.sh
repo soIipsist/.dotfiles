@@ -1,3 +1,8 @@
+if [[ -n "$WSL_DISTRO_NAME" ]]; then # don't copy if in wsl
+    echo "Inside wsl."
+    return 0
+fi
+
 destination_directory="$dotfiles_directory"
 
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions

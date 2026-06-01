@@ -1,3 +1,9 @@
+if [[ -n "$WSL_DISTRO_NAME" ]]; then # don't copy if in wsl
+    echo "Inside wsl."
+    destination_directory=""
+    return 0
+fi
+
 destination_directory="$dotfiles_directory"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
