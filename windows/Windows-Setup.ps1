@@ -28,59 +28,7 @@ function Set-Product-Key {
     }
 }
 
-function Set-Environment-Variables {
-    param (
-        $EnvironmentVariables
-    )
 
-    if ($null -eq $EnvironmentVariables) {
-        return
-    }
-
-    $ht = @{}
-    $EnvironmentVariables.psobject.properties | ForEach-Object { $ht[$_.Name] = $_.Value }
-    $EnvironmentVariables = $ht
-
-    # Enable delayed expansion in the script
-    $env:EnableDelayedExpansion = $true
-
-    Write-Host "Setting environment variables..." -ForegroundColor Yellow
-    
-    if ($EnvironmentVariables -and $EnvironmentVariables.Count -gt 0) {
-        
-        foreach ($key in $EnvironmentVariables.Keys) {
-            $pathString = $EnvironmentVariables[$key]
-
-            if ($pathString -and $pathString.Count -gt 0 -and $pathString -is [string]) {
-                $match = [regex]::Matches($pathString, "%$key%")
-                
-               if ($match.Count -gt 0) {
-                    $existingValue = [System.Environment]::GetEnvironmentVariable($key, [System.EnvironmentVariableTarget]::Machine)
-                    
-                    
-                    if ($existingValue) {
-                        Write-Host "EXISTING VALUE: $($match.Value)" -ForegroundColor Green
-                        $pathString = $pathString.Replace($match.Value, $existingValue)                    
-                    }
-                }
-
-                Write-Host "Setting $key : $pathString" -ForegroundColor Green
-                
-                try {
-                    [System.Environment]::SetEnvironmentVariable($key, $pathString, [System.EnvironmentVariableTarget]::Machine)
-    
-                }
-                catch {
-                    Write-Host "Error setting environment variable!" -ForegroundColor Red
-                }
-                
-            }else{
-                Write-Host "Invalid format for path string: $pathString."
-            }
-        }
-    }
-   
-}
 
 function Set-Windows-Shortcuts {
     param(

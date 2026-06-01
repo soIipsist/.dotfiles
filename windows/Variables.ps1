@@ -19,6 +19,69 @@ function Get-Default-Values-From-Json {
     return $WindowsData
 }
 
+function Set-Environment-Variables {
+    param (
+        $EnvironmentVariables
+    )
+
+    if ($null -eq $EnvironmentVariables) {
+        return
+    }
+
+    $ht = @{}
+    $EnvironmentVariables.psobject.properties | ForEach-Object { $ht[$_.Name] = $_.Value }
+    $EnvironmentVariables = $ht
+
+    Write-Host "Setting environment variables..." -ForegroundColor Yellow
+
+    foreach ($key in $EnvironmentVariables.Keys) {
+
+        $pathString = $EnvironmentVariables[$key]
+
+        if ($pathString -and $pathString -is [string]) {
+
+            $pathString = $pathString -replace '/', '\'
+
+            $parts = $pathString -split ';' |
+                Where-Object { $_ -and $_.Trim() -ne '' }
+
+            $seen = @{}
+            $cleanParts = @()
+
+            foreach ($p in $parts) {
+
+                # remove trailing exe paths (bad PATH entries)
+                if ($p -match '\.exe$') {
+                    continue
+                }
+
+                if (-not $seen.ContainsKey($p.ToLower())) {
+                    $seen[$p.ToLower()] = $true
+                    $cleanParts += $p
+                }
+            }
+
+            $pathString = ($cleanParts -join ';')
+
+            Write-Host "Setting $key : $pathString" -ForegroundColor Green
+
+            try {
+                [System.Environment]::SetEnvironmentVariable(
+                    $key,
+                    $pathString,
+                    [System.EnvironmentVariableTarget]::Machine
+                )
+            }
+            catch {
+                Write-Host "Error setting environment variable!" -ForegroundColor Red
+            }
+
+        } else {
+            Write-Host "Invalid format for path string: $pathString."
+        }
+    }
+}
+
 function Get-Environment-Variable {
     param(
         [string]$value
