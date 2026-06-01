@@ -51,6 +51,11 @@ install_dotfiles() {
       echo "Executing $script."
       source "$script"
 
+      if [ "$skip_dotfiles" = true ]; then
+          skip_dotfiles=false
+          continue 2   # skip the rest of this folder
+      fi
+      
       if [ -n "$destination_directory" ]; then # set destination directory
         dotfiles_directory="$destination_directory"
       fi

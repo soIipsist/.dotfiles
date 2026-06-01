@@ -1,6 +1,5 @@
 if [[ -n "$WSL_DISTRO_NAME" ]]; then # don't copy if in wsl
-    echo "Inside wsl."
-    destination_directory=""
+    skip_dotfiles=true
     return 0
 fi
 
