@@ -1,3 +1,4 @@
 export OLLAMA_MODEL="deepseek-r1:14b"
+# export OLLAMA_MODEL="qwen3.5:9b"
 export OLLAMA_MODELS=$HOME/.ollama
 alias llm="ollama run $OLLAMA_MODEL"
