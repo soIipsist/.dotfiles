@@ -22,7 +22,7 @@ export BACKUP=0
 export MOVE_FILES=0
 
 # windows apps / executables
-alias code="$WINDOWS_HOME/Program\ Files/Microsoft\ VS\ Code/bin/code"
+alias code="/mnt/c/Program\ Files/Microsoft\ VS\ Code/bin/code"
 # alias code="$WINDOWS_HOME/AppData/Local/Programs/Microsoft\ VS\ Code/bin/code"
 alias clip="/mnt/c/Windows/System32/clip.exe"
 
