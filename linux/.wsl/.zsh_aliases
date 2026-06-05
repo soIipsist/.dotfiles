@@ -21,8 +21,9 @@ export USE_CHUNKS=1
 export BACKUP=0
 export MOVE_FILES=0
 
-# windows apps
-alias code="$WINDOWS_HOME/AppData/Local/Programs/Microsoft\ VS\ Code/bin/code"
+# windows apps / executables
+alias code="$WINDOWS_HOME/Program Files/Microsoft\ VS\ Code/bin/code"
+# alias code="$WINDOWS_HOME/AppData/Local/Programs/Microsoft\ VS\ Code/bin/code"
 alias clip="/mnt/c/Windows/System32/clip.exe"
 
 # tmux aliases
