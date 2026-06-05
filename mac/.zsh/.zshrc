@@ -6,7 +6,8 @@ if [ -z "$dotfiles_directory" ]; then
     export dotfiles_directory="$HOME"
 fi
 
-source $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+plugin_file="$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[[ -f "$plugin_file" ]] && source "$plugin_file"
 
 THEMES_PATH="$dotfiles_directory/.config/themes/theme.sh"
 [ -f "$THEMES_PATH" ] && source "$THEMES_PATH"
