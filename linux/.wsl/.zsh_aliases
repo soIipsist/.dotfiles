@@ -25,7 +25,7 @@ export MOVE_FILES=0
 alias code="/mnt/c/Program\ Files/Microsoft\ VS\ Code/bin/code"
 # alias code="$WINDOWS_HOME/AppData/Local/Programs/Microsoft\ VS\ Code/bin/code"
 alias clip="/mnt/c/Windows/System32/clip.exe"
-alias ollama="$WINDOWS_HOME/AppData/Local/Programs/ollama.exe"
+alias ollama="$WINDOWS_HOME/AppData/Local/Programs/Ollama/ollama.exe"
 
 # tmux aliases
 alias t='tmux attach || tmux new-session'
