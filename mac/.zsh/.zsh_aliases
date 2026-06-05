@@ -1,6 +1,7 @@
 # useful environment variables
 export GIT_HOME="$HOME/repos/soIipsist"
 export DEFAULT_EDITOR="vscode"
+export VENV_PATH="$HOME/venv"
 
 # VSCode variables
 export VSCODE_WORKSPACE_DIRECTORY="$HOME/.workspaces"

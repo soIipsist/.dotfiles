@@ -2,6 +2,7 @@
 export GIT_HOME="$HOME/repos/soIipsist"
 export DEFAULT_EDITOR="nano"
 export VSCODE_WORKSPACE_DIRECTORY="$HOME/.workspaces"
+export VENV_PATH="$HOME/venv"
 
 # sqlite variables
 export SQLITE_DB="$SCRIPTS_DIRECTORY/downloads.db"

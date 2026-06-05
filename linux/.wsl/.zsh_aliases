@@ -3,6 +3,7 @@ export WINDOWS_HOME="/mnt/c/Users/$USER"
 export GIT_HOME="$WINDOWS_HOME/repos/soIipsist"
 export VSCODE_WORKSPACE_DIRECTORY="$WINDOWS_HOME/.workspaces"
 export DEFAULT_EDITOR="nano"
+export VENV_PATH="$WINDOWS_HOME/venv"
 
 # sqlite variables
 export SQLITE_DB="$SCRIPTS_DIRECTORY/downloads.db"

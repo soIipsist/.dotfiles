@@ -155,7 +155,6 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 export PATH="/usr/local/ffmpeg/bin:/usr/local/ffmpeg/lib:$PATH"
 export PATH="$HOME/.local/bin:$HOME/.local/lib/python3.13/site-packages:$PATH"
 export PATH="/usr/games:$PATH"
-export VENV_PATH="$HOME/venv"
 
 if command -v go >/dev/null 2>&1; then
     export GOBIN="$(go env GOPATH)/bin"
