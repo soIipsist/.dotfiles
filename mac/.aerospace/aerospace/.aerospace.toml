@@ -133,7 +133,11 @@ alt-b = ["exec-and-forget open -a 'Brave Browser'"]# Browser
 alt-f = ["exec-and-forget open -a 'Finder'"] # Finder
 alt-d = ["exec-and-forget open -a 'Discord'"] # DMs
 alt-e = ["exec-and-forget open -a 'Epic Games Launcher'"]
-alt-o = ["exec-and-forget open -a 'Obsidian'"]
+alt-g = ["exec-and-forget open -a 'Obsidian'"]
+alt-l = ["exec-and-forget open -a 'LM Studio'"]
+alt-o = ["exec-and-forget open -a 'Open WebUI'"]
+alt-o = ["exec-and-forget open -a 'Signal'"]
+
 alt-u = ["exec-and-forget sh -c \"if ! pgrep -x \\\"UnrealEditor\\\" > /dev/null; then open -a 'Epic Games Launcher'; else osascript -e \\\"tell application \\\\\\\"UnrealEditor\\\\\\\" to activate\\\"; fi\""
 ]
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
@@ -207,12 +211,8 @@ if.app-id = 'com.apple.Safari'
 run = ['move-node-to-workspace 3']
 
 [[on-window-detected]]
-if.app-id = 'com.hnc.Discord'
-run = ['move-node-to-workspace 5']
-
-[[on-window-detected]]
 if.app-id = 'md.obsidian'
-run = ['move-node-to-workspace 6']
+run = ['move-node-to-workspace 4']
 
 [[on-window-detected]]
 if.app-id = 'com.epicgames.EpicGamesLauncher'
@@ -221,6 +221,24 @@ run = ['move-node-to-workspace 4']
 [[on-window-detected]]
 if.app-id = 'com.epicgames.UnrealEditor'
 run = ['move-node-to-workspace 4']
+
+[[on-window-detected]]
+if.app-id = 'org.whispersystems.signal-desktop'
+run = ['move-node-to-workspace 5']
+
+[[on-window-detected]]
+if.app-id = 'com.hnc.Discord'
+run = ['move-node-to-workspace 5']
+
+[[on-window-detected]]
+if.app-id = 'com.openwebui.desktop'
+run = ['move-node-to-workspace 6']
+
+[[on-window-detected]]
+if.app-id = 'ai.elementlabs.lmstudio'
+run = ['move-node-to-workspace 6']
+
+
 
 [[on-window-detected]]
 check-further-callbacks = true
