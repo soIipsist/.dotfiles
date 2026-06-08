@@ -134,9 +134,9 @@ alt-f = ["exec-and-forget open -a 'Finder'"] # Finder
 alt-d = ["exec-and-forget open -a 'Discord'"] # DMs
 alt-e = ["exec-and-forget open -a 'Epic Games Launcher'"]
 alt-g = ["exec-and-forget open -a 'Obsidian'"]
-alt-l = ["exec-and-forget open -a 'LM Studio'"]
+alt-m = ["exec-and-forget open -a 'LM Studio'"]
 alt-o = ["exec-and-forget open -a 'Open WebUI'"]
-alt-o = ["exec-and-forget open -a 'Signal'"]
+alt-s = ["exec-and-forget open -a 'Signal'"]
 
 alt-u = ["exec-and-forget sh -c \"if ! pgrep -x \\\"UnrealEditor\\\" > /dev/null; then open -a 'Epic Games Launcher'; else osascript -e \\\"tell application \\\\\\\"UnrealEditor\\\\\\\" to activate\\\"; fi\""
 ]
