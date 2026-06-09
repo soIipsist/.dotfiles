@@ -130,11 +130,12 @@ alt-a = 'workspace A'
 alt-t = ["exec-and-forget open -a 'iTerm'"] # Terminal
 alt-c = ["exec-and-forget open -a 'Visual Studio Code'"] # IDE/editor
 alt-b = ["exec-and-forget open -a 'Brave Browser'"]# Browser 
+alt-m = ["exec-and-forget open -a 'Mullvad Browser'"]
 alt-f = ["exec-and-forget open -a 'Finder'"] # Finder
 alt-d = ["exec-and-forget open -a 'Discord'"] # DMs
 alt-e = ["exec-and-forget open -a 'Epic Games Launcher'"]
 alt-g = ["exec-and-forget open -a 'Obsidian'"]
-alt-m = ["exec-and-forget open -a 'LM Studio'"]
+alt-n = ["exec-and-forget open -a 'LM Studio'"]
 alt-o = ["exec-and-forget open -a 'Open WebUI'"]
 alt-s = ["exec-and-forget open -a 'Signal'"]
 
@@ -204,6 +205,10 @@ run = ['move-node-to-workspace 2']
 
 [[on-window-detected]]
 if.app-id = 'com.brave.Browser'
+run = ['move-node-to-workspace 3']
+
+[[on-window-detected]]
+if.app-id = 'net.mullvad.mullvadbrowser'
 run = ['move-node-to-workspace 3']
 
 [[on-window-detected]]
