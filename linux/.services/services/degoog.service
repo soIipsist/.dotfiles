@@ -5,11 +5,10 @@ After=network.target
 [Service]
 Type=simple
 
-User=degoog
-Group=degoog
+User=bun
 WorkingDirectory=/opt/degoog
 
-ExecStart=/bin/bash -lc 'bun run src/server/index.ts'
+ExecStart=/home/bun/.bun/bin/bun run src/server/index.ts
 
 Environment=NODE_ENV=production
 Environment=DEGOOG_PORT=4444
@@ -17,12 +16,6 @@ Environment=DEGOOG_HOST=0.0.0.0
 
 Restart=always
 RestartSec=3
-
-NoNewPrivileges=true
-PrivateTmp=true
-ProtectSystem=strict
-ProtectHome=true
-ReadWritePaths=/opt/degoog
 
 LimitNOFILE=65535
 
