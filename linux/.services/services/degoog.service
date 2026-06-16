@@ -9,7 +9,7 @@ User=degoog
 Group=degoog
 WorkingDirectory=/opt/degoog
 
-ExecStart=/home/%u/.bun/bin/bun run src/server/index.ts
+ExecStart=/bin/bash -lc 'bun run src/server/index.ts'
 
 Environment=NODE_ENV=production
 Environment=DEGOOG_PORT=4444
