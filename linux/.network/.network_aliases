@@ -1,6 +1,6 @@
 export TCPDUMP_DIR="$HOME/.tcpdump"
-export UID="${UID:-$(id -u 2>/dev/null || echo 1000)}"
-export REPORT_DIR="/tmp/$UID/reports"
+export USER_ID="${UID:-$(id -u 2>/dev/null || echo 1000)}"
+export REPORT_DIR="/tmp/$USER_ID/reports"
 export SCAN_METHOD="clamscan"
 
 whereami() {
