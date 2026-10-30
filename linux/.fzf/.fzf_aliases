@@ -1,7 +1,13 @@
 export FZF_DEFAULT_OPTS="--color=query:#ff8700"
 export FZF_FAVORITES="$HOME/.fzf_favorites"
 export FZF_REMEMBER_QUERY=1
-export FZF_QUERY=""
+FZF_QUERY=""
+
+_fzf_require_rg() {
+    command -v rg >/dev/null 2>&1 && return 0
+    echo "ripgrep (rg) is not installed. Install it with: sudo apt install ripgrep" >&2
+    return 1
+}
 
 # open fzf in edit mode
 fzfe() {
@@ -45,15 +51,7 @@ fzfc() {
   local selection file line col
   local default_editor="${DEFAULT_EDITOR:-vim}"
 
-  if ! command -v rg >/dev/null 2>&1; then
-        echo "fzfc requires ripgrep (rg), which is not installed." >&2
-        echo "Install it with one of:" >&2
-        echo "  brew install ripgrep         # macOS" >&2
-        echo "  sudo apt install ripgrep     # Debian/Ubuntu" >&2
-        echo "  sudo dnf install ripgrep     # Fedora" >&2
-        echo "  sudo pacman -S ripgrep       # Arch" >&2
-        return 1
-  fi
+  _fzf_require_rg
 
   local previewer="batcat --style=numbers --color=always --highlight-line {2} {1}"
   command -v batcat >/dev/null 2>&1 || previewer="head -n 200 {1}"
@@ -218,6 +216,8 @@ fzfg() {
   local selection file first_line
   local default_editor="${DEFAULT_EDITOR:-code}"
 
+  _fzf_require_rg
+  
   cd "$cwd" || return
   local repo_root
   repo_root=$(git rev-parse --show-toplevel) || return
@@ -252,15 +252,12 @@ fzfg() {
 }
 
 
-fzfc2() {
+fzfrg() {
     local cwd="${1:-.}"
     local selection file line col rest
     local default_editor="${DEFAULT_EDITOR:-vscode}"
 
-    if ! command -v rg >/dev/null 2>&1; then
-        echo "fzfc requires ripgrep (rg), which is not installed." >&2
-        return 1
-    fi
+    _fzf_require_rg
 
     local previewer="batcat --style=numbers --color=always --highlight-line {2} {1}"
     command -v batcat >/dev/null 2>&1 || previewer="head -n 200 {1}"
@@ -281,6 +278,34 @@ fzfc2() {
             --preview="$previewer" \
             --preview-window='up,60%,border-bottom,+{2}+3/3,~3'
     )
+
+    [ -z "$selection" ] && return 1
+
+    IFS=: read -r file line col rest <<<"$selection"
+
+    case "$default_editor" in
+    vscode | code) code -g "$file:$line:$col" ;;
+    vim)           vim "+call cursor($line, $col)" "$file" ;;
+    *)             nano "+${line}" "$file" ;;
+    esac
+}
+
+fzfcc() {
+    local cwd="${1:-.}"
+    local selection file line col rest
+    local default_editor="${DEFAULT_EDITOR:-vscode}"
+
+    _fzf_require_rg
+
+    local previewer="batcat --style=numbers --color=always --highlight-line {2} {1}"
+    command -v batcat >/dev/null 2>&1 || previewer="head -n 200 {1}"
+
+    selection=$(rg --glob '!.git/*' \
+        --column --hidden --line-number --no-heading --color=always '\S' "$cwd" |
+        fzf --ansi --exact --tiebreak=length --delimiter=: \
+            --nth=4..,1 \
+            --preview="$previewer" \
+            --preview-window='right,50%,+{2}+3/3,~3')
 
     [ -z "$selection" ] && return 1
 
