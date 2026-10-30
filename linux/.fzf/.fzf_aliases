@@ -30,8 +30,8 @@ fzfe() {
       )+reload(find . \( -type f -o -type d \) )'
   )
 
-  if [ -n $selection ]; then
-    if [ -f $selection ]; then
+  if [ -n "$selection" ]; then
+    if [ -f "$selection" ]; then
       z "$(dirname "$selection")"
     else
       z "$selection"
@@ -45,10 +45,23 @@ fzfc() {
   local selection file line col
   local default_editor="${DEFAULT_EDITOR:-vim}"
 
+  if ! command -v rg >/dev/null 2>&1; then
+        echo "fzfc requires ripgrep (rg), which is not installed." >&2
+        echo "Install it with one of:" >&2
+        echo "  brew install ripgrep         # macOS" >&2
+        echo "  sudo apt install ripgrep     # Debian/Ubuntu" >&2
+        echo "  sudo dnf install ripgrep     # Fedora" >&2
+        echo "  sudo pacman -S ripgrep       # Arch" >&2
+        return 1
+  fi
+
+  local previewer="batcat --style=numbers --color=always --highlight-line {2} {1}"
+  command -v batcat >/dev/null 2>&1 || previewer="head -n 200 {1}"
+
   selection=$(rg --glob '!.git/*' \
     --column --hidden --line-number --no-heading --color=always "" "$cwd" |
     fzf --ansi --tiebreak=length --delimiter=: \
-      --preview='batcat --style=numbers --color=always --highlight-line {2} {1}')
+      --preview="$previewer")
 
   [ -z "$selection" ] && return 1
 
@@ -236,4 +249,46 @@ fzfg() {
     nano "+$first_line" "$file"
     ;;
   esac
+}
+
+
+fzfc2() {
+    local cwd="${1:-.}"
+    local selection file line col rest
+    local default_editor="${DEFAULT_EDITOR:-vscode}"
+
+    if ! command -v rg >/dev/null 2>&1; then
+        echo "fzfc requires ripgrep (rg), which is not installed." >&2
+        return 1
+    fi
+
+    local previewer="batcat --style=numbers --color=always --highlight-line {2} {1}"
+    command -v batcat >/dev/null 2>&1 || previewer="head -n 200 {1}"
+
+    local q_cwd rg_cmd
+    q_cwd=$(printf '%q' "$cwd")
+    rg_cmd="rg --column --line-number --no-heading --color=always --smart-case --hidden --glob '!**/.git/*'"
+
+    selection=$(
+        fzf --ansi --disabled --query "" \
+            --delimiter=: --nth=4.. \
+            --prompt="rg> " \
+            --header="Ctrl-F: fuzzy-filter results | Ctrl-R: back to ripgrep" \
+            --bind "start:reload:true" \
+            --bind "change:reload:sleep 0.1; test -n {q} && $rg_cmd -- {q} $q_cwd || true" \
+            --bind "ctrl-f:unbind(change,ctrl-f)+change-prompt(fuzzy> )+enable-search+clear-query+rebind(ctrl-r)" \
+            --bind "ctrl-r:unbind(ctrl-r)+change-prompt(rg> )+disable-search+clear-query+reload(true)+rebind(change,ctrl-f)" \
+            --preview="$previewer" \
+            --preview-window='up,60%,border-bottom,+{2}+3/3,~3'
+    )
+
+    [ -z "$selection" ] && return 1
+
+    IFS=: read -r file line col rest <<<"$selection"
+
+    case "$default_editor" in
+    vscode | code) code -g "$file:$line:$col" ;;
+    vim)           vim "+call cursor($line, $col)" "$file" ;;
+    *)             nano "+${line}" "$file" ;;
+    esac
 }
