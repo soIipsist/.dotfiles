@@ -9,16 +9,29 @@ _fzf_require_rg() {
     return 1
 }
 
+_fzf_previewer() {
+    local bat_cmd
+    bat_cmd=$(command -v bat || command -v batcat)
+    if [ -n "$bat_cmd" ]; then
+        echo "$bat_cmd --style=numbers --color=always --highlight-line {2} {1}"
+    else
+        echo "head -n 200 {1}"
+    fi
+}
+
 # open fzf in edit mode
 fzfe() {
   local dir="${1:-.}"
   dir=$(cd "$dir" && pwd -P)
-  local selection
+  local selection state
+  state=$(mktemp)
+  printf '%s\n' "$dir" > "$state"
 
   selection=$(
     find . -type f -o -type d | fzf \
       --multi \
-      --bind "ctrl-w:reload(find \"$(dirname "$dir")\" -type f -o -type d)+change-prompt(cwd: $(dirname "$dir") )" \
+      --prompt="cwd: $dir " \
+      --bind "ctrl-w:transform:d=\$(dirname \"\$(cat '$state')\"); printf '%s\n' \"\$d\" > '$state'; echo \"reload(find '\$d' -type f -o -type d)+change-prompt(cwd: \$d )\"" \
       --bind "ctrl-s:toggle+down" \
       --bind 'ctrl-x:execute(
         bash -c "
@@ -38,9 +51,9 @@ fzfe() {
 
   if [ -n "$selection" ]; then
     if [ -f "$selection" ]; then
-      z "$(dirname "$selection")"
+      cd -- "$(dirname "$selection")"
     else
-      z "$selection"
+      cd -- "$selection"
     fi
   fi
 }
@@ -48,13 +61,11 @@ fzfe() {
 # open fzf in code mode
 fzfc() {
   local cwd="${1:-.}"
-  local selection file line col
+  local selection file line col previewer
   local default_editor="${DEFAULT_EDITOR:-vim}"
 
   _fzf_require_rg
-
-  local previewer="batcat --style=numbers --color=always --highlight-line {2} {1}"
-  command -v batcat >/dev/null 2>&1 || previewer="head -n 200 {1}"
+  previewer=$(_fzf_previewer)
 
   selection=$(rg --glob '!.git/*' \
     --column --hidden --line-number --no-heading --color=always "" "$cwd" |
@@ -254,13 +265,11 @@ fzfg() {
 
 fzfrg() {
     local cwd="${1:-.}"
-    local selection file line col rest
+    local selection file line col rest previewer
     local default_editor="${DEFAULT_EDITOR:-vscode}"
 
     _fzf_require_rg
-
-    local previewer="batcat --style=numbers --color=always --highlight-line {2} {1}"
-    command -v batcat >/dev/null 2>&1 || previewer="head -n 200 {1}"
+    previewer=$(_fzf_previewer)
 
     local q_cwd rg_cmd
     q_cwd=$(printf '%q' "$cwd")
@@ -296,9 +305,7 @@ fzfcc() {
     local default_editor="${DEFAULT_EDITOR:-vscode}"
 
     _fzf_require_rg
-
-    local previewer="batcat --style=numbers --color=always --highlight-line {2} {1}"
-    command -v batcat >/dev/null 2>&1 || previewer="head -n 200 {1}"
+    previewer=$(_fzf_previewer)
 
     selection=$(rg --glob '!.git/*' \
         --column --hidden --line-number --no-heading --color=always '\S' "$cwd" |
