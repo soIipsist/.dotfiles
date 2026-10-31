@@ -148,12 +148,17 @@ fzfh() {
             read -r answer < /dev/tty;
             [[ \"\$answer\" =~ ^[Yy] ]] || exit 0; \
             for cmd in \"\$@\"; do \
-            # echo \"CMD: \$cmd\" >> /tmp/.info
-            # echo \"SED: sed \"/^\$cmd\$/d\"\" >> /tmp/.info
-            # echo \"ARGS: \"\$@\"\" >> /tmp/.info
-            grep -Fxv \"\$cmd\" \"$history_path\" > \"$history_path.tmp\" 2>/dev/null || true
-            mv \"$history_path.tmp\" \"$history_path\"
-            done' bash {+}
+                skip=0; \
+                while IFS= read -r line || [[ -n \$line ]]; do \
+                    if (( skip )) || [[ \$line == \"\$cmd\" ]]; then \
+                        [[ \$line == *\\\\ ]] && skip=1 || skip=0; \
+                        continue; \
+                    fi; \
+                    printf \"%s\\n\" \"\$line\"; \
+                done < \"$history_path\" > \"$history_path.tmp\"; \
+                mv \"$history_path.tmp\" \"$history_path\"; \
+            done \
+            ' bash {+}
         )+transform-header(echo '$deleted_header')+reload(awk '!seen[\$0]++' \"$history_path\")" \
                 --bind "focus:transform-header:echo '$normal_header'"
         )
