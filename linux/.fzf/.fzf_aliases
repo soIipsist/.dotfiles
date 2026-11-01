@@ -1,3 +1,5 @@
+# fzf minimum version 0.45.0 required
+
 export FZF_DEFAULT_OPTS="--color=query:#ff8700"
 export FZF_FAVORITES="$HOME/.fzf_favorites"
 export FZF_REMEMBER_QUERY=1
@@ -19,7 +21,6 @@ _fzf_previewer() {
     fi
 }
 
-# open fzf in edit mode
 fzfe() {
   local dir="${1:-.}"
   dir=$(cd "$dir" && pwd -P)
@@ -58,7 +59,6 @@ fzfe() {
   fi
 }
 
-# open fzf in code mode
 fzfc() {
   local cwd="${1:-.}"
   local selection file line col previewer
