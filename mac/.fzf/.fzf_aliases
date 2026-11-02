@@ -323,3 +323,28 @@ fzfcc() {
     *)             nano "+${line}" "$file" ;;
     esac
 }
+
+fzfp() {
+    local dir="${1:-.}"
+    local sel line
+
+    sel=$(cd "$dir" && find "$PWD" \( -type f -o -type d \) -not -path '*/.git/*' |
+        fzf --multi \
+            --bind "ctrl-s:toggle+down" \
+            --bind "ctrl-a:select-all" \
+            --bind "ctrl-d:deselect-all" \
+            --header="Ctrl-A: Select all | Ctrl-D: Deselect all " \
+            --prompt="select> ")
+
+    [ -z "$sel" ] && return 1
+
+    unset FZF_PATHS
+    if [ -n "$ZSH_VERSION" ]; then
+        eval 'FZF_PATHS=("${(@f)sel}")'
+    else
+        FZF_PATHS=()
+        while IFS= read -r line; do
+            FZF_PATHS+=("$line")
+        done <<< "$sel"
+    fi
+}
